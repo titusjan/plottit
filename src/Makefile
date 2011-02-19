@@ -1,3 +1,6 @@
+# Make sure to: export OSTYPE
+# before running make
+
 # The name of the extension.
 extension_name := xulschoolhello
 
@@ -5,7 +8,8 @@ extension_name := xulschoolhello
 extension_uuid := helloworld@xulschool.com
 
 # The name of the profile dir where the extension can be installed.
-profile_dir := xulschool-dev
+# profile_dir := xulschool-dev
+profile_dir := py4p8246.Development
 
 # The zip application to be used.
 ZIP := zip
