@@ -60,15 +60,15 @@
 
      <tree id="scoreTree" flex="1" hidecolumnpicker="false" enableColumnDrag="true" >
       <treecols>
-	    <treecol id="treeID"      width="100"  flex="0" label="ID"    /> <splitter class="tree-splitter" />
-	    <treecol id="treeAuthor"  width="150" flex="1" label="Author" /> <splitter class="tree-splitter" />
+	    <treecol id="treeID"      width="100"  flex="1" label="ID"    /> <splitter class="tree-splitter" />
+	    <treecol id="treeAuthor"  width="150" flex="2" label="Author" /> <splitter class="tree-splitter" />
     	<treecol id="treeUp"      width="50"  flex="1" label="Up"     /> <splitter class="tree-splitter" />	    
 	    <treecol id="treeDown"    width="50"  flex="1" label="Down"   /> <splitter class="tree-splitter" />
 	    <treecol id="treeTotal"   width="50"  flex="1" label="Total"  /> <splitter class="tree-splitter" />
-	    <treecol id="treePruts"   width="200" flex="1" label="Pruts"  /> <splitter class="tree-splitter" />
+	    <treecol id="treePruts"   width="200" flex="1" label="**numreplies**"  /> <splitter class="tree-splitter" />
 	    <treecol id="treeDepth"   width="50"  flex="1" label="Depth"  /> <splitter class="tree-splitter" />
 	    
-	    <treecol id="treeBody"    width="300" flex="10" label="Body" primary="true"/> <splitter class="tree-splitter" />
+	    <treecol id="treeBody"    width="500" flex="20" label="Body" primary="true"/> <splitter class="tree-splitter" />
       </treecols>
 
       <treechildren>
