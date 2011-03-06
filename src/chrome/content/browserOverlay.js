@@ -95,7 +95,7 @@ Listit.redditNodeToListitNode = function(redditNode, depth)
     listitNode.created_utc = data.created_utc;
     listitNode.downs       = data.downs;
     listitNode.ups         = data.ups;
-    listitNode.isOpen      = true;  // True if a node is expanded
+    listitNode.isOpen      = false;  // True if a node is expanded
     listitNode.replies     = []; // For convenience always make an empty replies list (TODO: optimize?)
 
     if (data.replies) {  // Recursively add children
@@ -141,19 +141,21 @@ var treeView = {
 
     init: function (listitPosts)
     {
-        this.visibleData = [];
         this.allPosts = listitPosts;
-        this.addPostsToVisibleData(this.allPosts);
-        
+        this.visibleData = this.getOpenPosts(this.allPosts);
     }, 
     
-    addPostsToVisibleData: function(posts) {
+    getOpenPosts: function(posts) {
+        var openPosts = [];
         for (var idx=0; idx < posts.length; idx=idx+1) {
-            this.visibleData.push(posts[idx]);
-            this.addPostsToVisibleData(posts[idx].replies);
+            var post = posts[idx];
+            openPosts.push(post);
+            if (post.isOpen) {
+                openPosts = openPosts.concat( this.getOpenPosts(post.replies) );
+            }
         }
-    },
-
+        return openPosts;
+    }, 
     
     treeBox: null,
     selection: null,
@@ -184,12 +186,12 @@ var treeView = {
     isEditable: function(idx, column)  { return false; },
     
     getParentIndex: function(idx) {
-        var curentDepth = this.visibleData[idx].depth;
-        if (currentDepth == 0) return -1;
+        var thisDepth = this.visibleData[idx].depth;
+        if (thisDepth == 0) return -1;
         
         // iterate backwards until we find the item with the lower depth
         for (var i = idx - 1; i >= 0 ; i--) {
-            if (this.visibleData[i].depth < currentDepth) return i;
+            if (this.visibleData[i].depth < thisDepth) return i;
         }
     },
     
@@ -207,33 +209,33 @@ var treeView = {
     
     toggleOpenState: function(idx) {
     
-        if (!isContainer()) return;
-        
-        if (isContainerOpen()) {
-            item[2] = false;
+        if (!this.isContainer(idx)) return;
+        if (this.isContainerOpen(idx)) {
+            this.visibleData[idx].isOpen = false;
             
+            // Walk downwards to next sibling to count children to delete
             var thisLevel = this.getLevel(idx);
-            var deletecount = 0;
+            var deleteCount = 0;
             for (var t = idx + 1; t < this.visibleData.length; t++) {
                 if (this.getLevel(t) > thisLevel) 
-                    deletecount++;
+                    deleteCount++;
                 else break;
             }
-            if (deletecount) {
-                this.visibleData.splice(idx + 1, deletecount);
-                this.treeBox.rowCountChanged(idx + 1, -deletecount);
+            if (deleteCount) {
+                this.visibleData.splice(idx + 1, deleteCount);
+                this.treeBox.rowCountChanged(idx + 1, -deleteCount);
             }
+            Firebug.Console.log(deleteCount);
+
         } else {
-            item[2] = true;
-            
-            var label = this.visibleData[idx][0];
-            var toinsert = this.childData[label];
-            for (var i = 0; i < toinsert.length; i++) {
-                this.visibleData.splice(idx + i + 1, 0, [toinsert[i], false]);
+            this.visibleData[idx].isOpen = true;
+            var toInsert = this.getOpenPosts(this.visibleData[idx].replies);
+            for (var i = 0; i < toInsert.length; i++) {
+                this.visibleData.splice(idx+i+1, 0, toInsert[i]);
             }
-            this.treeBox.rowCountChanged(idx + 1, toinsert.length);
+            this.treeBox.rowCountChanged(idx+1, toInsert.length);
         }
-    this.treeBox.invalidateRow(idx);
+        this.treeBox.invalidateRow(idx);
     },
     
     getImageSrc: function(idx, column) {},
