@@ -2,7 +2,7 @@
  * XULSchoolChrome namespace.
  */
 if ("undefined" == typeof(XULSchoolChrome)) {
-  var XULSchoolChrome = {};
+    var XULSchoolChrome = {};
 };
 
 /**
@@ -24,16 +24,11 @@ XULSchoolChrome.BrowserOverlay = {
 };
 
 
-
-
-
-
-
 //----------
 
 
 if ("undefined" == typeof(Listit)) {
-  var Listit = {};
+    var Listit = {};
 };
 
 Listit.getPosts = function () 
@@ -89,143 +84,154 @@ Listit.getPosts = function ()
 
 
 Listit.init = function (){
-    window.alert("Firebug.Console");
-    window.alert(Firebug.Console);
-    Firebug.Console.log("Listit.init");
-    window.alert("Listit.init");
+    Firebug.Console.log("Listit.init start");
     treeView.posts = Listit.getPosts();
-    treeView.initTree(treeViewPosts);
+    Firebug.Console.log("Listit.init after getPosts");
+    //treeView.initTree(treeViewPosts);
     treeView.initVisibleDataFromChildData();
     document.getElementById('scoreTree').view = treeView;
+    Firebug.Console.log("scoreTree.view");
+    Firebug.Console.log(document.getElementById('scoreTree').view);    
+    Firebug.Console.log("Listit.init end");
 }
 
+//////////////
+// treeView //
+//////////////
 
 var treeView = {
-//   childData : {
-//     Solids: ["Silver", "Gold", "Lead"],
-//     Liquids: ["Mercury"],
-//     Gases: ["Helium", "Nitrogen"]
-//   },
-
-//   visibleData : [
-//     ["Solids", true, false],
-//     ["Liquids", true, false],
-//     ["Gases", true, false]
-//   ],
-
-  initVisibleDataFromChildData: function() {
-    this.visibleData = [];
-    var children = this.posts.data.children;
-    for (var idx=0; idx < children.length; idx=idx+1) {
-        var childData = children[idx].data;
-        this.visibleData.push(childData);
-    }
-  },
-  
-  initTree: function(node) {
+    //   childData : {
+    //     Solids: ["Silver", "Gold", "Lead"],
+    //     Liquids: ["Mercury"],
+    //     Gases: ["Helium", "Nitrogen"]
+    //   },
     
-    var children = this.posts.data.children;
-    for (var idx=0; idx < children.length; idx=idx+1) {
-        var childData = children[idx].data;
-        this.visibleData.push(childData);
-    }
-  },
-
-  treeBox: null,
-  selection: null,
-
-  get rowCount()                     { return this.visibleData.length; },
-  setTree: function(treeBox)         { this.treeBox = treeBox; },
-  
-  getCellText: function(idx, column) {
-    var rowItem = this.visibleData[idx];    
-    switch(column.id)    
-    {
-        case "treeID"    : return rowItem.id;
-        case "treeAuthor": return rowItem.author;
-        case "treeUp"    : return column.width;
-        case "treeDown"  : return rowItem.downs;
-        case "treeTotal" : return rowItem.ups + rowItem.downs;
-        case "treeBody"  : return rowItem.body;
-        case "treePruts"  : 
-            if (rowItem.replies) {
-                return rowItem.replies.data.children.length;
-            } else {
-                return 0
-            };
-        default          : return "** Unknown id: '" + column.id + "' **"; 
-    }
-  },
-  isContainer: function(idx)         { return this.visibleData[idx].replies; },
-  isContainerOpen: function(idx)     { return false},
-  isContainerEmpty: function(idx)    { return false; },
-  isSeparator: function(idx)         { return false; },
-  isSorted: function()               { return false; },
-  isEditable: function(idx, column)  { return false; },
-
-  getParentIndex: function(idx) {
-    if (this.isContainer(idx)) return -1;
-    for (var t = idx - 1; t >= 0 ; t--) {
-      if (this.isContainer(t)) return t;
-    }
-  },
-  getLevel: function(idx) {
-    if (this.isContainer(idx)) return 0;
-    return 0;
-  },
-  
-  hasNextSibling: function(idx, after) {
-    var thisLevel = this.getLevel(idx);
-    for (var t = after + 1; t < this.visibleData.length; t++) {
-      var nextLevel = this.getLevel(t);
-      if (nextLevel == thisLevel) return true;
-      if (nextLevel < thisLevel) break;
-    }
-    return false;
-  },
-  
-  toggleOpenState: function(idx) {
-
-    if (!isContainer()) return;
-
-    if (isContainerOpen()) {
-      item[2] = false;
-
-      var thisLevel = this.getLevel(idx);
-      var deletecount = 0;
-      for (var t = idx + 1; t < this.visibleData.length; t++) {
-        if (this.getLevel(t) > thisLevel) deletecount++;
-        else break;
-      }
-      if (deletecount) {
-        this.visibleData.splice(idx + 1, deletecount);
-        this.treeBox.rowCountChanged(idx + 1, -deletecount);
-      }
-    }
-    else {
-      item[2] = true;
-
-      var label = this.visibleData[idx][0];
-      var toinsert = this.childData[label];
-      for (var i = 0; i < toinsert.length; i++) {
-        this.visibleData.splice(idx + i + 1, 0, [toinsert[i], false]);
-      }
-      this.treeBox.rowCountChanged(idx + 1, toinsert.length);
-    }
+    //   visibleData : [
+    //     ["Solids", true, false],
+    //     ["Liquids", true, false],
+    //     ["Gases", true, false]
+    //   ],
+    
+    
+    initVisibleDataFromChildData: function() {
+        Firebug.Console.log("initVisibleDataFromChildData");
+        
+        this.visibleData = [];
+        var children = this.posts.data.children;
+        for (var idx=0; idx < children.length; idx=idx+1) {
+            var childData = children[idx].data;
+            this.visibleData.push(childData);
+        }
+        Firebug.Console.log("visibleData.length...");
+        Firebug.Console.log(this.visibleData.length);
+    },
+    
+    initTree: function(node) {
+        Firebug.Console.log("Listit.initTree: ", node);    
+        var children = this.posts.data.children;
+        for (var idx=0; idx < children.length; idx=idx+1) {
+            var childData = children[idx].data;
+            this.visibleData.push(childData);
+        }
+        Firebug.Console.log("visibleData.length: ", visibleData.length);
+    },
+    
+    treeBox: null,
+    selection: null,
+    
+    get rowCount()                     { return this.visibleData.length; },
+    setTree: function(treeBox)         { this.treeBox = treeBox; },
+    
+    getCellText: function(idx, column) {
+        var rowItem = this.visibleData[idx];    
+        switch(column.id)    
+        {
+            case "treeID"    : return rowItem.id;
+            case "treeAuthor": return rowItem.author;
+            case "treeUp"    : return column.width;
+            case "treeDown"  : return rowItem.downs;
+            case "treeTotal" : return rowItem.ups + rowItem.downs;
+            case "treeBody"  : return rowItem.body;
+            case "treePruts" : 
+                if (rowItem.replies) {
+                    return rowItem.replies.data.children.length;
+                } else {
+                    return 0
+                };
+            default          : return "** Unknown id: '" + column.id + "' **"; 
+        }
+    },
+    isContainer: function(idx)         { return this.visibleData[idx].replies; },
+    isContainerOpen: function(idx)     { return false; },
+    isContainerEmpty: function(idx)    { return false; },
+    isSeparator: function(idx)         { return false; },
+    isSorted: function()               { return false; },
+    isEditable: function(idx, column)  { return false; },
+    
+    getParentIndex: function(idx) {
+        if (this.isContainer(idx)) return -1;
+        for (var t = idx - 1; t >= 0 ; t--) {
+            if (this.isContainer(t)) return t;
+        }
+    },
+    
+    getLevel: function(idx) {
+        if (this.isContainer(idx)) return 0;
+        return 0;
+    },
+    
+    hasNextSibling: function(idx, after) {
+        var thisLevel = this.getLevel(idx);
+        for (var t = after + 1; t < this.visibleData.length; t++) {
+            var nextLevel = this.getLevel(t);
+            if (nextLevel == thisLevel) return true;
+            if (nextLevel < thisLevel) break;
+        }
+        return false;
+    },
+    
+    toggleOpenState: function(idx) {
+    
+        if (!isContainer()) return;
+        
+        if (isContainerOpen()) {
+            item[2] = false;
+            
+            var thisLevel = this.getLevel(idx);
+            var deletecount = 0;
+            for (var t = idx + 1; t < this.visibleData.length; t++) {
+                if (this.getLevel(t) > thisLevel) 
+                    deletecount++;
+                else break;
+            }
+            if (deletecount) {
+                this.visibleData.splice(idx + 1, deletecount);
+                this.treeBox.rowCountChanged(idx + 1, -deletecount);
+            }
+        } else {
+            item[2] = true;
+            
+            var label = this.visibleData[idx][0];
+            var toinsert = this.childData[label];
+            for (var i = 0; i < toinsert.length; i++) {
+                this.visibleData.splice(idx + i + 1, 0, [toinsert[i], false]);
+            }
+            this.treeBox.rowCountChanged(idx + 1, toinsert.length);
+        }
     this.treeBox.invalidateRow(idx);
-  },
-
-  getImageSrc: function(idx, column) {},
-  getProgressMode : function(idx,column) {},
-  getCellValue: function(idx, column) {},
-  cycleHeader: function(col, elem) {},
-  selectionChanged: function() {},
-  cycleCell: function(idx, column) {},
-  performAction: function(action) {},
-  performActionOnCell: function(action, index, column) {},
-  getRowProperties: function(idx, column, prop) {},
-  getCellProperties: function(idx, column, prop) {},
-  getColumnProperties: function(column, element, prop) {},
+    },
+    
+    getImageSrc: function(idx, column) {},
+    getProgressMode : function(idx,column) {},
+    getCellValue: function(idx, column) {},
+    cycleHeader: function(col, elem) {},
+    selectionChanged: function() {},
+    cycleCell: function(idx, column) {},
+    performAction: function(action) {},
+    performActionOnCell: function(action, index, column) {},
+    getRowProperties: function(idx, column, prop) {},
+    getCellProperties: function(idx, column, prop) {},
+    getColumnProperties: function(column, element, prop) {},
 };
 
 
