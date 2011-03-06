@@ -7,7 +7,7 @@
 <!DOCTYPE overlay SYSTEM
   "chrome://xulschoolhello/locale/browserOverlay.dtd">
 
-<overlay id="xulschoolhello-browser-overlay"
+<overlay onload="XULSchoolChrome.BrowserOverlay.sayHello();" id="xulschoolhello-browser-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/x-javascript"
@@ -27,7 +27,54 @@
           label="&xulschoolhello.hello.label;"
           accesskey="&xulschoolhello.helloItem.accesskey;"
           oncommand="XULSchoolChrome.BrowserOverlay.sayHello(event);" />
+     <!--
+     <menuitem id="xulschoolhello-sidebar" 
+            label="&xulschoolhello.sidebar.title;"
+            accesskey="&xulschoolhello.sidebar.accesskey;"
+            type="checkbox" autoCheck="false" group="sidebar"
+            sidebarurl="chrome://xulschoolhello/content/sidebar.xul"
+            sidebartitle="&xulschoolhello.sidebar.title;"
+            oncommand="toggleSidebar('xulschoolhello-sidebar');" />
+     -->
       </menupopup>
     </menu>
   </menupopup>
+  
+<vbox id="appcontent">
+    <splitter id="listitContentSplitter" collapsed="false"/>
+<!--
+<tree id="scoreTree" flex="1">
+  <treecols>
+    <treecol id="element" label="Element" primary="true" flex="1"/>
+  	    <treecol id="treeAuthor"  flex="1" label="Author" />
+    	<splitter class="tree-splitter" />
+    	<treecol id="treeUps"   flex="1" label="Ups"  />
+	    <splitter class="tree-splitter" />
+	    <treecol id="treeDowns" flex="1" label="Downs" />
+	    <splitter class="tree-splitter" />
+	    <treecol id="treeText"  flex="1" label="Text" /></treecols>
+  
+  <treechildren/>
+</tree>
+-->
+
+     <tree id="scoreTree" flex="1" hidecolumnpicker="false" enableColumnDrag="true" >
+      <treecols>
+	    <treecol id="treeID"      width="100"  flex="0" label="ID" primary="true" /> <splitter class="tree-splitter" />
+	    <treecol id="treeAuthor"  width="150" flex="0" label="Author" /> <splitter class="tree-splitter" />
+    	<treecol id="treeUp"      width="50"  flex="0" label="Up"     /> <splitter class="tree-splitter" />	    
+	    <treecol id="treeDown"    width="50"  flex="0" label="Down"   /> <splitter class="tree-splitter" />
+	    <treecol id="treeTotal"   width="50"  flex="0" label="Total"  /> <splitter class="tree-splitter" />
+	    <treecol id="treePruts"   width="200" flex="1" label="Pruts"  /> <splitter class="tree-splitter" />
+	    <treecol id="treeLevel"   width="50"  flex="0" label="Level"  /> <splitter class="tree-splitter" />
+	    
+	    <treecol id="treeBody"    width="300" flex="1" label="Body" />
+      </treecols>
+
+      <treechildren>
+       <treeitem>
+       </treeitem>
+      </treechildren>
+     </tree>
+</vbox>    
 </overlay>
