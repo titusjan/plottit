@@ -1,33 +1,55 @@
-/**
- * XULSchoolChrome namespace.
- */
+
+// XULSchoolChrome name space
 if ("undefined" == typeof(XULSchoolChrome)) {
     var XULSchoolChrome = {};
 };
 
-/**
- * Controls the browser overlay for the Hello World extension.
- */
 XULSchoolChrome.BrowserOverlay = {
-  /**
-   * Says 'Hello' to the user.
-   */
+
   sayHello : function(aEvent) {
     let stringBundle = document.getElementById("xulschoolhello-string-bundle");
     let message = stringBundle.getString("xulschoolhello.greeting.label");
     
-
-    Listit.init();
+    Firebug.Console.log("sayHello");
+    Firebug.Console.log(document);
+    //Firebug.Console.log(document.defaultView.XULBrowserWindow);
+    Firebug.Console.log(gMessage);
   }
 };
 
 
-//----------
 
-
+// Lisit name space
 if ("undefined" == typeof(Listit)) {
     var Listit = {};
 };
+
+// Add listener to event handler
+Listit.init = function () {
+    gMessage = "Message direct";
+    treeView.init(Listit.getListitPosts());
+    document.getElementById('scoreTree').view = treeView;
+};
+
+window.addEventListener("load", Listit.init, true);
+
+/*
+Listit._onPageLoad = function(event) {
+  // this is the content document of the loaded page.
+  let doc = event.originalTarget;
+
+  if (doc instanceof HTMLDocument) {
+    // is this an inner frame?
+    if (doc.defaultView.frameElement) {
+      // Frame within a tab was loaded.
+      // Find the root document:
+      while (doc.defaultView.frameElement) {
+        doc = doc.defaultView.frameElement.ownerDocument;
+      }
+    }
+  }
+};
+*/
 
 // Get posts in redit json format
 Listit.getRedditPosts = function () 
@@ -126,11 +148,6 @@ Listit.getListitPosts = function ()
     return listitPosts;
 };
 
-Listit.init = function () {
-    Firebug.Console.log("Listit.init start");
-    treeView.init(Listit.getListitPosts());
-    document.getElementById('scoreTree').view = treeView;
-};
 
 //////////////
 // treeView //

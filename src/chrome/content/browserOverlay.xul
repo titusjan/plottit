@@ -7,7 +7,7 @@
 <!DOCTYPE overlay SYSTEM
   "chrome://xulschoolhello/locale/browserOverlay.dtd">
 
-<overlay onload="XULSchoolChrome.BrowserOverlay.sayHello();" id="xulschoolhello-browser-overlay"
+<overlay onload="alert('overlay onload');" id="xulschoolhello-browser-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/x-javascript"
@@ -40,7 +40,7 @@
     </menu>
   </menupopup>
   
-<vbox id="appcontent">
+<vbox id="appcontent" onload="alert('vbox onload');" >
     <splitter id="listitContentSplitter" collapsed="false"/>
 <!--
 <tree id="scoreTree" flex="1">
