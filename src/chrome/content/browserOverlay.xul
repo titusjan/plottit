@@ -12,7 +12,11 @@
 
   <script type="application/x-javascript"
     src="chrome://xulschoolhello/content/browserOverlay.js" />
-
+  <script type="application/x-javascript"
+    src="chrome://xulschoolhello/content/treeView.js" />
+  <script type="application/x-javascript"
+    src="chrome://xulschoolhello/content/testData.js" />
+    
   <stringbundleset id="stringbundleset">
     <stringbundle id="xulschoolhello-string-bundle"
       src="chrome://xulschoolhello/locale/browserOverlay.properties" />
