@@ -1,15 +1,33 @@
- if ('undefined' == typeof(Listit)) { var Listit = {}; } // Lisit name space
+if ('undefined' == typeof(Listit)) { var Listit = {}; } // Lisit name space
 
+Listit.testTV = 'narf tv.js';
 
-// TODO: namespace
-var treeView = {
+Listit._unused__treeView = {
+    // Methods that are not part of the nsITreeView interface
 
-    typeStr: "treeView",
-    init: function(listitPosts)
-    {
+    typeStr: 'treeView',
+    allPosts: [],
+    visibleData: [],
+
+    treeBox: null,
+    selection: null,
+
+    addPosts: function(listitPosts) {
+        Firebug.Console.log('addPost');
+        Firebug.Console.log(listitPosts.length);
+        
+        this.removeAllRows();
         this.allPosts = listitPosts;
-        this.visibleData = this.getOpenPosts(this.allPosts);
+        this.visibleData = this.getOpenPosts(listitPosts);
+
+        this.treeBox.rowCountChanged(0, this.visibleData.length);
     },
+
+    removeAllRows: function()  {
+        Firebug.Console.log('removeAllRows');
+        this.treeBox.rowCountChanged(0, -this.rowCount);
+    },
+
 
     getOpenPosts: function(posts) {
         var openPosts = [];
@@ -23,8 +41,7 @@ var treeView = {
         return openPosts;
     },
 
-    treeBox: null,
-    selection: null,
+    // Methods that are part of the nsITreeView interface
 
     get rowCount() { return this.visibleData.length; },
     setTree: function(treeBox)         { this.treeBox = treeBox; },
@@ -44,8 +61,13 @@ var treeView = {
             default : return "** Unknown id: '" + column.id + "' **";
         }
     },
-    isContainer: function(idx)         { return this.visibleData[idx].replies.length; },
-    isContainerOpen: function(idx)     { return this.visibleData[idx].isOpen; },
+    isContainer: function(idx) {
+        return this.visibleData[idx].replies.length;
+    },
+
+    isContainerOpen: function(idx) {
+        return this.visibleData[idx].isOpen;
+    },
     isContainerEmpty: function(idx)    { return false; },
     isSeparator: function(idx)         { return false; },
     isSorted: function()               { return false; },
@@ -103,7 +125,7 @@ var treeView = {
     },
 
     getImageSrc: function(idx, column) {},
-    getProgressMode: function(idx,column) {},
+    getProgressMode: function(idx, column) {},
     getCellValue: function(idx, column) {},
     cycleHeader: function(col, elem) {},
     selectionChanged: function() {},

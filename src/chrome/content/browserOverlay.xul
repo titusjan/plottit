@@ -10,12 +10,13 @@
 <overlay onload="alert('overlay onload');" id="xulschoolhello-browser-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script type="application/x-javascript"
-    src="chrome://xulschoolhello/content/browserOverlay.js" />
+
   <script type="application/x-javascript"
     src="chrome://xulschoolhello/content/treeView.js" />
   <script type="application/x-javascript"
     src="chrome://xulschoolhello/content/testData.js" />
+  <script type="application/x-javascript"
+    src="chrome://xulschoolhello/content/browserOverlay.js" />
     
   <stringbundleset id="stringbundleset">
     <stringbundle id="xulschoolhello-string-bundle"
