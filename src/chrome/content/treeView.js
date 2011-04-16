@@ -1,8 +1,7 @@
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Lisit name space
 
-Listit.testTV = 'narf tv.js';
 
-Listit._unused__treeView = {
+Listit.treeView = {
     // Methods that are not part of the nsITreeView interface
 
     typeStr: 'treeView',
@@ -12,9 +11,9 @@ Listit._unused__treeView = {
     treeBox: null,
     selection: null,
 
-    addPosts: function(listitPosts) {
-        Firebug.Console.log('addPost');
-        Firebug.Console.log(listitPosts.length);
+    setPosts: function(listitPosts)  {
+        //Firebug.Console.log('addPost');
+        //Firebug.Console.log(listitPosts.length);
         
         this.removeAllRows();
         this.allPosts = listitPosts;
@@ -23,8 +22,8 @@ Listit._unused__treeView = {
         this.treeBox.rowCountChanged(0, this.visibleData.length);
     },
 
-    removeAllRows: function()  {
-        Firebug.Console.log('removeAllRows');
+    removeAllRows: function() {
+        //Firebug.Console.log('removeAllRows');
         this.treeBox.rowCountChanged(0, -this.rowCount);
     },
 
@@ -40,7 +39,7 @@ Listit._unused__treeView = {
         }
         return openPosts;
     },
-
+    
     // Methods that are part of the nsITreeView interface
 
     get rowCount() { return this.visibleData.length; },
@@ -52,7 +51,8 @@ Listit._unused__treeView = {
         {
             case 'treeID' : return rowItem.id;
             case 'treeAuthor': return rowItem.author;
-            case 'treeUp' : return column.width;
+            //case 'treeUp' : return column.width;
+            case 'treeUp' : return rowItem.ups;
             case 'treeDown' : return rowItem.downs;
             case 'treeTotal' : return rowItem.ups + rowItem.downs;
             case 'treeDepth' : return rowItem.depth;
