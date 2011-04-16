@@ -84,8 +84,8 @@ Listit.onPageLoad = function(event) {
             try {
                 // Parse content
                 var page = JSON.parse(doc.activeElement.textContent);
-                Firebug.Console.log('Successfully parsed JSON page for: ' + doc.URL);
-                Firebug.Console.log(page);
+                //Firebug.Console.log('Successfully parsed JSON page for: ' + doc.URL);
+                //Firebug.Console.log(page);
                 var listitPosts = Listit.getListitPostsFromPage(page);
                 Listit.treeView.setPosts(listitPosts);
                 Firebug.Console.log('Successfully put JSON page in treeview: ' + doc.URL);
@@ -106,6 +106,12 @@ Listit.onPageLoad = function(event) {
 
 Listit.redditNodeToListitNode = function(redditNode, depth)
 {
+
+    if (redditNode.kind != 't1') { // e.g. kind = 'more'
+        //Firebug.Console.log(redditNode);
+        return null;
+    } 
+
     var data = redditNode.data;
     var listitNode = {};
     listitNode.id = data.id;
@@ -121,7 +127,9 @@ Listit.redditNodeToListitNode = function(redditNode, depth)
     if (data.replies) {  // Recursively add children
         var children = data.replies.data.children;
         for (var i = 0; i < children.length; i++) {
-            listitNode.replies.push(Listit.redditNodeToListitNode(children[i], depth + 1));
+            var childNode = Listit.redditNodeToListitNode(children[i], depth + 1);
+            if (childNode) 
+                listitNode.replies.push(childNode);
         }
     }
     return listitNode;
@@ -130,13 +138,15 @@ Listit.redditNodeToListitNode = function(redditNode, depth)
 // Get posts in listit format (simplifies the tree)
 Listit.getListitPostsFromPage = function(redditJsonPage) 
 {
+    Firebug.Console.log('getListitPostsFromPage');
     var redditPosts = redditJsonPage[1];
     var listitPosts = [];
     var children = redditPosts.data.children; // TODO: what is data.after/before?
 
     for (var i = 0; i < children.length; i++) {
         var listitNode = Listit.redditNodeToListitNode(children[i], 0);
-        listitPosts.push(listitNode);
+        if (listitNode) 
+            listitPosts.push(listitNode);
     }
 
     return listitPosts;
