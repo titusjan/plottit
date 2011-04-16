@@ -85,11 +85,10 @@ Listit.onPageLoad = function(event) {
                 // Parse content
                 var page = JSON.parse(doc.activeElement.textContent);
                 Firebug.Console.log('Successfully parsed JSON page for: ' + doc.URL);
-                
+                Firebug.Console.log(page);
                 var listitPosts = Listit.getListitPostsFromPage(page);
                 Listit.treeView.setPosts(listitPosts);
                 Firebug.Console.log('Successfully put JSON page in treeview: ' + doc.URL);
-
             } catch (ex) {
                 Firebug.Console.log('Parse failed: ' + doc.URL.toString());
             }
