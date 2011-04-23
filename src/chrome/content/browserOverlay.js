@@ -1,10 +1,6 @@
 
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Lisit name space
 
-
-gMessage = 'gMessage start'; // global message
-
-
 // XULSchoolChrome name space
 if ('undefined' == typeof(XULSchoolChrome)) {
     var XULSchoolChrome = {};
@@ -17,28 +13,16 @@ XULSchoolChrome.BrowserOverlay = {
         let stringBundle = document.getElementById('xulschoolhello-string-bundle');
         let message = stringBundle.getString('xulschoolhello.greeting.label');
 
-
-        Firebug.Console.log('sayHello');
-        Firebug.Console.log(gMessage);
+        
         try {
-            var redditJsonPage = Listit.getTestRedditJSONPage();
-            var listitPosts = Listit.getListitPostsFromPage(redditJsonPage);
-            Listit.treeView.setPosts(listitPosts);
-            Firebug.Console.log('sayHello success');
-
+            Firebug.Console.log('saying Hello');
+            Listit.logger.error('Listit.onLoad');            
         } catch (ex) {
-            Firebug.Console.log('Parse Failed');
+            Firebug.Console.log('Exception in Listit.sayHello;');
             Firebug.Console.log(ex);
-            
         }
-        //var narf = document.getElementById('scoreTree');
-        //Firebug.Console.log(narf.view);
-        //Firebug.Console.log(Listit.treeView.allPosts.length);
-        //Firebug.Console.log(Listit);
     }
 };
-
-Listit.testBO = 'narf browserOverlay.js';
 
 ///////////////////////////////////
 //                               //
@@ -46,26 +30,69 @@ Listit.testBO = 'narf browserOverlay.js';
 
 
 
-Listit.init = function() {
-    gMessage = 'Listit.init';
+// Initializes listit. Is called when the XUL window has loaded
+Listit.onLoad = function() {
+    
+    Components.utils.import("resource://xulschoolhello/log4moz.js");
+    Listit.setupLogging();
+    Listit.logger = Log4Moz.repository.getLogger('Listit');
+    Listit.logger.level = Log4Moz.Level['Debug'];
+    Listit.logger.info('Listit.onLoad');
+    
+    
+    // Initialize state object
+    Listit.state = {};
 
     //var listitPosts = Listit.getListitPostsFromPage(Listit.getTestRedditJSONPage());
     //Listit.treeView.init(listitPosts);
     document.getElementById('scoreTree').view = Listit.treeView;
 
-    // Add listener to event handler
+    // Add event handlers 
     var appcontent = document.getElementById('appcontent');   // browser
     if (appcontent) {
         appcontent.addEventListener('DOMContentLoaded', Listit.onPageLoad, true);
     }
+    
+    var container = gBrowser.tabContainer;
+    container.addEventListener("TabOpen", Listit.onTabOpen, false);
+    container.addEventListener("TabClose", Listit.onTabClose, false);
+    container.addEventListener("TabSelect", Listit.onTabSelect, false);
 };
 
-window.addEventListener('load', Listit.init, true);
 
+Listit.setupLogging = function () {
+    
+    let formatter = new Log4Moz.BasicFormatter();
+    
+    // Loggers are hierarchical, lowering this log level will affect all output
+    let root = Log4Moz.repository.rootLogger;
+    root.level = Log4Moz.Level["All"];
+    
+    let capp = new Log4Moz.ConsoleAppender(formatter); // to the JS Error Console
+    capp.level = Log4Moz.Level["Info"];
+    root.addAppender(capp);
+    
+    let dapp = new Log4Moz.DumpAppender(formatter); // To stdout
+    dapp.level = Log4Moz.Level["Debug"];
+    root.addAppender(dapp);
+    /**/
+}
+
+
+Listit.onTabOpen = function(event) {
+    Firebug.Console.log("Listit.onTabOpen");
+}
+
+Listit.onTabClose = function(event) {
+    Firebug.Console.log("Listit.onTabClose");
+}
+
+Listit.onTabSelect = function(event) {
+    Firebug.Console.log("Listit.onTabSelect");
+}
 
 Listit.onPageLoad = function(event) {
 
-    gMessage = 'Listit.onPageLoad';
     let doc = event.originalTarget;         // The content document of the loaded page.
     if (doc instanceof HTMLDocument) {      // Is this an inner frame?
         if (doc.defaultView.frameElement) { // Frame within a tab was loaded.
@@ -78,7 +105,6 @@ Listit.onPageLoad = function(event) {
     }
 
     // Get document content
-    gMessage = doc.URL;
     if (doc.activeElement) {
         if (doc.activeElement.textContent) {
             try {
@@ -138,7 +164,7 @@ Listit.redditNodeToListitNode = function(redditNode, depth)
 // Get posts in listit format (simplifies the tree)
 Listit.getListitPostsFromPage = function(redditJsonPage) 
 {
-    Firebug.Console.log('getListitPostsFromPage');
+    //Firebug.Console.log('getListitPostsFromPage');
     var redditPosts = redditJsonPage[1];
     var listitPosts = [];
     var children = redditPosts.data.children; // TODO: what is data.after/before?
@@ -151,4 +177,7 @@ Listit.getListitPostsFromPage = function(redditJsonPage)
 
     return listitPosts;
 };
+
+// Call Listit.onLoad to intialize 
+window.addEventListener('load', Listit.onLoad, true);
 

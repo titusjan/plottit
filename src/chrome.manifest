@@ -3,3 +3,4 @@ skin      xulschoolhello  classic/1.0 jar:chrome/xulschoolhello.jar!/skin/
 locale    xulschoolhello  en-US       jar:chrome/xulschoolhello.jar!/locale/en-US/
 
 overlay chrome://browser/content/browser.xul  chrome://xulschoolhello/content/browserOverlay.xul
+resource xulschoolhello modules/
