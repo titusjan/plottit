@@ -13,7 +13,7 @@ XULSchoolChrome.BrowserOverlay = {
         let stringBundle = document.getElementById('xulschoolhello-string-bundle');
         let message = stringBundle.getString('xulschoolhello.greeting.label');
 
-        Firebug.Console.log('saying Hello');
+        Listit.fbLog('saying Hello');
         
         try {
             Listit.logger.error('Test');            
@@ -28,18 +28,48 @@ XULSchoolChrome.BrowserOverlay = {
 //                               //
 ///////////////////////////////////
 
+Listit.fbLog = function(msg) {
+    if ('undefined' == typeof(Firebug)) {
+        Listit.logger.debug('Listit.fbLog: Firebug not installed');
+        Listit.logger.info(msg);
+    } else {
+        Firebug.Console.log(msg);
+    }
+}
+
+Listit.configureRootLogger = function () {
+    
+    let root = Log4Moz.repository.rootLogger;
+    
+    if (root.isConfigured) return; // Shared root logger has been configured once already
+    root.isConfigured = true;
+
+    // Loggers are hierarchical, lowering this log level will affect all output
+    root.level = Log4Moz.Level["All"];
+
+    let formatter = new Log4Moz.BasicFormatter();
+    let capp = new Log4Moz.ConsoleAppender(formatter); // to the JS Error Console
+    capp.level = Log4Moz.Level["Info"];
+    root.addAppender(capp);
+    
+    let dapp = new Log4Moz.DumpAppender(formatter); // To stdout
+    dapp.level = Log4Moz.Level["Trace"];
+    root.addAppender(dapp);
+}
 
 
 // Initializes listit. Is called when the XUL window has loaded
 Listit.onLoad = function() {
+
+    if ('undefined' == typeof(Log4Moz)) {
+        Components.utils.import("resource://xulschoolhello/log4moz.js");
+        Listit.configureRootLogger();
+        Listit.logger = Log4Moz.repository.getLogger('Listit');
+        Listit.logger.level = Log4Moz.Level['All'];
+    }
     
-    Components.utils.import("resource://xulschoolhello/log4moz.js");
-    Listit.setupLogging();
-    Listit.logger = Log4Moz.repository.getLogger('Listit');
-    Listit.logger.level = Log4Moz.Level['All'];
     Listit.logger.info(' ---------------- Listit loaded ----------------');
-    Listit.logger.trace('Listit.onLoad');
-    
+    Listit.logger.trace('Listit.onLoad: ' + Listit.counter.toString());
     
     // Initialize state object
     Listit.state = {};
@@ -61,23 +91,6 @@ Listit.onLoad = function() {
 };
 
 
-Listit.setupLogging = function () {
-    
-    let formatter = new Log4Moz.BasicFormatter();
-    
-    // Loggers are hierarchical, lowering this log level will affect all output
-    let root = Log4Moz.repository.rootLogger;
-    root.level = Log4Moz.Level["All"];
-    
-    let capp = new Log4Moz.ConsoleAppender(formatter); // to the JS Error Console
-    capp.level = Log4Moz.Level["Info"];
-    root.addAppender(capp);
-    
-    let dapp = new Log4Moz.DumpAppender(formatter); // To stdout
-    dapp.level = Log4Moz.Level["Trace"];
-    root.addAppender(dapp);
-    /**/
-}
 
 
 Listit.onTabOpen = function(event) {
@@ -112,7 +125,7 @@ Listit.onPageLoad = function(event) {
                 // Parse content
                 var page = JSON.parse(doc.activeElement.textContent);
                 //Listit.logger.info('Successfully parsed JSON page for: ' + doc.URL);
-                //Firebug.Console.log(page);
+                //Listit.fbLog(page);
                 var listitPosts = Listit.getListitPostsFromPage(page);
                 Listit.treeView.setPosts(listitPosts);
                 Listit.logger.info('Successfully put JSON page in treeview: ' + doc.URL);
@@ -135,7 +148,7 @@ Listit.redditNodeToListitNode = function(redditNode, depth)
 {
 
     if (redditNode.kind != 't1') { // e.g. kind = 'more'
-        //Firebug.Console.log(redditNode);
+        //Listit.fbLog(redditNode);
         return null;
     } 
 
