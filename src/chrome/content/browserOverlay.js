@@ -7,19 +7,19 @@ if ('undefined' == typeof(XULSchoolChrome)) {
 }
 
 XULSchoolChrome.BrowserOverlay = {
-
     // Used as a debugging function
     sayHello: function(aEvent) {
+    
         let stringBundle = document.getElementById('xulschoolhello-string-bundle');
         let message = stringBundle.getString('xulschoolhello.greeting.label');
 
+        Firebug.Console.info('saying Hello');
         
         try {
-            Firebug.Console.log('saying Hello');
-            Listit.logger.error('Listit.onLoad');            
+            Listit.logger.error('Test');            
         } catch (ex) {
-            Firebug.Console.log('Exception in Listit.sayHello;');
-            Firebug.Console.log(ex);
+            Listit.logger.warning('Exception in Listit.sayHello;');
+            Listit.logger.warning(ex);
         }
     }
 };
@@ -36,8 +36,8 @@ Listit.onLoad = function() {
     Components.utils.import("resource://xulschoolhello/log4moz.js");
     Listit.setupLogging();
     Listit.logger = Log4Moz.repository.getLogger('Listit');
-    Listit.logger.level = Log4Moz.Level['Debug'];
-    Listit.logger.info('Listit.onLoad');
+    Listit.logger.level = Log4Moz.Level['All'];
+    Listit.logger.trace('Listit.onLoad');
     
     
     // Initialize state object
@@ -73,22 +73,22 @@ Listit.setupLogging = function () {
     root.addAppender(capp);
     
     let dapp = new Log4Moz.DumpAppender(formatter); // To stdout
-    dapp.level = Log4Moz.Level["Debug"];
+    dapp.level = Log4Moz.Level["Trace"];
     root.addAppender(dapp);
     /**/
 }
 
 
 Listit.onTabOpen = function(event) {
-    Firebug.Console.log("Listit.onTabOpen");
+    Listit.logger.trace("Listit.onTabOpen");
 }
 
 Listit.onTabClose = function(event) {
-    Firebug.Console.log("Listit.onTabClose");
+    Listit.logger.trace("Listit.onTabClose");
 }
 
 Listit.onTabSelect = function(event) {
-    Firebug.Console.log("Listit.onTabSelect");
+    Listit.logger.trace("Listit.onTabSelect");
 }
 
 Listit.onPageLoad = function(event) {
@@ -110,20 +110,20 @@ Listit.onPageLoad = function(event) {
             try {
                 // Parse content
                 var page = JSON.parse(doc.activeElement.textContent);
-                //Firebug.Console.log('Successfully parsed JSON page for: ' + doc.URL);
+                //Listit.logger.info('Successfully parsed JSON page for: ' + doc.URL);
                 //Firebug.Console.log(page);
                 var listitPosts = Listit.getListitPostsFromPage(page);
                 Listit.treeView.setPosts(listitPosts);
-                Firebug.Console.log('Successfully put JSON page in treeview: ' + doc.URL);
+                Listit.logger.info('Successfully put JSON page in treeview: ' + doc.URL);
             } catch (ex) {
-                Firebug.Console.log('Parse failed: ' + doc.URL.toString());
+                Listit.logger.warning('Parse failed: ' + doc.URL.toString());
             }
         } else {
-            Firebug.Console.log('doc.activeElement.textContent is undefined.');
+            Listit.logger.warning('doc.activeElement.textContent is undefined.');
             return;
         }
     } else {
-        Firebug.Console.log('doc.activeElement is undefined.');
+        Listit.logger.warning('doc.activeElement is undefined.');
         return;
     }
 };
@@ -164,7 +164,7 @@ Listit.redditNodeToListitNode = function(redditNode, depth)
 // Get posts in listit format (simplifies the tree)
 Listit.getListitPostsFromPage = function(redditJsonPage) 
 {
-    //Firebug.Console.log('getListitPostsFromPage');
+    //Listit.logger.trace('getListitPostsFromPage');
     var redditPosts = redditJsonPage[1];
     var listitPosts = [];
     var children = redditPosts.data.children; // TODO: what is data.after/before?
