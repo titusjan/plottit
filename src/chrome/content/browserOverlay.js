@@ -69,7 +69,7 @@ Listit.onLoad = function() {
     }
     
     Listit.logger.info(' ---------------- Listit loaded ----------------');
-    Listit.logger.trace('Listit.onLoad: ' + Listit.counter.toString());
+    Listit.logger.trace('Listit.onLoad -- begin');
     
     // Initialize state object
     Listit.state = {};
@@ -88,6 +88,8 @@ Listit.onLoad = function() {
     container.addEventListener("TabOpen", Listit.onTabOpen, false);
     container.addEventListener("TabClose", Listit.onTabClose, false);
     container.addEventListener("TabSelect", Listit.onTabSelect, false);
+    
+    Listit.logger.trace('Listit.onLoad -- end');
 };
 
 
@@ -107,6 +109,8 @@ Listit.onTabSelect = function(event) {
 
 Listit.onPageLoad = function(event) {
 
+    Listit.logger.trace("Listit.onPageLoad");
+    
     let doc = event.originalTarget;         // The content document of the loaded page.
     if (doc instanceof HTMLDocument) {      // Is this an inner frame?
         if (doc.defaultView.frameElement) { // Frame within a tab was loaded.
