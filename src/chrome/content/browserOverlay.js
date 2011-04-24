@@ -13,13 +13,13 @@ XULSchoolChrome.BrowserOverlay = {
         let stringBundle = document.getElementById('xulschoolhello-string-bundle');
         let message = stringBundle.getString('xulschoolhello.greeting.label');
 
-        Firebug.Console.info('saying Hello');
+        Firebug.Console.log('saying Hello');
         
         try {
             Listit.logger.error('Test');            
         } catch (ex) {
-            Listit.logger.warning('Exception in Listit.sayHello;');
-            Listit.logger.warning(ex);
+            Listit.logger.warn('Exception in Listit.sayHello;');
+            Listit.logger.warn(ex);
         }
     }
 };
@@ -37,6 +37,7 @@ Listit.onLoad = function() {
     Listit.setupLogging();
     Listit.logger = Log4Moz.repository.getLogger('Listit');
     Listit.logger.level = Log4Moz.Level['All'];
+    Listit.logger.info(' ---------------- Listit loaded ----------------');
     Listit.logger.trace('Listit.onLoad');
     
     
@@ -116,14 +117,14 @@ Listit.onPageLoad = function(event) {
                 Listit.treeView.setPosts(listitPosts);
                 Listit.logger.info('Successfully put JSON page in treeview: ' + doc.URL);
             } catch (ex) {
-                Listit.logger.warning('Parse failed: ' + doc.URL.toString());
+                Listit.logger.warn('Parse failed: ' + doc.URL.toString());
             }
         } else {
-            Listit.logger.warning('doc.activeElement.textContent is undefined.');
+            Listit.logger.warn('doc.activeElement.textContent is undefined.');
             return;
         }
     } else {
-        Listit.logger.warning('doc.activeElement is undefined.');
+        Listit.logger.warn('doc.activeElement is undefined.');
         return;
     }
 };
