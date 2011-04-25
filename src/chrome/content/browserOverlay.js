@@ -18,8 +18,8 @@ XULSchoolChrome.BrowserOverlay = {
         try {
             Listit.logger.error('Test');            
         } catch (ex) {
-            Listit.logger.warn('Exception in Listit.sayHello;');
-            Listit.logger.warn(ex);
+            Listit.logger.error('Exception in Listit.sayHello;');
+            Listit.logger.error(ex);
         }
     }
 };
