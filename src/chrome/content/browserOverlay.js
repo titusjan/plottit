@@ -53,7 +53,7 @@ Listit.configureRootLogger = function () {
     root.addAppender(capp);
     
     let dapp = new Log4Moz.DumpAppender(formatter); // To stdout
-    dapp.level = Log4Moz.Level["Trace"];
+    dapp.level = Log4Moz.Level["Debug"];
     root.addAppender(dapp);
 }
 
@@ -72,23 +72,29 @@ Listit.onLoad = function() {
     Listit.logger.trace('Listit.onLoad -- begin');
     
     // Initialize state object
-    Listit.state = {};
-
-    //var listitPosts = Listit.getListitPostsFromPage(Listit.getTestRedditJSONPage());
-    //Listit.treeView.init(listitPosts);
+    Listit.state = new Listit.State();
+    
     document.getElementById('scoreTree').view = Listit.treeView;
 
-    // Add event handlers 
-    var appcontent = document.getElementById('appcontent');   // browser
-    if (appcontent) {
-        appcontent.addEventListener('DOMContentLoaded', Listit.onPageLoad, true);
+    // Add existing tabs to the state because there won't be a tabOpen
+    // event raised for them
+    var numTabs = gBrowser.browsers.length;
+    for (var idx = 0; idx < numTabs; idx++) {
+        var currentBrowser = gBrowser.getBrowserAtIndex(idx);
+        var browserID = Listit.state.addBrowser(currentBrowser);
     }
     
     var container = gBrowser.tabContainer;
     container.addEventListener("TabOpen", Listit.onTabOpen, false);
     container.addEventListener("TabClose", Listit.onTabClose, false);
     container.addEventListener("TabSelect", Listit.onTabSelect, false);
-    
+
+    // Add event handlers 
+    var appcontent = document.getElementById('appcontent');   // browser
+    if (appcontent) {
+        appcontent.addEventListener('DOMContentLoaded', Listit.onPageLoad, true);
+    }
+
     Listit.logger.trace('Listit.onLoad -- end');
 };
 
@@ -96,7 +102,12 @@ Listit.onLoad = function() {
 
 
 Listit.onTabOpen = function(event) {
-    Listit.logger.trace("Listit.onTabOpen");
+    Listit.logger.trace("Listit.onTabOpen -- begin");
+    
+    var browser = gBrowser.getBrowserForTab(event.target);
+    Listit.logger.debug("Listit.onTabOpen, URL: " + browser.contentDocument.URL);
+    var browserID = Listit.state.addBrowser(browser);
+    Listit.logger.debug("Listit.onTabOpen, browserID: " + browserID);
 }
 
 Listit.onTabClose = function(event) {
@@ -105,6 +116,11 @@ Listit.onTabClose = function(event) {
 
 Listit.onTabSelect = function(event) {
     Listit.logger.trace("Listit.onTabSelect");
+    
+    var browser = gBrowser.getBrowserForTab(event.target);
+    var browserID = browser.getAttribute("ListitBrowserID");
+    Listit.logger.debug("Listit.onTabSelect URL: " + browser.contentDocument.URL);
+    Listit.logger.debug("Listit.onTabSelect: " + browserID);
 }
 
 Listit.onPageLoad = function(event) {
@@ -123,27 +139,29 @@ Listit.onPageLoad = function(event) {
     }
 
     // Get document content
-    if (doc.activeElement) {
-        if (doc.activeElement.textContent) {
-            try {
-                // Parse content
-                var page = JSON.parse(doc.activeElement.textContent);
-                //Listit.logger.info('Successfully parsed JSON page for: ' + doc.URL);
-                //Listit.fbLog(page);
-                var listitPosts = Listit.getListitPostsFromPage(page);
-                Listit.treeView.setPosts(listitPosts);
-                Listit.logger.info('Successfully put JSON page in treeview: ' + doc.URL);
-            } catch (ex) {
-                Listit.logger.warn('Parse failed: ' + doc.URL.toString());
-            }
-        } else {
-            Listit.logger.warn('doc.activeElement.textContent is undefined.');
-            return;
-        }
-    } else {
+    if (!doc.activeElement) {
         Listit.logger.warn('doc.activeElement is undefined.');
         return;
     }
+    
+    if (!doc.activeElement.textContent) {
+        Listit.logger.warn('doc.activeElement.textContent is undefined.');
+        return;
+    }
+
+    try {
+        // Parse content
+        var page = JSON.parse(doc.activeElement.textContent);
+        Listit.logger.debug('Successfully parsed JSON page for: ' + doc.URL);
+        //Listit.fbLog(page);
+        var listitPosts = Listit.getListitPostsFromPage(page);
+    } catch (ex) {
+        Listit.logger.warn('Parse failed: ' + doc.URL.toString());
+    }
+
+    Listit.treeView.setPosts(listitPosts);
+    Listit.logger.info('Successfully put JSON page in treeview: ' + doc.URL);
+
 };
 
 
@@ -195,6 +213,13 @@ Listit.getListitPostsFromPage = function(redditJsonPage)
 
     return listitPosts;
 };
+
+/*
+ From: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow
+    If true, useCapture indicates that the user wishes to add the event listener for the capture phase 
+    and target only, i.e. this event listener will not be triggered during the bubbling phase. If false, 
+    the event listener must only be triggered during the target and bubbling phases.
+*/
 
 // Call Listit.onLoad to intialize 
 window.addEventListener('load', Listit.onLoad, true);
