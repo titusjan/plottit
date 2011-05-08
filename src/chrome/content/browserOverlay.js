@@ -64,15 +64,7 @@ Listit.onLoad = function() {
     container.addEventListener("TabClose", Listit.onTabClose, false);
     container.addEventListener("TabSelect", Listit.onTabSelect, false);
 
-    /*
-    var appcontent = document.getElementById('appcontent');   // vbox
-    if (appcontent) {
-        appcontent.addEventListener('DOMContentLoaded', Listit.onPageLoad, true);
-    }*/
-    
     gBrowser.addEventListener('DOMContentLoaded', Listit.onPageLoad, true);
-
-
     Listit.logger.trace('Listit.onLoad -- end');
 };
 
@@ -154,96 +146,6 @@ Listit.onPageLoad = function(event) {
         Listit.logger.debug('Successfully put JSON page in treeview: ' + doc.URL);
     }
 }
-
-
-/*
-
-Listit.onPageLoad = function(event) {
-    Listit.logger.debug("Listit.onPageLoad");
-    return;
-
-    var doc = event.originalTarget;  
-    doc = Listit.getRootHtmlDocument = function(doc) 
-    var currentBrowser = gBrowser.getBrowserForDocument(doc);
-    var browserID = currentBrowser.getAttribute("ListitBrowserID");
-    Listit.logger.debug("Listit.onPageLoad: " + browserID + ", URL: " + doc.URL);
-    
-    return;
-};
-
-
-Listit.__getBodyTextFromRootDocument = function(rootDoc)
-{
-    Listit.fbLog("Listit.getBodyTextFromRootDocument");
-    if (!(rootDoc instanceof HTMLDocument)) return null;
-    Listit.fbLog(rootDoc.body);
-    Listit.fbLog("We are here");
-    
-    // Get document content (body element)
-    if (!rootDoc.body) {
-        Listit.logger.warn('doc.body is undefined.');
-        return null;
-    }
-    
-    // get textContent from body element
-    if (!rootDoc.body.textContent) {
-        Listit.logger.warn('doc.body.textContent is undefined.');
-        return null;
-    }
-    return doc.body.textContent;
-}
-
-Listit._onPageLoad = function(event) {
-
-    Listit.logger.trace("Listit.onPageLoad");
-
-    let doc = event.originalTarget;         // The content document of the loaded page.
-
-    Listit.fbLog("Listit.onPageLoad event, originalTarget: " + doc.URL);
-    var currentBrowser = gBrowser.getBrowserForDocument(doc);
-    var browserID = currentBrowser.getAttribute("ListitBrowserID");
-    Listit.fbLog("browserID: " + browserID);
-    //Listit.fbLog("Listit.onPageLoad: here");
-    return;
-  
-    if (doc instanceof HTMLDocument) {      // Is this an inner frame?
-        if (doc.defaultView.frameElement) { // Frame within a tab was loaded.
-
-            // Find the root document:
-            while (doc.defaultView.frameElement) {
-                doc = doc.defaultView.frameElement.ownerDocument;
-            }
-        }
-    }
-    
-  
-    // Get document content
-    if (!doc.activeElement) {
-        Listit.logger.warn('doc.activeElement is undefined.');
-        return;
-    }
-    
-    if (!doc.activeElement.textContent) {
-        Listit.logger.warn('doc.activeElement.textContent is undefined.');
-        return;
-    }
-
-    try {
-        // Parse content
-        var page = JSON.parse(doc.activeElement.textContent);
-        Listit.logger.debug('Successfully parsed JSON page for: ' + doc.URL);
-        //Listit.fbLog(page);
-        var listitPosts = Listit.getListitPostsFromPage(page);
-    } catch (ex) {
-        Listit.logger.warn('Parse failed: ' + doc.URL.toString());
-    }
-    //Listit.state.addPosts(listitPosts);
-    Listit.treeView.setPosts(listitPosts);
-    Listit.logger.info('Successfully put JSON page in treeview: ' + doc.URL);
-
-};
-*/
-
 
 Listit.redditNodeToListitNode = function(redditNode, depth)
 {
