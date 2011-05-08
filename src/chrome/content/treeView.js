@@ -12,12 +12,10 @@ Listit.treeView = {
     selection: null,
 
     setPosts: function(listitPosts)  {
-        //Firebug.Console.log('addPost');
-        //Firebug.Console.log(listitPosts.length);
-        
+        Listit.assert(listitPosts instanceof Array, 'listitPosts should be an Array');
         this.removeAllRows();
         this.allPosts = listitPosts;
-        this.visibleData = this.getOpenPosts(listitPosts);
+        this.visibleData = this.getOpenPosts(this.allPosts);
 
         this.treeBox.rowCountChanged(0, this.visibleData.length);
     },

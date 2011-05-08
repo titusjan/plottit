@@ -11,6 +11,7 @@
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/utils.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/state.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/treeView.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/testData.js" />
@@ -43,7 +44,7 @@
     </menu>
   </menupopup>
   
-<vbox id="appcontent" onload="alert('vbox onload');" >
+<vbox id="appcontent" >
     <splitter id="listitContentSplitter" collapsed="false"/>
 <!--
 <tree id="scoreTree" flex="1">
