@@ -13,11 +13,8 @@ XULSchoolChrome.BrowserOverlay = {
         let stringBundle = document.getElementById('xulschoolhello-string-bundle');
         let message = stringBundle.getString('xulschoolhello.greeting.label');
 
-        Listit.fbLog('saying Hello, appcontent');
-        var appcontent = document.getElementById('appcontent'); 
-        Listit.fbLog(appcontent);
         try {
-            Listit.logger.error('Test');            
+            Listit.fbLog(Listit.state.summaryString() );
         } catch (ex) {
             Listit.logger.error('Exception in Listit.sayHello;');
             Listit.logger.error(ex);
@@ -47,8 +44,6 @@ Listit.onLoad = function() {
     // Initialize state object
     Listit.state = new Listit.State();
     
-    document.getElementById('scoreTree').view = Listit.treeView;
-
     // Add existing tabs to the state because there won't be a tabOpen
     // event raised for them
     for (var idx = 0; idx < gBrowser.browsers.length; idx++) {
@@ -56,6 +51,8 @@ Listit.onLoad = function() {
         var browserID = Listit.state.addBrowser(browser);
         Listit.state.setCurrentBrowser(browser); // we need to have a current browser
     }
+
+    document.getElementById('scoreTree').view = Listit.treeView;
     
     // Add event handlers 
     
@@ -71,7 +68,7 @@ Listit.onLoad = function() {
 
 
 Listit.onTabOpen = function(event) {
-    Listit.logger.trace("Listit.onTabOpen -- begin");
+    Listit.logger.trace("Listit.onTabOpen -- ");
     
     var browser = gBrowser.getBrowserForTab(event.target);
     var browserID = Listit.state.addBrowser(browser);
@@ -80,16 +77,17 @@ Listit.onTabOpen = function(event) {
 }
 
 Listit.onTabClose = function(event) {
-    Listit.logger.trace("Listit.onTabClose");
+    Listit.logger.debug("Listit.onTabClose -- ");
     
     var browser = gBrowser.getBrowserForTab(event.target);
-    var browserID = browser.getAttribute("ListitBrowserID");
+    var browserID = Listit.state.removeBrowser(browser);
     Listit.logger.debug("Listit.onTabClose: " + browserID + 
         ", URL: " + browser.contentDocument.URL);
+    Listit.logger.debug(Listit.state.summaryString());
 }
 
 Listit.onTabSelect = function(event) {
-    Listit.logger.trace("Listit.onTabSelect");
+    Listit.logger.trace("Listit.onTabSelect -- ");
     
     var browser = gBrowser.getBrowserForTab(event.target);
     var browserID = Listit.state.setCurrentBrowser(browser);

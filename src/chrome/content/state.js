@@ -14,12 +14,17 @@ Listit.State.prototype.toString = function () {
 };
 
 
+Listit.State.prototype.summaryString = function () {
+    return [ 'Tab ' + k + ': ' + (v.length) for each ([k,v] in Iterator(this.posts))];
+};
+
+
 Listit.State.prototype.getCurrentBrowserID = function () {
     return this.currentBrowserID;
 }
 
 Listit.State.prototype.setCurrentBrowser = function (browser) {
-    Listit.logger.trace("Listit.State.setCurrentBrowser -- begin");
+    Listit.logger.trace("Listit.State.setCurrentBrowser -- ");
     
     var browserID = browser.getAttribute("ListitBrowserID");
     Listit.assert(browserID, "Browser has no ListitBrowserID");
@@ -28,7 +33,7 @@ Listit.State.prototype.setCurrentBrowser = function (browser) {
 };
 
 Listit.State.prototype.addBrowser = function (browser) {
-    Listit.logger.trace("Listit.State.addBrowser -- begin");
+    Listit.logger.trace("Listit.State.addBrowser -- ");
     
     var browserID;
     if (browser.hasAttribute("ListitBrowserID")) { // Test just in case
@@ -46,8 +51,17 @@ Listit.State.prototype.addBrowser = function (browser) {
     return browserID;
 };
 
+Listit.State.prototype.removeBrowser = function (browser) {
+    Listit.logger.trace("Listit.State.removeBrowser -- ");
+    
+    var browserID = browser.getAttribute("ListitBrowserID");
+    Listit.assert(browserID, "Browser has no ListitBrowserID");
+    delete this.posts[browserID];
+    return browserID;
+};
+
 Listit.State.prototype.setBrowserPosts = function (browser, posts) {
-    Listit.logger.trace("Listit.State.setBrowserPosts -- begin");
+    Listit.logger.trace("Listit.State.setBrowserPosts -- ");
     
     var browserID = browser.getAttribute("ListitBrowserID");;
     Listit.assert(browserID, "setBrowserPosts: Browser has no ListitBrowserID");

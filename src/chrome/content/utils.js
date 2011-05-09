@@ -8,9 +8,6 @@ Listit.assert = function(expression, message) {
     }
 }
 
-
-
-
 // Returns obj[propName], returns null if object does not exist
 Listit.safeGet = function(obj, propName) {
 
@@ -19,6 +16,21 @@ Listit.safeGet = function(obj, propName) {
         return null;
     } else { 
         return obj[propName];
+    }
+}
+
+////////////////
+// Generators //
+////////////////
+
+// Can be used for array comprehension. 
+// Needs javascript 1.7
+// See: https://developer.mozilla.org/en/New_in_JavaScript_1.7
+// Also: https://developer.mozilla.org/en/JavaScript/Guide/Iterators_and_Generators
+
+Listit.range = function(begin, end) {
+    for (let i = begin; i < end; ++i) {
+        yield i;
     }
 }
 
