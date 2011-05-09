@@ -60,19 +60,19 @@
   
   <treechildren/>
 </tree>
+
 -->
 
-     <tree id="scoreTree" flex="1" hidecolumnpicker="false" enableColumnDrag="true" >
+     <tree height="250" id="scoreTree" hidecolumnpicker="false" enableColumnDrag="true" persist="height">
       <treecols>
-	    <treecol id="treeID"      width="100"  flex="1" label="ID"    /> <splitter class="tree-splitter" />
-	    <treecol id="treeAuthor"  width="150" flex="2" label="Author" /> <splitter class="tree-splitter" />
-    	<treecol id="treeUp"      width="50"  flex="1" label="Up"     /> <splitter class="tree-splitter" />	    
-	    <treecol id="treeDown"    width="50"  flex="1" label="Down"   /> <splitter class="tree-splitter" />
-	    <treecol id="treeTotal"   width="50"  flex="1" label="Total"  /> <splitter class="tree-splitter" />
-	    <treecol id="treePruts"   width="200" flex="1" label="**numreplies**"  /> <splitter class="tree-splitter" />
-	    <treecol id="treeDepth"   width="50"  flex="1" label="Depth"  /> <splitter class="tree-splitter" />
-	    
-	    <treecol id="treeBody"    width="500" flex="20" label="Body" primary="true"/> <splitter class="tree-splitter" />
+	    <treecol id="treeID"      width="60"  label="ID"             persist="width ordinal hidden" hidden="true"/> <splitter class="tree-splitter" />
+	    <treecol id="treeAuthor"  width="140" label="Author"         persist="width ordinal hidden" flex="1" minwidth="40" maxwidth="150"/> <splitter class="tree-splitter" />
+    	<treecol id="treeUp"      width="50"  label="Up"             persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />	    
+	    <treecol id="treeDown"    width="50"  label="Down"           persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
+	    <treecol id="treeTotal"   width="50"  label="Total"          persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
+	    <treecol id="treePruts"   width="50"  label="**numreplies**" persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
+	    <treecol id="treeDepth"   width="50"  label="Depth"          persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
+	    <treecol id="treeBody"    width="500" label="Body"           persist="width ordinal hidden" flex="1" primary="true"/> <splitter class="tree-splitter" />
       </treecols>
 
       <treechildren>
