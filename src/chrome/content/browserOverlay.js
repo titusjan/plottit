@@ -113,35 +113,82 @@ Listit.getRootHtmlDocument = function(doc) {
     return doc;
 }
 
+Listit.RE_ISJSON = /\.json$/i // String ends with '.json' 
+Listit.RE_ISREDDIT = /www\.reddit\.com/ 
+
 Listit.onPageLoad = function(event) {
 
     Listit.logger.trace("Listit.onPageLoad");
 
-    var doc = event.originalTarget;  
-    doc = Listit.getRootHtmlDocument(doc);
-    var browser = gBrowser.getBrowserForDocument(doc);
-    var browserID = browser.getAttribute("ListitBrowserID");
-    Listit.logger.debug("Listit.onPageLoad: " + browserID + ", URL: " + doc.URL);
- 
-    var body = Listit.safeGet(doc, 'body');
-    var textContent = Listit.safeGet(body, 'textContent');
-
-    if (!textContent) return;
-        
     var listitPosts = [];
+    var doc = event.originalTarget;  
+    
+    if (Listit.RE_ISJSON(doc.URL)) {
+        var browser = gBrowser.getBrowserForDocument(doc);
+        
+        doc = Listit.getRootHtmlDocument(doc);
+        Listit.logger.debug("Listit.onPageLoad: , URL: " + doc.URL);
+     
+        var body = Listit.safeGet(doc, 'body');
+        var textContent = Listit.safeGet(body, 'textContent');
+    
+        try {
+            if (textContent) Listit.processJsonPage(textContent, browser, doc.URL);    
+        } catch (ex) {
+            Listit.logger.error(ex);
+        }
+    
+
+    } else {
+        if (Listit.RE_ISREDDIT(doc.URL)) {
+            Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + doc.URL);
+
+            var browser = gBrowser.getBrowserForDocument(doc);
+            var jsonURL = doc.URL + '.json';
+            let request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
+                          .createInstance(Components.interfaces.nsIXMLHttpRequest);
+                          
+                          
+            request.onload = function(aEvent) {
+                Listit.fbLog("XMLHttpRequest.onload, URL: ");
+                Listit.fbLog(aEvent);
+                Listit.logger.debug("XMLHttpRequest.onload, URL: ");
+                Listit.processJsonPage(aEvent.target.responseText, browser, jsonURL);    
+            };
+            
+            request.onerror = function(aEvent) {
+               Listit.logger.error(aEvent.target.status);
+            };
+            
+            request.open("GET", jsonURL, true);
+            request.send(null);            
+            
+        } else {
+            Listit.logger.debug("Listit.onPageLoad (no json): URL: " + doc.URL);
+            
+            
+        }
+    }
+}    
+    
+Listit.processJsonPage = function (jsonContent, browser, url) {
+    Listit.logger.debug("Listit.processJsonPage -- "); // todo: trace
+
+    var browserID = browser.getAttribute("ListitBrowserID");
+    
     try {
-        var page = JSON.parse(textContent); // Parse content
-        Listit.logger.debug('Successfully parsed JSON page for: ' + doc.URL);
+        var page = JSON.parse(jsonContent); // Parse content
+        Listit.logger.debug('Successfully parsed JSON page for: ' + url);
         listitPosts = Listit.getListitPostsFromPage(page);
     } catch (ex) {
-        Listit.logger.warn('Parse failed: ' + doc.URL.toString());
+        Listit.logger.warn('Parse failed: ' + url.toString());
     }
-
+    
     Listit.state.setBrowserPosts(browser, listitPosts);
     
     if (browserID == Listit.state.getCurrentBrowserID()) {
         Listit.treeView.setPosts(listitPosts);
-        Listit.logger.debug('Successfully put JSON page in treeview: ' + doc.URL);
+        Listit.logger.debug('Successfully put JSON page in treeview: ' + url);
     }
 }
 
