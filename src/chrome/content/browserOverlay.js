@@ -124,44 +124,53 @@ Listit.onPageLoad = function(event) {
     Listit.treeView.removeAllPosts();
 
     var doc = event.originalTarget;  
+    Listit.fbLog(doc);
     if (Listit.RE_ISJSON(doc.URL)) {
-        var browser = gBrowser.getBrowserForDocument(doc);
+        Listit.logger.debug("Listit.onPageLoad (.JSON): URL: " + doc.URL);
         
-        doc = Listit.getRootHtmlDocument(doc);
-        Listit.logger.debug("Listit.onPageLoad: , URL: " + doc.URL);
+        var rootDoc = Listit.getRootHtmlDocument(doc);
+        if (doc.URL != rootDoc.URL) {
+            // Temporary, to see what happens
+            Listit.logger.debug("Listit.onPageLoad: rootDoc URL: " + rootDoc.URL);
+        }
+        delete doc; // to prevent mistakes
      
-        var body = Listit.safeGet(doc, 'body');
+        var body = Listit.safeGet(rootDoc, 'body');
         var textContent = Listit.safeGet(body, 'textContent');
     
-        try {
-            if (textContent) Listit.processJsonPage(textContent, browser, doc.URL);    
-        } catch (ex) {
-            Listit.fbLog(ex);
-            Listit.logger.error(ex);
-        }
-    } else if (Listit.RE_ISREDDIT(doc.URL)) {
-            Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + doc.URL);
+        if (!textContent) {
+            Listit.debug("No body.textContent found, URL: " + rootDoc.URL);
+            return;
+        } 
+        
+        var browser = gBrowser.getBrowserForDocument(rootDoc);
+        Listit.processJsonPage(textContent, browser, rootDoc.URL);
 
-            var browser = gBrowser.getBrowserForDocument(doc);
-            var jsonURL = doc.URL + '.json';
-            var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
-                          .createInstance(Components.interfaces.nsIXMLHttpRequest);
-                          
-            request.onload = function(aEvent) {
-                Listit.logger.debug("XMLHttpRequest.onload, URL: " + jsonURL);
-                Listit.processJsonPage(aEvent.target.responseText, browser, jsonURL);    
-            };
-            
-            request.onerror = function(aEvent) {
-                Listit.logger.error("XMLHttpRequest.onerror, URL: " + jsonURL)
-                Listit.logger.error("Error status: " + aEvent.target.status);
-            };
-            
-            request.open("GET", jsonURL, true);
-            request.send(null);            
-            
+    } else if (Listit.RE_ISREDDIT(doc.URL)) {
+    
+        Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + doc.URL);
+
+        // Make AJAX request for corresponding JSON page.
+        var browser = gBrowser.getBrowserForDocument(doc);
+        var jsonURL = doc.URL + '.json';
+        var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
+                      .createInstance(Components.interfaces.nsIXMLHttpRequest);
+                      
+        request.onload = function(aEvent) {
+            Listit.logger.debug("XMLHttpRequest.onload, URL: " + jsonURL);
+            Listit.processJsonPage(aEvent.target.responseText, browser, jsonURL);    
+        };
+        
+        request.onerror = function(aEvent) {
+            Listit.logger.error("XMLHttpRequest.onerror, URL: " + jsonURL)
+            Listit.logger.error("Error status: " + aEvent.target.status);
+        };
+        
+        request.open("GET", jsonURL, true);
+        request.send(null);            
+        
     } else {
-        Listit.logger.debug("No reddit.com or localhost page (ignored), URL: " + doc.URL);
+        Listit.logger.debug("No reddit.com or JSON page (ignored), URL: " + doc.URL);
     }
 }    
     
