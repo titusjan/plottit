@@ -136,49 +136,43 @@ Listit.onPageLoad = function(event) {
         try {
             if (textContent) Listit.processJsonPage(textContent, browser, doc.URL);    
         } catch (ex) {
+            Listit.fbLog(ex);
             Listit.logger.error(ex);
         }
-    
-
-    } else {
-        if (Listit.RE_ISREDDIT(doc.URL)) {
+    } else if (Listit.RE_ISREDDIT(doc.URL)) {
             Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + doc.URL);
 
             var browser = gBrowser.getBrowserForDocument(doc);
             var jsonURL = doc.URL + '.json';
-            let request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
+            var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
                           .createInstance(Components.interfaces.nsIXMLHttpRequest);
                           
-                          
             request.onload = function(aEvent) {
-                Listit.fbLog("XMLHttpRequest.onload, URL: " + jsonURL);
-                Listit.fbLog(aEvent);
                 Listit.logger.debug("XMLHttpRequest.onload, URL: " + jsonURL);
                 Listit.processJsonPage(aEvent.target.responseText, browser, jsonURL);    
             };
             
             request.onerror = function(aEvent) {
-               Listit.logger.error(aEvent.target.status);
+                Listit.logger.error("XMLHttpRequest.onerror, URL: " + jsonURL)
+                Listit.logger.error("Error status: " + aEvent.target.status);
             };
             
             request.open("GET", jsonURL, true);
             request.send(null);            
             
-        } else {
-            Listit.logger.debug("Listit.d (no json, ignored), URL: " + doc.URL);
-        }
+    } else {
+        Listit.logger.debug("No reddit.com or localhost page (ignored), URL: " + doc.URL);
     }
 }    
     
 Listit.processJsonPage = function (jsonContent, browser, url) {
     Listit.logger.trace("Listit.processJsonPage -- ");
 
-    var listitPosts = [];
-    var browserID = browser.getAttribute("ListitBrowserID");
     try {
+        var browserID = browser.getAttribute("ListitBrowserID");
         var page = JSON.parse(jsonContent); // Parse content
         Listit.logger.debug('Successfully parsed JSON page for: ' + url);
-        listitPosts = Listit.getListitPostsFromPage(page);
+        var listitPosts = Listit.getListitPostsFromPage(page);
         Listit.state.setBrowserPosts(browser, listitPosts);
     
         if (browserID == Listit.state.getCurrentBrowserID()) {
@@ -190,7 +184,7 @@ Listit.processJsonPage = function (jsonContent, browser, url) {
         }
     } catch (ex) {
         Listit.logger.error('Failed processing JSON: ' + url.toString());
-        Listit.logger.error(ex.toString());
+        Listit.logger.error(ex);
     }
 }
 
@@ -211,7 +205,7 @@ Listit.redditNodeToListitNode = function(redditNode, depth)
     listitNode.created_utc = data.created_utc;
     listitNode.downs = data.downs;
     listitNode.ups = data.ups;
-    listitNode.isOpen = false;  // True if a node is expanded
+    listitNode.isOpen = true;  // true if a node is expanded
     listitNode.replies = []; // For convenience always make an empty replies list (TODO: optimize?)
 
     if (data.replies) {  // Recursively add children
@@ -225,7 +219,7 @@ Listit.redditNodeToListitNode = function(redditNode, depth)
     return listitNode;
 };
 
-// Get posts in listit format (simplifies the tree)
+// Get posts in as list (of lists) of ListitNodes
 Listit.getListitPostsFromPage = function(redditJsonPage) 
 {
     //Listit.logger.trace('getListitPostsFromPage');
