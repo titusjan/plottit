@@ -115,6 +115,7 @@ Listit.getRootHtmlDocument = function(doc) {
 }
 
 Listit.RE_ISJSON = /\.json$/i // String ends with '.json' 
+Listit.RE_ISFILE = /^file:\/\//i  // String begins with 'file://'
 Listit.RE_ISREDDIT = /www\.reddit\.com/ 
 
 Listit.onPageLoad = function(event) {
@@ -123,13 +124,21 @@ Listit.onPageLoad = function(event) {
     
     Listit.treeView.removeAllPosts();
 
-    var doc = event.originalTarget;  
-    Listit.fbLog(doc);
-    if (Listit.RE_ISJSON(doc.URL)) {
-        Listit.logger.debug("Listit.onPageLoad (.JSON): URL: " + doc.URL);
+    var doc = event.originalTarget;
+    var pageURL = doc.URL;
+    if ( !Listit.RE_ISREDDIT(pageURL) && !Listit.RE_ISFILE(pageURL) ) {
+        Listit.logger.debug("No reddit.com or file:// (ignored), URL: " + pageURL);    
+        return;
+    }
+    
+    var host = pageURL.split('?')[0];
+    Listit.fbLog(host);
+    
+    if (Listit.RE_ISJSON(host)) {
+        Listit.logger.debug("Listit.onPageLoad (.JSON): URL: " + pageURL);
         
         var rootDoc = Listit.getRootHtmlDocument(doc);
-        if (doc.URL != rootDoc.URL) {
+        if (pageURL != rootDoc.URL) {
             // Temporary, to see what happens
             Listit.logger.debug("Listit.onPageLoad: rootDoc URL: " + rootDoc.URL);
         }
@@ -146,13 +155,13 @@ Listit.onPageLoad = function(event) {
         var browser = gBrowser.getBrowserForDocument(rootDoc);
         Listit.processJsonPage(textContent, browser, rootDoc.URL);
 
-    } else if (Listit.RE_ISREDDIT(doc.URL)) {
+    } else {
     
-        Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + doc.URL);
+        Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + pageURL);
 
         // Make AJAX request for corresponding JSON page.
         var browser = gBrowser.getBrowserForDocument(doc);
-        var jsonURL = doc.URL + '.json';
+        var jsonURL = Listit.addJsonToRedditUrl(pageURL);
         var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
                       .createInstance(Components.interfaces.nsIXMLHttpRequest);
                       
@@ -168,9 +177,6 @@ Listit.onPageLoad = function(event) {
         
         request.open("GET", jsonURL, true);
         request.send(null);            
-        
-    } else {
-        Listit.logger.debug("No reddit.com or JSON page (ignored), URL: " + doc.URL);
     }
 }    
     
@@ -194,6 +200,18 @@ Listit.processJsonPage = function (jsonContent, browser, url) {
     } catch (ex) {
         Listit.logger.error('Failed processing JSON: ' + url.toString());
         Listit.logger.error(ex);
+    }
+}
+
+Listit.addJsonToRedditUrl = function(url)
+{
+    var pos = url.indexOf('?');
+    if (pos < 0) {
+        // No parameter in URL
+        return url + '.json';
+    } else {
+        // Put .json between the hostname and parameters
+        return url.substring(0, pos) + '.json' + url.substring(pos);
     }
 }
 

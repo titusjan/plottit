@@ -25,13 +25,14 @@ Listit.treeView = {
         //Listit.logger.debug("addPosts: rowCountChanged: " + this.visibleData.length);
     },
 
-    removeAllPosts: function() {
-        //this.treeBox.rowCountChanged(0, -this.rowCount);
-        
-        this.treeBox.rowCountChanged(0, -this.rowCount);
-        //Listit.logger.debug("addPosts: rowCountChanged: " + (-this.rowCount));
-        this.allPosts = [];
-        this.visibleData = [];
+    removeAllPosts: function() { // Must be fast because it's called for every page load!
+
+        if (this.rowCount != 0) {
+            this.treeBox.rowCountChanged(0, -this.rowCount);
+            //Listit.logger.debug("addPosts: rowCountChanged: " + (-this.rowCount));
+            this.allPosts = [];
+            this.visibleData = [];
+        }
     },
 
 
