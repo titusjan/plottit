@@ -12,17 +12,26 @@ Listit.treeView = {
     selection: null,
 
     setPosts: function(listitPosts)  {
+        this.removeAllPosts();
+        this.addPosts(listitPosts);
+    },
+
+    addPosts: function(listitPosts)  {
         Listit.assert(listitPosts instanceof Array, 'listitPosts should be an Array');
-        this.removeAllRows();
         this.allPosts = listitPosts;
         this.visibleData = this.getOpenPosts(this.allPosts);
 
         this.treeBox.rowCountChanged(0, this.visibleData.length);
+        //Listit.logger.debug("addPosts: rowCountChanged: " + this.visibleData.length);
     },
 
-    removeAllRows: function() {
-        //Firebug.Console.log('removeAllRows');
+    removeAllPosts: function() {
+        //this.treeBox.rowCountChanged(0, -this.rowCount);
+        
         this.treeBox.rowCountChanged(0, -this.rowCount);
+        //Listit.logger.debug("addPosts: rowCountChanged: " + (-this.rowCount));
+        this.allPosts = [];
+        this.visibleData = [];
     },
 
 

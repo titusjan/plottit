@@ -14,6 +14,7 @@ XULSchoolChrome.BrowserOverlay = {
         let message = stringBundle.getString('xulschoolhello.greeting.label');
 
         try {
+            Listit.logger.info(Listit.state.summaryString() );
             Listit.fbLog(Listit.state.summaryString() );
         } catch (ex) {
             Listit.logger.error('Exception in Listit.sayHello;');
@@ -119,10 +120,10 @@ Listit.RE_ISREDDIT = /www\.reddit\.com/
 Listit.onPageLoad = function(event) {
 
     Listit.logger.trace("Listit.onPageLoad");
-
-    var listitPosts = [];
-    var doc = event.originalTarget;  
     
+    Listit.treeView.removeAllPosts();
+
+    var doc = event.originalTarget;  
     if (Listit.RE_ISJSON(doc.URL)) {
         var browser = gBrowser.getBrowserForDocument(doc);
         
@@ -150,9 +151,9 @@ Listit.onPageLoad = function(event) {
                           
                           
             request.onload = function(aEvent) {
-                Listit.fbLog("XMLHttpRequest.onload, URL: ");
+                Listit.fbLog("XMLHttpRequest.onload, URL: " + jsonURL);
                 Listit.fbLog(aEvent);
-                Listit.logger.debug("XMLHttpRequest.onload, URL: ");
+                Listit.logger.debug("XMLHttpRequest.onload, URL: " + jsonURL);
                 Listit.processJsonPage(aEvent.target.responseText, browser, jsonURL);    
             };
             
@@ -164,31 +165,32 @@ Listit.onPageLoad = function(event) {
             request.send(null);            
             
         } else {
-            Listit.logger.debug("Listit.onPageLoad (no json): URL: " + doc.URL);
-            
-            
+            Listit.logger.debug("Listit.d (no json, ignored), URL: " + doc.URL);
         }
     }
 }    
     
 Listit.processJsonPage = function (jsonContent, browser, url) {
-    Listit.logger.debug("Listit.processJsonPage -- "); // todo: trace
+    Listit.logger.trace("Listit.processJsonPage -- ");
 
+    var listitPosts = [];
     var browserID = browser.getAttribute("ListitBrowserID");
-    
     try {
         var page = JSON.parse(jsonContent); // Parse content
         Listit.logger.debug('Successfully parsed JSON page for: ' + url);
         listitPosts = Listit.getListitPostsFromPage(page);
+        Listit.state.setBrowserPosts(browser, listitPosts);
+    
+        if (browserID == Listit.state.getCurrentBrowserID()) {
+            // TODO: check if browswer still has matching URL
+            Listit.treeView.setPosts(listitPosts);
+            Listit.logger.debug('Put JSON page in treeview for browser ' + browserID + ': ' + url);
+        } else {
+            Listit.logger.debug('Browser not the current browser (ignored): ' + browserID);
+        }
     } catch (ex) {
-        Listit.logger.warn('Parse failed: ' + url.toString());
-    }
-    
-    Listit.state.setBrowserPosts(browser, listitPosts);
-    
-    if (browserID == Listit.state.getCurrentBrowserID()) {
-        Listit.treeView.setPosts(listitPosts);
-        Listit.logger.debug('Successfully put JSON page in treeview: ' + url);
+        Listit.logger.error('Failed processing JSON: ' + url.toString());
+        Listit.logger.error(ex.toString());
     }
 }
 

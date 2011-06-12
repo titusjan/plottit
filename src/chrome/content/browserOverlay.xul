@@ -35,12 +35,12 @@
     </menu>
   </menupopup>
   
-<vbox id="appcontent" >
+  <vbox id="appcontent" >
     <splitter id="listitContentSplitter" collapsed="false"/>
      <tree height="250" id="scoreTree" hidecolumnpicker="false" enableColumnDrag="true" persist="height">
       <treecols>
 	    <treecol id="treeID"      width="60"  label="ID"             persist="width ordinal hidden" hidden="true"/> <splitter class="tree-splitter" />
-	    <treecol id="treeAuthor"  width="140" label="Author"         persist="width ordinal hidden" flex="1" minwidth="40" maxwidth="150"/> <splitter class="tree-splitter" />
+	    <treecol id="treeAuthor"  width="140" label="Author"         persist="width ordinal hidden" minwidth="40" maxwidth="150"/> <splitter class="tree-splitter" />
     	<treecol id="treeUp"      width="50"  label="Up"             persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />	    
 	    <treecol id="treeDown"    width="50"  label="Down"           persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
 	    <treecol id="treeTotal"   width="50"  label="Total"          persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
@@ -54,5 +54,5 @@
        </treeitem>
       </treechildren>
      </tree>
-</vbox>    
+  </vbox>    
 </overlay>
