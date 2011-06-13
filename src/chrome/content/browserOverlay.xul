@@ -12,6 +12,7 @@
 
 
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/utils.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/encoder.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/state.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/treeView.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/testData.js" />
@@ -37,27 +38,44 @@
   
   <vbox id="appcontent" >
     <splitter id="listitContentSplitter" collapsed="false"/>
-     <tree height="250" id="scoreTree" hidecolumnpicker="false" enableColumnDrag="true" persist="height">
-      <treecols>
-	    <treecol id="treeID"        width="60"  label="ID"         persist="width ordinal hidden" hidden="true"/> <splitter class="tree-splitter" />
-	    <treecol id="treeAuthor"    width="140" label="Author"     persist="width ordinal hidden" minwidth="40" maxwidth="150"/> <splitter class="tree-splitter" />
-    	<treecol id="treeScore"     width="50"  label="Score"      persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />	    
-    	<treecol id="treeUp"        width="50"  label="Up"         persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />	    
-	    <treecol id="treeDown"      width="50"  label="Down"       persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
-	    <treecol id="treeVotes"     width="50"  label="Votes"      persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
-	    <treecol id="treeChildren"  width="50"  label="Children"   persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
-	    <treecol id="treeDepth"     width="50"  label="Depth"      persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
-	    <treecol id="treeBody"      width="500" label="Body"       persist="width ordinal hidden" flex="1" primary="true"/> <splitter class="tree-splitter" />
-	    <treecol id="treeLocalDate" width="130" label="Local Date" persist="width ordinal hidden" /> <splitter class="tree-splitter" />
-	    <treecol id="treeUtcDate"   width="130" label="UTC Date"   persist="width ordinal hidden" /> <splitter class="tree-splitter" />
-	    <treecol id="treePruts"     width="50"  label="**Posts**"  persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
-	    <!-- todo: date, age, hot, best, contriversial, sigma_score, sigma_up, etc -->
-      </treecols>
+    <hbox id="pannelContent" height="200" persist="height" >
 
-      <treechildren>
-       <treeitem>
-       </treeitem>
-      </treechildren>
-     </tree>
+      <tree id="scoreTree" hidecolumnpicker="false" enableColumnDrag="true" flex="1">
+          <treecols>
+          <treecol id="treeID"        width="60"  label="ID"         persist="width ordinal hidden" hidden="true"/> <splitter class="tree-splitter" />
+          <treecol id="treeAuthor"    width="140" label="Author"     persist="width ordinal hidden" minwidth="40" maxwidth="150"/> <splitter class="tree-splitter" />
+          <treecol id="treeScore"     width="50"  label="Score"      persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />	    
+          <treecol id="treeUp"        width="50"  label="Up"         persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />	    
+          <treecol id="treeDown"      width="50"  label="Down"       persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
+          <treecol id="treeVotes"     width="50"  label="Votes"      persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
+          <treecol id="treeChildren"  width="50"  label="Children"   persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
+          <treecol id="treeDepth"     width="50"  label="Depth"      persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
+          <treecol id="treeBody"      width="500" label="Body"       persist="width ordinal hidden" flex="1" primary="true"/> <splitter class="tree-splitter" />
+          <treecol id="treeLocalDate" width="130" label="Local Date" persist="width ordinal hidden" /> <splitter class="tree-splitter" />
+          <treecol id="treeUtcDate"   width="130" label="UTC Date"   persist="width ordinal hidden" /> <splitter class="tree-splitter" />
+          <treecol id="treePruts"     width="50"  label="**Posts**"  persist="width ordinal hidden" style="text-align: right"/> <splitter class="tree-splitter" />
+        </treecols>
+
+        <treechildren>
+          <treeitem>
+          </treeitem>
+        </treechildren>
+      </tree>
+     
+      <splitter id="listitPannelSplitter" collapsed="false" />
+      
+      <!--<iframe id="postHtmlFrame" width="200" persist="width" src="http://www.purple.com"/>-->
+      <iframe id="postHtmlFrame" width="200" persist="width"/>
+     </hbox> 
   </vbox>    
 </overlay>
+
+<!--
+
+TODO: 
+    date, age, hot, best, controversial, chars, words?, sigma_score, sigma_up, etc 
+
+Notes:
+-   An element must have an ID if it uses persistent attribrutes!
+-->
+

@@ -1,5 +1,5 @@
 
-if ('undefined' == typeof(Listit)) { var Listit = {}; } // Lisit name space
+if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 // XULSchoolChrome name space
 if ('undefined' == typeof(XULSchoolChrome)) {
@@ -16,6 +16,11 @@ XULSchoolChrome.BrowserOverlay = {
         try {
             Listit.logger.info(Listit.state.summaryString() );
             Listit.fbLog(Listit.state.summaryString() );
+            
+            var details = document.getElementById('postHtmlFrame');
+            Listit.fbLog(details);
+            Listit.logger.debug(details.textContent);
+            details.contentDocument.body.innerHTML = "Pepijn Kenter <i>rules</i>"
         } catch (ex) {
             Listit.logger.error('Exception in Listit.sayHello;');
             Listit.logger.error(ex);
@@ -52,11 +57,13 @@ Listit.onLoad = function() {
         var browserID = Listit.state.addBrowser(browser);
         Listit.state.setCurrentBrowser(browser); // we need to have a current browser
     }
-
-    document.getElementById('scoreTree').view = Listit.treeView;
+    
+    var scoreTree = document.getElementById('scoreTree');
+    scoreTree.view = Listit.treeView;
     
     // Add event handlers 
-    
+    scoreTree.addEventListener("select", Listit.onRowSelect, false);
+        
     var container = gBrowser.tabContainer;
     container.addEventListener("TabOpen", Listit.onTabOpen, false);
     container.addEventListener("TabClose", Listit.onTabClose, false);
@@ -67,6 +74,16 @@ Listit.onLoad = function() {
 };
 
 
+Listit.onRowSelect = function(event) {
+    Listit.logger.trace("Listit.onRowSelect -- ");
+    
+    var scoreTree = document.getElementById('scoreTree');
+    var detailsFrame = document.getElementById('postHtmlFrame');
+    detailsFrame.contentDocument.body.innerHTML = 
+        Listit.treeView.visibleData[scoreTree.currentIndex].bodyHtml;
+    Listit.logger.debug(Listit.treeView.visibleData[scoreTree.currentIndex].bodyHtml);
+        
+}
 
 Listit.onTabOpen = function(event) {
     Listit.logger.trace("Listit.onTabOpen -- ");
@@ -228,7 +245,8 @@ Listit.redditNodeToListitNode = function(redditNode, depth)
     listitNode.id = data.id;
     listitNode.depth = depth;
     listitNode.author = data.author;
-    listitNode.body = data.body;
+    listitNode.body = Listit.Encoder.htmlDecode(data.body); 
+    listitNode.bodyHtml = Listit.Encoder.htmlDecode(data.body_html);
     listitNode.dateCreated = new Date(data.created_utc * 1000);
     listitNode.downs = data.downs;
     listitNode.ups = data.ups;
