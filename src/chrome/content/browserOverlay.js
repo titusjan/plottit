@@ -81,8 +81,6 @@ Listit.onRowSelect = function(event) {
     var detailsFrame = document.getElementById('postHtmlFrame');
     detailsFrame.contentDocument.body.innerHTML = 
         Listit.treeView.visibleData[scoreTree.currentIndex].bodyHtml;
-    Listit.logger.debug(Listit.treeView.visibleData[scoreTree.currentIndex].bodyHtml);
-        
 }
 
 Listit.onTabOpen = function(event) {
