@@ -116,7 +116,7 @@ Listit.getRootHtmlDocument = function(doc) {
 
 Listit.RE_ISJSON = /\.json$/i // String ends with '.json' 
 Listit.RE_ISFILE = /^file:\/\//i  // String begins with 'file://'
-Listit.RE_ISREDDIT = /www\.reddit\.com/ 
+Listit.RE_ISREDDIT = /www\.reddit\.com\/r\/.*\/comments\// 
 
 Listit.onPageLoad = function(event) {
 
@@ -229,7 +229,7 @@ Listit.redditNodeToListitNode = function(redditNode, depth)
     listitNode.depth = depth;
     listitNode.author = data.author;
     listitNode.body = data.body;
-    listitNode.created_utc = data.created_utc;
+    listitNode.dateCreated = new Date(data.created_utc * 1000);
     listitNode.downs = data.downs;
     listitNode.ups = data.ups;
     listitNode.isOpen = true;  // true if a node is expanded
@@ -255,7 +255,7 @@ Listit.getListitPostsFromPage = function(redditJsonPage)
     var children = redditPosts.data.children; // TODO: what is data.after/before?
 
     for (var i = 0; i < children.length; i++) {
-        var listitNode = Listit.redditNodeToListitNode(children[i], 1);
+        var listitNode = Listit.redditNodeToListitNode(children[i], 0);
         if (listitNode) 
             listitPosts.push(listitNode);
     }

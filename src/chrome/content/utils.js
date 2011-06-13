@@ -19,6 +19,44 @@ Listit.safeGet = function(obj, propName) {
     }
 }
 
+//////////////
+// DateTime //
+//////////////
+
+Listit._pad0 = function(n) {
+    return n<10 ? '0'+n : n;
+}
+
+Listit.ISODateString = function(d) {
+    var pad = Listit._pad0;
+    return d.getUTCFullYear() + '-'
+        + pad(d.getUTCMonth() +1 ) + '-'
+        + pad(d.getUTCDate()) + 'T'
+        + pad(d.getUTCHours()) + ':'
+        + pad(d.getUTCMinutes()) + ':'
+        + pad(d.getUTCSeconds()) + 'Z'
+}
+
+Listit.UtcDateString = function(d) {
+    var pad = Listit._pad0;
+    return d.getUTCFullYear() + '-'
+        + pad(d.getUTCMonth() +1 ) + '-'
+        + pad(d.getUTCDate()) + ' '
+        + pad(d.getUTCHours()) + ':'
+        + pad(d.getUTCMinutes()) + ':'
+        + pad(d.getUTCSeconds())
+}
+
+Listit.LocalDateString = function(d) {
+    var pad = Listit._pad0;
+    return d.getFullYear() + '-'
+        + pad(d.getMonth() +1 ) + '-'
+        + pad(d.getDate()) + ' '
+        + pad(d.getHours()) + ':'
+        + pad(d.getMinutes()) + ':'
+        + pad(d.getSeconds())
+}
+
 ////////////////
 // Generators //
 ////////////////
