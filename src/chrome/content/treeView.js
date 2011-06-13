@@ -57,15 +57,17 @@ Listit.treeView = {
         var rowItem = this.visibleData[idx];
         switch (column.id)
         {
-            case 'treeID' : return rowItem.id;
-            case 'treeAuthor': return rowItem.author;
-            //case 'treeUp' : return column.width;
-            case 'treeUp' : return rowItem.ups;
-            case 'treeDown' : return rowItem.downs;
-            case 'treeTotal' : return rowItem.ups + rowItem.downs;
-            case 'treeDepth' : return rowItem.depth;
-            case 'treeBody' : return rowItem.body;
-            case 'treePruts' : return rowItem.replies.length;
+            case 'treeID'       : return rowItem.id;
+            case 'treeAuthor'   : return rowItem.author;
+            case 'treeScore'    : return rowItem.ups - rowItem.downs;
+            case 'treeUp'       : return rowItem.ups;
+            case 'treeDown'     : return rowItem.downs;
+            case 'treeVotes'    : return rowItem.ups + rowItem.downs;
+            case 'treeChildren' : return rowItem.replies.length;
+            case 'treeDepth'    : return rowItem.depth;
+            case 'treeBody'     : return rowItem.body;
+            case 'treePruts'    : return rowItem.replies.length + 1;
+            //case 'treePruts' : return column.width;
             default : return "** Unknown id: '" + column.id + "' **";
         }
     },

@@ -255,7 +255,7 @@ Listit.getListitPostsFromPage = function(redditJsonPage)
     var children = redditPosts.data.children; // TODO: what is data.after/before?
 
     for (var i = 0; i < children.length; i++) {
-        var listitNode = Listit.redditNodeToListitNode(children[i], 0);
+        var listitNode = Listit.redditNodeToListitNode(children[i], 1);
         if (listitNode) 
             listitPosts.push(listitNode);
     }
