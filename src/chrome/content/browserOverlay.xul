@@ -64,8 +64,7 @@
      
       <splitter id="listitPannelSplitter" collapsed="false" />
       
-      <!--<iframe id="postHtmlFrame" width="200" persist="width" src="http://www.purple.com"/>-->
-      <iframe id="postHtmlFrame" width="200" persist="width"/>
+      <iframe id="postHtmlFrame" width="200" persist="width" src="chrome://xulschoolhello/content/detailsframe.html"/>
      </hbox> 
   </vbox>    
 </overlay>
