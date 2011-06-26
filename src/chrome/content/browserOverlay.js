@@ -83,6 +83,8 @@ Listit.onRowSelect = function(event) {
     
     var curState = Listit.state.getCurrentBrowserState();
     curState.selectedPostIndex = selectedIndex;
+    
+    //border: 1px dashed gray;
 }
 
 Listit.onTabOpen = function(event) {
@@ -161,7 +163,32 @@ try {
     var host = pageURL.split('?')[0];
     Listit.fbLog(host);
     
-    if (Listit.RE_ISJSON(host)) {
+    if (Listit.RE_ISREDDIT(pageURL) && !Listit.RE_ISJSON(host)) {
+        Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + pageURL);
+
+        // Make AJAX request for corresponding JSON page.
+        var jsonURL = Listit.addJsonToRedditUrl(pageURL);
+        var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
+                      .createInstance(Components.interfaces.nsIXMLHttpRequest);
+                      
+        request.onload = function(aEvent) {
+            Listit.logger.debug("XMLHttpRequest.onload, URL: " + jsonURL);
+            Listit.processJsonPage(aEvent.target.responseText, browser, jsonURL);    
+        };
+        
+        request.onerror = function(aEvent) {
+            Listit.logger.error("XMLHttpRequest.onerror, URL: " + jsonURL)
+            Listit.logger.error("Error status: " + aEvent.target.status);
+        };
+        
+        browserState.setStatus(Listit.PAGE_LOADING);
+        Listit.updateAllViews(Listit.state, browserID);
+        
+        request.open("GET", jsonURL, true);
+        request.send(null);      
+ 
+    } else {
+             
         Listit.logger.debug("Listit.onPageLoad (.JSON): URL: " + pageURL);
 
         var rootDoc = Listit.getRootHtmlDocument(doc);
@@ -188,29 +215,6 @@ try {
         browserState.setStatus(Listit.PAGE_READY);
         Listit.updateAllViews(Listit.state, browserID);
 
-    } else {
-        Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + pageURL);
-
-        // Make AJAX request for corresponding JSON page.
-        var jsonURL = Listit.addJsonToRedditUrl(pageURL);
-        var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
-                      .createInstance(Components.interfaces.nsIXMLHttpRequest);
-                      
-        request.onload = function(aEvent) {
-            Listit.logger.debug("XMLHttpRequest.onload, URL: " + jsonURL);
-            Listit.processJsonPage(aEvent.target.responseText, browser, jsonURL);    
-        };
-        
-        request.onerror = function(aEvent) {
-            Listit.logger.error("XMLHttpRequest.onerror, URL: " + jsonURL)
-            Listit.logger.error("Error status: " + aEvent.target.status);
-        };
-        
-        browserState.setStatus(Listit.PAGE_LOADING);
-        Listit.updateAllViews(Listit.state, browserID);
-        
-        request.open("GET", jsonURL, true);
-        request.send(null);            
     }
 } catch (ex) {
     Listit.logger.error('Exception in onPageLoad: ');
