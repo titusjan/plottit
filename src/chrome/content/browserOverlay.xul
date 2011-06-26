@@ -40,7 +40,7 @@
     <splitter id="listitContentSplitter" collapsed="false"/>
     <hbox id="pannelContent" height="200" persist="height" >
 
-      <tree id="scoreTree" hidecolumnpicker="false" enableColumnDrag="true" flex="1">
+      <tree id="scoreTree" hidecolumnpicker="false" enableColumnDrag="true" flex="1" seltype="single" flags="dont-build-content" disableKeyNavigation="true">
           <treecols>
           <treecol id="treeID"        width="60"  label="ID"         persist="width ordinal hidden" hidden="true"/> <splitter class="tree-splitter" />
           <treecol id="treeAuthor"    width="140" label="Author"     persist="width ordinal hidden" minwidth="40" maxwidth="150"/> <splitter class="tree-splitter" />
