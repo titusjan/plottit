@@ -334,16 +334,11 @@ Listit.updateAllViews = function(state, eventBrowserID) {
         case Listit.PAGE_READY:
             Listit.setDetailsFrameHtml('');
             Listit.treeView.setPosts(Listit.state.getBrowserPosts(eventBrowserID));
-try{
             if (curState.selectedPostIndex != null) {
                 Listit.treeView.selection.select(curState.selectedPostIndex);
                 var scoreTreeObject = Listit.getTreeBoxObject('scoreTree');
-                scoreTreeObject.scrollToRow(curState.selectedPostIndex);
+                scoreTreeObject.ensureRowIsVisible(curState.selectedPostIndex);
             }
-} catch (ex) {
-    Listit.logger.error('Exception in updateAllViews: ');
-    Listit.logger.error(ex);
-}    
             break;
         default:
             Listit.assert(false, "Invalid pageStatus: " + curState.pageStatus);

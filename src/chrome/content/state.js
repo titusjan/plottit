@@ -15,12 +15,12 @@ Listit.BrowserState = function () { // Constructor
 
     this.pageStatus = Listit.PAGE_NOT_LISTIT;
     this.posts = [];
-    this.selectedPostIndex = null; // The post that is selected in the table
+    this.selectedPostIndex = 0; // The post that is selected in the table
 }
 
 Listit.BrowserState.prototype.removeAllPosts = function (status) {
     this.posts = [];
-    this.selectedPostIndex = null;
+    this.selectedPostIndex = 0;
 };
 
 Listit.BrowserState.prototype.getStatus = function (status) {
