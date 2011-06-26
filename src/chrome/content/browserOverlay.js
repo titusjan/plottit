@@ -49,7 +49,7 @@ Listit.onLoad = function() {
     
     // Initialize state object
     Listit.state = new Listit.State();
-    
+        
     // Add existing tabs to the state because there won't be a tabOpen
     // event raised for them
     for (var idx = 0; idx < gBrowser.browsers.length; idx++) {
@@ -77,10 +77,12 @@ Listit.onLoad = function() {
 Listit.onRowSelect = function(event) {
     Listit.logger.trace("Listit.onRowSelect -- ");
     
-    var scoreTree = document.getElementById('scoreTree');
-    var detailsFrame = document.getElementById('postHtmlFrame');
-    detailsFrame.contentDocument.body.innerHTML = 
-        Listit.treeView.visibleData[scoreTree.currentIndex].bodyHtml;
+    var selectedIndex = document.getElementById('scoreTree').currentIndex;
+    var html = Listit.treeView.visibleData[selectedIndex].bodyHtml;
+    Listit.setDetailsFrameHtml(html);
+    
+    var curState = Listit.state.getCurrentBrowserState();
+    curState.selectedPostIndex = selectedIndex;
 }
 
 Listit.onTabOpen = function(event) {
@@ -109,9 +111,7 @@ Listit.onTabSelect = function(event) {
     var browserID = Listit.state.setCurrentBrowser(browser);
     Listit.logger.debug("Listit.onTabSelect: " + browserID + 
         ", URL: " + browser.contentDocument.URL);
-        
-    var listitPosts = Listit.state.getCurrentBrowserPosts();
-    Listit.treeView.setPosts(listitPosts);
+    Listit.updateAllViews(Listit.state, browserID);
 }
 
 // Finds the root document from a HTMLDocument
@@ -135,14 +135,26 @@ Listit.RE_ISREDDIT = /www\.reddit\.com\/r\/.*\/comments\//
 
 Listit.onPageLoad = function(event) {
 
+try {
     Listit.logger.trace("Listit.onPageLoad");
-    
-    Listit.treeView.removeAllPosts();
-
     var doc = event.originalTarget;
     var pageURL = doc.URL;
+
+    var browser = gBrowser.getBrowserForDocument(doc);
+    if (browser == null) {
+        // Happens when document is not the root; with iFrames (e.g.: www.redditmedia.com/ads)
+        Listit.logger.debug("Listit.onPageLoad: no browser for URL: " + pageURL);
+        return;
+    }
+
+    var browserID = browser.getAttribute("ListitBrowserID");  // TODO: getStateForBrowser?
+    var browserState = Listit.state.browserStates[browserID];
+    browserState.setStatus(Listit.PAGE_NOT_LISTIT);
+    browserState.removeAllPosts();
+    
     if ( !Listit.RE_ISREDDIT(pageURL) && !Listit.RE_ISFILE(pageURL) ) {
         Listit.logger.debug("No reddit.com or file:// (ignored), URL: " + pageURL);    
+        Listit.updateAllViews(Listit.state, browserID);
         return;
     }
     
@@ -151,31 +163,35 @@ Listit.onPageLoad = function(event) {
     
     if (Listit.RE_ISJSON(host)) {
         Listit.logger.debug("Listit.onPageLoad (.JSON): URL: " + pageURL);
-        
+
         var rootDoc = Listit.getRootHtmlDocument(doc);
         if (pageURL != rootDoc.URL) {
             // Temporary, to see what happens
+            Listit.logger.debug("Listit.onPageLoad: page Url is not rootDoc URL: ");
+            Listit.logger.debug("Listit.onPageLoad: page    URL: " + pageURL);
             Listit.logger.debug("Listit.onPageLoad: rootDoc URL: " + rootDoc.URL);
+            Listit.updateAllViews(Listit.state, browserID);
+            return;
         }
         delete doc; // to prevent mistakes
-     
+        
         var body = Listit.safeGet(rootDoc, 'body');
         var textContent = Listit.safeGet(body, 'textContent');
     
         if (!textContent) {
             Listit.debug("No body.textContent found, URL: " + rootDoc.URL);
+            Listit.updateAllViews(Listit.state, browserID);
             return;
         } 
         
-        var browser = gBrowser.getBrowserForDocument(rootDoc);
         Listit.processJsonPage(textContent, browser, rootDoc.URL);
+        browserState.setStatus(Listit.PAGE_READY);
+        Listit.updateAllViews(Listit.state, browserID);
 
     } else {
-    
         Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + pageURL);
 
         // Make AJAX request for corresponding JSON page.
-        var browser = gBrowser.getBrowserForDocument(doc);
         var jsonURL = Listit.addJsonToRedditUrl(pageURL);
         var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
                       .createInstance(Components.interfaces.nsIXMLHttpRequest);
@@ -190,9 +206,17 @@ Listit.onPageLoad = function(event) {
             Listit.logger.error("Error status: " + aEvent.target.status);
         };
         
+        browserState.setStatus(Listit.PAGE_LOADING);
+        Listit.updateAllViews(Listit.state, browserID);
+        
         request.open("GET", jsonURL, true);
         request.send(null);            
     }
+} catch (ex) {
+    Listit.logger.error('Exception in onPageLoad: ');
+    Listit.logger.error(ex);
+}    
+
 }    
     
 Listit.processJsonPage = function (jsonContent, browser, url) {
@@ -203,23 +227,20 @@ Listit.processJsonPage = function (jsonContent, browser, url) {
         var page = JSON.parse(jsonContent); // Parse content
         Listit.logger.debug('Successfully parsed JSON page for: ' + url);
         var listitPosts = Listit.getListitPostsFromPage(page);
-        Listit.state.setBrowserPosts(browser, listitPosts);
-    
-        if (browserID == Listit.state.getCurrentBrowserID()) {
-            // TODO: check if browswer still has matching URL
-            Listit.treeView.setPosts(listitPosts);
-            Listit.logger.debug('Put JSON page in treeview for browser ' + browserID + ': ' + url);
-        } else {
-            Listit.logger.debug('Browser not the current browser (ignored): ' + browserID);
-        }
+        Listit.state.setBrowserPosts(browserID, listitPosts);
+        
+        var browserState = Listit.state.browserStates[browserID];
+        browserState.setStatus(Listit.PAGE_READY);
+        Listit.updateAllViews(Listit.state, browserID);
+       
     } catch (ex) {
         Listit.logger.error('Failed processing JSON: ' + url.toString());
         Listit.logger.error(ex);
     }
 }
 
-Listit.addJsonToRedditUrl = function(url)
-{
+Listit.addJsonToRedditUrl = function(url) {
+
     var pos = url.indexOf('?');
     if (pos < 0) {
         // No parameter in URL
@@ -230,8 +251,7 @@ Listit.addJsonToRedditUrl = function(url)
     }
 }
 
-Listit.redditNodeToListitNode = function(redditNode, depth)
-{
+Listit.redditNodeToListitNode = function(redditNode, depth) {
 
     if (redditNode.kind != 't1') { // e.g. kind = 'more'
         //Listit.fbLog(redditNode);
@@ -263,8 +283,8 @@ Listit.redditNodeToListitNode = function(redditNode, depth)
 };
 
 // Get posts in as list (of lists) of ListitNodes
-Listit.getListitPostsFromPage = function(redditJsonPage) 
-{
+Listit.getListitPostsFromPage = function(redditJsonPage) {
+
     //Listit.logger.trace('getListitPostsFromPage');
     var redditPosts = redditJsonPage[1];
     var listitPosts = [];
@@ -278,6 +298,57 @@ Listit.getListitPostsFromPage = function(redditJsonPage)
 
     return listitPosts;
 };
+
+
+///////////
+// Views //
+///////////
+
+
+
+Listit.setDetailsFrameHtml = function(html) {
+    var detailsFrame = document.getElementById('postHtmlFrame');
+    detailsFrame.contentDocument.body.innerHTML = html;
+}
+
+// Updates all views using the application state
+Listit.updateAllViews = function(state, eventBrowserID) {
+    Listit.logger.trace("Listit.updateAllViews -- ");
+
+    // Only update if the events applies to the current browser
+    if (eventBrowserID != Listit.state.getCurrentBrowserID()) {
+        Listit.logger.debug('Browser not the current browser (ignored): ' + eventBrowserID);
+        return;
+    }
+
+    curState = Listit.state.getCurrentBrowserState();
+    switch (curState.pageStatus) {
+        case Listit.PAGE_NOT_LISTIT:
+            Listit.setDetailsFrameHtml('<i>The current page is not a reddit discussion</i>');
+            Listit.treeView.removeAllPosts();
+            break;
+        case Listit.PAGE_LOADING:
+            Listit.setDetailsFrameHtml('<i>Loading posts, please wait</i>');
+            Listit.treeView.removeAllPosts();
+            break;
+        case Listit.PAGE_READY:
+            Listit.setDetailsFrameHtml('');
+            Listit.treeView.setPosts(Listit.state.getBrowserPosts(eventBrowserID));
+try{
+            if (curState.selectedPostIndex != null) {
+                Listit.treeView.selection.select(curState.selectedPostIndex);
+                var scoreTreeObject = Listit.getTreeBoxObject('scoreTree');
+                scoreTreeObject.scrollToRow(curState.selectedPostIndex);
+            }
+} catch (ex) {
+    Listit.logger.error('Exception in updateAllViews: ');
+    Listit.logger.error(ex);
+}    
+            break;
+        default:
+            Listit.assert(false, "Invalid pageStatus: " + curState.pageStatus);
+    } // switch
+}
 
 /*
  From: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow

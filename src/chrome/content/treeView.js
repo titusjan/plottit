@@ -1,5 +1,22 @@
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Lisit name space
 
+/////////
+// Aux //
+/////////
+
+
+Listit.getTreeBoxObject = function doScroll(treeID) {
+
+  var tree = document.getElementById(treeID);
+  var boxObject = tree.boxObject;
+  boxObject.QueryInterface(Components.interfaces.nsITreeBoxObject); // Casts the object
+  return boxObject;
+}
+
+
+/////////
+//     //
+/////////
 
 Listit.treeView = {
     // Methods that are not part of the nsITreeView interface
