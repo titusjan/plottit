@@ -84,7 +84,19 @@ Listit.onRowSelect = function(event) {
     var curState = Listit.state.getCurrentBrowserState();
     curState.selectedPostIndex = selectedIndex;
     
-    //border: 1px dashed gray;
+// try {
+//     //var doc = event.target.defaultView.document;
+//     //var doc = eventt;
+//     //Listit.fbLog(gBrowser);
+//     //var browser = gBrowser.getBrowserForTab(event.target);
+//     Listit.fbLog(gBrowser.contentDocument);
+//     var classID = '.id-t1' + Listit.treeView.visibleData[selectedIndex].id;
+//     Listit.logger.debug("Listit.onRowSelect: '" + classID + "'");
+//     gBrowser.contentDocument.jQuery(classID).css({'background': '#EFF7FF', 'border': '1px dashed #5F99CF'});
+// } catch (ex) {
+//     Listit.logger.error('Exception in onRowSelect: ');
+//     Listit.logger.error(ex);
+// }    
 }
 
 Listit.onTabOpen = function(event) {
@@ -115,6 +127,33 @@ Listit.onTabSelect = function(event) {
         ", URL: " + browser.contentDocument.URL);
     Listit.updateAllViews(Listit.state, browserID);
 }
+ 
+Listit.onClickTreeHeader = function(column) {
+    //Listit.logger.warn("Listit.onClickTreeHeader -- ");
+    Listit.fbLog("Listit.onClickTreeHeader -- ");
+
+    var scoreTree = document.getElementById('scoreTree');
+    var oldSortResource = scoreTree.getAttribute('sortResource');
+    var oldSortDirection = scoreTree.getAttribute('sortDirection');
+    Listit.fbLog(oldSortDirection);
+    
+    if (column.id == oldSortResource) {
+        Listit.logger.debug('Clicked old column: ' + column.id);
+        Listit.logger.debug('oldSortDirection: ' + oldSortDirection);
+        var newSortDirection = (oldSortDirection == 'ascending') ? 'descending' : 'ascending';
+        scoreTree.setAttribute('sortDirection', newSortDirection);
+        column.setAttribute('sortDirection', newSortDirection);
+    } else {
+        Listit.logger.debug('Clicked new column: ' + column.id);
+        Listit.logger.debug('oldSortResource: ' + oldSortResource);
+        
+        scoreTree.setAttribute('sortResource', column.id);
+        column.setAttribute('sortDirection', oldSortDirection);
+        var oldColumn = document.getElementById(oldSortResource);
+        oldColumn.setAttribute('sortDirection', 'natural');
+    }
+    Listit.fbLog("Listit.onClickTreeHeader done ");
+}
 
 // Finds the root document from a HTMLDocument
 // Returns null if the document is not a HTMLDocument
@@ -137,11 +176,19 @@ Listit.RE_ISREDDIT = /www\.reddit\.com\/r\/.*\/comments\//
 
 Listit.onPageLoad = function(event) {
 
-try {
     Listit.logger.trace("Listit.onPageLoad");
     var doc = event.originalTarget;
     var pageURL = doc.URL;
-
+// try{
+//     Listit.fbLog('onPageLoad');
+//     Listit.fbLog(content);
+//     var classID = '.submitter';
+//     Listit.logger.debug("Listit.onPageLoad: '" + classID + "'");
+//     content.document.jQuery(classID).css({'background': '#EFF7FF', 'border': '1px dashed #5F99CF'});
+// } catch (ex) {
+//     Listit.logger.error('Exception in onRowSelect: ');
+//     Listit.logger.error(ex);
+// }    
     var browser = gBrowser.getBrowserForDocument(doc);
     if (browser == null) {
         // Happens when document is not the root; with iFrames (e.g.: www.redditmedia.com/ads)
@@ -216,11 +263,6 @@ try {
         Listit.updateAllViews(Listit.state, browserID);
 
     }
-} catch (ex) {
-    Listit.logger.error('Exception in onPageLoad: ');
-    Listit.logger.error(ex);
-}    
-
 }    
     
 Listit.processJsonPage = function (jsonContent, browser, url) {
