@@ -1,4 +1,4 @@
-if ('undefined' == typeof(Listit)) { var Listit = {}; } // Lisit name space
+if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 
 Listit.PAGE_NOT_LISTIT  = 0; // Not a page listit can process

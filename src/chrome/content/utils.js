@@ -1,4 +1,4 @@
-if ('undefined' == typeof(Listit)) { var Listit = {}; } // Lisit name space
+if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 Listit.assert = function(expression, message) {
 
@@ -70,6 +70,36 @@ Listit.range = function(begin, end) {
     for (let i = begin; i < end; ++i) {
         yield i;
     }
+}
+
+/////////////
+// Sorting //
+/////////////
+
+
+Listit.swapArgs = function(fun) {
+    return function(a, b) { return fun(b,a); }
+}
+
+Listit.compareNumbers = function(a, b) {
+    return a-b;
+}
+
+Listit.compareDates = function(a, b) {
+    return a.valueOf() - b.valueOf();
+}
+
+Listit.compareStrings = function(a, b) {
+    if (a == b) 
+        return 0;
+    if (a < b) 
+        return -1 
+    else 
+        return 1;
+}
+
+Listit.compareCaseInsensitiveStrings = function(a, b) {
+    return Listit.compareStrings(a.toLowerCase(), b.toLowerCase());
 }
 
 /////////////

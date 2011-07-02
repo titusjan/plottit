@@ -1,4 +1,4 @@
-if ('undefined' == typeof(Listit)) { var Listit = {}; } // Lisit name space
+if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 /////////
 // Aux //
@@ -27,6 +27,10 @@ Listit.treeView = {
 
     treeBox: null,
     selection: null,
+    
+    getPosts: function() {
+        return this.allPosts();
+    },
 
     setPosts: function(listitPosts)  {
         this.removeAllPosts();
@@ -52,6 +56,9 @@ Listit.treeView = {
         }
     },
 
+    sortPosts: function(comparisonFunction)  {
+        this.setPosts(Listit.sortPosts(this.allPosts, comparisonFunction));
+    },
 
     getOpenPosts: function(posts) {
         var openPosts = [];

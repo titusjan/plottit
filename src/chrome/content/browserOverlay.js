@@ -129,30 +129,51 @@ Listit.onTabSelect = function(event) {
 }
  
 Listit.onClickTreeHeader = function(column) {
-    //Listit.logger.warn("Listit.onClickTreeHeader -- ");
-    Listit.fbLog("Listit.onClickTreeHeader -- ");
+    Listit.logger.debug("Listit.onClickTreeHeader -- ");
+
+    var comparisonFunction = Listit.sortBy[column.id];    
+    if (!comparisonFunction) {
+        Listit.logger.warn("No comparison function for: ");
+        return null;
+    }
 
     var scoreTree = document.getElementById('scoreTree');
     var oldSortResource = scoreTree.getAttribute('sortResource');
     var oldSortDirection = scoreTree.getAttribute('sortDirection');
-    Listit.fbLog(oldSortDirection);
+    var newSortDirection;
+    var newSortResource;
+try {        
     
     if (column.id == oldSortResource) {
         Listit.logger.debug('Clicked old column: ' + column.id);
         Listit.logger.debug('oldSortDirection: ' + oldSortDirection);
-        var newSortDirection = (oldSortDirection == 'ascending') ? 'descending' : 'ascending';
-        scoreTree.setAttribute('sortDirection', newSortDirection);
-        column.setAttribute('sortDirection', newSortDirection);
+        newSortResource = oldSortResource;
+        Listit.assert(oldSortDirection == "ascending" || oldSortDirection == "descending", 
+            'direction should be "ascending" or "descending", got: ' + oldSortDirection);        
+        newSortDirection = (oldSortDirection == 'ascending') ? 'descending' : 'ascending';
     } else {
         Listit.logger.debug('Clicked new column: ' + column.id);
         Listit.logger.debug('oldSortResource: ' + oldSortResource);
-        
-        scoreTree.setAttribute('sortResource', column.id);
-        column.setAttribute('sortDirection', oldSortDirection);
+        newSortDirection = oldSortDirection;
+        newSortResource = column.id;
         var oldColumn = document.getElementById(oldSortResource);
         oldColumn.setAttribute('sortDirection', 'natural');
     }
-    Listit.fbLog("Listit.onClickTreeHeader done ");
+    
+    Listit.treeView.sortPosts(
+        Listit.getDirectedComparisonFunction(comparisonFunction, newSortDirection));
+    
+    // Set after actual sorting for easier dection of error in during sort
+    scoreTree.setAttribute('sortDirection', newSortDirection);
+    scoreTree.setAttribute('sortResource', newSortResource);
+    column.setAttribute('sortDirection', newSortDirection);
+        
+} catch (ex) {
+        Listit.logger.error('Exception in Listit.onClickTreeHeader;');
+        Listit.logger.error(ex);
+}        
+    
+    Listit.logger.debug("Listit.onClickTreeHeader done ");
 }
 
 // Finds the root document from a HTMLDocument
@@ -296,54 +317,6 @@ Listit.addJsonToRedditUrl = function(url) {
         return url.substring(0, pos) + '.json' + url.substring(pos);
     }
 }
-
-Listit.redditNodeToListitNode = function(redditNode, depth) {
-
-    if (redditNode.kind != 't1') { // e.g. kind = 'more'
-        //Listit.fbLog(redditNode);
-        return null;
-    } 
-
-    var data = redditNode.data;
-    var listitNode = {};
-    listitNode.id = data.id;
-    listitNode.depth = depth;
-    listitNode.author = data.author;
-    listitNode.body = Listit.Encoder.htmlDecode(data.body); 
-    listitNode.bodyHtml = Listit.Encoder.htmlDecode(data.body_html);
-    listitNode.dateCreated = new Date(data.created_utc * 1000);
-    listitNode.downs = data.downs;
-    listitNode.ups = data.ups;
-    listitNode.isOpen = true;  // true if a node is expanded
-    listitNode.replies = []; // For convenience always make an empty replies list (TODO: optimize?)
-
-    if (data.replies) {  // Recursively add children
-        var children = data.replies.data.children;
-        for (var i = 0; i < children.length; i++) {
-            var childNode = Listit.redditNodeToListitNode(children[i], depth + 1);
-            if (childNode) 
-                listitNode.replies.push(childNode);
-        }
-    }
-    return listitNode;
-};
-
-// Get posts in as list (of lists) of ListitNodes
-Listit.getListitPostsFromPage = function(redditJsonPage) {
-
-    //Listit.logger.trace('getListitPostsFromPage');
-    var redditPosts = redditJsonPage[1];
-    var listitPosts = [];
-    var children = redditPosts.data.children; // TODO: what is data.after/before?
-
-    for (var i = 0; i < children.length; i++) {
-        var listitNode = Listit.redditNodeToListitNode(children[i], 0);
-        if (listitNode) 
-            listitPosts.push(listitNode);
-    }
-
-    return listitPosts;
-};
 
 
 ///////////

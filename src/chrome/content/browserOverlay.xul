@@ -13,6 +13,7 @@
 
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/utils.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/encoder.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/posts.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/state.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/treeView.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/testData.js" />
@@ -51,7 +52,7 @@
           <treecol id="treeVotes"     width="50"  label="Votes   "   persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" style="text-align: right"/> <splitter class="tree-splitter" />
           <treecol id="treeChildren"  width="50"  label="Children   " persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" style="text-align: right"/> <splitter class="tree-splitter" />
           <treecol id="treeDepth"     width="50"  label="Depth   "   persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" style="text-align: right"/> <splitter class="tree-splitter" />
-          <treecol id="treeBody"      width="500" label="Body"       persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" flex="1" primary="true"/> <splitter class="tree-splitter" />
+          <treecol id="treeBody"      width="500" label="Body"       persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" flex="1" primary="true" minwidth="100"/> <splitter class="tree-splitter"/>
           <treecol id="treeLocalDate" width="130" label="Local Date" persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" /> <splitter class="tree-splitter" />
           <treecol id="treeUtcDate"   width="130" label="UTC Date"   persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" /> <splitter class="tree-splitter" />
           <treecol id="treePruts"     width="50"  label="**Posts   " persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" style="text-align: right"/> <splitter class="tree-splitter" />
