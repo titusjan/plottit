@@ -129,36 +129,41 @@ Listit.onTabSelect = function(event) {
 }
  
 Listit.onClickTreeHeader = function(column) {
-    Listit.logger.debug("Listit.onClickTreeHeader -- ");
+    Listit.logger.trace("Listit.onClickTreeHeader -- ");
 
+try {
     var comparisonFunction = Listit.sortBy[column.id];    
     if (!comparisonFunction) {
-        Listit.logger.warn("No comparison function for: ");
+        Listit.logger.warn("No comparison function for: " + column.id);
         return null;
     }
 
     var scoreTree = document.getElementById('scoreTree');
     var oldSortResource = scoreTree.getAttribute('sortResource');
+    var oldColumn = document.getElementById(oldSortResource);
     var oldSortDirection = scoreTree.getAttribute('sortDirection');
+    /*
+    var oldSortDirection = oldColumn.getAttribute('sortDirection');  // persist direction per column
+    if (oldSortDirection != 'ascending' && oldSortDirection != 'descending') {
+        // Should not occur, sortDirection attribute should be set in browserOverlay.xul
+        Listit.logger.warn("Sort direction is '" + oldSortDirection + "' for old column: " + column.id);
+        oldSortDirection = 'descending';
+    }*/
+    Listit.logger.debug('oldSortResource: ' + oldSortResource);    
+    Listit.logger.debug('oldSortDirection: ' + oldSortDirection);    
     var newSortDirection;
     var newSortResource;
-try {        
     
     if (column.id == oldSortResource) {
-        Listit.logger.debug('Clicked old column: ' + column.id);
-        Listit.logger.debug('oldSortDirection: ' + oldSortDirection);
         newSortResource = oldSortResource;
-        Listit.assert(oldSortDirection == "ascending" || oldSortDirection == "descending", 
-            'direction should be "ascending" or "descending", got: ' + oldSortDirection);        
         newSortDirection = (oldSortDirection == 'ascending') ? 'descending' : 'ascending';
     } else {
-        Listit.logger.debug('Clicked new column: ' + column.id);
-        Listit.logger.debug('oldSortResource: ' + oldSortResource);
         newSortDirection = oldSortDirection;
         newSortResource = column.id;
-        var oldColumn = document.getElementById(oldSortResource);
         oldColumn.setAttribute('sortDirection', 'natural');
     }
+    Listit.logger.debug('newSortResource: ' + newSortResource);    
+    Listit.logger.debug('newSortDirection: ' + newSortDirection);    
     
     Listit.treeView.sortPosts(
         Listit.getDirectedComparisonFunction(comparisonFunction, newSortDirection));
@@ -174,7 +179,7 @@ try {
         Listit.logger.error(ex);
 }        
     
-    Listit.logger.debug("Listit.onClickTreeHeader done ");
+    Listit.logger.trace("Listit.onClickTreeHeader done ");
 }
 
 // Finds the root document from a HTMLDocument
