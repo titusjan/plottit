@@ -15,12 +15,22 @@ Listit.BrowserState = function () { // Constructor
 
     this.pageStatus = Listit.PAGE_NOT_LISTIT;
     this.posts = [];
-    this.selectedPostIndex = 0; // The post that is selected in the table
+    this.selectedPost = null; // The post that is selected in the table
 }
+
+Listit.BrowserState.prototype.toString = function () {
+    return "Listit.BrowserState";
+};
+
+Listit.BrowserState.prototype.summaryString = function () {
+    return "Listit.BrowserState: status=" + this.pageStatus 
+        + ", posts=" + this.posts.length 
+        + ", selectedPost=" + (this.selectedPost ? this.selectedPost.id : this.selectedPost) ;
+};
 
 Listit.BrowserState.prototype.removeAllPosts = function (status) {
     this.posts = [];
-    this.selectedPostIndex = 0;
+    this.selectedPost = null;
 };
 
 Listit.BrowserState.prototype.getStatus = function (status) {

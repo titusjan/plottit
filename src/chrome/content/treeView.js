@@ -59,6 +59,10 @@ Listit.treeView = {
     sortPosts: function(comparisonFunction)  {
         this.setPosts(Listit.sortPosts(this.allPosts, comparisonFunction));
     },
+    
+    indexOfVisiblePost: function(post) {
+        return this.visibleData.indexOf(post);
+    },
 
     getOpenPosts: function(posts) {
         var openPosts = [];
@@ -71,6 +75,7 @@ Listit.treeView = {
         }
         return openPosts;
     },
+    
     
     // Methods that are part of the nsITreeView interface
 

@@ -78,11 +78,11 @@ Listit.onRowSelect = function(event) {
     Listit.logger.trace("Listit.onRowSelect -- ");
     
     var selectedIndex = document.getElementById('scoreTree').currentIndex;
-    var html = Listit.treeView.visibleData[selectedIndex].bodyHtml;
-    Listit.setDetailsFrameHtml(html);
-    
+    var selectedPost = Listit.treeView.visibleData[selectedIndex];
+    Listit.setDetailsFrameHtml(selectedPost.bodyHtml);
+
     var curState = Listit.state.getCurrentBrowserState();
-    curState.selectedPostIndex = selectedIndex;
+    curState.selectedPost = selectedPost;
     
 // try {
 //     //var doc = event.target.defaultView.document;
@@ -162,6 +162,7 @@ try {
     
     Listit.treeView.sortPosts(
         Listit.getDirectedComparisonFunction(comparisonFunction, newSortDirection));
+    Listit.ensureCurrentRowVisible();
     
     // Set after actual sorting for easier dection of error in during sort
     scoreTree.setAttribute('sortDirection', newSortDirection);
@@ -340,7 +341,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
         return;
     }
 
-    curState = Listit.state.getCurrentBrowserState();
+    var curState = Listit.state.getCurrentBrowserState();
     switch (curState.pageStatus) {
         case Listit.PAGE_NOT_LISTIT:
             Listit.setDetailsFrameHtml('<i>The current page is not a reddit discussion</i>');
@@ -353,6 +354,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
         case Listit.PAGE_READY:
             Listit.setDetailsFrameHtml('');
             
+            // Sort and set posts in score tree
             var scoreTree = document.getElementById('scoreTree');
             var sortResource = scoreTree.getAttribute('sortResource');
             var sortDirection = scoreTree.getAttribute('sortDirection');
@@ -360,17 +362,25 @@ Listit.updateAllViews = function(state, eventBrowserID) {
                     Listit.sortBy[sortResource], sortDirection); 
             var listitPosts = Listit.sortPosts(
                     Listit.state.getBrowserPosts(eventBrowserID), comparisonFunction);
-            
             Listit.treeView.setPosts(listitPosts);
-            if (curState.selectedPostIndex != null) {
-                Listit.treeView.selection.select(curState.selectedPostIndex);
-                var scoreTreeObject = Listit.getTreeBoxObject('scoreTree');
-                scoreTreeObject.ensureRowIsVisible(curState.selectedPostIndex);
-            }
+            Listit.ensureCurrentRowVisible();
             break;
         default:
             Listit.assert(false, "Invalid pageStatus: " + curState.pageStatus);
     } // switch
+}
+
+
+
+Listit.ensureCurrentRowVisible = function () {
+    Listit.logger.trace("Listit.ensureCurrentRowVisible -- ");
+
+    var curState = Listit.state.getCurrentBrowserState();
+    if (curState.selectedPost != null) {
+        var selectedIndex = Listit.treeView.indexOfVisiblePost(curState.selectedPost)
+        Listit.treeView.selection.select(selectedIndex);
+        Listit.getTreeBoxObject('scoreTree').ensureRowIsVisible(selectedIndex);
+    }
 }
 
 /*
