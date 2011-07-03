@@ -41,6 +41,10 @@ Listit.TreeView.prototype.setPosts = function(listitPosts)  {
     this.addPosts(listitPosts);
 }
 
+Listit.TreeView.prototype.countPosts = function() {
+    return Listit.countPosts(this.allPosts);
+}
+
 
 Listit.TreeView.prototype.addPosts = function(listitPosts)  {
     Listit.assert(listitPosts instanceof Array, 'addPosts: listitPosts should be an Array');
@@ -102,13 +106,13 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
         case 'treeUp'        : return rowItem.ups;
         case 'treeDown'      : return rowItem.downs;
         case 'treeVotes'     : return rowItem.votes;
-        case 'treeReplies'  : return rowItem.numReplies;
+        case 'treeReplies'   : return rowItem.numReplies;
         case 'treeDepth'     : return rowItem.depth;
         case 'treeBody'      : return rowItem.body;
         case 'treeUtcDate'   : return Listit.UtcDateString(rowItem.dateCreated);
         case 'treeLocalDate' : return Listit.LocalDateString(rowItem.dateCreated);
-        case 'treePruts'     : return rowItem.replies.length + 1;
-        //case 'treePruts'    : return column.width;
+        case 'treeDebug'     : return rowItem.debug;
+        //case 'treeDebug'    : return column.width;
         default : return "** Unknown id: '" + column.id + "' **";
     }
 }

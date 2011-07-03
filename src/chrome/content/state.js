@@ -56,15 +56,13 @@ Listit.State = function () { // Constructor
 
 }
 
-
-
 Listit.State.prototype.toString = function () {
     return "Listit.State";
 };
 
 
 Listit.State.prototype.summaryString = function () {
-    return [ 'Tab ' + k + ': ' + (v.treeView.getPosts().length) for 
+    return [ 'Tab ' + k + ': ' + (v.treeView.countPosts()) for 
         each ([k,v] in Iterator(this.browserStates))];
 };
 

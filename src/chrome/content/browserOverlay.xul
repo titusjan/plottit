@@ -55,7 +55,7 @@
           <treecol id="treeBody"      width="500" label="Body"       persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" flex="1" primary="true" minwidth="100"/> <splitter class="tree-splitter"/>
           <treecol id="treeLocalDate" width="130" label="Local Date" persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" /> <splitter class="tree-splitter" />
           <treecol id="treeUtcDate"   width="130" label="UTC Date"   persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" /> <splitter class="tree-splitter" />
-          <treecol id="treePruts"     width="50"  label="**Posts   " persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" style="text-align: right"/> <splitter class="tree-splitter" />
+          <treecol id="treeDebug"     width="50"  label="Debug (posts)" persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" style="text-align: right"/> <splitter class="tree-splitter" />
         </treecols>
 
         <treechildren>

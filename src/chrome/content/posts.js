@@ -56,6 +56,9 @@ Listit.Post.prototype.__defineGetter__("numReplies", function() {
     return this._replies.length; 
 });
 
+Listit.Post.prototype.__defineGetter__("debug", function() { 
+    return this._replies.length + 1; 
+});
 
 //////
 // Various functions for processing and sorting the posts
@@ -71,11 +74,10 @@ Listit.sortBy["treeScore"]     = function(a, b) { return Listit.compareNumbers(a
 Listit.sortBy["treeUp"]        = function(a, b) { return Listit.compareNumbers(a.ups, b.ups) };
 Listit.sortBy["treeDown"]      = function(a, b) { return Listit.compareNumbers(a.downs, b.downs) };
 Listit.sortBy["treeVotes"]     = function(a, b) { return Listit.compareNumbers(a.votes, b.votes) };
-Listit.sortBy["treeReplies"]  = function(a, b) { return Listit.compareNumbers(a.numReplies, b.numReplies) };
-//Listit.sortBy["treeDepth"]     = function(a, b) { return Listit.compareNumbers(a.depth, b.depth) };
+Listit.sortBy["treeReplies"]   = function(a, b) { return Listit.compareNumbers(a.numReplies, b.numReplies) };
+Listit.sortBy["treeDepth"]     = function(a, b) { return Listit.compareNumbers(a.depth, b.depth) };
 Listit.sortBy["treeLocalDate"] = function(a, b) { return Listit.compareDates(a.dateCreated, b.dateCreated) };
 Listit.sortBy["treeUtcDate"]   = function(a, b) { return Listit.compareDates(a.dateCreated, b.dateCreated) };
-//Listit.sortBy["treePruts"]      = function(a, b) { return Listit.compareNumbers(a.downs, b.downs) };
 
 
 Listit.getDirectedComparisonFunction = function(comparisonFunction, direction) {
@@ -105,6 +107,23 @@ Listit.sortPosts = function(listitPosts, comparisonFunction) {
     return listitPosts.sort(comparisonFunction);
 }
 
+
+Listit.countPosts = function(posts) {
+
+    Listit.assert(posts instanceof Array, 'countPosts: posts should be an Array');
+    var result = posts.length;
+    for (var idx = 0; idx < posts.length; idx = idx + 1) {
+        result += Listit.countPosts(posts[idx].replies);
+    }
+    return result;
+}
+
+
+////
+// Parse JSON
+////
+
+
 Listit.redditNodeToListitNode = function(redditNode, depth) {
 
     if (redditNode.kind != 't1') { // e.g. kind = 'more'
@@ -122,7 +141,7 @@ Listit.redditNodeToListitNode = function(redditNode, depth) {
     listitNode.dateCreated = new Date(data.created_utc * 1000);
     listitNode.downs = data.downs;
     listitNode.ups = data.ups;
-    listitNode.isOpen = false;  // true if a node is expanded
+    listitNode.isOpen = true;  // true if a node is expanded
     listitNode.replies = []; // For convenience always make an empty replies list (TODO: optimize?)
 
     if (data.replies) {  // Recursively add children
