@@ -33,7 +33,7 @@ Listit.TreeView = function () { // Constructor
 ////
 
 Listit.TreeView.prototype.getPosts = function() {
-    return this.allPosts();
+    return this.allPosts;
 }
 
 Listit.TreeView.prototype.setPosts = function(listitPosts)  {

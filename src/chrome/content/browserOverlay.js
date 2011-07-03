@@ -46,10 +46,9 @@ Listit.onLoad = function() {
     
     Listit.logger.warn(' ---------------- Listit loaded ----------------');
     Listit.logger.trace('Listit.onLoad -- begin');
-    
+
     // Initialize state object
     Listit.state = new Listit.State();
-    Listit.treeView = new Listit.TreeView();
     
     // Add existing tabs to the state because there won't be a tabOpen
     // event raised for them
@@ -60,7 +59,7 @@ Listit.onLoad = function() {
     }
     
     var scoreTree = document.getElementById('scoreTree');
-    scoreTree.view = Listit.treeView;
+    scoreTree.view = Listit.state.getCurrentTreeView();
     
     // Add event handlers 
     scoreTree.addEventListener("select", Listit.onRowSelect, false);
@@ -72,6 +71,7 @@ Listit.onLoad = function() {
 
     gBrowser.addEventListener('DOMContentLoaded', Listit.onPageLoad, true);
     Listit.logger.trace('Listit.onLoad -- end');
+        
 };
 
 
@@ -79,10 +79,9 @@ Listit.onRowSelect = function(event) {
     Listit.logger.trace("Listit.onRowSelect -- ");
     
     var selectedIndex = document.getElementById('scoreTree').currentIndex;
-    var selectedPost = Listit.treeView.visiblePosts[selectedIndex];
-    Listit.setDetailsFrameHtml(selectedPost.bodyHtml);
-
     var curState = Listit.state.getCurrentBrowserState();
+    var selectedPost = curState.treeView.visiblePosts[selectedIndex];
+    Listit.setDetailsFrameHtml(selectedPost.bodyHtml);
     curState.selectedPost = selectedPost;
     
 // try {
@@ -91,7 +90,7 @@ Listit.onRowSelect = function(event) {
 //     //Listit.fbLog(gBrowser);
 //     //var browser = gBrowser.getBrowserForTab(event.target);
 //     Listit.fbLog(gBrowser.contentDocument);
-//     var classID = '.id-t1' + Listit.treeView.visiblePosts[selectedIndex].id;
+//     var classID = '.id-t1' + curState.treeView.visiblePosts[selectedIndex].id;
 //     Listit.logger.debug("Listit.onRowSelect: '" + classID + "'");
 //     gBrowser.contentDocument.jQuery(classID).css({'background': '#EFF7FF', 'border': '1px dashed #5F99CF'});
 // } catch (ex) {
@@ -126,6 +125,10 @@ Listit.onTabSelect = function(event) {
     var browserID = Listit.state.setCurrentBrowser(browser);
     Listit.logger.debug("Listit.onTabSelect: " + browserID + 
         ", URL: " + browser.contentDocument.URL);
+    
+    var scoreTree = document.getElementById('scoreTree');
+    scoreTree.view = Listit.state.getCurrentTreeView();    
+    
     Listit.updateAllViews(Listit.state, browserID);
 }
  
@@ -166,7 +169,7 @@ try {
     Listit.logger.debug('newSortResource: ' + newSortResource);    
     Listit.logger.debug('newSortDirection: ' + newSortDirection);    
     
-    Listit.treeView.sortPosts(
+    Listit.state.getCurrentTreeView().sortPosts(
         Listit.getDirectedComparisonFunction(comparisonFunction, newSortDirection));
     Listit.ensureCurrentRowVisible();
     
@@ -351,11 +354,11 @@ Listit.updateAllViews = function(state, eventBrowserID) {
     switch (curState.pageStatus) {
         case Listit.PAGE_NOT_LISTIT:
             Listit.setDetailsFrameHtml('<i>The current page is not a reddit discussion</i>');
-            Listit.treeView.removeAllPosts();
+            curState.removeAllPosts();
             break;
         case Listit.PAGE_LOADING:
             Listit.setDetailsFrameHtml('<i>Loading posts, please wait</i>');
-            Listit.treeView.removeAllPosts();
+            curState.removeAllPosts();
             break;
         case Listit.PAGE_READY:
             Listit.setDetailsFrameHtml('');
@@ -368,7 +371,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
                     Listit.sortBy[sortResource], sortDirection); 
             var listitPosts = Listit.sortPosts(
                     Listit.state.getBrowserPosts(eventBrowserID), comparisonFunction);
-            Listit.treeView.setPosts(listitPosts);
+            curState.treeView.setPosts(listitPosts);
             Listit.ensureCurrentRowVisible();
             break;
         default:
@@ -383,8 +386,8 @@ Listit.ensureCurrentRowVisible = function () {
 
     var curState = Listit.state.getCurrentBrowserState();
     if (curState.selectedPost != null) {
-        var selectedIndex = Listit.treeView.indexOfVisiblePost(curState.selectedPost)
-        Listit.treeView.selection.select(selectedIndex);
+        var selectedIndex = curState.treeView.indexOfVisiblePost(curState.selectedPost)
+        curState.treeView.selection.select(selectedIndex);
         Listit.getTreeBoxObject('scoreTree').ensureRowIsVisible(selectedIndex);
     }
 }

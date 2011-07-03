@@ -14,7 +14,7 @@ Listit.PAGE_READY       = 2; // Posts loaded
 Listit.BrowserState = function () { // Constructor
 
     this.pageStatus = Listit.PAGE_NOT_LISTIT;
-    this.posts = [];
+    this.treeView =  new Listit.TreeView();
     this.selectedPost = null; // The post that is selected in the table
 }
 
@@ -24,12 +24,12 @@ Listit.BrowserState.prototype.toString = function () {
 
 Listit.BrowserState.prototype.summaryString = function () {
     return "Listit.BrowserState: status=" + this.pageStatus 
-        + ", posts=" + this.posts.length 
+        + ", posts=" + this.treeView.getPosts().length 
         + ", selectedPost=" + (this.selectedPost ? this.selectedPost.id : this.selectedPost) ;
 };
 
 Listit.BrowserState.prototype.removeAllPosts = function (status) {
-    this.posts = [];
+    this.treeView.removeAllPosts();
     this.selectedPost = null;
 };
 
@@ -64,7 +64,8 @@ Listit.State.prototype.toString = function () {
 
 
 Listit.State.prototype.summaryString = function () {
-    return [ 'Tab ' + k + ': ' + (v.posts.length) for each ([k,v] in Iterator(this.browserStates))];
+    return [ 'Tab ' + k + ': ' + (v.treeView.getPosts().length) for 
+        each ([k,v] in Iterator(this.browserStates))];
 };
 
 
@@ -123,8 +124,13 @@ Listit.State.prototype.getCurrentBrowserState = function () {
     return this.browserStates[this.currentBrowserID];
 }
 
+Listit.State.prototype.getCurrentTreeView = function () {
+    return this.browserStates[this.currentBrowserID].treeView;
+}
+
+/*
 Listit.State.prototype.getCurrentBrowserPosts = function () {
     return this.browserStates[this.currentBrowserID].posts;
 }
-
+*/
 
