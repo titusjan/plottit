@@ -169,8 +169,9 @@ try {
     Listit.logger.debug('newSortResource: ' + newSortResource);    
     Listit.logger.debug('newSortDirection: ' + newSortDirection);    
     
-    Listit.state.getCurrentTreeView().sortPosts(
-        Listit.getDirectedComparisonFunction(comparisonFunction, newSortDirection));
+    var newComparisonFunction = Listit.getDirectedComparisonFunction(comparisonFunction, newSortDirection);
+    var structure = document.getElementById('treeBody').getAttribute('structure');
+    Listit.state.getCurrentTreeView().setPostsSorted(newComparisonFunction, structure);
     Listit.ensureCurrentRowVisible();
     
     // Set after actual sorting for easier dection of error in during sort
@@ -197,8 +198,20 @@ try {
     Listit.logger.debug('oldStructure: ' + oldStructure);    
     Listit.logger.debug('newStructure: ' + newStructure);    
     
-    Listit.state.getCurrentTreeView().setStructure(newStructure);
+    var curTreeView = Listit.state.getCurrentTreeView();
+    curTreeView.setStructure(newStructure);
     
+    // Sort and set posts in score tree (TODO new function)
+    var scoreTree = document.getElementById('scoreTree');
+    var sortResource = scoreTree.getAttribute('sortResource');
+    var sortDirection = scoreTree.getAttribute('sortDirection');
+    var comparisonFunction = Listit.getDirectedComparisonFunction(
+            Listit.sortBy[sortResource], sortDirection); 
+    curTreeView.setPostsSorted(comparisonFunction, newStructure, curTreeView.posts);
+    Listit.ensureCurrentRowVisible();
+
+    
+    // Set after actual sorting for easier dection of error in during sort
     column.setAttribute('structure', newStructure);
     column.setAttribute('label', 'Body as ' + ((newStructure == 'tree') ? 'tree' : 'list'));
     Listit.logger.debug("Listit.onClickBodyTreeHeader done ");
@@ -395,18 +408,18 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             var scoreTree = document.getElementById('scoreTree');
             var sortResource = scoreTree.getAttribute('sortResource');
             var sortDirection = scoreTree.getAttribute('sortDirection');
+            var structure = document.getElementById('treeBody').getAttribute('structure');
             var comparisonFunction = Listit.getDirectedComparisonFunction(
                     Listit.sortBy[sortResource], sortDirection); 
-            var listitPosts = Listit.sortPosts(
-                    Listit.state.getBrowserPosts(eventBrowserID), comparisonFunction);
-            curState.treeView.setPosts(listitPosts);
+            curState.treeView.setPostsSorted(
+                    comparisonFunction, structure, 
+                    Listit.state.getBrowserPosts(eventBrowserID));
             Listit.ensureCurrentRowVisible();
             break;
         default:
             Listit.assert(false, "Invalid pageStatus: " + curState.pageStatus);
     } // switch
 }
-
 
 
 Listit.ensureCurrentRowVisible = function () {

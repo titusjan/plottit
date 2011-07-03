@@ -100,7 +100,6 @@ Listit.sortPosts = function(listitPosts, comparisonFunction) {
     if (!listitPosts) {
         return listitPosts;
     }
-    
     for (var i = 0; i < listitPosts.length; i++) { // Recursively sort children
         Listit.sortPosts(listitPosts[i].replies, comparisonFunction);
     }
@@ -141,7 +140,7 @@ Listit.redditNodeToListitNode = function(redditNode, depth) {
     listitNode.dateCreated = new Date(data.created_utc * 1000);
     listitNode.downs = data.downs;
     listitNode.ups = data.ups;
-    listitNode.isOpen = false;  // true if a node is expanded
+    listitNode.isOpen = true;  // true if a node is expanded
     listitNode.replies = []; // For convenience always make an empty replies list (TODO: optimize?)
 
     if (data.replies) {  // Recursively add children

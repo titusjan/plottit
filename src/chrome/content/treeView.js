@@ -37,29 +37,50 @@ Listit.TreeView.prototype.getPosts = function() {
     return this.allPosts;
 }
 
-Listit.TreeView.prototype.setPosts = function(listitPosts)  {
+Listit.TreeView.prototype.setPostsSorted = function(comparisonFunction, structure, posts) {
+
+    Listit.logger.debug("setPostsSorted -- ")
+    if (posts === undefined) {
+        posts = this.allPosts;
+    }
+    Listit.assert(posts instanceof Array, 'addPosts: listitPosts should be an Array');
+
+    Listit.logger.debug("setPostsSorted, structure: " + structure);    
+    this.setStructure(structure);
     this.removeAllPosts();
-    this.addPosts(listitPosts);
+    
+    if (this.isFlat) {
+        Listit.logger.debug("setPostsSorted: flat ")
+        this.allPosts = posts;
+        this.visiblePosts = this._flattenPosts(this.allPosts).sort(comparisonFunction);
+    } else {
+        Listit.logger.debug("setPostsSorted: tree ")
+        this.allPosts = Listit.sortPosts(posts, comparisonFunction);
+        this.visiblePosts = this._getOpenPosts(this.allPosts);
+    }
+    this.treeBox.rowCountChanged(0, this.visiblePosts.length);
+}
+
+Listit.TreeView.prototype.__undefine__sortPosts = function(comparisonFunction)  {
+    this.setPosts(Listit.sortPosts(this.allPosts, comparisonFunction));
 }
 
 Listit.TreeView.prototype.countPosts = function() {
     return Listit.countPosts(this.allPosts);
 }
 
-Listit.TreeView.prototype.addPosts = function(listitPosts)  {
+Listit.TreeView.prototype._addPosts = function(listitPosts)  {
     Listit.assert(listitPosts instanceof Array, 'addPosts: listitPosts should be an Array');
     this.allPosts = listitPosts;
-    this.visiblePosts = this.getOpenPosts(this.allPosts);
+    this.visiblePosts = this._getOpenPosts(this.allPosts);
 
     this.treeBox.rowCountChanged(0, this.visiblePosts.length);
-    //Listit.logger.debug("addPosts: rowCountChanged: " + this.visiblePosts.length);
 }
 
 Listit.TreeView.prototype.removeAllPosts = function() { // Must be fast because it's called for every page load!
 
     if (this.rowCount != 0) {
         this.treeBox.rowCountChanged(0, -this.rowCount);
-        //Listit.logger.debug("addPosts: rowCountChanged: " + (-this.rowCount));
         this.allPosts = [];
         this.visiblePosts = [];
     }
@@ -73,25 +94,32 @@ Listit.TreeView.prototype.setStructure = function(structure)  {
     this.isFlat = (structure == 'flat');
 }
 
-Listit.TreeView.prototype.sortPosts = function(comparisonFunction)  {
-    this.setPosts(Listit.sortPosts(this.allPosts, comparisonFunction));
-}
-
 Listit.TreeView.prototype.indexOfVisiblePost = function(post) {
     return this.visiblePosts.indexOf(post);
 }
 
-Listit.TreeView.prototype.getOpenPosts = function(posts) {
+Listit.TreeView.prototype._getOpenPosts = function(posts) {  
     var openPosts = [];
     for (var idx = 0; idx < posts.length; idx = idx + 1) {
         var post = posts[idx];
         openPosts.push(post);
-        if (post.isOpen) {
-            openPosts = openPosts.concat(this.getOpenPosts(post.replies));
+        if (post.isOpen) { 
+            openPosts = openPosts.concat(this._getOpenPosts(post.replies));
         }
     }
     return openPosts;
 }
+
+Listit.TreeView.prototype._flattenPosts = function(posts) {  
+    var flatPosts = [];
+    for (var idx = 0; idx < posts.length; idx = idx + 1) {
+        var post = posts[idx];
+        flatPosts.push(post);
+        flatPosts = flatPosts.concat(this._flattenPosts(post.replies));
+    }
+    return flatPosts;
+}
+
 
 ////
 // Methods that are part of the nsITreeView interface
@@ -184,7 +212,7 @@ Listit.TreeView.prototype.toggleOpenState = function(idx) {
         }
     } else {
         this.visiblePosts[idx].isOpen = true;
-        var toInsert = this.getOpenPosts(this.visiblePosts[idx].replies);
+        var toInsert = this._getOpenPosts(this.visiblePosts[idx].replies);
         for (var i = 0; i < toInsert.length; i++) {
             this.visiblePosts.splice(idx + i + 1, 0, toInsert[i]);
         }
