@@ -38,7 +38,7 @@ Listit.treeView = {
     },
 
     addPosts: function(listitPosts)  {
-        Listit.assert(listitPosts instanceof Array, 'listitPosts should be an Array');
+        Listit.assert(listitPosts instanceof Array, 'addPosts: listitPosts should be an Array');
         this.allPosts = listitPosts;
         this.visibleData = this.getOpenPosts(this.allPosts);
 

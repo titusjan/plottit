@@ -31,15 +31,11 @@ Listit.getDirectedComparisonFunction = function(comparisonFunction, direction) {
     }
 }
 
-
-
 Listit.sortPosts = function(listitPosts, comparisonFunction) {
-    // Sorts posts recursively and in place
     Listit.logger.trace("Listit.sortPosts -- ");
-    //Listit.fbLog("Listit.sortPosts -- ");
-    //Listit.fbLog(listitPosts);
+    Listit.assert(comparisonFunction instanceof Function, 'comparisonFunction should be a Function');
+    Listit.assert(listitPosts instanceof Array, 'sortPosts: listitPosts should be an Array');
     
-    Listit.assert(listitPosts instanceof Array, 'listitPosts should be an Array');
     if (!listitPosts) {
         return listitPosts;
     }

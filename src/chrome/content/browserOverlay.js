@@ -352,7 +352,16 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             break;
         case Listit.PAGE_READY:
             Listit.setDetailsFrameHtml('');
-            Listit.treeView.setPosts(Listit.state.getBrowserPosts(eventBrowserID));
+            
+            var scoreTree = document.getElementById('scoreTree');
+            var sortResource = scoreTree.getAttribute('sortResource');
+            var sortDirection = scoreTree.getAttribute('sortDirection');
+            var comparisonFunction = Listit.getDirectedComparisonFunction(
+                    Listit.sortBy[sortResource], sortDirection); 
+            var listitPosts = Listit.sortPosts(
+                    Listit.state.getBrowserPosts(eventBrowserID), comparisonFunction);
+            
+            Listit.treeView.setPosts(listitPosts);
             if (curState.selectedPostIndex != null) {
                 Listit.treeView.selection.select(curState.selectedPostIndex);
                 var scoreTreeObject = Listit.getTreeBoxObject('scoreTree');
