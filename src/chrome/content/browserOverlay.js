@@ -44,12 +44,13 @@ Listit.onLoad = function() {
         Listit.logger.level = Log4Moz.Level['All'];
     }
     
-    Listit.logger.info(' ---------------- Listit loaded ----------------');
+    Listit.logger.warn(' ---------------- Listit loaded ----------------');
     Listit.logger.trace('Listit.onLoad -- begin');
     
     // Initialize state object
     Listit.state = new Listit.State();
-        
+    Listit.treeView = new Listit.TreeView();
+    
     // Add existing tabs to the state because there won't be a tabOpen
     // event raised for them
     for (var idx = 0; idx < gBrowser.browsers.length; idx++) {
