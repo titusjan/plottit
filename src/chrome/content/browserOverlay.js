@@ -196,12 +196,15 @@ try {
     var newStructure = (oldStructure == 'tree') ? 'flat' : 'tree';
     Listit.logger.debug('oldStructure: ' + oldStructure);    
     Listit.logger.debug('newStructure: ' + newStructure);    
+    
+    Listit.state.getCurrentTreeView().setStructure(newStructure);
+    
     column.setAttribute('structure', newStructure);
-    column.setAttribute('label', 'Body (' + newStructure + ')');
+    column.setAttribute('label', 'Body as ' + ((newStructure == 'tree') ? 'tree' : 'list'));
     Listit.logger.debug("Listit.onClickBodyTreeHeader done ");
     
 } catch (ex) {
-     Listit.logger.error('Exception in Listit.onClickBodyTreeHeader;');
+    Listit.logger.error('Exception in Listit.onClickBodyTreeHeader;');
     Listit.logger.error(ex);
 }        
 }

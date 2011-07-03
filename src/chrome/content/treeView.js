@@ -22,7 +22,8 @@ Listit.TreeView = function () { // Constructor
 
     this.typeStr = 'treeView';  // TODO in prototype ???
     this.allPosts = [];
-    this.visiblePosts = [],
+    this.visiblePosts = [];
+    this.isFlat = false;     // If body column is a tree of flat
 
     this.treeBox = null;
     this.selection = null;
@@ -45,7 +46,6 @@ Listit.TreeView.prototype.countPosts = function() {
     return Listit.countPosts(this.allPosts);
 }
 
-
 Listit.TreeView.prototype.addPosts = function(listitPosts)  {
     Listit.assert(listitPosts instanceof Array, 'addPosts: listitPosts should be an Array');
     this.allPosts = listitPosts;
@@ -65,6 +65,13 @@ Listit.TreeView.prototype.removeAllPosts = function() { // Must be fast because 
     }
 }
 
+
+Listit.TreeView.prototype.setStructure = function(structure)  {
+    
+    Listit.assert(structure == "flat" || structure == "tree", 
+        "structure should be either 'flat' or 'tree'");
+    this.isFlat = (structure == 'flat');
+}
 
 Listit.TreeView.prototype.sortPosts = function(comparisonFunction)  {
     this.setPosts(Listit.sortPosts(this.allPosts, comparisonFunction));
@@ -117,12 +124,15 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
     }
 }
 
+
+
 Listit.TreeView.prototype.isContainer = function(idx) {
-    return this.visiblePosts[idx].replies.length;
+    return !this.isFlat && this.visiblePosts[idx].replies.length; // No containers when tree is flat
 }
 
 Listit.TreeView.prototype.isContainerOpen = function(idx) {
-    return this.visiblePosts[idx].isOpen;
+    //return this.isFlat || this.visiblePosts[idx].isOpen; // Always open when structure is flat
+    return this.visiblePosts[idx].isOpen; 
 }
 Listit.TreeView.prototype.isContainerEmpty = function(idx)    { return false; }
 Listit.TreeView.prototype.isSeparator = function(idx)         { return false; }
@@ -139,8 +149,10 @@ Listit.TreeView.prototype.getParentIndex = function(idx) {
     }
 }
 
+Listit.TreeView.prototype.getLevel = function(idx) { 
+    return this.isFlat ? 0 : this.visiblePosts[idx].depth 
+}
 
-Listit.TreeView.prototype.getLevel = function(idx) { return this.visiblePosts[idx].depth }
 
 Listit.TreeView.prototype.hasNextSibling = function(idx, after) {
     var thisLevel = this.getLevel(idx);

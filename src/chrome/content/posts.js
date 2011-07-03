@@ -141,7 +141,7 @@ Listit.redditNodeToListitNode = function(redditNode, depth) {
     listitNode.dateCreated = new Date(data.created_utc * 1000);
     listitNode.downs = data.downs;
     listitNode.ups = data.ups;
-    listitNode.isOpen = true;  // true if a node is expanded
+    listitNode.isOpen = false;  // true if a node is expanded
     listitNode.replies = []; // For convenience always make an empty replies list (TODO: optimize?)
 
     if (data.replies) {  // Recursively add children
