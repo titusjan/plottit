@@ -177,14 +177,39 @@ try {
     scoreTree.setAttribute('sortDirection', newSortDirection);
     scoreTree.setAttribute('sortResource', newSortResource);
     column.setAttribute('sortDirection', newSortDirection);
-        
-} catch (ex) {
-        Listit.logger.error('Exception in Listit.onClickTreeHeader;');
-        Listit.logger.error(ex);
-}        
-    
     Listit.logger.trace("Listit.onClickTreeHeader done ");
+       
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.onClickTreeHeader;');
+    Listit.logger.error(ex);
+}        
 }
+
+
+
+Listit.onClickBodyTreeHeader = function(column) {
+    Listit.logger.debug("Listit.onClickBodyTreeHeader -- ");
+    
+try {    
+
+    var oldStructure = column.getAttribute('structure');
+    var newStructure = (oldStructure == 'tree') ? 'flat' : 'tree';
+    Listit.logger.debug('oldStructure: ' + oldStructure);    
+    Listit.logger.debug('newStructure: ' + newStructure);    
+    column.setAttribute('structure', newStructure);
+    column.setAttribute('label', 'Body (' + newStructure + ')');
+    Listit.logger.debug("Listit.onClickBodyTreeHeader done ");
+    
+} catch (ex) {
+     Listit.logger.error('Exception in Listit.onClickBodyTreeHeader;');
+    Listit.logger.error(ex);
+}        
+}
+
+
+
+
+
 
 // Finds the root document from a HTMLDocument
 // Returns null if the document is not a HTMLDocument

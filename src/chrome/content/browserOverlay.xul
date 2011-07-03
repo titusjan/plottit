@@ -44,18 +44,91 @@
       <tree id="scoreTree" hidecolumnpicker="false" enableColumnDrag="true" flex="1" seltype="single" flags="dont-build-content" disableKeyNavigation="true"
             sortDirection="ascending" sortResource="treeID" persist="sortDirection sortResource">
         <treecols pickertooltiptext="Select visible columns">
-          <treecol id="treeID"        width="60"  label="ID"         persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" hidden="true"/> <splitter class="tree-splitter" />
-          <treecol id="treeAuthor"    width="140" label="Author"     persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" minwidth="40" maxwidth="150"/> <splitter class="tree-splitter" />
-          <treecol id="treeScore"     width="50"  label="Score   "   persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" style="text-align: right"/> <splitter class="tree-splitter" />	    
-          <treecol id="treeUp"        width="50"  label="Up   "      persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" style="text-align: right"/> <splitter class="tree-splitter" />	    
-          <treecol id="treeDown"      width="50"  label="Down   "    persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" style="text-align: right"/> <splitter class="tree-splitter" />
-          <treecol id="treeVotes"     width="50"  label="Votes   "   persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" style="text-align: right"/> <splitter class="tree-splitter" />
-          <treecol id="treeReplies"   width="50"  label="Replies   " persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" style="text-align: right"/> <splitter class="tree-splitter" />
-          <treecol id="treeDepth"     width="50"  label="Depth   "   persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" style="text-align: right"/> <splitter class="tree-splitter" />
-          <treecol id="treeBody"      width="500" label="Body"       persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" flex="1" primary="true" minwidth="100"/> <splitter class="tree-splitter"/>
-          <treecol id="treeLocalDate" width="130" label="Local Date" persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" /> <splitter class="tree-splitter" />
-          <treecol id="treeUtcDate"   width="130" label="UTC Date"   persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" /> <splitter class="tree-splitter" />
-          <treecol id="treeDebug"     width="50"  label="Debug (posts)" persist="width ordinal hidden" onclick="Listit.onClickTreeHeader(this)" style="text-align: right"/> <splitter class="tree-splitter" />
+          <treecol id="treeID"
+            width="60"  
+            label="ID"
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(this)"
+            hidden="true"/>
+          <splitter class="tree-splitter" />
+          <treecol id="treeAuthor"
+            width="140"
+            label="Author"
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(this)"
+            minwidth="40"
+            maxwidth="150"/> 
+          <splitter class="tree-splitter" />
+          <treecol id="treeScore"
+            width="50"
+            label="Score   "
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(this)"
+            style="text-align: right"/>
+          <splitter class="tree-splitter" />	    
+          <treecol id="treeUp"
+            width="50"
+            label="Up   "
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(this)"
+            style="text-align: right"/>
+          <splitter class="tree-splitter" />	    
+          <treecol id="treeDown"
+            width="50"
+            label="Down   "
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(this)"
+            style="text-align: right"/>
+          <splitter class="tree-splitter" />
+          <treecol id="treeVotes"
+            width="50"
+            label="Votes   "
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(this)"
+            style="text-align: right"/> 
+          <splitter class="tree-splitter" />
+          <treecol id="treeReplies"
+            width="50"
+            label="Replies   "
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(this)"
+            style="text-align: right"/>
+          <splitter class="tree-splitter" />
+          <treecol id="treeDepth"
+            width="50"  label="Depth   "
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(this)"
+            style="text-align: right"/> 
+          <splitter class="tree-splitter" />
+          <treecol id="treeBody"
+            width="500"
+            label="Body (tree)"
+            structure="tree"
+            persist="width ordinal hidden structure label"
+            onclick="Listit.onClickBodyTreeHeader(this)"
+            flex="1"
+            primary="true"
+            minwidth="100"/>
+          <splitter class="tree-splitter"/>
+          <treecol id="treeLocalDate"
+            width="130"
+            label="Local Date"
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(this)" />
+          <splitter class="tree-splitter" />
+          <treecol id="treeUtcDate"
+            width="130"
+            label="UTC Date"
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(this)" />
+          <splitter class="tree-splitter" />
+          <treecol id="treeDebug"
+            width="50"
+            label="Debug (posts)"
+            persist="width ordinal hidden" 
+            onclick="Listit.onClickTreeHeader(this)"
+            style="text-align: right"/> 
+          <splitter class="tree-splitter" />
         </treecols>
 
         <treechildren>
