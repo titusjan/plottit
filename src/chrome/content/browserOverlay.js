@@ -78,7 +78,7 @@ Listit.onRowSelect = function(event) {
     Listit.logger.trace("Listit.onRowSelect -- ");
     
     var selectedIndex = document.getElementById('scoreTree').currentIndex;
-    var selectedPost = Listit.treeView.visibleData[selectedIndex];
+    var selectedPost = Listit.treeView.visiblePosts[selectedIndex];
     Listit.setDetailsFrameHtml(selectedPost.bodyHtml);
 
     var curState = Listit.state.getCurrentBrowserState();
@@ -90,7 +90,7 @@ Listit.onRowSelect = function(event) {
 //     //Listit.fbLog(gBrowser);
 //     //var browser = gBrowser.getBrowserForTab(event.target);
 //     Listit.fbLog(gBrowser.contentDocument);
-//     var classID = '.id-t1' + Listit.treeView.visibleData[selectedIndex].id;
+//     var classID = '.id-t1' + Listit.treeView.visiblePosts[selectedIndex].id;
 //     Listit.logger.debug("Listit.onRowSelect: '" + classID + "'");
 //     gBrowser.contentDocument.jQuery(classID).css({'background': '#EFF7FF', 'border': '1px dashed #5F99CF'});
 // } catch (ex) {

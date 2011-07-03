@@ -23,7 +23,7 @@ Listit.treeView = {
 
     typeStr: 'treeView',
     allPosts: [],
-    visibleData: [],
+    visiblePosts: [],
 
     treeBox: null,
     selection: null,
@@ -40,10 +40,10 @@ Listit.treeView = {
     addPosts: function(listitPosts)  {
         Listit.assert(listitPosts instanceof Array, 'addPosts: listitPosts should be an Array');
         this.allPosts = listitPosts;
-        this.visibleData = this.getOpenPosts(this.allPosts);
+        this.visiblePosts = this.getOpenPosts(this.allPosts);
 
-        this.treeBox.rowCountChanged(0, this.visibleData.length);
-        //Listit.logger.debug("addPosts: rowCountChanged: " + this.visibleData.length);
+        this.treeBox.rowCountChanged(0, this.visiblePosts.length);
+        //Listit.logger.debug("addPosts: rowCountChanged: " + this.visiblePosts.length);
     },
 
     removeAllPosts: function() { // Must be fast because it's called for every page load!
@@ -52,7 +52,7 @@ Listit.treeView = {
             this.treeBox.rowCountChanged(0, -this.rowCount);
             //Listit.logger.debug("addPosts: rowCountChanged: " + (-this.rowCount));
             this.allPosts = [];
-            this.visibleData = [];
+            this.visiblePosts = [];
         }
     },
 
@@ -61,7 +61,7 @@ Listit.treeView = {
     },
     
     indexOfVisiblePost: function(post) {
-        return this.visibleData.indexOf(post);
+        return this.visiblePosts.indexOf(post);
     },
 
     getOpenPosts: function(posts) {
@@ -79,11 +79,11 @@ Listit.treeView = {
     
     // Methods that are part of the nsITreeView interface
 
-    get rowCount() { return this.visibleData.length; },
+    get rowCount() { return this.visiblePosts.length; },
     setTree: function(treeBox)         { this.treeBox = treeBox; },
 
     getCellText: function(idx, column) {
-        var rowItem = this.visibleData[idx];
+        var rowItem = this.visiblePosts[idx];
         switch (column.id)
         {
             case 'treeID'        : return rowItem.id;
@@ -103,11 +103,11 @@ Listit.treeView = {
         }
     },
     isContainer: function(idx) {
-        return this.visibleData[idx].replies.length;
+        return this.visiblePosts[idx].replies.length;
     },
 
     isContainerOpen: function(idx) {
-        return this.visibleData[idx].isOpen;
+        return this.visiblePosts[idx].isOpen;
     },
     isContainerEmpty: function(idx)    { return false; },
     isSeparator: function(idx)         { return false; },
@@ -115,20 +115,20 @@ Listit.treeView = {
     isEditable: function(idx, column)  { return false; },
 
     getParentIndex: function(idx) {
-        var thisDepth = this.visibleData[idx].depth;
+        var thisDepth = this.visiblePosts[idx].depth;
         if (thisDepth == 0) return -1;
 
         // iterate backwards until we find the item with the lower depth
         for (var i = idx - 1; i >= 0; i--) {
-            if (this.visibleData[i].depth < thisDepth) return i;
+            if (this.visiblePosts[i].depth < thisDepth) return i;
         }
     },
 
-    getLevel: function(idx) { return this.visibleData[idx].depth },
+    getLevel: function(idx) { return this.visiblePosts[idx].depth },
 
     hasNextSibling: function(idx, after) {
         var thisLevel = this.getLevel(idx);
-        for (var t = after + 1; t < this.visibleData.length; t++) {
+        for (var t = after + 1; t < this.visiblePosts.length; t++) {
             var nextLevel = this.getLevel(t);
             if (nextLevel == thisLevel) return true;
             if (nextLevel < thisLevel) break;
@@ -140,25 +140,25 @@ Listit.treeView = {
 
         if (!this.isContainer(idx)) return;
         if (this.isContainerOpen(idx)) {
-            this.visibleData[idx].isOpen = false;
+            this.visiblePosts[idx].isOpen = false;
 
             // Walk downwards to next sibling to count children to delete
             var thisLevel = this.getLevel(idx);
             var deleteCount = 0;
-            for (var t = idx + 1; t < this.visibleData.length; t++) {
+            for (var t = idx + 1; t < this.visiblePosts.length; t++) {
                 if (this.getLevel(t) > thisLevel)
                     deleteCount++;
                 else break;
             }
             if (deleteCount) {
-                this.visibleData.splice(idx + 1, deleteCount);
+                this.visiblePosts.splice(idx + 1, deleteCount);
                 this.treeBox.rowCountChanged(idx + 1, -deleteCount);
             }
         } else {
-            this.visibleData[idx].isOpen = true;
-            var toInsert = this.getOpenPosts(this.visibleData[idx].replies);
+            this.visiblePosts[idx].isOpen = true;
+            var toInsert = this.getOpenPosts(this.visiblePosts[idx].replies);
             for (var i = 0; i < toInsert.length; i++) {
-                this.visibleData.splice(idx + i + 1, 0, toInsert[i]);
+                this.visiblePosts.splice(idx + i + 1, 0, toInsert[i]);
             }
             this.treeBox.rowCountChanged(idx + 1, toInsert.length);
         }
