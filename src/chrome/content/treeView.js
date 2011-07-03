@@ -20,7 +20,7 @@ Listit.getTreeBoxObject = function (treeID) {
 
 Listit.TreeView = function () { // Constructor
 
-    this.typeStr = 'treeView';
+    this.typeStr = 'treeView';  // TODO in prototype ???
     this.allPosts = [];
     this.visiblePosts = [],
 
@@ -98,11 +98,11 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
     {
         case 'treeID'        : return rowItem.id;
         case 'treeAuthor'    : return rowItem.author;
-        case 'treeScore'     : return rowItem.ups - rowItem.downs;
+        case 'treeScore'     : return rowItem.score;
         case 'treeUp'        : return rowItem.ups;
         case 'treeDown'      : return rowItem.downs;
-        case 'treeVotes'     : return rowItem.ups + rowItem.downs;
-        case 'treeChildren'  : return rowItem.replies.length;
+        case 'treeVotes'     : return rowItem.votes;
+        case 'treeReplies'  : return rowItem.numReplies;
         case 'treeDepth'     : return rowItem.depth;
         case 'treeBody'      : return rowItem.body;
         case 'treeUtcDate'   : return Listit.UtcDateString(rowItem.dateCreated);

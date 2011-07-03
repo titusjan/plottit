@@ -1,3 +1,62 @@
+
+//////////
+// Post //
+//////////
+
+Listit.Post = function () { // Constructor
+
+}
+
+Listit.Post.prototype.toString = function () {
+    return "<Listit.Post, id = '" + this.id + "'>";
+};
+
+Listit.Post.prototype.__defineGetter__("id", function() { return this._id} );
+Listit.Post.prototype.__defineSetter__("id", function(v) { this._id = v } );
+
+Listit.Post.prototype.__defineGetter__("depth", function() { return this._depth} );
+Listit.Post.prototype.__defineSetter__("depth", function(v) { this._depth  = v} );
+
+Listit.Post.prototype.__defineGetter__("author", function() { return this._author} );
+Listit.Post.prototype.__defineSetter__("author", function(v) { this._author = v} );
+
+Listit.Post.prototype.__defineGetter__("body", function() { return this._body} );
+Listit.Post.prototype.__defineSetter__("body", function(v) { this._body = v} );
+
+Listit.Post.prototype.__defineGetter__("bodyHtml", function() { return this._bodyHtml} );
+Listit.Post.prototype.__defineSetter__("bodyHtml", function(v) { this._bodyHtml = v} );
+
+Listit.Post.prototype.__defineGetter__("dateCreated", function() { return this._dateCreated} );
+Listit.Post.prototype.__defineSetter__("dateCreated", function(v) { this._dateCreated = v} );
+
+Listit.Post.prototype.__defineGetter__("ups", function() { return this._ups} );
+Listit.Post.prototype.__defineSetter__("ups", function(v) { this._ups = v} );
+
+Listit.Post.prototype.__defineGetter__("downs", function() { return this._downs} );
+Listit.Post.prototype.__defineSetter__("downs", function(v) { this._downs = v} );
+
+Listit.Post.prototype.__defineGetter__("isOpen", function() { return this._isOpen} );
+Listit.Post.prototype.__defineSetter__("isOpen", function(v) { this._isOpen = v} );
+
+Listit.Post.prototype.__defineGetter__("replies", function() { return this._replies} );
+Listit.Post.prototype.__defineSetter__("replies", function(v) { this._replies = v} );
+
+/////
+// Derived data
+
+Listit.Post.prototype.__defineGetter__("score", function() { 
+    return this._ups - this._downs; 
+});
+
+Listit.Post.prototype.__defineGetter__("votes", function() { 
+    return this._ups + this._downs; 
+});
+
+Listit.Post.prototype.__defineGetter__("numReplies", function() { 
+    return this._replies.length; 
+});
+
+
 //////
 // Various functions for processing and sorting the posts
 //////
@@ -8,11 +67,11 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 Listit.sortBy = {};
 Listit.sortBy["treeID"]        = function(a, b) { return Listit.compareStrings(a.id, b.id) };
 Listit.sortBy["treeAuthor"]    = function(a, b) { return Listit.compareCaseInsensitiveStrings(a.author, b.author) };
-//Listit.sortBy["treeScore"]     = function(a, b) { return Listit.compareNumbers(a.author, b.author) };
+Listit.sortBy["treeScore"]     = function(a, b) { return Listit.compareNumbers(a.score, b.score) };
 Listit.sortBy["treeUp"]        = function(a, b) { return Listit.compareNumbers(a.ups, b.ups) };
 Listit.sortBy["treeDown"]      = function(a, b) { return Listit.compareNumbers(a.downs, b.downs) };
-//Listit.sortBy["treeVotes"]     = function(a, b) { return Listit.compareNumbers(a.author, b.author) };
-//Listit.sortBy["treeChildren"]  = function(a, b) { return Listit.compareNumbers(a.author, b.author) };
+Listit.sortBy["treeVotes"]     = function(a, b) { return Listit.compareNumbers(a.votes, b.votes) };
+Listit.sortBy["treeReplies"]  = function(a, b) { return Listit.compareNumbers(a.numReplies, b.numReplies) };
 //Listit.sortBy["treeDepth"]     = function(a, b) { return Listit.compareNumbers(a.depth, b.depth) };
 Listit.sortBy["treeLocalDate"] = function(a, b) { return Listit.compareDates(a.dateCreated, b.dateCreated) };
 Listit.sortBy["treeUtcDate"]   = function(a, b) { return Listit.compareDates(a.dateCreated, b.dateCreated) };
@@ -54,7 +113,7 @@ Listit.redditNodeToListitNode = function(redditNode, depth) {
     } 
 
     var data = redditNode.data;
-    var listitNode = {};
+    var listitNode = new Listit.Post();
     listitNode.id = data.id;
     listitNode.depth = depth;
     listitNode.author = data.author;
