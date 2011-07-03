@@ -143,6 +143,7 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
         case 'treeVotes'     : return rowItem.votes;
         case 'treeReplies'   : return rowItem.numReplies;
         case 'treeDepth'     : return rowItem.depth;
+        case 'treeChars'     : return rowItem.numChars;
         case 'treeBody'      : return rowItem.body;
         case 'treeUtcDate'   : return Listit.UtcDateString(rowItem.dateCreated);
         case 'treeLocalDate' : return Listit.LocalDateString(rowItem.dateCreated);

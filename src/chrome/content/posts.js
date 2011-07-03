@@ -52,6 +52,10 @@ Listit.Post.prototype.__defineGetter__("votes", function() {
     return this._ups + this._downs; 
 });
 
+Listit.Post.prototype.__defineGetter__("numChars", function() { 
+    return this._body.length; 
+});
+
 Listit.Post.prototype.__defineGetter__("numReplies", function() { 
     return this._replies.length; 
 });
@@ -76,6 +80,7 @@ Listit.sortBy["treeDown"]      = function(a, b) { return Listit.compareNumbers(a
 Listit.sortBy["treeVotes"]     = function(a, b) { return Listit.compareNumbers(a.votes, b.votes) };
 Listit.sortBy["treeReplies"]   = function(a, b) { return Listit.compareNumbers(a.numReplies, b.numReplies) };
 Listit.sortBy["treeDepth"]     = function(a, b) { return Listit.compareNumbers(a.depth, b.depth) };
+Listit.sortBy["treeChars"]     = function(a, b) { return Listit.compareNumbers(a.numChars, b.numChars) };
 Listit.sortBy["treeLocalDate"] = function(a, b) { return Listit.compareDates(a.dateCreated, b.dateCreated) };
 Listit.sortBy["treeUtcDate"]   = function(a, b) { return Listit.compareDates(a.dateCreated, b.dateCreated) };
 
