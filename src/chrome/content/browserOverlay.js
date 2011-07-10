@@ -146,12 +146,6 @@ try {
     if (event.button != 0) return; // Only left mouse button
     
     var column = event.originalTarget;
-    var comparisonFunction = Listit.sortBy[column.id];    
-    if (!comparisonFunction) {
-        Listit.logger.warn("No comparison function for: " + column.id);
-        return null;
-    }
-
     var scoreTree = document.getElementById('scoreTree');
     var oldSortResource = scoreTree.getAttribute('sortResource');
     var oldColumn = document.getElementById(oldSortResource);
@@ -179,9 +173,8 @@ try {
     Listit.logger.debug('newSortResource: ' + newSortResource);    
     Listit.logger.debug('newSortDirection: ' + newSortDirection);    
     
-    var newComparisonFunction = Listit.getDirectedComparisonFunction(comparisonFunction, newSortDirection);
     var structure = document.getElementById('treeBody').getAttribute('structure');
-    Listit.state.getCurrentTreeView().setPostsSorted(newComparisonFunction, structure);
+    Listit.state.getCurrentTreeView().setPostsSorted(column.id, newSortDirection, structure);
     Listit.ensureCurrentRowVisible();
     
     // Set after actual sorting for easier dection of error in during sort
@@ -217,11 +210,8 @@ try {
     var scoreTree = document.getElementById('scoreTree');
     var sortResource = scoreTree.getAttribute('sortResource');
     var sortDirection = scoreTree.getAttribute('sortDirection');
-    var comparisonFunction = Listit.getDirectedComparisonFunction(
-            Listit.sortBy[sortResource], sortDirection); 
-    curTreeView.setPostsSorted(comparisonFunction, newStructure, curTreeView.posts);
+    curTreeView.setPostsSorted(sortResource, sortDirection, newStructure, curTreeView.posts);
     Listit.ensureCurrentRowVisible();
-
     
     // Set after actual sorting for easier dection of error in during sort
     column.setAttribute('structure', newStructure);
@@ -484,10 +474,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             var column = document.getElementById(sortResource);
             column.setAttribute('sortDirection', sortDirection);
             
-            var comparisonFunction = Listit.getDirectedComparisonFunction(
-                    Listit.sortBy[sortResource], sortDirection); 
-            curState.treeView.setPostsSorted(
-                    comparisonFunction, structure, 
+            curState.treeView.setPostsSorted(column.id, sortDirection, structure, 
                     Listit.state.getBrowserPosts(eventBrowserID));
             Listit.ensureCurrentRowVisible();
             break;

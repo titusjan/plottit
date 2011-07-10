@@ -33,6 +33,7 @@ Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
     this.refreshDate = Date();
 }
 
+
 ////
 // Methods that are not part of the nsITreeView interface
 ////
@@ -41,7 +42,7 @@ Listit.TreeView.prototype.getPosts = function() {
     return this.allPosts;
 }
 
-Listit.TreeView.prototype.setPostsSorted = function(comparisonFunction, structure, posts) {
+Listit.TreeView.prototype.setPostsSorted = function(columnID, sortDirection, structure, posts) {
 
     Listit.logger.debug("setPostsSorted -- ")
     if (posts === undefined) {
@@ -51,6 +52,8 @@ Listit.TreeView.prototype.setPostsSorted = function(comparisonFunction, structur
 
     Listit.logger.debug("setPostsSorted, structure: " + structure);    
     this.setStructure(structure);
+    var comparisonFunction = this.getComparisonFunction(columnID, sortDirection);
+
     this.removeAllPosts();
     
     if (this.isFlat) {
@@ -88,13 +91,6 @@ Listit.TreeView.prototype.removeAllPosts = function() { // Must be fast because 
 }
 
 
-Listit.TreeView.prototype.setStructure = function(structure)  {
-    
-    Listit.assert(structure == "flat" || structure == "tree", 
-        "structure should be either 'flat' or 'tree'");
-    this.isFlat = (structure == 'flat');
-}
-
 Listit.TreeView.prototype.indexOfVisiblePost = function(post) {
     return this.visiblePosts.indexOf(post);
 }
@@ -121,10 +117,73 @@ Listit.TreeView.prototype._flattenPosts = function(posts) {
     return flatPosts;
 }
 
+Listit.TreeView.prototype.setStructure = function(structure)  {
+    
+    Listit.assert(structure == "flat" || structure == "tree", 
+        "structure should be either 'flat' or 'tree'");
+    this.isFlat = (structure == 'flat');
+}
 
+
+// Returns a function that sorts by column and directoin
+Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) {
+
+    Listit.assert(direction == "ascending" || direction == "descending", 
+        'direction should be "ascending" or "descending", got: ' + direction);
+        
+    var fn;
+    switch (columnID)
+    {
+        case 'treeID': 
+            fn = function(a, b) { return Listit.compareIDs(a.id, b.id) };
+            break;
+        case 'treeAuthor':
+            fn = function(a, b) { return Listit.compareCaseInsensitiveStrings(a.author, b.author) };
+            break;
+        case 'treeScore': 
+            fn = function(a, b) { return Listit.compareNumbers(a.score, b.score) };
+            break;
+        case 'treeUp':
+            fn = function(a, b) { return Listit.compareNumbers(a.ups, b.ups) };
+            break;
+        case 'treeDown':
+            fn = function(a, b) { return Listit.compareNumbers(a.downs, b.downs) };
+            break;
+        case 'treeVotes':
+            fn = function(a, b) { return Listit.compareNumbers(a.votes, b.votes) };
+            break;
+        case 'treeReplies':
+            fn = function(a, b) { return Listit.compareNumbers(a.numReplies, b.numReplies) };
+            break;
+        case 'treeDepth':
+            fn = function(a, b) { return Listit.compareNumbers(a.depth, b.depth) };
+            break;
+        case 'treeChars':
+            fn = function(a, b) { return Listit.compareNumbers(a.numChars, b.numChars) };
+            break;
+        case 'treeLocalDate':
+            fn = function(a, b) { return Listit.compareDates(a.dateCreated, b.dateCreated) };
+            break;
+        case 'treeUtcDate': 
+            fn = function(a, b) { return Listit.compareDates(a.dateCreated, b.dateCreated) };    
+            break;
+        default: 
+            Listit.assert(false, "** getComparisonFunction Unknown id: '" + columnID + "' **");
+    } // switch
+
+    if (direction == "ascending") {
+        return fn;
+    } else {
+        return Listit.swapArgs(fn);
+    }
+}
+/**/
 ////
 // Methods that are part of the nsITreeView interface
 ////
+
+
+
 
 Listit.TreeView.prototype.__defineGetter__("rowCount", function() {
     return this.visiblePosts.length; 
