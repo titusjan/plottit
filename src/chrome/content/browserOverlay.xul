@@ -10,33 +10,85 @@
 <overlay onload="alert('overlay onload');" id="xulschoolhello-browser-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-
-  <script type="application/x-javascript" src="chrome://xulschoolhello/content/utils.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/browserOverlay.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/dateFormat.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/encoder.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/posts.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/state.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/treeView.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/testData.js" />
-  <script type="application/x-javascript" src="chrome://xulschoolhello/content/browserOverlay.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/utils.js" />
     
   <stringbundleset id="stringbundleset">
     <stringbundle id="xulschoolhello-string-bundle"
       src="chrome://xulschoolhello/locale/browserOverlay.properties" />
   </stringbundleset>
 
-  <menupopup id="menu_ToolsPopup">
-    <menu id="xs-hw-hello-menu" label="&xulschoolhello.hello.label;"
-      accesskey="&xulschoolhello.helloMenu.accesskey;"
-      insertafter="javascriptConsole,devToolsSeparator">
-      <menupopup>
-        <menuitem id="xulschoolhello-hello-menu-item"
-          label="&xulschoolhello.hello.label;"
-          accesskey="&xulschoolhello.helloItem.accesskey;"
-          oncommand="XULSchoolChrome.BrowserOverlay.sayHello(event);" />
-      </menupopup>
-    </menu>
-  </menupopup>
+  <commandset> <!-- For some reason setting an id to the command set results in no reactions -->
+    <command id="listit-command-sort-column" oncommand="XULSchoolChrome.BrowserOverlay.sayHello(event);"/>
+    <!--<command id="listit-command-set-date-format" oncommand="Listit.setTreeColumnDateFormat(event);"/>-->
+  </commandset>
+
+<!-- 
+    Whois: Friday 2005-04-29 (made up 22:04:53 myself)
+    First reddit post: Thursday 2005-06-23 11:43:53 (UTC)
+    First reddit comment: Monday 2005-12-12 05:46:44 (UTC)
+-->
   
+  <popupset>
+    <menupopup id="menuDateFormat">
+    
+      <menuitem label="2005-04-29 22:04:53" 
+        value="yyyy-mm-dd HH:MM:ss"
+        onclick="Listit.setTreeColumnDateFormat(event);"/>
+        
+      <menuseparator/>
+      
+      <menuitem label="29 Apr 2005" 
+        value="d mmm yyyy"
+        onclick="Listit.setTreeColumnDateFormat(event);"/>
+
+      <menuitem label="Fri 29 Apr 2005" 
+        value="ddd d mmm yyyy"
+        onclick="Listit.setTreeColumnDateFormat(event);"/>
+
+      <menuitem label="29/04/05" 
+        value="dd/mm/yy"
+        onclick="Listit.setTreeColumnDateFormat(event);"/>
+        
+      <menuitem label="04/29/05" 
+        value="mm/dd/yy"
+        onclick="Listit.setTreeColumnDateFormat(event);"/>
+        
+      <menuseparator/>
+     
+      <menuitem label="22:04:53" 
+        value="H:MM:ss"
+        onclick="Listit.setTreeColumnDateFormat(event);"/>
+
+      <menuitem label="10:04:53 AM" 
+        value="h:MM:ss TT"
+        onclick="Listit.setTreeColumnDateFormat(event);"/>
+        
+    </menupopup>
+
+    <menupopup id="menu_ToolsPopup">
+      <menu id="xs-hw-hello-menu" label="&xulschoolhello.hello.label;"
+          accesskey="&xulschoolhello.helloMenu.accesskey;"
+          insertafter="javascriptConsole,devToolsSeparator">
+        <menupopup>
+          <menuitem id="xulschoolhello-hello-menu-item"
+            label="&xulschoolhello.hello.label;"
+            accesskey="&xulschoolhello.helloItem.accesskey;"
+            command="listit-command-sort-column"/>
+        </menupopup>
+      </menu>
+    </menupopup>
+  
+  </popupset>
+  
+  <!--<button label="Debug" command="listit-command-sort-column"/> -->
+
   <vbox id="appcontent" >
     <splitter id="listitContentSplitter" collapsed="false"/>
     <hbox id="pannelContent" height="200" persist="height" >
@@ -49,7 +101,7 @@
             width="60"  
             label="ID"
             persist="width ordinal hidden"
-            onclick="Listit.onClickTreeHeader(this)"
+            onclick="Listit.onClickTreeHeader(event)"
             hidden="true"/>
           <splitter class="tree-splitter"/>
           
@@ -57,65 +109,73 @@
             width="140"
             label="Author"
             persist="width ordinal hidden"
-            onclick="Listit.onClickTreeHeader(this)"
+            onclick="Listit.onClickTreeHeader(event)"
             minwidth="40"
-            maxwidth="150"/> 
+            maxwidth="150"
+            /> 
           <splitter class="tree-splitter"/>
           
           <treecol id="treeScore"
             width="50"
             label="Score   "
             persist="width ordinal hidden"
-            onclick="Listit.onClickTreeHeader(this)"
-            style="text-align: right"/>
+            onclick="Listit.onClickTreeHeader(event)"
+            style="text-align: right"
+            />
           <splitter class="tree-splitter"/>	    
           
           <treecol id="treeUp"
             width="50"
             label="Up   "
             persist="width ordinal hidden"
-            onclick="Listit.onClickTreeHeader(this)"
-            style="text-align: right"/>
+            onclick="Listit.onClickTreeHeader(event)"
+            style="text-align: right"
+            />
           <splitter class="tree-splitter"/>	    
           
           <treecol id="treeDown"
             width="50"
             label="Down   "
             persist="width ordinal hidden"
-            onclick="Listit.onClickTreeHeader(this)"
-            style="text-align: right"/>
+            onclick="Listit.onClickTreeHeader(event)"
+            style="text-align: right"
+            />
           <splitter class="tree-splitter"/>
           
           <treecol id="treeVotes"
             width="50"
             label="Votes   "
             persist="width ordinal hidden"
-            onclick="Listit.onClickTreeHeader(this)"
-            style="text-align: right"/> 
+            onclick="Listit.onClickTreeHeader(event)"
+            style="text-align: right"
+            /> 
           <splitter class="tree-splitter"/>
           
           <treecol id="treeReplies"
             width="50"
             label="Replies   "
             persist="width ordinal hidden"
-            onclick="Listit.onClickTreeHeader(this)"
-            style="text-align: right"/>
+            onclick="Listit.onClickTreeHeader(event)"
+            style="text-align: right"
+            />
           <splitter class="tree-splitter"/>
           
           <treecol id="treeChars"
             width="50"  
             label="Characters   "
             persist="width ordinal hidden"
-            onclick="Listit.onClickTreeHeader(this)"
-            style="text-align: right"/> 
+            onclick="Listit.onClickTreeHeader(event)"
+            style="text-align: right"
+            /> 
           <splitter class="tree-splitter"/>
           
           <treecol id="treeDepth"
             width="50"  
             label="Depth   "
             persist="width ordinal hidden"
-            onclick="Listit.onClickTreeHeader(this)"
-            style="text-align: right"/> 
+            onclick="Listit.onClickTreeHeader(event)"
+            style="text-align: right"
+            /> 
           <splitter class="tree-splitter"/>
           
           <treecol id="treeBody"
@@ -123,32 +183,40 @@
             label="Body (tree)"
             structure="tree"
             persist="width ordinal hidden structure label"
-            onclick="Listit.onClickBodyTreeHeader(this)"
+            onclick="Listit.onClickBodyTreeHeader(event)"
             flex="1"
             primary="true"
-            minwidth="100"/>
+            minwidth="100"
+            />
           <splitter class="tree-splitter"/>
           
           <treecol id="treeLocalDate"
             width="130"
-            label="Local Date"
+            label="Date &amp; Time   "
             persist="width ordinal hidden"
-            onclick="Listit.onClickTreeHeader(this)" />
+            onclick="Listit.onClickTreeHeader(event)"
+            context="menuDateFormat"
+            style="text-align: right"
+            />
           <splitter class="tree-splitter"/>
           
           <treecol id="treeUtcDate"
             width="130"
-            label="UTC Date"
+            label="UTC Date &amp; Time   "
             persist="width ordinal hidden"
-            onclick="Listit.onClickTreeHeader(this)" />
+            onclick="Listit.onClickTreeHeader(event)"
+            context="menuDateFormat"
+            style="text-align: right"
+            />
           <splitter class="tree-splitter"/>
           
           <treecol id="treeDebug"
             width="50"
             label="Debug (posts)"
             persist="width ordinal hidden" 
-            onclick="Listit.onClickTreeHeader(this)"
-            style="text-align: right"/> 
+            onclick="Listit.onClickTreeHeader(event)"
+            style="text-align: right"
+            /> 
           <splitter class="tree-splitter"/>
           
         </treecols>

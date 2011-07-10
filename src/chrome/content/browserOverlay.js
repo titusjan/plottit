@@ -69,10 +69,14 @@ Listit.onLoad = function() {
     container.addEventListener("TabClose", Listit.onTabClose, false);
     container.addEventListener("TabSelect", Listit.onTabSelect, false);
 
-    gBrowser.addEventListener('DOMContentLoaded', Listit.onPageLoad, true);
+    gBrowser.addEventListener('DOMContentLoaded', Listit.onPageLoad, true); // TODO: false?
     Listit.logger.trace('Listit.onLoad -- end');
         
 };
+
+Listit.onUnload = function() {
+    Listit.logger.debug("Listit.onUnload -- ");
+}
 
 
 Listit.onRowSelect = function(event) {
@@ -132,10 +136,14 @@ Listit.onTabSelect = function(event) {
     Listit.updateAllViews(Listit.state, browserID);
 }
  
-Listit.onClickTreeHeader = function(column) {
+
+Listit.onClickTreeHeader = function(event) {
     Listit.logger.trace("Listit.onClickTreeHeader -- ");
 
 try {
+    if (event.button != 0) return; // Only left mouse button
+    
+    var column = event.originalTarget;
     var comparisonFunction = Listit.sortBy[column.id];    
     if (!comparisonFunction) {
         Listit.logger.warn("No comparison function for: " + column.id);
@@ -188,11 +196,13 @@ try {
 
 
 
-Listit.onClickBodyTreeHeader = function(column) {
-    Listit.logger.debug("Listit.onClickBodyTreeHeader -- ");
+Listit.onClickBodyTreeHeader = function(event) {
+    Listit.logger.trace("Listit.onClickBodyTreeHeader -- ");
     
 try {    
-
+    if (event.button != 0) return; // Only left mouse button
+    
+    var column = event.originalTarget;
     var oldStructure = column.getAttribute('structure');
     var newStructure = (oldStructure == 'tree') ? 'flat' : 'tree';
     Listit.logger.debug('oldStructure: ' + oldStructure);    
@@ -214,16 +224,53 @@ try {
     // Set after actual sorting for easier dection of error in during sort
     column.setAttribute('structure', newStructure);
     column.setAttribute('label', 'Body as ' + ((newStructure == 'tree') ? 'tree' : 'list'));
-    Listit.logger.debug("Listit.onClickBodyTreeHeader done ");
     
+    Listit.logger.trace("Listit.onClickBodyTreeHeader done ");
 } catch (ex) {
     Listit.logger.error('Exception in Listit.onClickBodyTreeHeader;');
     Listit.logger.error(ex);
 }        
 }
 
+Listit.setTreeColumnDateFormat = function (event) {
+    Listit.logger.trace("Listit.setTreeColumnDateFormat -- ");
+try{    
+    var format = event.target.value;
+    //var curTreeView = Listit.state.getCurrentTreeView();
+    var column = document.popupNode; 
 
+    var key;
+    switch (column.id) {
+        case 'treeLocalDate':
+            Listit.logger.debug("Setting treeLocalDate column format to: " + format);
+            key = ['localDateFormat'];
+            break;
+        case 'treeUtcDate':
+            Listit.logger.debug("Setting treeUtcDate column format to: " + format);
+            key = ['utcDateFormat'];
+            //curTreeView.utcDateFormat = format;
+            break;
+        default:
+            Listit.assert(false, "Invalid column ID: " + column.id);
+    } // switch
 
+    // Set date format in all treeVies (TODO: better way?)
+    for (var browserID in Listit.state.browserStates) {
+        var treeView = Listit.state.browserStates[browserID].treeView;
+        treeView[key] = format;
+    }
+
+    // Force repainting of the column;
+    var treeBoxColumns = Listit.getTreeBoxObject('scoreTree').columns;
+    var nsiTreeColumn = treeBoxColumns.getNamedColumn(column.id);
+    Listit.getTreeBoxObject('scoreTree').invalidateColumn(nsiTreeColumn);        
+    
+    Listit.logger.trace("Listit.setTreeColumnDateFormat done ");    
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.setTreeColumnDateFormat;');
+    Listit.logger.error(ex);
+}  
+}
 
 
 
@@ -434,10 +481,14 @@ Listit.ensureCurrentRowVisible = function () {
 }
 
 /*
- From: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow
+From: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow
     If true, useCapture indicates that the user wishes to add the event listener for the capture 
     phase and target only, i.e. this event listener will not be triggered during the bubbling phase. 
     If false, the event listener must only be triggered during the target and bubbling phases.
+From: https://developer.mozilla.org/en/XUL_School/Adding_Events_and_Commands    
+    In general, you should avoid adding event handlers in the capturing phase, or canceling events. 
+    This can lead to unexpected behavior for the user since most events have a default behavior 
+    associated to them.
 */
 
 // Call Listit.onLoad to intialize 

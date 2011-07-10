@@ -24,6 +24,9 @@ Listit.TreeView = function () { // Constructor
     this.allPosts = [];
     this.visiblePosts = [];
     this.isFlat = false;     // If body column is a tree of flat
+    
+    this.localDateFormat = "yyyy-mm-dd HH:MM:ss";
+    this.utcDateFormat   = "yyyy-mm-dd HH:MM:ss";
 
     this.treeBox = null;
     this.selection = null;
@@ -132,6 +135,7 @@ Listit.TreeView.prototype.__defineGetter__("rowCount", function() {
 Listit.TreeView.prototype.setTree = function(treeBox)  { this.treeBox = treeBox; }
 
 Listit.TreeView.prototype.getCellText = function(idx, column) {
+
     var rowItem = this.visiblePosts[idx];
     switch (column.id)
     {
@@ -145,8 +149,10 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
         case 'treeDepth'     : return rowItem.depth;
         case 'treeChars'     : return rowItem.numChars;
         case 'treeBody'      : return rowItem.body;
-        case 'treeUtcDate'   : return Listit.UtcDateString(rowItem.dateCreated);
-        case 'treeLocalDate' : return Listit.LocalDateString(rowItem.dateCreated);
+        case 'treeUtcDate'   : 
+            return Listit.dateFormat(rowItem.dateCreated, this.utcDateFormat, true);
+        case 'treeLocalDate' : 
+            return Listit.dateFormat(rowItem.dateCreated, this.localDateFormat, false);
         case 'treeDebug'     : return rowItem.debug;
         //case 'treeDebug'    : return column.width;
         default : return "** Unknown id: '" + column.id + "' **";
