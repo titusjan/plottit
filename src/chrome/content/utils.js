@@ -23,6 +23,7 @@ Listit.safeGet = function(obj, propName) {
 // DateTime //
 //////////////
 
+/* Not used. Obsolete by dateFormat.js
 Listit._pad0 = function(n) {
     return n<10 ? '0'+n : n;
 }
@@ -56,6 +57,7 @@ Listit.LocalDateString = function(d) {
         + pad(d.getMinutes()) + ':'
         + pad(d.getSeconds())
 }
+*/
 
 ////////////////
 // Generators //

@@ -118,6 +118,7 @@
             sortDirection="ascending" sortResource="treeID" persist="sortDirection sortResource">
         <treecols pickertooltiptext="Select visible columns">
         
+        
           <treecol id="treeID"
             width="60"  
             label="ID"
@@ -125,15 +126,57 @@
             onclick="Listit.onClickTreeHeader(event)"
             hidden="true"/>
           <splitter class="tree-splitter"/>
+                    
+          <treecol id="treeLocalDate"
+            width="130"
+            label="Date &amp; Time   "
+            persist="width ordinal hidden format"
+            format="yyyy-mm-dd HH:MM:ss"
+            onclick="Listit.onClickTreeHeader(event)"
+            context="menuDateFormat"
+            style="text-align: right"
+            />
+          <splitter class="tree-splitter"/>
           
-          <treecol id="treeAuthor"
-            width="140"
-            label="Author"
+          <treecol id="treeUtcDate"
+            width="130"
+            label="UTC Date &amp; Time   "
+            persist="width ordinal hidden format"
+            format="yyyy-mm-dd HH:MM:ss"
+            onclick="Listit.onClickTreeHeader(event)"
+            context="menuDateFormat"
+            style="text-align: right"
+            />
+          <splitter class="tree-splitter"/>
+
+          <treecol id="treeReplies"
+            width="50"
+            label="Replies   "
             persist="width ordinal hidden"
             onclick="Listit.onClickTreeHeader(event)"
-            minwidth="40"
-            maxwidth="150"
+            style="text-align: right"
+            />
+          <splitter class="tree-splitter"/>
+          
+          <treecol id="treeChars"
+            width="50"  
+            label="Characters   "
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(event)"
+            style="text-align: right"
             /> 
+          <splitter class="tree-splitter"/>
+          
+          <treecol id="treeBody"
+            width="500"
+            label="Body (tree)"
+            structure="tree"
+            persist="width ordinal hidden structure label"
+            onclick="Listit.onClickBodyTreeHeader(event)"
+            flex="1"
+            primary="true"
+            minwidth="100"
+            />
           <splitter class="tree-splitter"/>
           
           <treecol id="treeScore"
@@ -172,24 +215,6 @@
             /> 
           <splitter class="tree-splitter"/>
           
-          <treecol id="treeReplies"
-            width="50"
-            label="Replies   "
-            persist="width ordinal hidden"
-            onclick="Listit.onClickTreeHeader(event)"
-            style="text-align: right"
-            />
-          <splitter class="tree-splitter"/>
-          
-          <treecol id="treeChars"
-            width="50"  
-            label="Characters   "
-            persist="width ordinal hidden"
-            onclick="Listit.onClickTreeHeader(event)"
-            style="text-align: right"
-            /> 
-          <splitter class="tree-splitter"/>
-          
           <treecol id="treeDepth"
             width="50"  
             label="Depth   "
@@ -198,40 +223,18 @@
             style="text-align: right"
             /> 
           <splitter class="tree-splitter"/>
-          
-          <treecol id="treeBody"
-            width="500"
-            label="Body (tree)"
-            structure="tree"
-            persist="width ordinal hidden structure label"
-            onclick="Listit.onClickBodyTreeHeader(event)"
-            flex="1"
-            primary="true"
-            minwidth="100"
-            />
-          <splitter class="tree-splitter"/>
-          
-          <treecol id="treeLocalDate"
-            width="130"
-            label="Date &amp; Time   "
-            persist="width ordinal hidden format"
-            format="yyyy-mm-dd HH:MM:ss"
+
+
+          <treecol id="treeAuthor"
+            width="140"
+            label="Author"
+            persist="width ordinal hidden"
             onclick="Listit.onClickTreeHeader(event)"
-            context="menuDateFormat"
-            style="text-align: right"
-            />
+            minwidth="40"
+            maxwidth="150"
+            /> 
           <splitter class="tree-splitter"/>
           
-          <treecol id="treeUtcDate"
-            width="130"
-            label="UTC Date &amp; Time   "
-            persist="width ordinal hidden format"
-            format="yyyy-mm-dd HH:MM:ss"
-            onclick="Listit.onClickTreeHeader(event)"
-            context="menuDateFormat"
-            style="text-align: right"
-            />
-          <splitter class="tree-splitter"/>
           
           <treecol id="treeDebug"
             width="50"

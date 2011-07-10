@@ -48,9 +48,9 @@ Listit.onLoad = function() {
     Listit.logger.trace('Listit.onLoad -- begin');
 
     // Initialize state object
-    var localDateFormat = document.getElementById('treeLocalDate').getAttribute('format');
-    var utcDateFormat = document.getElementById('treeUtcDate').getAttribute('format');
-    Listit.state = new Listit.State(localDateFormat, utcDateFormat);
+    Listit.state = new Listit.State(
+        document.getElementById('treeLocalDate').getAttribute('format'), 
+        document.getElementById('treeUtcDate').getAttribute('format') );
     
     // Add existing tabs to the state because there won't be a tabOpen
     // event raised for them
@@ -271,16 +271,12 @@ try{
 }  
 }
 
-// Sets the check mark depending on which column is the context of the date-format popup 
+// Sets the check mark depending on which column is the context of the date-format popup
 Listit.onDateFormatPopupShowing = function(menu) {
-   
-try{
-    Listit.logger.debug("Listit.onDateFormatPopupShowing -- ");   
+    Listit.logger.trace("Listit.onDateFormatPopupShowing -- ");   
+
     var column = document.popupNode;
     var format = column.getAttribute('format');
-    
-    //Listit.logger.debug("column: " + column.id);   
-    //Listit.logger.debug("format: " + format);   
 
     // Unselect all menu items first.
     for (var idx = 0; idx < menu.children.length; idx++) {
@@ -299,12 +295,6 @@ try{
             }
         }
     }
-
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.setTreeColumnDateFormat;');
-    Listit.logger.error(ex);
-}  
-
 }
 
 
