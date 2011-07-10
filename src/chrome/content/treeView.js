@@ -30,7 +30,7 @@ Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
 
     this.treeBox = null;
     this.selection = null;
-    this.refreshDate = Date();
+    this.refreshDate = new Date();
 }
 
 
@@ -162,9 +162,8 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
             fn = function(a, b) { return Listit.compareNumbers(a.numChars, b.numChars) };
             break;
         case 'treeLocalDate':
-            fn = function(a, b) { return Listit.compareDates(a.dateCreated, b.dateCreated) };
-            break;
         case 'treeUtcDate': 
+        case 'treeAge': 
             fn = function(a, b) { return Listit.compareDates(a.dateCreated, b.dateCreated) };    
             break;
         default: 
@@ -210,6 +209,10 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
             return Listit.dateFormat(rowItem.dateCreated, this.utcDateFormat, true);
         case 'treeLocalDate' : 
             return Listit.dateFormat(rowItem.dateCreated, this.localDateFormat, false);
+        case 'treeAge' : 
+            var ageMilliSeconds = this.refreshDate.valueOf() - rowItem.dateCreated.valueOf();
+            return (ageMilliSeconds / (3600 * 24 * 1000)).toFixed(4) + " days";
+            //return this.refreshDate.valueOf() - rowItem.dateCreated.valueOf();
         case 'treeDebug'     : return rowItem.debug;
         //case 'treeDebug'    : return column.width;
         default : return "** Unknown id: '" + column.id + "' **";
