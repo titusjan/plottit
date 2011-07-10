@@ -100,6 +100,14 @@ Listit.compareStrings = function(a, b) {
         return 1;
 }
 
+Listit.compareIDs = function(a, b) {
+    var lengthComparison = a.length - b.length;
+    if (lengthComparison == 0) 
+        return Listit.compareStrings(a, b);
+    else
+        return lengthComparison;
+}
+
 Listit.compareCaseInsensitiveStrings = function(a, b) {
     return Listit.compareStrings(a.toLowerCase(), b.toLowerCase());
 }

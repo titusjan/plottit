@@ -30,6 +30,7 @@ Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
 
     this.treeBox = null;
     this.selection = null;
+    this.refreshDate = Date();
 }
 
 ////
@@ -64,9 +65,6 @@ Listit.TreeView.prototype.setPostsSorted = function(comparisonFunction, structur
     this.treeBox.rowCountChanged(0, this.visiblePosts.length);
 }
 
-Listit.TreeView.prototype.__undefine__sortPosts = function(comparisonFunction)  {
-    this.setPosts(Listit.sortPosts(this.allPosts, comparisonFunction));
-}
 
 Listit.TreeView.prototype.countPosts = function() {
     return Listit.countPosts(this.allPosts);

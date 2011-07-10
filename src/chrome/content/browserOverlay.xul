@@ -118,7 +118,6 @@
             sortDirection="ascending" sortResource="treeID" persist="sortDirection sortResource">
         <treecols pickertooltiptext="Select visible columns">
         
-        
           <treecol id="treeID"
             width="60"  
             label="ID"
@@ -134,6 +133,16 @@
             format="yyyy-mm-dd HH:MM:ss"
             onclick="Listit.onClickTreeHeader(event)"
             context="menuDateFormat"
+            style="text-align: right"
+            />
+          <splitter class="tree-splitter"/>
+                    
+          <treecol id="treeAge"
+            width="100"
+            label="Age   "
+            persist="width ordinal hidden format"
+            format="HH:MM:ss"
+            onclick="Listit.onClickTreeHeader(event)"
             style="text-align: right"
             />
           <splitter class="tree-splitter"/>

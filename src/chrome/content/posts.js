@@ -72,7 +72,7 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 // For each column a sorting function that compares two listitNodes
 Listit.sortBy = {};
-Listit.sortBy["treeID"]        = function(a, b) { return Listit.compareStrings(a.id, b.id) };
+Listit.sortBy["treeID"]        = function(a, b) { return Listit.compareIDs(a.id, b.id) };
 Listit.sortBy["treeAuthor"]    = function(a, b) { return Listit.compareCaseInsensitiveStrings(a.author, b.author) };
 Listit.sortBy["treeScore"]     = function(a, b) { return Listit.compareNumbers(a.score, b.score) };
 Listit.sortBy["treeUp"]        = function(a, b) { return Listit.compareNumbers(a.ups, b.ups) };
