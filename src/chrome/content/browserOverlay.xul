@@ -157,6 +157,15 @@
             style="text-align: right"
             />
           <splitter class="tree-splitter"/>
+          
+          <treecol id="treeDepth"
+            width="50"  
+            label="Depth   "
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(event)"
+            style="text-align: right"
+            /> 
+          <splitter class="tree-splitter"/>
 
           <treecol id="treeReplies"
             width="50"
@@ -224,15 +233,14 @@
             /> 
           <splitter class="tree-splitter"/>
           
-          <treecol id="treeDepth"
-            width="50"  
-            label="Depth   "
+          <treecol id="treeLikes"
+            width="50"
+            label="Likes   "
             persist="width ordinal hidden"
             onclick="Listit.onClickTreeHeader(event)"
             style="text-align: right"
             /> 
           <splitter class="tree-splitter"/>
-
 
           <treecol id="treeAuthor"
             width="140"
