@@ -69,7 +69,7 @@ Listit.onLoad = function() {
     container.addEventListener("TabClose", Listit.onTabClose, false);
     container.addEventListener("TabSelect", Listit.onTabSelect, false);
 
-    gBrowser.addEventListener('DOMContentLoaded', Listit.onPageLoad, true); // TODO: false?
+    gBrowser.addEventListener('DOMContentLoaded', Listit.onPageLoad, false); 
     Listit.logger.trace('Listit.onLoad -- end');
         
 };
@@ -456,6 +456,10 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             var sortResource = scoreTree.getAttribute('sortResource');
             var sortDirection = scoreTree.getAttribute('sortDirection');
             var structure = document.getElementById('treeBody').getAttribute('structure');
+            
+            var column = document.getElementById(sortResource);
+            column.setAttribute('sortDirection', sortDirection);
+            
             var comparisonFunction = Listit.getDirectedComparisonFunction(
                     Listit.sortBy[sortResource], sortDirection); 
             curState.treeView.setPostsSorted(
