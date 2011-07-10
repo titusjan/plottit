@@ -48,7 +48,9 @@ Listit.onLoad = function() {
     Listit.logger.trace('Listit.onLoad -- begin');
 
     // Initialize state object
-    Listit.state = new Listit.State();
+    var localDateFormat = document.getElementById('treeLocalDate').getAttribute('format');
+    var utcDateFormat = document.getElementById('treeUtcDate').getAttribute('format');
+    Listit.state = new Listit.State(localDateFormat, utcDateFormat);
     
     // Add existing tabs to the state because there won't be a tabOpen
     // event raised for them
@@ -236,7 +238,6 @@ Listit.setTreeColumnDateFormat = function (event) {
     Listit.logger.trace("Listit.setTreeColumnDateFormat -- ");
 try{    
     var format = event.target.value;
-    //var curTreeView = Listit.state.getCurrentTreeView();
     var column = document.popupNode; 
 
     var key;
@@ -244,22 +245,20 @@ try{
         case 'treeLocalDate':
             Listit.logger.debug("Setting treeLocalDate column format to: " + format);
             key = ['localDateFormat'];
+            Listit.state.setLocalDateFormat(format);
             break;
         case 'treeUtcDate':
             Listit.logger.debug("Setting treeUtcDate column format to: " + format);
             key = ['utcDateFormat'];
-            //curTreeView.utcDateFormat = format;
+            Listit.state.setUtcDateFormat(format);
             break;
         default:
             Listit.assert(false, "Invalid column ID: " + column.id);
     } // switch
-
-    // Set date format in all treeVies (TODO: better way?)
-    for (var browserID in Listit.state.browserStates) {
-        var treeView = Listit.state.browserStates[browserID].treeView;
-        treeView[key] = format;
-    }
-
+    
+    // Set attribute for persistence
+    column.setAttribute('format', format);
+    
     // Force repainting of the column;
     var treeBoxColumns = Listit.getTreeBoxObject('scoreTree').columns;
     var nsiTreeColumn = treeBoxColumns.getNamedColumn(column.id);
@@ -272,6 +271,41 @@ try{
 }  
 }
 
+// Sets the check mark depending on which column is the context of the date-format popup 
+Listit.onDateFormatPopupShowing = function(menu) {
+   
+try{
+    Listit.logger.debug("Listit.onDateFormatPopupShowing -- ");   
+    var column = document.popupNode;
+    var format = column.getAttribute('format');
+    
+    //Listit.logger.debug("column: " + column.id);   
+    //Listit.logger.debug("format: " + format);   
+
+    // Unselect all menu items first.
+    for (var idx = 0; idx < menu.children.length; idx++) {
+        var child = menu.children[idx];
+        if (child.hasAttribute('value')) {
+            child.removeAttribute('checked');
+        }
+    }
+
+    for (var idx = 0; idx < menu.children.length; idx++) {
+        var child = menu.children[idx];
+        if (child.hasAttribute('value')) {
+            var childFormat = child.getAttribute('value');
+            if (childFormat == format) {
+                child.setAttribute('checked', 'true');
+            }
+        }
+    }
+
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.setTreeColumnDateFormat;');
+    Listit.logger.error(ex);
+}  
+
+}
 
 
 // Finds the root document from a HTMLDocument

@@ -11,10 +11,10 @@ Listit.PAGE_READY       = 2; // Posts loaded
 
 
 // The state per browser in the global browser object;
-Listit.BrowserState = function () { // Constructor
+Listit.BrowserState = function (localDateFormat, utcDateFormat) { // Constructor
 
     this.pageStatus = Listit.PAGE_NOT_LISTIT;
-    this.treeView =  new Listit.TreeView();
+    this.treeView =  new Listit.TreeView(localDateFormat, utcDateFormat);
     this.selectedPost = null; // The post that is selected in the table
 }
 
@@ -48,11 +48,14 @@ Listit.BrowserState.prototype.setStatus = function (status) {
 ///////////
 
 // The application state of Listit (there will be one per browser window).
-Listit.State = function () { // Constructor
+Listit.State = function (localDateFormat, utcDateFormat) { // Constructor
 
     this.currentBrowserID = null;
     this.nextBrowserID = 0;
     this.browserStates = {}
+    
+    this._localDateFormat = localDateFormat;
+    this._utcDateFormat   = utcDateFormat;
 
 }
 
@@ -92,7 +95,8 @@ Listit.State.prototype.addBrowser = function (browser) {
     } else {
         browserID = this.nextBrowserID.toString();
         Listit.state.nextBrowserID += 1;
-        this.browserStates[browserID] = new Listit.BrowserState();
+        this.browserStates[browserID] = new Listit.BrowserState(
+            this._localDateFormat, this._utcDateFormat);
         browser.setAttribute("ListitBrowserID", browserID);
         Listit.logger.debug("Listit.State.prototype.addBrowser: added browser " + browserID);
     }
@@ -124,6 +128,34 @@ Listit.State.prototype.getCurrentBrowserState = function () {
 
 Listit.State.prototype.getCurrentTreeView = function () {
     return this.browserStates[this.currentBrowserID].treeView;
+}
+
+Listit.State.prototype.getUtcDateFormat = function () {
+    return this._utcDateFormat;
+}
+
+Listit.State.prototype.setUtcDateFormat = function (format) {
+    this._utcDateFormat = format;
+ 
+    // Update all treeViews
+    for (var browserID in this.browserStates) {
+        var treeView = this.browserStates[browserID].treeView;
+        treeView.utcDateFormat = format;
+    }
+}
+
+Listit.State.prototype.getLocalDateFormat = function () {
+    return this._localDateFormat;
+}
+
+Listit.State.prototype.setLocalDateFormat = function (format) {
+    this._localDateFormat = format;
+ 
+    // Update all treeViews
+    for (var browserID in this.browserStates) {
+        var treeView = this.browserStates[browserID].treeView;
+        treeView.localDateFormat = format;
+    }
 }
 
 /*

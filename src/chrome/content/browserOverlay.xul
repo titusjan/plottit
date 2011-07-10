@@ -36,40 +36,61 @@
 -->
   
   <popupset>
-    <menupopup id="menuDateFormat">
+    <menupopup id="menuDateFormat" onpopupshowing="Listit.onDateFormatPopupShowing(this);">
     
       <menuitem label="2005-04-29 22:04:53" 
         value="yyyy-mm-dd HH:MM:ss"
+        autocheck="true"
+        type="radio"
+        name="listit-date-format-items"        
         onclick="Listit.setTreeColumnDateFormat(event);"/>
         
       <menuseparator/>
       
       <menuitem label="29 Apr 2005" 
         value="d mmm yyyy"
+        autocheck="true"
+        type="radio"
+        name="listit-date-format-items"        
         onclick="Listit.setTreeColumnDateFormat(event);"/>
 
       <menuitem label="Fri 29 Apr 2005" 
         value="ddd d mmm yyyy"
+        autocheck="true"
+        type="radio"
+        name="listit-date-format-items"        
         onclick="Listit.setTreeColumnDateFormat(event);"/>
 
       <menuitem label="29/04/05" 
         value="dd/mm/yy"
+        autocheck="true"
+        type="radio"
+        name="listit-date-format-items"
         onclick="Listit.setTreeColumnDateFormat(event);"/>
         
       <menuitem label="04/29/05" 
         value="mm/dd/yy"
+        autocheck="true"
+        type="radio"
+        name="listit-date-format-items"        
         onclick="Listit.setTreeColumnDateFormat(event);"/>
         
       <menuseparator/>
      
       <menuitem label="22:04:53" 
         value="H:MM:ss"
+        autocheck="true"
+        type="radio"
+        name="listit-date-format-items"        
         onclick="Listit.setTreeColumnDateFormat(event);"/>
 
       <menuitem label="10:04:53 AM" 
         value="h:MM:ss TT"
+        autocheck="true"
+        type="radio"
+        name="listit-date-format-items"        
         onclick="Listit.setTreeColumnDateFormat(event);"/>
-        
+
     </menupopup>
 
     <menupopup id="menu_ToolsPopup">
@@ -193,7 +214,8 @@
           <treecol id="treeLocalDate"
             width="130"
             label="Date &amp; Time   "
-            persist="width ordinal hidden"
+            persist="width ordinal hidden format"
+            format="yyyy-mm-dd HH:MM:ss"
             onclick="Listit.onClickTreeHeader(event)"
             context="menuDateFormat"
             style="text-align: right"
@@ -203,7 +225,8 @@
           <treecol id="treeUtcDate"
             width="130"
             label="UTC Date &amp; Time   "
-            persist="width ordinal hidden"
+            persist="width ordinal hidden format"
+            format="yyyy-mm-dd HH:MM:ss"
             onclick="Listit.onClickTreeHeader(event)"
             context="menuDateFormat"
             style="text-align: right"

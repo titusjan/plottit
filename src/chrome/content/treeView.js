@@ -18,15 +18,15 @@ Listit.getTreeBoxObject = function (treeID) {
 // TreeView //
 //////////////
 
-Listit.TreeView = function () { // Constructor
+Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
 
     this.typeStr = 'treeView';  // TODO in prototype ???
     this.allPosts = [];
     this.visiblePosts = [];
     this.isFlat = false;     // If body column is a tree of flat
     
-    this.localDateFormat = "yyyy-mm-dd HH:MM:ss";
-    this.utcDateFormat   = "yyyy-mm-dd HH:MM:ss";
+    this.localDateFormat = localDateFormat;
+    this.utcDateFormat   = utcDateFormat;
 
     this.treeBox = null;
     this.selection = null;
