@@ -224,7 +224,8 @@ try {
         case 'treeAge' : 
             var ageMilliSeconds = this.refreshDate.valueOf() - rowItem.dateCreated.valueOf();
             return new Listit.TimePeriod(ageMilliSeconds).toString();
-        case 'treeDebug'     : return rowItem.debug;
+        //case 'treeDebug'     : return rowItem.debug;
+        case 'treeDebug'     : return Listit.dateFormat(this.refreshDate, this.utcDateFormat, false);
         //case 'treeDebug'    : return column.width;
         default : return "** Unknown id: '" + column.id + "' **";
     }

@@ -45,7 +45,7 @@ Listit.TimePeriod.SECONDS_PER_MONTH  = Listit.TimePeriod.SECONDS_PER_DAY * Listi
 Listit.TimePeriod.SECONDS_PER_YEAR   = Listit.TimePeriod.SECONDS_PER_MONTH * Listit.TimePeriod.MONTHS_PER_YEAR;
 
 Listit.TimePeriod.prototype.toString = function () {
-    return this.toStringLong2();
+    return this.toStringMedium2();
     
 }
 
@@ -53,6 +53,22 @@ Listit.TimePeriod.prototype.pad0 = function(n) {
     return n<10 ? '0'+n : n;
 }
 
+
+Listit.TimePeriod.prototype.toStringMedium2 = function () {
+
+    if (this.years) 
+        return this.years + " yr " + this.months + " mon" ;
+    else if (this.months)
+        return this.months + " mon " + this.days + " day" ;
+    else if (this.days)
+        return this.days + " day " +  this.hours + " hr" ;
+    else if (this.hours)
+        return this.hours + " hr " +  this.minutes + " min" ;
+    else if (this.minutes)
+        return this.minutes + " min " +  this.seconds + " sec" ;
+    else
+        return this.seconds + " sec";
+};
 
 Listit.TimePeriod.prototype.toStringLong2 = function () {
 
@@ -69,8 +85,6 @@ Listit.TimePeriod.prototype.toStringLong2 = function () {
     else
         return this.seconds + " seconds";
 };
-
-
 
 Listit.TimePeriod.prototype.toStringLong1 = function () {
 
