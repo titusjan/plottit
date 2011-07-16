@@ -78,6 +78,14 @@ Listit.range = function(begin, end) {
 // Sorting //
 /////////////
 
+Listit.roundToZero = function(x) {
+    if (x>0) {
+        return Math.floor(x);
+    } else {
+        return -Math.floor(-x);
+    }
+}
+
 
 Listit.swapArgs = function(fun) {
     return function(a, b) { return fun(b,a); }

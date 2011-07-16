@@ -201,6 +201,8 @@ Listit.TreeView.prototype.setTree = function(treeBox)  { this.treeBox = treeBox;
 
 Listit.TreeView.prototype.getCellText = function(idx, column) {
 
+try {
+
     var rowItem = this.visiblePosts[idx];
     switch (column.id)
     {
@@ -221,12 +223,15 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
             return Listit.dateFormat(rowItem.dateCreated, this.localDateFormat, false);
         case 'treeAge' : 
             var ageMilliSeconds = this.refreshDate.valueOf() - rowItem.dateCreated.valueOf();
-            return (ageMilliSeconds / (3600 * 24 * 1000)).toFixed(4) + " days";
-            //return this.refreshDate.valueOf() - rowItem.dateCreated.valueOf();
+            return new Listit.TimePeriod(ageMilliSeconds).toString();
         case 'treeDebug'     : return rowItem.debug;
         //case 'treeDebug'    : return column.width;
         default : return "** Unknown id: '" + column.id + "' **";
     }
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.TreeView.getCellText;');
+    Listit.logger.error(ex);
+}          
 }
 
 

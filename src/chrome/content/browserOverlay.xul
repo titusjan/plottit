@@ -15,8 +15,9 @@
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/encoder.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/posts.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/state.js" />
+  <!--<script type="application/x-javascript" src="chrome://xulschoolhello/content/testData.js" />-->
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/treeView.js" />
-  <script type="application/x-javascript" src="chrome://xulschoolhello/content/testData.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/timePeriod.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/utils.js" />
     
   <stringbundleset id="stringbundleset">
