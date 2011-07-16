@@ -6,27 +6,24 @@ if ('undefined' == typeof(XULSchoolChrome)) {
     var XULSchoolChrome = {};
 }
 
-XULSchoolChrome.BrowserOverlay = {
-    // Used as a debugging function
-    sayHello: function(aEvent) {
-    
-        let stringBundle = document.getElementById('xulschoolhello-string-bundle');
-        let message = stringBundle.getString('xulschoolhello.greeting.label');
+Listit.debug = function () {
 
-        try {
-            Listit.logger.info(Listit.state.summaryString() );
-            Listit.fbLog(Listit.state.summaryString() );
-            
-            var details = document.getElementById('postHtmlFrame');
-            Listit.fbLog(details);
-            Listit.logger.debug(details.textContent);
-            details.contentDocument.body.innerHTML = "Pepijn Kenter <i>rules</i>"
-        } catch (ex) {
-            Listit.logger.error('Exception in Listit.sayHello;');
-            Listit.logger.error(ex);
-        }
+    let stringBundle = document.getElementById('xulschoolhello-string-bundle');
+    let message = stringBundle.getString('xulschoolhello.greeting.label');
+
+    try {
+        Listit.logger.info(Listit.state.summaryString() );
+        Listit.fbLog(Listit.state.summaryString() );
+        
+        var details = document.getElementById('postHtmlFrame');
+        Listit.fbLog(details);
+        Listit.logger.debug(details.textContent);
+        details.contentDocument.body.innerHTML = "Pepijn Kenter <i>rules</i>"
+    } catch (ex) {
+        Listit.logger.error('Exception in Listit.sayHello;');
+        Listit.logger.error(ex);
     }
-};
+}
 
 ///////////////////////////////////
 //                               //

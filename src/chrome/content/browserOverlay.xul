@@ -7,7 +7,7 @@
 <!DOCTYPE overlay SYSTEM
   "chrome://xulschoolhello/locale/browserOverlay.dtd">
 
-<overlay onload="alert('overlay onload');" id="xulschoolhello-browser-overlay"
+<overlay id="xulschoolhello-browser-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/browserOverlay.js" />
@@ -26,7 +26,7 @@
   </stringbundleset>
 
   <commandset> <!-- For some reason setting an id to the command set results in no reactions -->
-    <command id="listit-command-sort-column" oncommand="XULSchoolChrome.BrowserOverlay.sayHello(event);"/>
+    <command id="listit-command-debug" oncommand="Listit.debug();"/>
     <!--<command id="listit-command-set-date-format" oncommand="Listit.setTreeColumnDateFormat(event);"/>-->
   </commandset>
 
@@ -35,7 +35,19 @@
     First reddit post: Thursday 2005-06-23 11:43:53 (UTC)
     First reddit comment: Monday 2005-12-12 05:46:44 (UTC)
 -->
-  
+  <menupopup id="menu_ToolsPopup">
+    <menu id="xs-hw-hello-menu" label="&xulschoolhello.hello.label;"
+        accesskey="&xulschoolhello.helloMenu.accesskey;"
+        insertafter="javascriptConsole,devToolsSeparator">
+      <menupopup>
+        <menuitem id="xulschoolhello-hello-menu-item"
+          label="&xulschoolhello.hello.label;"
+          accesskey="&xulschoolhello.helloItem.accesskey;"
+          command="listit-command-debug"/>
+      </menupopup>
+    </menu>
+  </menupopup>
+
   <popupset>
     <menupopup id="menuDateFormat" onpopupshowing="Listit.onDateFormatPopupShowing(this);">
     
@@ -93,21 +105,8 @@
         onclick="Listit.setTreeColumnDateFormat(event);"/>
 
     </menupopup>
-
-    <menupopup id="menu_ToolsPopup">
-      <menu id="xs-hw-hello-menu" label="&xulschoolhello.hello.label;"
-          accesskey="&xulschoolhello.helloMenu.accesskey;"
-          insertafter="javascriptConsole,devToolsSeparator">
-        <menupopup>
-          <menuitem id="xulschoolhello-hello-menu-item"
-            label="&xulschoolhello.hello.label;"
-            accesskey="&xulschoolhello.helloItem.accesskey;"
-            command="listit-command-sort-column"/>
-        </menupopup>
-      </menu>
-    </menupopup>
-  
   </popupset>
+
   
   <!--<button label="Debug" command="listit-command-sort-column"/> -->
 
