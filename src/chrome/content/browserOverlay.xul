@@ -255,7 +255,7 @@
           
           <treecol id="treeDebug"
             width="50"
-            label="Debug (posts)"
+            label="Debug (refresh date)"
             persist="width ordinal hidden" 
             onclick="Listit.onClickTreeHeader(event)"
             style="text-align: right"
@@ -272,7 +272,7 @@
      
       <splitter id="listitPannelSplitter" collapsed="false" />
       
-      <iframe id="postHtmlFrame" width="200" persist="width" src="chrome://xulschoolhello/content/detailsframe.html"/>
+      <iframe id="commentHtmlFrame" width="200" persist="width" src="chrome://xulschoolhello/content/detailsframe.html"/>
      </hbox> 
   </vbox>    
 </overlay>

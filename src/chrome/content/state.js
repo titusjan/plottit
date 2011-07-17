@@ -2,8 +2,8 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 
 Listit.PAGE_NOT_LISTIT  = 0; // Not a page listit can process
-Listit.PAGE_LOADING     = 1; // Loading JSON posts via AJAX
-Listit.PAGE_READY       = 2; // Posts loaded
+Listit.PAGE_LOADING     = 1; // Loading JSON comments via AJAX
+Listit.PAGE_READY       = 2; // Comments loaded
 
 //////////////////
 // BrowserState //
@@ -15,7 +15,7 @@ Listit.BrowserState = function (localDateFormat, utcDateFormat) { // Constructor
 
     this.pageStatus = Listit.PAGE_NOT_LISTIT;
     this.treeView =  new Listit.TreeView(localDateFormat, utcDateFormat);
-    this.selectedPost = null; // The post that is selected in the table
+    this.selectedComment = null; // The comment that is selected in the table
 }
 
 Listit.BrowserState.prototype.toString = function () {
@@ -24,13 +24,13 @@ Listit.BrowserState.prototype.toString = function () {
 
 Listit.BrowserState.prototype.summaryString = function () {
     return "Listit.BrowserState: status=" + this.pageStatus 
-        + ", posts=" + this.treeView.getPosts().length 
-        + ", selectedPost=" + (this.selectedPost ? this.selectedPost.id : this.selectedPost) ;
+        + ", comments=" + this.treeView.getComments().length 
+        + ", selectedComment=" + (this.selectedComment ? this.selectedComment.id : this.selectedComment) ;
 };
 
-Listit.BrowserState.prototype.removeAllPosts = function (status) {
-    this.treeView.removeAllPosts();
-    this.selectedPost = null;
+Listit.BrowserState.prototype.removeAllComments = function (status) {
+    this.treeView.removeAllComments();
+    this.selectedComment = null;
 };
 
 Listit.BrowserState.prototype.getStatus = function (status) {
@@ -65,7 +65,7 @@ Listit.State.prototype.toString = function () {
 
 
 Listit.State.prototype.summaryString = function () {
-    return [ 'Tab ' + k + ': ' + (v.treeView.countPosts()) for 
+    return [ 'Tab ' + k + ': ' + (v.treeView.countComments()) for 
         each ([k,v] in Iterator(this.browserStates))];
 };
 
@@ -112,14 +112,14 @@ Listit.State.prototype.removeBrowser = function (browser) {
     return browserID;
 };
 
-Listit.State.prototype.setBrowserPosts = function (browserID, posts) {
-    Listit.logger.trace("Listit.State.setBrowserPosts -- ");
-    Listit.assert(browserID, "setBrowserPosts: Browser has no ListitBrowserID");
-    this.browserStates[browserID].posts = posts;
+Listit.State.prototype.setBrowserComments = function (browserID, comments) {
+    Listit.logger.trace("Listit.State.setBrowserComments -- ");
+    Listit.assert(browserID, "setBrowserComments: Browser has no ListitBrowserID");
+    this.browserStates[browserID].comments = comments;
 }
 
-Listit.State.prototype.getBrowserPosts = function (browserID) {
-    return this.browserStates[browserID].posts;
+Listit.State.prototype.getBrowserComments = function (browserID) {
+    return this.browserStates[browserID].comments;
 }
 
 Listit.State.prototype.getCurrentBrowserState = function () {
@@ -159,8 +159,8 @@ Listit.State.prototype.setLocalDateFormat = function (format) {
 }
 
 /*
-Listit.State.prototype.getCurrentBrowserPosts = function () {
-    return this.browserStates[this.currentBrowserID].posts;
+Listit.State.prototype.getCurrentBrowserComments = function () {
+    return this.browserStates[this.currentBrowserID].comments;
 }
 */
 

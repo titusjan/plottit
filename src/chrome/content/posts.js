@@ -41,101 +41,101 @@ Listit.Discussion.prototype.__defineSetter__("url", function(v) { this._url = v}
 
 
 //////////
-// Post //
+// Comment //
 //////////
 
-Listit.Post = function () { // Constructor
+Listit.Comment = function () { // Constructor
 
 }
 
-Listit.Post.prototype.toString = function () {
-    return "<Listit.Post, id = '" + this.id + "'>";
+Listit.Comment.prototype.toString = function () {
+    return "<Listit.Comment, id = '" + this.id + "'>";
 };
 
-Listit.Post.prototype.__defineGetter__("id", function() { return this._id} );
-Listit.Post.prototype.__defineSetter__("id", function(v) { this._id = v } );
+Listit.Comment.prototype.__defineGetter__("id", function() { return this._id} );
+Listit.Comment.prototype.__defineSetter__("id", function(v) { this._id = v } );
 
-Listit.Post.prototype.__defineGetter__("depth", function() { return this._depth} );
-Listit.Post.prototype.__defineSetter__("depth", function(v) { this._depth  = v} );
+Listit.Comment.prototype.__defineGetter__("depth", function() { return this._depth} );
+Listit.Comment.prototype.__defineSetter__("depth", function(v) { this._depth  = v} );
 
-Listit.Post.prototype.__defineGetter__("author", function() { return this._author} );
-Listit.Post.prototype.__defineSetter__("author", function(v) { this._author = v} );
+Listit.Comment.prototype.__defineGetter__("author", function() { return this._author} );
+Listit.Comment.prototype.__defineSetter__("author", function(v) { this._author = v} );
 
-Listit.Post.prototype.__defineGetter__("body", function() { return this._body} );
-Listit.Post.prototype.__defineSetter__("body", function(v) { this._body = v} );
+Listit.Comment.prototype.__defineGetter__("body", function() { return this._body} );
+Listit.Comment.prototype.__defineSetter__("body", function(v) { this._body = v} );
 
-Listit.Post.prototype.__defineGetter__("bodyHtml", function() { return this._bodyHtml} );
-Listit.Post.prototype.__defineSetter__("bodyHtml", function(v) { this._bodyHtml = v} );
+Listit.Comment.prototype.__defineGetter__("bodyHtml", function() { return this._bodyHtml} );
+Listit.Comment.prototype.__defineSetter__("bodyHtml", function(v) { this._bodyHtml = v} );
 
-Listit.Post.prototype.__defineGetter__("dateCreated", function() { return this._dateCreated} );
-Listit.Post.prototype.__defineSetter__("dateCreated", function(v) { this._dateCreated = v} );
+Listit.Comment.prototype.__defineGetter__("dateCreated", function() { return this._dateCreated} );
+Listit.Comment.prototype.__defineSetter__("dateCreated", function(v) { this._dateCreated = v} );
 
-Listit.Post.prototype.__defineGetter__("ups", function() { return this._ups} );
-Listit.Post.prototype.__defineSetter__("ups", function(v) { this._ups = v} );
+Listit.Comment.prototype.__defineGetter__("ups", function() { return this._ups} );
+Listit.Comment.prototype.__defineSetter__("ups", function(v) { this._ups = v} );
 
-Listit.Post.prototype.__defineGetter__("downs", function() { return this._downs} );
-Listit.Post.prototype.__defineSetter__("downs", function(v) { this._downs = v} );
+Listit.Comment.prototype.__defineGetter__("downs", function() { return this._downs} );
+Listit.Comment.prototype.__defineSetter__("downs", function(v) { this._downs = v} );
 
-Listit.Post.prototype.__defineGetter__("isOpen", function() { return this._isOpen} );
-Listit.Post.prototype.__defineSetter__("isOpen", function(v) { this._isOpen = v} );
+Listit.Comment.prototype.__defineGetter__("isOpen", function() { return this._isOpen} );
+Listit.Comment.prototype.__defineSetter__("isOpen", function(v) { this._isOpen = v} );
 
-Listit.Post.prototype.__defineGetter__("replies", function() { return this._replies} );
-Listit.Post.prototype.__defineSetter__("replies", function(v) { this._replies = v} );
+Listit.Comment.prototype.__defineGetter__("replies", function() { return this._replies} );
+Listit.Comment.prototype.__defineSetter__("replies", function(v) { this._replies = v} );
 
 /////
 // Derived data
 
-Listit.Post.prototype.__defineGetter__("score", function() { 
+Listit.Comment.prototype.__defineGetter__("score", function() { 
     return this._ups - this._downs; 
 });
 
-Listit.Post.prototype.__defineGetter__("votes", function() { 
+Listit.Comment.prototype.__defineGetter__("votes", function() { 
     return this._ups + this._downs; 
 });
 
-Listit.Post.prototype.__defineGetter__("likes", function() { 
+Listit.Comment.prototype.__defineGetter__("likes", function() { 
     return this._ups / (this._ups + this._downs); 
 });
 
-Listit.Post.prototype.__defineGetter__("numChars", function() { 
+Listit.Comment.prototype.__defineGetter__("numChars", function() { 
     return this._body.length; 
 });
 
-Listit.Post.prototype.__defineGetter__("numReplies", function() { 
+Listit.Comment.prototype.__defineGetter__("numReplies", function() { 
     return this._replies.length; 
 });
 
-Listit.Post.prototype.__defineGetter__("debug", function() { 
+Listit.Comment.prototype.__defineGetter__("debug", function() { 
     return this._replies.length + 1; 
 });
 
 //////
-// Various functions for processing and sorting the posts
+// Various functions for processing and sorting the comments
 //////
 
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
-Listit.sortPosts = function(listitPosts, comparisonFunction) { 
-    Listit.logger.trace("Listit.sortPosts -- ");
+Listit.sortComments = function(listitComments, comparisonFunction) { 
+    Listit.logger.trace("Listit.sortComments -- ");
     Listit.assert(comparisonFunction instanceof Function, 'comparisonFunction should be a Function');
-    Listit.assert(listitPosts instanceof Array, 'sortPosts: listitPosts should be an Array');
+    Listit.assert(listitComments instanceof Array, 'sortComments: listitComments should be an Array');
     
-    if (!listitPosts) {
-        return listitPosts;
+    if (!listitComments) {
+        return listitComments;
     }
-    for (var i = 0; i < listitPosts.length; i++) { // Recursively sort children
-        Listit.sortPosts(listitPosts[i].replies, comparisonFunction);
+    for (var i = 0; i < listitComments.length; i++) { // Recursively sort children
+        Listit.sortComments(listitComments[i].replies, comparisonFunction);
     }
-    return listitPosts.sort(comparisonFunction);
+    return listitComments.sort(comparisonFunction);
 }
 
 
-Listit.countPosts = function(posts) {
+Listit.countComments = function(comments) {
 
-    Listit.assert(posts instanceof Array, 'countPosts: posts should be an Array');
-    var result = posts.length;
-    for (var idx = 0; idx < posts.length; idx = idx + 1) {
-        result += Listit.countPosts(posts[idx].replies);
+    Listit.assert(comments instanceof Array, 'countComments: comments should be an Array');
+    var result = comments.length;
+    for (var idx = 0; idx < comments.length; idx = idx + 1) {
+        result += Listit.countComments(comments[idx].replies);
     }
     return result;
 }
@@ -166,7 +166,7 @@ Listit.redditNodeToDiscussion = function(redditNode) {
 }
 
 
-Listit.redditNodeToListitNode = function(redditNode, depth) {
+Listit.redditNodeToDiscussion = function(redditNode, depth) {
 
     if (redditNode.kind != 't1') { // e.g. kind = 'more'
         //Listit.fbLog(redditNode);
@@ -174,48 +174,48 @@ Listit.redditNodeToListitNode = function(redditNode, depth) {
     } 
 
     var data = redditNode.data;
-    var listitNode = new Listit.Post();
-    listitNode.id = data.id;
-    listitNode.depth = depth;
-    listitNode.author = data.author;
-    listitNode.body = Listit.Encoder.htmlDecode(data.body); 
-    listitNode.bodyHtml = Listit.Encoder.htmlDecode(data.body_html);
-    listitNode.dateCreated = new Date(data.created_utc * 1000);
-    listitNode.downs = data.downs;
-    listitNode.ups = data.ups;
-    listitNode.isOpen = true;  // true if a node is expanded
-    listitNode.replies = []; // For convenience always make an empty replies list (TODO: optimize?)
+    var discussion = new Listit.Comment();
+    discussion.id = data.id;
+    discussion.depth = depth;
+    discussion.author = data.author;
+    discussion.body = Listit.Encoder.htmlDecode(data.body); 
+    discussion.bodyHtml = Listit.Encoder.htmlDecode(data.body_html);
+    discussion.dateCreated = new Date(data.created_utc * 1000);
+    discussion.downs = data.downs;
+    discussion.ups = data.ups;
+    discussion.isOpen = true;  // true if a node is expanded
+    discussion.replies = []; // For convenience always make an empty replies list (TODO: optimize?)
 
     if (data.replies) {  // Recursively add children
         var children = data.replies.data.children;
         for (var i = 0; i < children.length; i++) {
-            var childNode = Listit.redditNodeToListitNode(children[i], depth + 1);
+            var childNode = Listit.redditNodeToDiscussion(children[i], depth + 1);
             if (childNode) 
-                listitNode.replies.push(childNode);
+                discussion.replies.push(childNode);
         }
     }
-    return listitNode;
+    return discussion;
 };
 
-// Get posts in as list (of lists) of ListitNodes
-Listit.getListitPostsFromPage = function(redditJsonPage) {
+// Get comments in as list (of lists) of ListitNodes
+Listit.getListitCommentsFromPage = function(redditJsonPage) {
 
-    //Listit.logger.trace('getListitPostsFromPage');
+    //Listit.logger.trace('getListitCommentsFromPage');
 
     var redditDiscussion = redditJsonPage[0].data.children[0];    
     var discussion = Listit.redditNodeToDiscussion(redditDiscussion);
     
-    var redditPosts = redditJsonPage[1];
-    Listit.fbLog(redditPosts);
-    var listitPosts = [];
-    var children = redditPosts.data.children; // TODO: what is data.after/before?
+    var redditComments = redditJsonPage[1];
+    Listit.fbLog(redditComments);
+    var listitComments = [];
+    var children = redditComments.data.children; // TODO: what is data.after/before?
 
     for (var i = 0; i < children.length; i++) {
-        var listitNode = Listit.redditNodeToListitNode(children[i], 0);
+        var listitNode = Listit.redditNodeToDiscussion(children[i], 0);
         if (listitNode) 
-            listitPosts.push(listitNode);
+            listitComments.push(listitNode);
     }
 
-    return listitPosts;
+    return listitComments;
 };
 

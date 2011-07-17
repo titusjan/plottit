@@ -15,7 +15,7 @@ Listit.debug = function () {
         Listit.logger.info(Listit.state.summaryString() );
         Listit.fbLog(Listit.state.summaryString() );
         
-        var details = document.getElementById('postHtmlFrame');
+        var details = document.getElementById('commentHtmlFrame');
         Listit.fbLog(details);
         Listit.logger.debug(details.textContent);
         details.contentDocument.body.innerHTML = "Pepijn Kenter <i>rules</i>"
@@ -83,9 +83,9 @@ Listit.onRowSelect = function(event) {
     
     var selectedIndex = document.getElementById('scoreTree').currentIndex;
     var curState = Listit.state.getCurrentBrowserState();
-    var selectedPost = curState.treeView.visiblePosts[selectedIndex];
-    Listit.setDetailsFrameHtml(selectedPost.bodyHtml);
-    curState.selectedPost = selectedPost;
+    var selectedComment = curState.treeView.visibleComments[selectedIndex];
+    Listit.setDetailsFrameHtml(selectedComment.bodyHtml);
+    curState.selectedComment = selectedComment;
     
 // try {
 //     //var doc = event.target.defaultView.document;
@@ -93,7 +93,7 @@ Listit.onRowSelect = function(event) {
 //     //Listit.fbLog(gBrowser);
 //     //var browser = gBrowser.getBrowserForTab(event.target);
 //     Listit.fbLog(gBrowser.contentDocument);
-//     var classID = '.id-t1' + curState.treeView.visiblePosts[selectedIndex].id;
+//     var classID = '.id-t1' + curState.treeView.visibleComments[selectedIndex].id;
 //     Listit.logger.debug("Listit.onRowSelect: '" + classID + "'");
 //     gBrowser.contentDocument.jQuery(classID).css({'background': '#EFF7FF', 'border': '1px dashed #5F99CF'});
 // } catch (ex) {
@@ -171,7 +171,7 @@ try {
     Listit.logger.debug('newSortDirection: ' + newSortDirection);    
     
     var structure = document.getElementById('treeBody').getAttribute('structure');
-    Listit.state.getCurrentTreeView().setPostsSorted(column.id, newSortDirection, structure);
+    Listit.state.getCurrentTreeView().setCommentsSorted(column.id, newSortDirection, structure);
     Listit.ensureCurrentRowVisible();
     
     // Set after actual sorting for easier dection of error in during sort
@@ -203,11 +203,11 @@ try {
     var curTreeView = Listit.state.getCurrentTreeView();
     curTreeView.setStructure(newStructure);
     
-    // Sort and set posts in score tree (TODO new function)
+    // Sort and set comments in score tree (TODO new function)
     var scoreTree = document.getElementById('scoreTree');
     var sortResource = scoreTree.getAttribute('sortResource');
     var sortDirection = scoreTree.getAttribute('sortDirection');
-    curTreeView.setPostsSorted(sortResource, sortDirection, newStructure, curTreeView.posts);
+    curTreeView.setCommentsSorted(sortResource, sortDirection, newStructure, curTreeView.comments);
     Listit.ensureCurrentRowVisible();
     
     // Set after actual sorting for easier dection of error in during sort
@@ -329,7 +329,7 @@ Listit.onPageLoad = function(event) {
     var browserID = browser.getAttribute("ListitBrowserID");  // TODO: getStateForBrowser?
     var browserState = Listit.state.browserStates[browserID];
     browserState.setStatus(Listit.PAGE_NOT_LISTIT);
-    browserState.removeAllPosts();
+    browserState.removeAllComments();
     
     if ( !Listit.RE_ISREDDIT.test(pageURL) && !Listit.RE_ISFILE.test(pageURL) ) {
         Listit.logger.debug("No reddit.com or file:// (ignored), URL: " + pageURL);    
@@ -402,8 +402,8 @@ Listit.processJsonPage = function (jsonContent, browser, url) {
         var browserID = browser.getAttribute("ListitBrowserID");
         var page = JSON.parse(jsonContent); // Parse content
         Listit.logger.debug('Successfully parsed JSON page for: ' + url);
-        var listitPosts = Listit.getListitPostsFromPage(page);
-        Listit.state.setBrowserPosts(browserID, listitPosts);
+        var listitComments = Listit.getListitCommentsFromPage(page);
+        Listit.state.setBrowserComments(browserID, listitComments);
         
         var browserState = Listit.state.browserStates[browserID];
         browserState.setStatus(Listit.PAGE_READY);
@@ -435,7 +435,7 @@ Listit.addJsonToRedditUrl = function(url) {
 
 
 Listit.setDetailsFrameHtml = function(html) {
-    var detailsFrame = document.getElementById('postHtmlFrame');
+    var detailsFrame = document.getElementById('commentHtmlFrame');
     detailsFrame.contentDocument.body.innerHTML = html;
 }
 
@@ -453,16 +453,16 @@ Listit.updateAllViews = function(state, eventBrowserID) {
     switch (curState.pageStatus) {
         case Listit.PAGE_NOT_LISTIT:
             Listit.setDetailsFrameHtml('<i>The current page is not a reddit discussion</i>');
-            curState.removeAllPosts();
+            curState.removeAllComments();
             break;
         case Listit.PAGE_LOADING:
-            Listit.setDetailsFrameHtml('<i>Loading posts, please wait</i>');
-            curState.removeAllPosts();
+            Listit.setDetailsFrameHtml('<i>Loading comments, please wait</i>');
+            curState.removeAllComments();
             break;
         case Listit.PAGE_READY:
             Listit.setDetailsFrameHtml('');
             
-            // Sort and set posts in score tree
+            // Sort and set comments in score tree
             var scoreTree = document.getElementById('scoreTree');
             var sortResource = scoreTree.getAttribute('sortResource');
             var sortDirection = scoreTree.getAttribute('sortDirection');
@@ -471,8 +471,8 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             var column = document.getElementById(sortResource);
             column.setAttribute('sortDirection', sortDirection);
             
-            curState.treeView.setPostsSorted(column.id, sortDirection, structure, 
-                    Listit.state.getBrowserPosts(eventBrowserID));
+            curState.treeView.setCommentsSorted(column.id, sortDirection, structure, 
+                    Listit.state.getBrowserComments(eventBrowserID));
             Listit.ensureCurrentRowVisible();
             break;
         default:
@@ -485,8 +485,8 @@ Listit.ensureCurrentRowVisible = function () {
     Listit.logger.trace("Listit.ensureCurrentRowVisible -- ");
 
     var curState = Listit.state.getCurrentBrowserState();
-    if (curState.selectedPost != null) {
-        var selectedIndex = curState.treeView.indexOfVisiblePost(curState.selectedPost)
+    if (curState.selectedComment != null) {
+        var selectedIndex = curState.treeView.indexOfVisibleComment(curState.selectedComment)
         curState.treeView.selection.select(selectedIndex);
         Listit.getTreeBoxObject('scoreTree').ensureRowIsVisible(selectedIndex);
     }

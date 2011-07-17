@@ -21,8 +21,8 @@ Listit.getTreeBoxObject = function (treeID) {
 Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
 
     this.typeStr = 'treeView';  // TODO in prototype ???
-    this.allPosts = [];
-    this.visiblePosts = [];
+    this.allComments = [];
+    this.visibleComments = [];
     this.isFlat = false;     // If body column is a tree of flat
     
     this.localDateFormat = localDateFormat;
@@ -38,83 +38,83 @@ Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
 // Methods that are not part of the nsITreeView interface
 ////
 
-Listit.TreeView.prototype.getPosts = function() {
-    return this.allPosts;
+Listit.TreeView.prototype.getComments = function() {
+    return this.allComments;
 }
 
-Listit.TreeView.prototype.setPostsSorted = function(columnID, sortDirection, structure, posts) {
+Listit.TreeView.prototype.setCommentsSorted = function(columnID, sortDirection, structure, comments) {
 
-    Listit.logger.debug("setPostsSorted -- ")
-    if (posts === undefined) {
-        posts = this.allPosts;
+    Listit.logger.debug("setCommentsSorted -- ")
+    if (comments === undefined) {
+        comments = this.allComments;
     }
-    Listit.assert(posts instanceof Array, 'addPosts: listitPosts should be an Array');
+    Listit.assert(comments instanceof Array, 'addComments: listitComments should be an Array');
 
-    Listit.logger.debug("setPostsSorted, structure: " + structure);    
+    Listit.logger.debug("setCommentsSorted, structure: " + structure);    
     this.setStructure(structure);
     var comparisonFunction = this.getComparisonFunction(columnID, sortDirection);
 
-    this.removeAllPosts();
+    this.removeAllComments();
     
     if (this.isFlat) {
-        Listit.logger.debug("setPostsSorted: flat ")
-        this.allPosts = posts;
-        this.visiblePosts = this._flattenPosts(this.allPosts).sort(comparisonFunction);
+        Listit.logger.debug("setCommentsSorted: flat ")
+        this.allComments = comments;
+        this.visibleComments = this._flattenComments(this.allComments).sort(comparisonFunction);
     } else {
-        Listit.logger.debug("setPostsSorted: tree ")
-        this.allPosts = Listit.sortPosts(posts, comparisonFunction);
-        this.visiblePosts = this._getOpenPosts(this.allPosts);
+        Listit.logger.debug("setCommentsSorted: tree ")
+        this.allComments = Listit.sortComments(comments, comparisonFunction);
+        this.visibleComments = this._getOpenComments(this.allComments);
     }
-    this.treeBox.rowCountChanged(0, this.visiblePosts.length);
+    this.treeBox.rowCountChanged(0, this.visibleComments.length);
 }
 
 
-Listit.TreeView.prototype.countPosts = function() {
-    return Listit.countPosts(this.allPosts);
+Listit.TreeView.prototype.countComments = function() {
+    return Listit.countComments(this.allComments);
 }
 
-Listit.TreeView.prototype._addPosts = function(listitPosts)  {
-    Listit.assert(listitPosts instanceof Array, 'addPosts: listitPosts should be an Array');
-    this.allPosts = listitPosts;
-    this.visiblePosts = this._getOpenPosts(this.allPosts);
+Listit.TreeView.prototype._addComments = function(listitComments)  {
+    Listit.assert(listitComments instanceof Array, 'addComments: listitComments should be an Array');
+    this.allComments = listitComments;
+    this.visibleComments = this._getOpenComments(this.allComments);
 
-    this.treeBox.rowCountChanged(0, this.visiblePosts.length);
+    this.treeBox.rowCountChanged(0, this.visibleComments.length);
 }
 
-Listit.TreeView.prototype.removeAllPosts = function() { // Must be fast because it's called for every page load!
+Listit.TreeView.prototype.removeAllComments = function() { // Must be fast because it's called for every page load!
 
     if (this.rowCount != 0) {
         this.treeBox.rowCountChanged(0, -this.rowCount);
-        this.allPosts = [];
-        this.visiblePosts = [];
+        this.allComments = [];
+        this.visibleComments = [];
     }
 }
 
 
-Listit.TreeView.prototype.indexOfVisiblePost = function(post) {
-    return this.visiblePosts.indexOf(post);
+Listit.TreeView.prototype.indexOfVisibleComment = function(comment) {
+    return this.visibleComments.indexOf(comment);
 }
 
-Listit.TreeView.prototype._getOpenPosts = function(posts) {  
-    var openPosts = [];
-    for (var idx = 0; idx < posts.length; idx = idx + 1) {
-        var post = posts[idx];
-        openPosts.push(post);
-        if (post.isOpen) { 
-            openPosts = openPosts.concat(this._getOpenPosts(post.replies));
+Listit.TreeView.prototype._getOpenComments = function(comments) {  
+    var openComments = [];
+    for (var idx = 0; idx < comments.length; idx = idx + 1) {
+        var comment = comments[idx];
+        openComments.push(comment);
+        if (comment.isOpen) { 
+            openComments = openComments.concat(this._getOpenComments(comment.replies));
         }
     }
-    return openPosts;
+    return openComments;
 }
 
-Listit.TreeView.prototype._flattenPosts = function(posts) {  
-    var flatPosts = [];
-    for (var idx = 0; idx < posts.length; idx = idx + 1) {
-        var post = posts[idx];
-        flatPosts.push(post);
-        flatPosts = flatPosts.concat(this._flattenPosts(post.replies));
+Listit.TreeView.prototype._flattenComments = function(comments) {  
+    var flatComments = [];
+    for (var idx = 0; idx < comments.length; idx = idx + 1) {
+        var comment = comments[idx];
+        flatComments.push(comment);
+        flatComments = flatComments.concat(this._flattenComments(comment.replies));
     }
-    return flatPosts;
+    return flatComments;
 }
 
 Listit.TreeView.prototype.setStructure = function(structure)  {
@@ -194,7 +194,7 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
 
 
 Listit.TreeView.prototype.__defineGetter__("rowCount", function() {
-    return this.visiblePosts.length; 
+    return this.visibleComments.length; 
 });
 
 Listit.TreeView.prototype.setTree = function(treeBox)  { this.treeBox = treeBox; }
@@ -203,7 +203,7 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
 
 try {
 
-    var rowItem = this.visiblePosts[idx];
+    var rowItem = this.visibleComments[idx];
     switch (column.id)
     {
         case 'treeID'        : return rowItem.id;
@@ -238,12 +238,12 @@ try {
 
 
 Listit.TreeView.prototype.isContainer = function(idx) {
-    return !this.isFlat && this.visiblePosts[idx].replies.length; // No containers when tree is flat
+    return !this.isFlat && this.visibleComments[idx].replies.length; // No containers when tree is flat
 }
 
 Listit.TreeView.prototype.isContainerOpen = function(idx) {
-    //return this.isFlat || this.visiblePosts[idx].isOpen; // Always open when structure is flat
-    return this.visiblePosts[idx].isOpen; 
+    //return this.isFlat || this.visibleComments[idx].isOpen; // Always open when structure is flat
+    return this.visibleComments[idx].isOpen; 
 }
 Listit.TreeView.prototype.isContainerEmpty = function(idx)    { return false; }
 Listit.TreeView.prototype.isSeparator = function(idx)         { return false; }
@@ -251,23 +251,23 @@ Listit.TreeView.prototype.isSorted = function()               { return false; }
 Listit.TreeView.prototype.isEditable = function(idx, column)  { return false; }
 
 Listit.TreeView.prototype.getParentIndex = function(idx) {
-    var thisDepth = this.visiblePosts[idx].depth;
+    var thisDepth = this.visibleComments[idx].depth;
     if (thisDepth == 0) return -1;
 
     // iterate backwards until we find the item with the lower depth
     for (var i = idx - 1; i >= 0; i--) {
-        if (this.visiblePosts[i].depth < thisDepth) return i;
+        if (this.visibleComments[i].depth < thisDepth) return i;
     }
 }
 
 Listit.TreeView.prototype.getLevel = function(idx) { 
-    return this.isFlat ? 0 : this.visiblePosts[idx].depth 
+    return this.isFlat ? 0 : this.visibleComments[idx].depth 
 }
 
 
 Listit.TreeView.prototype.hasNextSibling = function(idx, after) {
     var thisLevel = this.getLevel(idx);
-    for (var t = after + 1; t < this.visiblePosts.length; t++) {
+    for (var t = after + 1; t < this.visibleComments.length; t++) {
         var nextLevel = this.getLevel(t);
         if (nextLevel == thisLevel) return true;
         if (nextLevel < thisLevel) break;
@@ -279,25 +279,25 @@ Listit.TreeView.prototype.toggleOpenState = function(idx) {
 
     if (!this.isContainer(idx)) return;
     if (this.isContainerOpen(idx)) {
-        this.visiblePosts[idx].isOpen = false;
+        this.visibleComments[idx].isOpen = false;
 
         // Walk downwards to next sibling to count children to delete
         var thisLevel = this.getLevel(idx);
         var deleteCount = 0;
-        for (var t = idx + 1; t < this.visiblePosts.length; t++) {
+        for (var t = idx + 1; t < this.visibleComments.length; t++) {
             if (this.getLevel(t) > thisLevel)
                 deleteCount++;
             else break;
         }
         if (deleteCount) {
-            this.visiblePosts.splice(idx + 1, deleteCount);
+            this.visibleComments.splice(idx + 1, deleteCount);
             this.treeBox.rowCountChanged(idx + 1, -deleteCount);
         }
     } else {
-        this.visiblePosts[idx].isOpen = true;
-        var toInsert = this._getOpenPosts(this.visiblePosts[idx].replies);
+        this.visibleComments[idx].isOpen = true;
+        var toInsert = this._getOpenComments(this.visibleComments[idx].replies);
         for (var i = 0; i < toInsert.length; i++) {
-            this.visiblePosts.splice(idx + i + 1, 0, toInsert[i]);
+            this.visibleComments.splice(idx + i + 1, 0, toInsert[i]);
         }
         this.treeBox.rowCountChanged(idx + 1, toInsert.length);
     }
