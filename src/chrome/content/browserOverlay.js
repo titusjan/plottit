@@ -331,7 +331,7 @@ Listit.onPageLoad = function(event) {
     browserState.setStatus(Listit.PAGE_NOT_LISTIT);
     browserState.removeAllPosts();
     
-    if ( !Listit.RE_ISREDDIT(pageURL) && !Listit.RE_ISFILE(pageURL) ) {
+    if ( !Listit.RE_ISREDDIT.test(pageURL) && !Listit.RE_ISFILE.test(pageURL) ) {
         Listit.logger.debug("No reddit.com or file:// (ignored), URL: " + pageURL);    
         Listit.updateAllViews(Listit.state, browserID);
         return;
@@ -340,7 +340,7 @@ Listit.onPageLoad = function(event) {
     var host = pageURL.split('?')[0];
     Listit.fbLog(host);
     
-    if (Listit.RE_ISREDDIT(pageURL) && !Listit.RE_ISJSON(host)) {
+    if (Listit.RE_ISREDDIT.test(pageURL) && !Listit.RE_ISJSON.test(host)) {
         Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + pageURL);
 
         // Make AJAX request for corresponding JSON page.
