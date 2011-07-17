@@ -1,4 +1,45 @@
 
+////////////////
+// Discussion //
+////////////////
+
+
+Listit.Discussion = function () { // Constructor
+
+}
+
+Listit.Discussion.prototype.toString = function () {
+    return "<Listit.Discussion, id = '" + this.id + "'>";
+};
+
+Listit.Discussion.prototype.__defineGetter__("id", function() { return this._id} );
+Listit.Discussion.prototype.__defineSetter__("id", function(v) { this._id = v } );
+
+Listit.Discussion.prototype.__defineGetter__("author", function() { return this._author} );
+Listit.Discussion.prototype.__defineSetter__("author", function(v) { this._author = v} );
+
+Listit.Discussion.prototype.__defineGetter__("selfText", function() { return this._selfText} );
+Listit.Discussion.prototype.__defineSetter__("selfText", function(v) { this._selfText = v} );
+
+Listit.Discussion.prototype.__defineGetter__("selfTextHtml", function() { return this._selfTextHtml} );
+Listit.Discussion.prototype.__defineSetter__("selfTextHtml", function(v) { this._selfTextHtml = v} );
+
+Listit.Discussion.prototype.__defineGetter__("dateCreated", function() { return this._dateCreated} );
+Listit.Discussion.prototype.__defineSetter__("dateCreated", function(v) { this._dateCreated = v} );
+
+Listit.Discussion.prototype.__defineGetter__("ups", function() { return this._ups} );
+Listit.Discussion.prototype.__defineSetter__("ups", function(v) { this._ups = v} );
+
+Listit.Discussion.prototype.__defineGetter__("downs", function() { return this._downs} );
+Listit.Discussion.prototype.__defineSetter__("downs", function(v) { this._downs = v} );
+
+Listit.Discussion.prototype.__defineGetter__("title", function() { return this._title} );
+Listit.Discussion.prototype.__defineSetter__("title", function(v) { this._title = v} );
+
+Listit.Discussion.prototype.__defineGetter__("url", function() { return this._url} );
+Listit.Discussion.prototype.__defineSetter__("url", function(v) { this._url = v} );
+
+
 //////////
 // Post //
 //////////
@@ -105,6 +146,26 @@ Listit.countPosts = function(posts) {
 ////
 
 
+
+Listit.redditNodeToDiscussion = function(redditNode) {
+
+    if (redditNode.kind != 't3') { // e.g. kind = 'Listing'
+        //Listit.fbLog(redditNode);
+        return null;
+    } 
+    var data = redditNode.data;
+    var discussion = new Listit.Discussion();
+    discussion.id = data.id;
+    discussion.author = data.author;
+    discussion.selfText = Listit.Encoder.htmlDecode(data.selftext); 
+    discussion.selftTextHtml = Listit.Encoder.htmlDecode(data.selftext_html);
+    discussion.dateCreated = new Date(data.created_utc * 1000);
+    discussion.downs = data.downs;
+    discussion.ups = data.ups;
+    return discussion;
+}
+
+
 Listit.redditNodeToListitNode = function(redditNode, depth) {
 
     if (redditNode.kind != 't1') { // e.g. kind = 'more'
@@ -140,7 +201,12 @@ Listit.redditNodeToListitNode = function(redditNode, depth) {
 Listit.getListitPostsFromPage = function(redditJsonPage) {
 
     //Listit.logger.trace('getListitPostsFromPage');
+
+    var redditDiscussion = redditJsonPage[0].data.children[0];    
+    var discussion = Listit.redditNodeToDiscussion(redditDiscussion);
+    
     var redditPosts = redditJsonPage[1];
+    Listit.fbLog(redditPosts);
     var listitPosts = [];
     var children = redditPosts.data.children; // TODO: what is data.after/before?
 
