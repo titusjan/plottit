@@ -31,6 +31,8 @@ Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
     this.treeBox = null;
     this.selection = null;
     this.refreshDate = new Date();
+    this.discussionCreated = null;  // set in setDiscussionSorted
+    
 }
 
 
@@ -42,26 +44,30 @@ Listit.TreeView.prototype.getComments = function() {
     return this.allComments;
 }
 
-Listit.TreeView.prototype.setCommentsSorted = function(columnID, sortDirection, structure, comments) {
+Listit.TreeView.prototype.setDiscussionSorted = function(columnID, sortDirection, structure, discussion) {
 
-    Listit.logger.debug("setCommentsSorted -- ")
-    if (comments === undefined) {
+    Listit.logger.trace("setDiscussionSorted -- ")
+    
+    var comments;
+    if (discussion === undefined) {
         comments = this.allComments;
+    } else {
+        comments = discussion.comments;
+        this.discussionCreated = discussion.dateCreated;
     }
+    
     Listit.assert(comments instanceof Array, 'addComments: listitComments should be an Array');
 
-    Listit.logger.debug("setCommentsSorted, structure: " + structure);    
+    //Listit.logger.debug("setDiscussionSorted, structure: " + structure);    
     this.setStructure(structure);
     var comparisonFunction = this.getComparisonFunction(columnID, sortDirection);
 
     this.removeAllComments();
     
     if (this.isFlat) {
-        Listit.logger.debug("setCommentsSorted: flat ")
         this.allComments = comments;
         this.visibleComments = this._flattenComments(this.allComments).sort(comparisonFunction);
     } else {
-        Listit.logger.debug("setCommentsSorted: tree ")
         this.allComments = Listit.sortComments(comments, comparisonFunction);
         this.visibleComments = this._getOpenComments(this.allComments);
     }
@@ -173,6 +179,7 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
         case 'treeLocalDate':
         case 'treeUtcDate': 
         case 'treeAge': 
+        case 'treePostedAfter': 
             fn = function(a, b) { return Listit.compareDates(a.dateCreated, b.dateCreated) };    
             break;
         default: 
@@ -201,8 +208,6 @@ Listit.TreeView.prototype.setTree = function(treeBox)  { this.treeBox = treeBox;
 
 Listit.TreeView.prototype.getCellText = function(idx, column) {
 
-try {
-
     var rowItem = this.visibleComments[idx];
     switch (column.id)
     {
@@ -224,15 +229,15 @@ try {
         case 'treeAge' : 
             var ageMilliSeconds = this.refreshDate.valueOf() - rowItem.dateCreated.valueOf();
             return new Listit.TimePeriod(ageMilliSeconds).toString();
+        case 'treePostedAfter' : 
+            var afterMilliSeconds = rowItem.dateCreated.valueOf() - this.discussionCreated.valueOf();
+            return new Listit.TimePeriod(afterMilliSeconds).toString();
         //case 'treeDebug'     : return rowItem.debug;
-        case 'treeDebug'     : return Listit.dateFormat(this.refreshDate, this.utcDateFormat, true);
+        //case 'treeDebug'     : return Listit.dateFormat(this.refreshDate, this.utcDateFormat, true);
+        case 'treeDebug'     : return Listit.dateFormat(this.discussionCreated, this.utcDateFormat, true);
         //case 'treeDebug'    : return column.width;
         default : return "** Unknown id: '" + column.id + "' **";
     }
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.TreeView.getCellText;');
-    Listit.logger.error(ex);
-}          
 }
 
 

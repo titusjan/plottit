@@ -139,7 +139,6 @@ Listit.onTabSelect = function(event) {
 Listit.onClickTreeHeader = function(event) {
     Listit.logger.trace("Listit.onClickTreeHeader -- ");
 
-try {
     if (event.button != 0) return; // Only left mouse button
     
     var column = event.originalTarget;
@@ -171,7 +170,7 @@ try {
     Listit.logger.debug('newSortDirection: ' + newSortDirection);    
     
     var structure = document.getElementById('treeBody').getAttribute('structure');
-    Listit.state.getCurrentTreeView().setCommentsSorted(column.id, newSortDirection, structure);
+    Listit.state.getCurrentTreeView().setDiscussionSorted(column.id, newSortDirection, structure);
     Listit.ensureCurrentRowVisible();
     
     // Set after actual sorting for easier dection of error in during sort
@@ -179,11 +178,6 @@ try {
     scoreTree.setAttribute('sortResource', newSortResource);
     column.setAttribute('sortDirection', newSortDirection);
     Listit.logger.trace("Listit.onClickTreeHeader done ");
-       
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.onClickTreeHeader;');
-    Listit.logger.error(ex);
-}        
 }
 
 
@@ -191,7 +185,6 @@ try {
 Listit.onClickBodyTreeHeader = function(event) {
     Listit.logger.trace("Listit.onClickBodyTreeHeader -- ");
     
-try {    
     if (event.button != 0) return; // Only left mouse button
     
     var column = event.originalTarget;
@@ -207,7 +200,8 @@ try {
     var scoreTree = document.getElementById('scoreTree');
     var sortResource = scoreTree.getAttribute('sortResource');
     var sortDirection = scoreTree.getAttribute('sortDirection');
-    curTreeView.setCommentsSorted(sortResource, sortDirection, newStructure, curTreeView.comments);
+    curTreeView.setDiscussionSorted(sortResource, sortDirection, newStructure);
+    //curTreeView.setDiscussionSorted(sortResource, sortDirection, newStructure, curTreeView.discussion);
     Listit.ensureCurrentRowVisible();
     
     // Set after actual sorting for easier dection of error in during sort
@@ -215,15 +209,11 @@ try {
     column.setAttribute('label', 'Body as ' + ((newStructure == 'tree') ? 'tree' : 'list'));
     
     Listit.logger.trace("Listit.onClickBodyTreeHeader done ");
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.onClickBodyTreeHeader;');
-    Listit.logger.error(ex);
-}        
 }
 
 Listit.setTreeColumnDateFormat = function (event) {
     Listit.logger.trace("Listit.setTreeColumnDateFormat -- ");
-try{    
+  
     var format = event.target.value;
     var column = document.popupNode; 
 
@@ -252,10 +242,6 @@ try{
     Listit.getTreeBoxObject('scoreTree').invalidateColumn(nsiTreeColumn);        
     
     Listit.logger.trace("Listit.setTreeColumnDateFormat done ");    
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.setTreeColumnDateFormat;');
-    Listit.logger.error(ex);
-}  
 }
 
 // Sets the check mark depending on which column is the context of the date-format popup
@@ -471,8 +457,8 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             var column = document.getElementById(sortResource);
             column.setAttribute('sortDirection', sortDirection);
             
-            curState.treeView.setCommentsSorted(column.id, sortDirection, structure, 
-                    Listit.state.getBrowserComments(eventBrowserID));
+            curState.treeView.setDiscussionSorted(column.id, sortDirection, structure, 
+                    Listit.state.getBrowserDiscussion(eventBrowserID));
             Listit.ensureCurrentRowVisible();
             break;
         default:

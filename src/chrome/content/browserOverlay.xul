@@ -136,7 +136,18 @@
             style="text-align: right"
             />
           <splitter class="tree-splitter"/>
-                    
+
+          <treecol id="treeUtcDate"
+            width="130"
+            label="UTC Date &amp; Time   "
+            persist="width ordinal hidden format"
+            format="yyyy-mm-dd HH:MM:ss"
+            onclick="Listit.onClickTreeHeader(event)"
+            context="menuDateFormat"
+            style="text-align: right"
+            />
+          <splitter class="tree-splitter"/>
+
           <treecol id="treeAge"
             width="100"
             label="Age   "
@@ -146,14 +157,13 @@
             style="text-align: right"
             />
           <splitter class="tree-splitter"/>
-          
-          <treecol id="treeUtcDate"
-            width="130"
-            label="UTC Date &amp; Time   "
+                              
+          <treecol id="treePostedAfter"
+            width="100"
+            label="Posted After   "
             persist="width ordinal hidden format"
-            format="yyyy-mm-dd HH:MM:ss"
+            format="HH:MM:ss"
             onclick="Listit.onClickTreeHeader(event)"
-            context="menuDateFormat"
             style="text-align: right"
             />
           <splitter class="tree-splitter"/>
@@ -280,7 +290,7 @@
 <!--
 
 TODO: 
-    date, age, hot, best, controversial, chars, words?, sigma_score, sigma_up, etc 
+     hot, best, controversial, words?, sigma_score, sigma_up, etc 
 
 Notes:
 -   An element must have an ID if it uses persistent attribrutes!

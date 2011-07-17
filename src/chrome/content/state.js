@@ -118,9 +118,9 @@ Listit.State.prototype.setBrowserDiscussion = function (browserID, discussion) {
     this.browserStates[browserID].discussion = discussion;
 }
 
-Listit.State.prototype.getBrowserComments = function (browserID) {
+Listit.State.prototype.getBrowserDiscussion = function (browserID) {
     Listit.fbLog(this.browserStates[browserID]);
-    return this.browserStates[browserID].discussion.comments;
+    return this.browserStates[browserID].discussion;
 }
 
 
