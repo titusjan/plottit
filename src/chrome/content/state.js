@@ -112,15 +112,17 @@ Listit.State.prototype.removeBrowser = function (browser) {
     return browserID;
 };
 
-Listit.State.prototype.setBrowserComments = function (browserID, comments) {
-    Listit.logger.trace("Listit.State.setBrowserComments -- ");
-    Listit.assert(browserID, "setBrowserComments: Browser has no ListitBrowserID");
-    this.browserStates[browserID].comments = comments;
+Listit.State.prototype.setBrowserDiscussion = function (browserID, discussion) {
+    Listit.logger.trace("Listit.State.setBrowserDiscussion -- ");
+    Listit.assert(browserID, "setBrowserDiscussion: Browser has no ListitBrowserID");
+    this.browserStates[browserID].discussion = discussion;
 }
 
 Listit.State.prototype.getBrowserComments = function (browserID) {
-    return this.browserStates[browserID].comments;
+    Listit.fbLog(this.browserStates[browserID]);
+    return this.browserStates[browserID].discussion.comments;
 }
+
 
 Listit.State.prototype.getCurrentBrowserState = function () {
     return this.browserStates[this.currentBrowserID];
@@ -160,7 +162,7 @@ Listit.State.prototype.setLocalDateFormat = function (format) {
 
 /*
 Listit.State.prototype.getCurrentBrowserComments = function () {
-    return this.browserStates[this.currentBrowserID].comments;
+    return this.browserStates[this.currentBrowserID].discussion.comments;
 }
 */
 

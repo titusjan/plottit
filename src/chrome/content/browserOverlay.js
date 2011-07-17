@@ -402,8 +402,8 @@ Listit.processJsonPage = function (jsonContent, browser, url) {
         var browserID = browser.getAttribute("ListitBrowserID");
         var page = JSON.parse(jsonContent); // Parse content
         Listit.logger.debug('Successfully parsed JSON page for: ' + url);
-        var listitComments = Listit.getListitCommentsFromPage(page);
-        Listit.state.setBrowserComments(browserID, listitComments);
+        var discussion = Listit.getListitDiscussionFromPage(page);
+        Listit.state.setBrowserDiscussion(browserID, discussion);
         
         var browserState = Listit.state.browserStates[browserID];
         browserState.setStatus(Listit.PAGE_READY);

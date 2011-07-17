@@ -39,6 +39,8 @@ Listit.Discussion.prototype.__defineSetter__("title", function(v) { this._title 
 Listit.Discussion.prototype.__defineGetter__("url", function() { return this._url} );
 Listit.Discussion.prototype.__defineSetter__("url", function(v) { this._url = v} );
 
+Listit.Discussion.prototype.__defineGetter__("comments", function() { return this._comments} );
+Listit.Discussion.prototype.__defineSetter__("comments", function(v) { this._comments = v} );
 
 //////////
 // Comment //
@@ -115,18 +117,18 @@ Listit.Comment.prototype.__defineGetter__("debug", function() {
 
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
-Listit.sortComments = function(listitComments, comparisonFunction) { 
+Listit.sortComments = function(comments, comparisonFunction) { 
     Listit.logger.trace("Listit.sortComments -- ");
     Listit.assert(comparisonFunction instanceof Function, 'comparisonFunction should be a Function');
-    Listit.assert(listitComments instanceof Array, 'sortComments: listitComments should be an Array');
+    Listit.assert(comments instanceof Array, 'sortComments: comments should be an Array');
     
-    if (!listitComments) {
-        return listitComments;
+    if (!comments) {
+        return comments;
     }
-    for (var i = 0; i < listitComments.length; i++) { // Recursively sort children
-        Listit.sortComments(listitComments[i].replies, comparisonFunction);
+    for (var i = 0; i < comments.length; i++) { // Recursively sort children
+        Listit.sortComments(comments[i].replies, comparisonFunction);
     }
-    return listitComments.sort(comparisonFunction);
+    return comments.sort(comparisonFunction);
 }
 
 
@@ -147,7 +149,7 @@ Listit.countComments = function(comments) {
 
 
 
-Listit.redditNodeToDiscussion = function(redditNode) {
+Listit.redditT3NodeToDiscussion = function(redditNode) {
 
     if (redditNode.kind != 't3') { // e.g. kind = 'Listing'
         //Listit.fbLog(redditNode);
@@ -166,7 +168,7 @@ Listit.redditNodeToDiscussion = function(redditNode) {
 }
 
 
-Listit.redditNodeToDiscussion = function(redditNode, depth) {
+Listit.redditT1NodeToComment = function(redditNode, depth) {
 
     if (redditNode.kind != 't1') { // e.g. kind = 'more'
         //Listit.fbLog(redditNode);
@@ -189,7 +191,7 @@ Listit.redditNodeToDiscussion = function(redditNode, depth) {
     if (data.replies) {  // Recursively add children
         var children = data.replies.data.children;
         for (var i = 0; i < children.length; i++) {
-            var childNode = Listit.redditNodeToDiscussion(children[i], depth + 1);
+            var childNode = Listit.redditT1NodeToComment(children[i], depth + 1);
             if (childNode) 
                 discussion.replies.push(childNode);
         }
@@ -198,24 +200,24 @@ Listit.redditNodeToDiscussion = function(redditNode, depth) {
 };
 
 // Get comments in as list (of lists) of ListitNodes
-Listit.getListitCommentsFromPage = function(redditJsonPage) {
+Listit.getListitDiscussionFromPage = function(redditJsonPage) {
 
-    //Listit.logger.trace('getListitCommentsFromPage');
+    //Listit.logger.trace('getcommentsFromPage');
 
     var redditDiscussion = redditJsonPage[0].data.children[0];    
-    var discussion = Listit.redditNodeToDiscussion(redditDiscussion);
+    var discussion = Listit.redditT3NodeToDiscussion(redditDiscussion);
     
-    var redditComments = redditJsonPage[1];
-    Listit.fbLog(redditComments);
-    var listitComments = [];
-    var children = redditComments.data.children; // TODO: what is data.after/before?
+    var redditPosts = redditJsonPage[1];
+    Listit.fbLog(redditPosts);
+    var comments = [];
+    var children = redditPosts.data.children; // TODO: what is data.after/before?
 
     for (var i = 0; i < children.length; i++) {
-        var listitNode = Listit.redditNodeToDiscussion(children[i], 0);
+        var listitNode = Listit.redditT1NodeToComment(children[i], 0);
         if (listitNode) 
-            listitComments.push(listitNode);
+            comments.push(listitNode);
     }
-
-    return listitComments;
+    discussion.comments = comments;
+    return discussion;
 };
 
