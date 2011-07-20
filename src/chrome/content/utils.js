@@ -74,6 +74,14 @@ Listit.range = function(begin, end) {
     }
 }
 
+//////////
+// Math //
+//////////
+
+Listit.log10 = function (x) {
+    return Math.LOG10E * Math.log(x);
+}
+
 /////////////
 // Sorting //
 /////////////
@@ -89,6 +97,16 @@ Listit.roundToZero = function(x) {
 
 Listit.swapArgs = function(fun) {
     return function(a, b) { return fun(b,a); }
+}
+
+
+Listit.compare = function(a, b) {
+    if (a == b) 
+        return 0;
+    if (a < b) 
+        return -1 
+    else 
+        return 1;
 }
 
 Listit.compareNumbers = function(a, b) {

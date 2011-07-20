@@ -158,6 +158,14 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
         case 'treeVotes':
             fn = function(a, b) { return Listit.compareNumbers(a.votes, b.votes) };
             break;
+        case 'treeHot':
+            fn = function(a, b) { 
+                return Listit.compareNumbers(a.hot, b.hot) 
+            };
+            break;
+        case 'treeBest':
+            fn = function(a, b) { return Listit.compareNumbers(a.best, b.best) };
+            break;
         case 'treeLikes':
             fn = function(a, b) { 
                 var resLikes = Listit.compareNumbers(a.likes, b.likes) 
@@ -217,6 +225,8 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
         case 'treeUp'        : return rowItem.ups;
         case 'treeDown'      : return rowItem.downs;
         case 'treeVotes'     : return rowItem.votes;
+        case 'treeHot'       : return rowItem.hot.toFixed(3);
+        case 'treeBest'      : return rowItem.best;
         case 'treeLikes'     : return (rowItem.likes*100).toFixed(1) + '%';
         case 'treeReplies'   : return rowItem.numReplies;
         case 'treeDepth'     : return rowItem.depth;

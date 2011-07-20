@@ -250,6 +250,24 @@
             onclick="Listit.onClickTreeHeader(event)"
             style="text-align: right"
             /> 
+          <splitter class="tree-splitter"/>   
+          
+          <treecol id="treeHot"
+            width="50"
+            label="Hot   "
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(event)"
+            style="text-align: right"
+            /> 
+          <splitter class="tree-splitter"/>       
+          
+          <treecol id="treeBest"
+            width="50"
+            label="Best   "
+            persist="width ordinal hidden"
+            onclick="Listit.onClickTreeHeader(event)"
+            style="text-align: right"
+            /> 
           <splitter class="tree-splitter"/>
 
           <treecol id="treeAuthor"

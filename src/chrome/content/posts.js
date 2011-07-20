@@ -99,6 +99,23 @@ Listit.Comment.prototype.__defineGetter__("likes", function() {
     return this._ups / (this._ups + this._downs); 
 });
 
+Listit.Comment.EPOCH_START_MS = 1134028003 * 1000; // 2005-12-08 07:46:43
+Listit.Comment.prototype.__defineGetter__("hot", function() { 
+
+    var s = this.score;
+    var order = Listit.log10(Math.max(Math.abs(s), 1));
+    //var sign = (s>1) ? 1 : (s<1) ? -1 : 0;
+    var sign = Listit.compare(this._ups, this._downs);
+    var epochSeconds = this._dateCreated.valueOf() - Listit.Comment.EPOCH_START_MS;
+    return order + sign * epochSeconds / 45000000;
+});
+
+Listit.Comment.prototype.__defineGetter__("best", function() { 
+    var s = this.score;
+    var sign = Listit.compare(this._ups, this._downs);
+    return sign;
+});
+
 Listit.Comment.prototype.__defineGetter__("numChars", function() { 
     return this._body.length; 
 });
