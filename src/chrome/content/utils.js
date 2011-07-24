@@ -172,3 +172,14 @@ Listit.configureRootLogger = function () {
     dapp.level = Log4Moz.Level["Debug"];
     root.addAppender(dapp);
 }
+
+// Mockup logger with the same routines
+Listit.fbConsoleLogger = function () { // Constructor
+
+    this.trace = console.log;
+    this.debug = console.log;
+    this.info  = console.log;
+    this.warn  = console.log;
+    this.error = console.log;
+    this.fatal = console.log;
+}

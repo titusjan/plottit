@@ -159,9 +159,7 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
             fn = function(a, b) { return Listit.compareNumbers(a.votes, b.votes) };
             break;
         case 'treeHot':
-            fn = function(a, b) { 
-                return Listit.compareNumbers(a.hot, b.hot) 
-            };
+            fn = function(a, b) { return Listit.compareNumbers(a.hot, b.hot) };
             break;
         case 'treeBest':
             fn = function(a, b) { return Listit.compareNumbers(a.best, b.best) };

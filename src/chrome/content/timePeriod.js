@@ -8,7 +8,6 @@ Listit.TimePeriod = function (microSeconds) { // Constructor
 
     var sec = microSeconds / 1000;
     
-   
     var divYears = sec / Listit.TimePeriod.SECONDS_PER_YEAR;
     var modYears = sec % Listit.TimePeriod.SECONDS_PER_YEAR;
     this.years = Listit.roundToZero(divYears);

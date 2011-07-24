@@ -160,6 +160,20 @@ Listit.countComments = function(comments) {
 }
 
 
+Listit.getCommentDataAsTuples = function(comments) {
+
+    Listit.assert(comments instanceof Array, 'countComments: comments should be an Array');
+    
+    var result = [];
+    for (var idx = 0; idx < comments.length; idx = idx + 1) {
+        var comment = comments[idx];
+        result.push( [comment.dateCreated.valueOf(), comment.score]); 
+        result = result.concat(Listit.getCommentDataAsTuples(comment.replies));
+    }
+    return result;
+}
+
+
 ////
 // Parse JSON
 ////
