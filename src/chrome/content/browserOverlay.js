@@ -428,6 +428,23 @@ Listit.addJsonToRedditUrl = function(url) {
 // Views //
 ///////////
 
+Listit.updatePlotFrame = function (discussion) {
+    Listit.logger.trace("Listit.updatePlotFrame -- ");
+    
+    var plotFrame = document.getElementById('plotFrame');
+    var $ = plotFrame.contentWindow.jQuery;
+    var data = Listit.getCommentDataAsTuples(discussion.comments);
+    var plotSeries = {
+        data   : data,
+        points : { show: true },
+        //xlabel : 'length',
+        //ylabel : 'score',
+        color  : 'orangered',
+    };
+    $.plot($("#placeholder"), [plotSeries],  { xaxis: { mode: "time" } });
+}
+
+
 
 
 Listit.setDetailsFrameHtml = function(html) {
@@ -456,7 +473,9 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             curState.removeAllComments();
             break;
         case Listit.PAGE_READY:
+            var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
             Listit.setDetailsFrameHtml('');
+            Listit.updatePlotFrame(discussion);
             
             // Sort and set comments in score tree
             var scoreTree = document.getElementById('scoreTree');
@@ -467,8 +486,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             var column = document.getElementById(sortResource);
             column.setAttribute('sortDirection', sortDirection);
             
-            curState.treeView.setDiscussionSorted(column.id, sortDirection, structure, 
-                    Listit.state.getBrowserDiscussion(eventBrowserID));
+            curState.treeView.setDiscussionSorted(column.id, sortDirection, structure, discussion);
             Listit.ensureCurrentRowVisible();
             break;
         default:
