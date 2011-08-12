@@ -74,32 +74,36 @@ Listit.onLoad = function() {
 };
 
 Listit.onUnload = function() {
-    Listit.logger.debug("Listit.onUnload -- ");
+    Listit.logger.debug("Listit.onUnload -- "); // TODO: unload event listeners
 }
 
+Listit.SELECTED_ROW_STYLE = "<style type='text/css'>"
+    + "div.listit-selected {background:#EFF7FF; outline:1px dashed #5F99CF}"
+    + "</style>";
 
 Listit.onRowSelect = function(event) {
     Listit.logger.trace("Listit.onRowSelect -- ");
     
     var selectedIndex = document.getElementById('scoreTree').currentIndex;
     var curState = Listit.state.getCurrentBrowserState();
+    var prevSelectedComment = curState.selectedComment;
     var selectedComment = curState.treeView.visibleComments[selectedIndex];
     Listit.setDetailsFrameHtml(selectedComment.bodyHtml);
     curState.selectedComment = selectedComment;
     
-// try {
-//     //var doc = event.target.defaultView.document;
-//     //var doc = eventt;
-//     //Listit.fbLog(gBrowser);
-//     //var browser = gBrowser.getBrowserForTab(event.target);
-//     Listit.fbLog(gBrowser.contentDocument);
-//     var classID = '.id-t1' + curState.treeView.visibleComments[selectedIndex].id;
-//     Listit.logger.debug("Listit.onRowSelect: '" + classID + "'");
-//     gBrowser.contentDocument.jQuery(classID).css({'background': '#EFF7FF', 'border': '1px dashed #5F99CF'});
-// } catch (ex) {
-//     Listit.logger.error('Exception in onRowSelect: ');
-//     Listit.logger.error(ex);
-// }    
+    // Select post in reddit page
+    var $ = content.wrappedJSObject.jQuery;
+    if (prevSelectedComment !== null) {
+        $('div.id-t1_' + prevSelectedComment.id + ' div.entry')
+            .filter(':first').removeClass('listit-selected');
+    }
+    var offset = $('div.id-t1_' + selectedComment.id)
+                    .filter(':visible').find('div.entry:first')
+                    .addClass('listit-selected')
+                    .offset();
+    if (offset) {
+        $('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
+    }
 }
 
 Listit.onTabOpen = function(event) {
@@ -270,6 +274,19 @@ Listit.onDateFormatPopupShowing = function(menu) {
     }
 }
 
+// Loads jQuery into chrome.
+// Use with: doc.defaultView.Listit_jQuery = Listit.loadjQuery(doc.defaultView);
+// From: http://forums.mozillazine.org/viewtopic.php?f=19&t=2105087
+Listit.loadjQuery = function(wnd) {
+    var loader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+        .getService(Components.interfaces.mozIJSSubScriptLoader);
+    loader.loadSubScript("chrome://xulschoolhello/content/jquery-1.6.2.min.js", wnd);
+    var jQuery = wnd.wrappedJSObject.jQuery.noConflict(true);
+    // Load jQuery plugins here...
+    //loader.loadSubScript("chrome://clhelper/content/jquery/jquery.hoverIntent.js", jQuery);
+    return jQuery;
+};
+
 
 // Finds the root document from a HTMLDocument
 // Returns null if the document is not a HTMLDocument
@@ -295,16 +312,6 @@ Listit.onPageLoad = function(event) {
     Listit.logger.trace("Listit.onPageLoad");
     var doc = event.originalTarget;
     var pageURL = doc.URL;
-// try{
-//     Listit.fbLog('onPageLoad');
-//     Listit.fbLog(content);
-//     var classID = '.submitter';
-//     Listit.logger.debug("Listit.onPageLoad: '" + classID + "'");
-//     content.document.jQuery(classID).css({'background': '#EFF7FF', 'border': '1px dashed #5F99CF'});
-// } catch (ex) {
-//     Listit.logger.error('Exception in onRowSelect: ');
-//     Listit.logger.error(ex);
-// }    
     var browser = gBrowser.getBrowserForDocument(doc);
     if (browser == null) {
         // Happens when document is not the root; with iFrames (e.g.: www.redditmedia.com/ads)
@@ -324,11 +331,14 @@ Listit.onPageLoad = function(event) {
     }
     
     var host = pageURL.split('?')[0];
-    Listit.fbLog(host);
-    
+
     if (Listit.RE_ISREDDIT.test(pageURL) && !Listit.RE_ISJSON.test(host)) {
         Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + pageURL);
-
+        
+        // Append listis css style to page 
+        var $ = content.wrappedJSObject.jQuery;
+        $('head').append($(Listit.SELECTED_ROW_STYLE));
+        
         // Make AJAX request for corresponding JSON page.
         var jsonURL = Listit.addJsonToRedditUrl(pageURL);
         var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]

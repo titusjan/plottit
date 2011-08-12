@@ -239,7 +239,6 @@ Listit.getListitDiscussionFromPage = function(redditJsonPage) {
     var discussion = Listit.redditT3NodeToDiscussion(redditDiscussion);
     
     var redditPosts = redditJsonPage[1];
-    Listit.fbLog(redditPosts);
     var comments = [];
     var children = redditPosts.data.children; // TODO: what is data.after/before?
 
