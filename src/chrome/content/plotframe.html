@@ -1,17 +1,52 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
- <head>
-    <link rel="stylesheet" type="text/css" href="reddit.css" />
+<head>
+    <link rel="stylesheet" type="text/css" href="listit.css" />
     <script language="javascript" type="text/javascript" src="jquery-1.6.2.min.js"></script>
-    <script language="javascript" type="text/javascript" src="jquery.flot.js"></script>
- </head>
-<body onload="main();">
-    <div id="graphs-div" style="display:none">
-        <h1>Score vs time</h1>
-        <div id="scatter-plot-div" style="width:400px;height:300px;"></div>
+    <script language="javascript" type="text/javascript" src="jquery.flot.min.js"></script>
+    <script language="javascript" type="text/javascript" src="jquery.flot.resize.min.js"></script>
+    
+    <script>
+    // Needed to vertically expand the scatter-plot-div
+    // Couldn't get it to work with just height:100%; this gave undesired scrollbars
+    $( function () {
+        function onResizeBody() {
+            var plotRim = $('#scatter-plot-div').outerHeight(true) - $('#scatter-plot-div').height();
+            console.log("plotRim: %s", plotRim);
+            var height = $(this).height() 
+                - $("#header-div").height() 
+                - $("#footer-div").height()
+                - plotRim; // size of 2*(border + margin + border)
+            $('#scatter-plot-div').css('height', height);
+        }
+        onResizeBody();
+        $("body").resize(onResizeBody);
+    });
+    </script>
+    
+    <style type="text/css">
+        html, body, #graphs-div {
+                margin: 0px;
+            height: 100%; 
+            overflow: hidden; /* prevents scollbars */
+        }
+        
+        #scatter-plot-div {
+            margin: 5px;
+            background-color:yellow;
+        }
+        
+    </style>    
+</head>
+<body>
+    <div id="graphs-div">
+        <div id="header-div" class="md">Score versus style</div>
+        <div id="scatter-plot-div"></div>
+        <div id="footer-div">footer</div>
     </div>
-    <div id="messages-div">
-        <i>The current page is not a reddit discussion</i>
+    <div id="messages-div" style="height:40px; display:none;">
+        <i>The current pddage is not a reddit discussion</i>
     </div>
+    
 </body>
 </html>
