@@ -429,11 +429,15 @@ Listit.addJsonToRedditUrl = function(url) {
 ///////////
 
 Listit.displayScatterPlot = function (bDisplay) {
-
+    Listit.logger.trace("Listit.displayScatterPlot -- ");
+    
     var plotFrameDoc = document.getElementById('plotFrame').contentDocument;
     if (bDisplay) {
         plotFrameDoc.getElementById('graphs-div').style.display   = 'block';
         plotFrameDoc.getElementById('messages-div').style.display = 'none';
+        
+        // Force resize, otherwise it won't resize if previous tab doesn't contain discussion
+        var cw = document.getElementById('plotFrame').contentWindow.wrappedJSObject.onResize();
     } else {
         plotFrameDoc.getElementById('graphs-div').style.display   = 'none';
         plotFrameDoc.getElementById('messages-div').style.display = 'block';
@@ -456,9 +460,6 @@ Listit.updateScaterPlot = function (discussion) {
     };
     $.plot($("#scatter-plot-div"), [plotSeries],  { xaxis: { mode: "time" } });
 }
-
-
-
 
 Listit.setDetailsFrameHtml = function(html) {
     var detailsFrame = document.getElementById('commentHtmlFrame');

@@ -7,45 +7,56 @@
     <script language="javascript" type="text/javascript" src="jquery.flot.resize.min.js"></script>
     
     <script>
+    
+    // Resizes the scatter plot div element.
     // Needed to vertically expand the scatter-plot-div
     // Couldn't get it to work with just height:100%; this gave undesired scrollbars
-    $( function () {
-        function onResizeBody() {
-            var plotRim = $('#scatter-plot-div').outerHeight(true) - $('#scatter-plot-div').height();
-            console.log("plotRim: %s", plotRim);
-            var height = $(this).height() 
-                - $("#header-div").height() 
-                - $("#footer-div").height()
-                - plotRim; // size of 2*(border + margin + border)
-            $('#scatter-plot-div').css('height', height);
+    function onResize() {
+    
+        var plotDiv = $('#scatter-plot-div').filter(":visible");
+        
+        if (plotDiv.length == 0) {
+            // header and footer will also be unvissible and their height will 
+            // be incorrect. Therefor we do nothing
+            return; 
         }
-        onResizeBody();
-        $("body").resize(onResizeBody);
+        
+        var plotRimSize = plotDiv.outerHeight(true) - plotDiv.height();
+        var height = $(this).height() 
+            - $("#header-div").height() 
+            - $("#footer-div").height()
+            - plotRimSize; // size of 2*(border + margin + border)
+        plotDiv.css('height', height);
+    }
+        
+    $( function () {
+        onResize();
+        $("body").resize(onResize);
     });
+    
     </script>
     
     <style type="text/css">
         html, body, #graphs-div {
-                margin: 0px;
+            margin: 0px;
             height: 100%; 
             overflow: hidden; /* prevents scollbars */
         }
         
         #scatter-plot-div {
             margin: 5px;
-            background-color:yellow;
         }
         
     </style>    
 </head>
 <body>
     <div id="graphs-div">
-        <div id="header-div" class="md">Score versus style</div>
-        <div id="scatter-plot-div"></div>
-        <div id="footer-div">footer</div>
+        <div id="header-div"><center>Score versus style</center></div>
+        <div id="scatter-plot-div"></div> 
+        <div id="footer-div"></div>
     </div>
-    <div id="messages-div" style="height:40px; display:none;">
-        <i>The current pddage is not a reddit discussion</i>
+    <div id="messages-div" style="display:none;">
+        <i>The current page is not a reddit discussion</i>
     </div>
     
 </body>
