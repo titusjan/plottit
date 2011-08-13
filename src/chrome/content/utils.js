@@ -19,6 +19,23 @@ Listit.safeGet = function(obj, propName) {
     }
 }
 
+
+/* not used
+// Loads jQuery into chrome.
+// Use with: doc.defaultView.Listit_jQuery = Listit.loadjQuery(doc.defaultView);
+// From: http://forums.mozillazine.org/viewtopic.php?f=19&t=2105087
+Listit.loadjQuery = function(wnd) {
+    var loader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+        .getService(Components.interfaces.mozIJSSubScriptLoader);
+    loader.loadSubScript("chrome://xulschoolhello/content/jquery-1.6.2.min.js", wnd);
+    var jQuery = wnd.wrappedJSObject.jQuery.noConflict(true);
+    // Load jQuery plugins here...
+    //loader.loadSubScript("chrome://clhelper/content/jquery/jquery.hoverIntent.js", jQuery);
+    return jQuery;
+};
+*/
+
+
 //////////////
 // DateTime //
 //////////////

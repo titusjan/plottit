@@ -78,7 +78,7 @@ Listit.onUnload = function() {
 }
 
 Listit.SELECTED_ROW_STYLE = "<style type='text/css'>"
-    + "div.listit-selected {background:#EFF7FF; outline:1px dashed #5F99CF}"
+    + "div.listit-selected {background-color:#EFF7FF; outline:1px dashed #5F99CF}"
     + "</style>";
 
 Listit.onRowSelect = function(event) {
@@ -274,20 +274,6 @@ Listit.onDateFormatPopupShowing = function(menu) {
     }
 }
 
-// Loads jQuery into chrome.
-// Use with: doc.defaultView.Listit_jQuery = Listit.loadjQuery(doc.defaultView);
-// From: http://forums.mozillazine.org/viewtopic.php?f=19&t=2105087
-Listit.loadjQuery = function(wnd) {
-    var loader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-        .getService(Components.interfaces.mozIJSSubScriptLoader);
-    loader.loadSubScript("chrome://xulschoolhello/content/jquery-1.6.2.min.js", wnd);
-    var jQuery = wnd.wrappedJSObject.jQuery.noConflict(true);
-    // Load jQuery plugins here...
-    //loader.loadSubScript("chrome://clhelper/content/jquery/jquery.hoverIntent.js", jQuery);
-    return jQuery;
-};
-
-
 // Finds the root document from a HTMLDocument
 // Returns null if the document is not a HTMLDocument
 Listit.getRootHtmlDocument = function(doc) { 
@@ -334,10 +320,14 @@ Listit.onPageLoad = function(event) {
 
     if (Listit.RE_ISREDDIT.test(pageURL) && !Listit.RE_ISJSON.test(host)) {
         Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + pageURL);
-        
-        // Append listis css style to page 
+try {        
+        // Append listit css style to page 
         var $ = content.wrappedJSObject.jQuery;
-        $('head').append($(Listit.SELECTED_ROW_STYLE));
+        var styleElem = $(Listit.SELECTED_ROW_STYLE);
+        $('head').append(styleElem);
+        Listit.fbLog("Listit.onPageLoad (reddit page): URL: " + pageURL);
+        Listit.logger.debug("Head length: " + $('head').length);
+        Listit.logger.debug(styleElem);
         
         // Make AJAX request for corresponding JSON page.
         var jsonURL = Listit.addJsonToRedditUrl(pageURL);
@@ -359,7 +349,12 @@ Listit.onPageLoad = function(event) {
         
         request.open("GET", jsonURL, true);
         request.send(null);      
- 
+        Listit.logger.debug("Listit.onPageLoad done");
+        
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.onPageLoad;');
+    Listit.logger.error(ex);
+} 
     } else {
              
         Listit.logger.debug("Listit.onPageLoad (.JSON): URL: " + pageURL);

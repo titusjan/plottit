@@ -297,13 +297,20 @@
           </treeitem>
         </treechildren>
       </tree>
+
+      <splitter id="listitPannelSplitter" collapse="after"/>
+      <iframe id="commentHtmlFrame" 
+        width="200" 
+        minwidth="100"
+        persist="width" 
+        src="chrome://xulschoolhello/content/detailsframe.html"/>
      
-      <splitter id="listitPannelSplitter" collapsed="false" />
-      
-      <iframe id="commentHtmlFrame" width="200" persist="width" src="chrome://xulschoolhello/content/detailsframe.html"/>
-      
-      <splitter id="listitPannelSplitter2" collapsed="false" />
-      <iframe id="plotFrame" width="200" persist="width" src="chrome://xulschoolhello/content/plotframe.html"/>
+      <splitter id="listitPannelSplitter2" collapse="after"></splitter>
+      <iframe id="plotFrame" 
+        width="200" 
+        minwidth="150"
+        persist="width" 
+        src="chrome://xulschoolhello/content/plotframe.html"/>
      </hbox> 
   </vbox>    
 </overlay>
