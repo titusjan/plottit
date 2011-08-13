@@ -428,11 +428,24 @@ Listit.addJsonToRedditUrl = function(url) {
 // Views //
 ///////////
 
-Listit.updatePlotFrame = function (discussion) {
-    Listit.logger.trace("Listit.updatePlotFrame -- ");
+Listit.displayScatterPlot = function (bDisplay) {
+
+    var plotFrameDoc = document.getElementById('plotFrame').contentDocument;
+    if (bDisplay) {
+        plotFrameDoc.getElementById('graphs-div').style.display   = 'block';
+        plotFrameDoc.getElementById('messages-div').style.display = 'none';
+    } else {
+        plotFrameDoc.getElementById('graphs-div').style.display   = 'none';
+        plotFrameDoc.getElementById('messages-div').style.display = 'block';
+    }
+}
+
+Listit.updateScaterPlot = function (discussion) {
+    Listit.logger.trace("Listit.updateScaterPlot -- ");
     
     var plotFrame = document.getElementById('plotFrame');
     var $ = plotFrame.contentWindow.jQuery;
+    
     var data = Listit.getCommentDataAsTuples(discussion.comments);
     var plotSeries = {
         data   : data,
@@ -441,7 +454,7 @@ Listit.updatePlotFrame = function (discussion) {
         //ylabel : 'score',
         color  : 'orangered',
     };
-    $.plot($("#placeholder"), [plotSeries],  { xaxis: { mode: "time" } });
+    $.plot($("#scatter-plot-div"), [plotSeries],  { xaxis: { mode: "time" } });
 }
 
 
@@ -466,16 +479,19 @@ Listit.updateAllViews = function(state, eventBrowserID) {
     switch (curState.pageStatus) {
         case Listit.PAGE_NOT_LISTIT:
             Listit.setDetailsFrameHtml('<i>The current page is not a reddit discussion</i>');
+            Listit.displayScatterPlot(false);
             curState.removeAllComments();
             break;
         case Listit.PAGE_LOADING:
             Listit.setDetailsFrameHtml('<i>Loading comments, please wait</i>');
+            Listit.displayScatterPlot(false);
             curState.removeAllComments();
             break;
         case Listit.PAGE_READY:
             var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
             Listit.setDetailsFrameHtml('');
-            Listit.updatePlotFrame(discussion);
+            Listit.displayScatterPlot(true);
+            Listit.updateScaterPlot(discussion);
             
             // Sort and set comments in score tree
             var scoreTree = document.getElementById('scoreTree');
