@@ -298,19 +298,29 @@
         </treechildren>
       </tree>
 
-      <splitter id="listitPannelSplitter" collapse="after"/>
+      <splitter id="listitPannelSplitter" collapse="after" resizeafter="closest"/>
       <iframe id="commentHtmlFrame" 
         width="200" 
-        minwidth="100"
+        minwidth="0"        
         persist="width" 
         src="chrome://xulschoolhello/content/detailsframe.html"/>
      
       <splitter id="listitPannelSplitter2" collapse="after"></splitter>
-      <iframe id="plotFrame" 
-        width="200" 
-        minwidth="150"
-        persist="width" 
-        src="chrome://xulschoolhello/content/plotframe.html"/>
+      <vbox>
+        <iframe id="plotFrame" 
+          flex="1"
+          width="200" 
+          minwidth="150"
+          persist="width" 
+          src="chrome://xulschoolhello/content/plotframe.html"/>
+        
+        <hbox>
+          <button id="plotScaleButton" 
+            onclick="Listit.resetScaterPlotScale(event)"
+            label="Reset Scale" 
+            maxwidth="150"/>
+        </hbox>
+       </vbox> 
      </hbox> 
   </vbox>    
 </overlay>

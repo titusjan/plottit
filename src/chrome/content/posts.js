@@ -1,4 +1,6 @@
 
+if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
+
 ////////////////
 // Discussion //
 ////////////////
@@ -131,8 +133,6 @@ Listit.Comment.prototype.__defineGetter__("debug", function() {
 //////
 // Various functions for processing and sorting the comments
 //////
-
-if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 Listit.sortComments = function(comments, comparisonFunction) { 
     Listit.logger.trace("Listit.sortComments -- ");

@@ -69,9 +69,15 @@ Listit.onLoad = function() {
     container.addEventListener("TabSelect", Listit.onTabSelect, false);
 
     gBrowser.addEventListener('DOMContentLoaded', Listit.onPageLoad, false); 
+
+    document.addEventListener("listitPlotSeriesRequest", Listit.onPlotSeriesRequest, false, true);
+
     Listit.logger.trace('Listit.onLoad -- end');
         
 };
+
+
+
 
 Listit.onUnload = function() {
     Listit.logger.debug("Listit.onUnload -- "); // TODO: unload event listeners
@@ -322,12 +328,13 @@ Listit.onPageLoad = function(event) {
         Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + pageURL);
 try {        
         // Append listit css style to page 
-        var $ = content.wrappedJSObject.jQuery;
+        var $ = doc.defaultView.wrappedJSObject.jQuery;
         var styleElem = $(Listit.SELECTED_ROW_STYLE);
-        $('head').append(styleElem);
+
         Listit.fbLog("Listit.onPageLoad (reddit page): URL: " + pageURL);
+        Listit.fbLog(styleElem);
         Listit.logger.debug("Head length: " + $('head').length);
-        Listit.logger.debug(styleElem);
+        $('head').append(styleElem);
         
         // Make AJAX request for corresponding JSON page.
         var jsonURL = Listit.addJsonToRedditUrl(pageURL);
@@ -439,21 +446,54 @@ Listit.displayScatterPlot = function (bDisplay) {
     }
 }
 
-Listit.updateScaterPlot = function (discussion) {
-    Listit.logger.trace("Listit.updateScaterPlot -- ");
-    
-    var plotFrame = document.getElementById('plotFrame');
-    var $ = plotFrame.contentWindow.jQuery;
+Listit.onPlotSeriesRequest = function (event) {
+
+    Listit.logger.trace("Listit.onPlotSeriesRequest -- "); 
+    var eventBrowserID = Listit.state.getCurrentBrowserID();
+    var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
+    Listit.updateScaterPlot(disscusion, false);
+}
+
+Listit.getScatterPlotSeries = function(discussion) {
     
     var data = Listit.getCommentDataAsTuples(discussion.comments);
-    var plotSeries = {
+    var plotSeries = [ {
         data   : data,
         points : { show: true },
-        //xlabel : 'length',
-        //ylabel : 'score',
         color  : 'orangered',
-    };
-    $.plot($("#scatter-plot-div"), [plotSeries],  { xaxis: { mode: "time" } });
+    } ];
+    return plotSeries;
+}
+
+Listit.updateScaterPlot = function (discussion, doRedraw) {
+    Listit.logger.trace("Listit.updateScaterPlot -- ");
+
+    var plotFrame = document.getElementById('plotFrame');
+    var plotSeries = Listit.getScatterPlotSeries(discussion);
+    var flotWrapper = plotFrame.contentWindow.flotWrapper;
+    flotWrapper.setPlotSeries(plotSeries);
+    
+    if (doRedraw) {
+        flotWrapper.drawPlot();
+    }
+}
+
+Listit.resetScaterPlotScale = function () {
+    Listit.logger.debug("Listit.resetScaterPlotScale -- ");
+try{    
+    var eventBrowserID = Listit.state.getCurrentBrowserID();
+    var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
+    
+    var plotFrame = document.getElementById('plotFrame');
+    var plotSeries = Listit.getScatterPlotSeries(discussion);
+    var flotWrapper = plotFrame.contentWindow.flotWrapper;
+    flotWrapper.removeRanges();
+
+    Listit.updateScaterPlot(discussion, true);
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.resetScaterPlotScale;');
+    Listit.logger.error(ex);
+}
 }
 
 Listit.setDetailsFrameHtml = function(html) {
@@ -464,6 +504,7 @@ Listit.setDetailsFrameHtml = function(html) {
 // Updates all views using the application state
 Listit.updateAllViews = function(state, eventBrowserID) {
     Listit.logger.trace("Listit.updateAllViews -- ");
+    Listit.fbLog("Listit.updateAllViews -- ");
 
     // Only update if the events applies to the current browser
     if (eventBrowserID != Listit.state.getCurrentBrowserID()) {
@@ -487,7 +528,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
             Listit.setDetailsFrameHtml('');
             Listit.displayScatterPlot(true);
-            Listit.updateScaterPlot(discussion);
+            Listit.updateScaterPlot(discussion, true);
             
             // Sort and set comments in score tree
             var scoreTree = document.getElementById('scoreTree');

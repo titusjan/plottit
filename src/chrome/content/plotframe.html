@@ -2,9 +2,11 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="listit.css" />
+    <script language="javascript" type="text/javascript" src="flotWrapper.js"></script>
     <script language="javascript" type="text/javascript" src="jquery-1.6.2.min.js"></script>
     <script language="javascript" type="text/javascript" src="jquery.flot.min.js"></script>
     <script language="javascript" type="text/javascript" src="jquery.flot.resize.min.js"></script>
+    <script language="javascript" type="text/javascript" src="jquery.flot.selection.min.js"></script>
     
     <script>
     
@@ -17,7 +19,7 @@
         
         if (plotDiv.length == 0) {
             // header and footer will also be unvissible and their height will 
-            // be incorrect. Therefor we do nothing
+            // be incorrect. Therefore we do nothing.
             return; 
         }
         
@@ -28,11 +30,52 @@
             - plotRimSize; // size of 2*(border + margin + border)
         plotDiv.css('height', height);
     }
-        
+       
+    // Intializing on page load
     $( function () {
+        
+        var plotOptions = { 
+            xaxis     : { color: "black", mode: "time" },
+            yaxis     : { color: "black" },
+            selection : { mode: "xy" },
+        };
+        window.flotWrapper = new Listit.FlotWrapper('scatter-plot-div', plotOptions);
+        $("#scatter-plot-div").bind("plotselected", function (event, ranges) {
+            window.flotWrapper.onPlotSelect(event, ranges);
+        });
+        
         onResize();
         $("body").resize(onResize);
+
     });
+    
+    function doTest (button) {
+        $('#footer-div').text('button pressed');
+        
+try {
+        
+        // Fill plot with debug data
+        function getData(x1, x2) {
+            var d = [];
+            for (var i = 0; i <= 100; ++i) {
+                var x = x1 + i * (x2 - x1) / 100;
+                d.push([x, Math.sin(x * Math.sin(x))]);
+            }
+            return d;
+
+        }
+        var plotSeries = [ {
+            data   : getData(0, 3 * Math.PI),
+            points : { show: true },
+            color  : 'orangered',
+        } ];
+        flotWrapper.setPlotSeries(plotSeries);
+        
+        flotWrapper.drawPlot();
+} catch (ex) {
+        $('#footer-div').text('error: ' + ex);
+}
+    }
     
     </script>
     
@@ -51,9 +94,9 @@
 </head>
 <body>
     <div id="graphs-div">
-        <div id="header-div"><center>Score versus time</center></div>
+        <div id="header-div"><center><button id="footer-button" onclick="doTest()">do test</button>Score versus time</center></div>
         <div id="scatter-plot-div"></div> 
-        <div id="footer-div"></div>
+        <div id="footer-div">&nbsp;</div>
     </div>
     <div id="messages-div" style="display:none;">
         <i>The current page is not a reddit discussion</i>
