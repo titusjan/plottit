@@ -22,6 +22,7 @@ Listit.debug = function () {
     } catch (ex) {
         Listit.logger.error('Exception in Listit.sayHello;');
         Listit.logger.error(ex);
+        //Listit.fbLog(ex);
     }
 }
 
@@ -33,14 +34,11 @@ Listit.debug = function () {
 
 // Initializes listit. Is called when the XUL window has loaded
 Listit.onLoad = function() {
+        
+    Listit.initializeLoggers(true, "Debug");
+    document.getElementById('plotFrame').contentWindow.Listit.logger = Listit.logger;
+    document.getElementById('plotFrame').contentWindow.Listit.fbLog  = Listit.fbLog;
 
-    if ('undefined' == typeof(Log4Moz)) {
-        Components.utils.import("resource://xulschoolhello/log4moz.js");
-        Listit.configureRootLogger();
-        Listit.logger = Log4Moz.repository.getLogger('Listit');
-        Listit.logger.level = Log4Moz.Level['All'];
-    }
-    
     Listit.logger.warn(' ---------------- Listit loaded ----------------');
     Listit.logger.trace('Listit.onLoad -- begin');
 
@@ -295,13 +293,14 @@ Listit.getRootHtmlDocument = function(doc) {
     return doc;
 }
 
-Listit.RE_ISJSON = /\.json$/i // String ends with '.json' 
-Listit.RE_ISFILE = /^file:\/\//i  // String begins with 'file://'
+Listit.RE_ISJSON   = /\.json$/i      // String ends with '.json' 
+Listit.RE_ISLOCAL  = /^file:\/\//i   // String begins with 'file://'
 Listit.RE_ISREDDIT = /www\.reddit\.com\/r\/.*\/comments\// 
 
 Listit.onPageLoad = function(event) {
 
     Listit.logger.trace("Listit.onPageLoad");
+//try {        
     var doc = event.originalTarget;
     var pageURL = doc.URL;
     var browser = gBrowser.getBrowserForDocument(doc);
@@ -316,17 +315,14 @@ Listit.onPageLoad = function(event) {
     browserState.setStatus(Listit.PAGE_NOT_LISTIT);
     browserState.removeAllComments();
     
-    if ( !Listit.RE_ISREDDIT.test(pageURL) && !Listit.RE_ISFILE.test(pageURL) ) {
-        Listit.logger.debug("No reddit.com or file:// (ignored), URL: " + pageURL);    
-        Listit.updateAllViews(Listit.state, browserID);
-        return;
-    }
-    
     var host = pageURL.split('?')[0];
+    var isRedditPage = Listit.RE_ISREDDIT.test(host);
+    var isJsonPage   = Listit.RE_ISJSON.test(host);
+    var isLocalPage  = Listit.RE_ISLOCAL.test(host) 
 
-    if (Listit.RE_ISREDDIT.test(pageURL) && !Listit.RE_ISJSON.test(host)) {
-        Listit.logger.debug("Listit.onPageLoad (reddit page): URL: " + pageURL);
-try {        
+    if ( isRedditPage && !isJsonPage) {
+        // A reddit html page, the json will be load with AJAX
+        Listit.logger.debug("Listit.onPageLoad (reddit discussion): URL: " + pageURL);
         // Append listit css style to page 
         var $ = doc.defaultView.wrappedJSObject.jQuery;
         var styleElem = $(Listit.SELECTED_ROW_STYLE);
@@ -357,13 +353,10 @@ try {
         request.open("GET", jsonURL, true);
         request.send(null);      
         Listit.logger.debug("Listit.onPageLoad done");
+        return;
         
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.onPageLoad;');
-    Listit.logger.error(ex);
-} 
-    } else {
-             
+    } else if ( isJsonPage && (isRedditPage || isLocalPage)) {
+        // A JSON page, either reddit or local; process directly
         Listit.logger.debug("Listit.onPageLoad (.JSON): URL: " + pageURL);
 
         var rootDoc = Listit.getRootHtmlDocument(doc);
@@ -389,8 +382,19 @@ try {
         Listit.processJsonPage(textContent, browser, rootDoc.URL);
         browserState.setStatus(Listit.PAGE_READY);
         Listit.updateAllViews(Listit.state, browserID);
-
+        return;
+        
+    } else {
+        // All other cases; page to be ignored by Listit
+        Listit.logger.debug("Page ignored by Listit (ignored), URL: " + pageURL);    
+        Listit.updateAllViews(Listit.state, browserID);
+        return;
     }
+    
+//} catch (ex) {
+//    Listit.logger.error('Exception in Listit.onPageLoad;');
+//    Listit.logger.error(ex);
+//}    
 }    
     
 Listit.processJsonPage = function (jsonContent, browser, url) {
@@ -448,10 +452,15 @@ Listit.displayScatterPlot = function (bDisplay) {
 
 Listit.onPlotSeriesRequest = function (event) {
 
-    Listit.logger.trace("Listit.onPlotSeriesRequest -- "); 
+try{  
+    Listit.logger.debug("Listit.onPlotSeriesRequest -- "); 
     var eventBrowserID = Listit.state.getCurrentBrowserID();
     var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
-    Listit.updateScaterPlot(disscusion, false);
+    Listit.updateScaterPlot(discussion, false);
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.onPlotSeriesRequest;');
+    Listit.logger.error(ex);
+}    
 }
 
 Listit.getScatterPlotSeries = function(discussion) {
@@ -469,8 +478,9 @@ Listit.updateScaterPlot = function (discussion, doRedraw) {
     Listit.logger.trace("Listit.updateScaterPlot -- ");
 
     var plotFrame = document.getElementById('plotFrame');
-    var plotSeries = Listit.getScatterPlotSeries(discussion);
     var flotWrapper = plotFrame.contentWindow.flotWrapper;
+    var plotSeries = Listit.getScatterPlotSeries(discussion);
+
     flotWrapper.setPlotSeries(plotSeries);
     
     if (doRedraw) {
@@ -479,14 +489,14 @@ Listit.updateScaterPlot = function (discussion, doRedraw) {
 }
 
 Listit.resetScaterPlotScale = function () {
-    Listit.logger.debug("Listit.resetScaterPlotScale -- ");
+    Listit.logger.trace("Listit.resetScaterPlotScale -- ");
 try{    
     var eventBrowserID = Listit.state.getCurrentBrowserID();
     var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
     
     var plotFrame = document.getElementById('plotFrame');
-    var plotSeries = Listit.getScatterPlotSeries(discussion);
     var flotWrapper = plotFrame.contentWindow.flotWrapper;
+    var plotSeries = Listit.getScatterPlotSeries(discussion);
     flotWrapper.removeRanges();
 
     Listit.updateScaterPlot(discussion, true);
@@ -504,7 +514,6 @@ Listit.setDetailsFrameHtml = function(html) {
 // Updates all views using the application state
 Listit.updateAllViews = function(state, eventBrowserID) {
     Listit.logger.trace("Listit.updateAllViews -- ");
-    Listit.fbLog("Listit.updateAllViews -- ");
 
     // Only update if the events applies to the current browser
     if (eventBrowserID != Listit.state.getCurrentBrowserID()) {

@@ -2,6 +2,7 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="listit.css" />
+    <script language="javascript" type="application/javascript;version=1.7" src="utils.js"></script>
     <script language="javascript" type="text/javascript" src="flotWrapper.js"></script>
     <script language="javascript" type="text/javascript" src="jquery-1.6.2.min.js"></script>
     <script language="javascript" type="text/javascript" src="jquery.flot.min.js"></script>
@@ -9,6 +10,29 @@
     <script language="javascript" type="text/javascript" src="jquery.flot.selection.min.js"></script>
     
     <script>
+
+       
+    // Intializing on page load
+    $( function () {
+        
+        // Setup loggers from stand alone html page (will be overridden in Listit.onLoad)
+        Listit.initializeLoggers(false, 'Debug'); 
+        
+        var plotOptions = { 
+            xaxis     : { color: "black", mode: "time" },
+            yaxis     : { color: "black" },
+            selection : { mode: "xy" },
+        };
+        window.flotWrapper = new Listit.FlotWrapper('scatter-plot-div', plotOptions);
+        $("#scatter-plot-div").bind("plotselected", function (event, ranges) {
+            window.flotWrapper.onPlotSelect(event, ranges);
+        });
+        
+        onResize();
+        $("body").resize(onResize);
+
+    });
+
     
     // Resizes the scatter plot div element.
     // Needed to vertically expand the scatter-plot-div
@@ -30,30 +54,16 @@
             - plotRimSize; // size of 2*(border + margin + border)
         plotDiv.css('height', height);
     }
-       
-    // Intializing on page load
-    $( function () {
-        
-        var plotOptions = { 
-            xaxis     : { color: "black", mode: "time" },
-            yaxis     : { color: "black" },
-            selection : { mode: "xy" },
-        };
-        window.flotWrapper = new Listit.FlotWrapper('scatter-plot-div', plotOptions);
-        $("#scatter-plot-div").bind("plotselected", function (event, ranges) {
-            window.flotWrapper.onPlotSelect(event, ranges);
-        });
-        
-        onResize();
-        $("body").resize(onResize);
-
-    });
     
     function doTest (button) {
+        window.Listit.logger.info('plotFrame.doTest --');
+        window.Listit.fbLog('plotFrame.doTest --');
+
         $('#footer-div').text('button pressed');
         
-try {
         
+        
+try {
         // Fill plot with debug data
         function getData(x1, x2) {
             var d = [];

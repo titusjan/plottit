@@ -159,18 +159,79 @@ Listit.compareCaseInsensitiveStrings = function(a, b) {
 // Logging //
 /////////////
 
-// Log to the Firebug console if defined
-Listit.fbLog = function(msg) {
+/*
+Utils.js defines two loggin mechanisms:
+    Listit.logger: The log4moz logger object which can be imported only in XUL
+    Listit.fbLog: The firebug log function which is useful for inspecting data
+    
+Use Listit.initializeLoggers to intialize them. The bXul parameter should be true 
+when called from a firefox extension, false when called from a stand alone html page.
 
-    if ('undefined' == typeof(Firebug)) {
-        Listit.logger.debug('Listit.fbLog: Firebug not installed');
-        Listit.logger.info(msg);
+When a html page is displayed in a iFrame in the FF extension, for instance in 
+plotframe.html, initializeLoggers should be called in the page but the loggers can be 
+redefined later in Listit.onLoad.
+*/
+
+// Setup log4moz and firebug console logging.
+// Also works when utils.js is imported on stand alone html page.
+Listit.initializeLoggers = function (bXul, level) {
+
+    if (bXul) {
+        // When intializing loggers in a firefox extension
+        if (level == null) level = 'All';
+        
+        if ('undefined' == typeof(Log4Moz)) {
+            Components.utils.import("resource://xulschoolhello/log4moz.js");
+            Listit._configureRootLogger();
+            Listit.logger = Log4Moz.repository.getLogger('Listit');
+            Listit.logger.level = Log4Moz.Level[level];
+        }
+        
+        if ('undefined' == typeof(Firebug)) {
+            Listit.fbLog = function(msg) { Listit.logger.info('fbLog: ' + msg); } 
+        } else {
+            Listit.fbLog = function(msg) { Firebug.Console.log(msg) } ;
+        }
+        
     } else {
-        Firebug.Console.log(msg);
-    }
-}
+        // When called from a stand-alone html page
+    
+        if ('undefined' == typeof(console)) {
+            Listit.fbLog = function(msg) { } // Do nothing.
+        } else {
+            Listit.fbLog = console.log;
+        }
+        
+        // Mockup logger with the same routines
+        Listit.fbConsoleLogger = function (level) { // Constructor
 
-Listit.configureRootLogger = function () {
+            var levels = {
+                Fatal : 70,
+                Error : 60,
+                Warn  : 50,
+                Info  : 40,
+                Config: 30,
+                Debug : 20,
+                Trace : 10,
+                All   :  0,
+            }
+            var noOp = function () { } // do nothing
+            
+            this.fatal  = (levels[level] <= levels['Fatal'])  ? Listit.fbLog : noOp;
+            this.error  = (levels[level] <= levels['Error'])  ? Listit.fbLog : noOp;
+            this.warn   = (levels[level] <= levels['Warn'])   ? Listit.fbLog : noOp;
+            this.info   = (levels[level] <= levels['Info'])   ? Listit.fbLog : noOp;
+            this.config = (levels[level] <= levels['Config']) ? Listit.fbLog : noOp;
+            this.debug  = (levels[level] <= levels['Debug'])  ? Listit.fbLog : noOp;
+            this.trace  = (levels[level] <= levels['Trace'])  ? Listit.fbLog : noOp;
+        }
+        Listit.logger = new Listit.fbConsoleLogger(level);   
+    }
+}    
+
+
+
+Listit._configureRootLogger = function () {
     
     let root = Log4Moz.repository.rootLogger;
     
@@ -190,13 +251,3 @@ Listit.configureRootLogger = function () {
     root.addAppender(dapp);
 }
 
-// Mockup logger with the same routines
-Listit.fbConsoleLogger = function () { // Constructor
-
-    this.trace = console.log;
-    this.debug = console.log;
-    this.info  = console.log;
-    this.warn  = console.log;
-    this.error = console.log;
-    this.fatal = console.log;
-}
