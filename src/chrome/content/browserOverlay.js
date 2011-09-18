@@ -46,7 +46,7 @@ Listit.onLoad = function() {
     Listit.state = new Listit.State(
         document.getElementById('treeLocalDate').getAttribute('format'), 
         document.getElementById('treeUtcDate').getAttribute('format') );
-    
+        
     // Add existing tabs to the state because there won't be a tabOpen
     // event raised for them
     for (var idx = 0; idx < gBrowser.browsers.length; idx++) {
@@ -54,6 +54,8 @@ Listit.onLoad = function() {
         var browserID = Listit.state.addBrowser(browser);
         Listit.state.setCurrentBrowser(browser); // we need to have a current browser
     }
+
+    Listit.scatterPlot = new Listit.ScatterPlot('plotFrame', Listit.State);
     
     var scoreTree = document.getElementById('scoreTree');
     scoreTree.view = Listit.state.getCurrentTreeView();
@@ -68,7 +70,7 @@ Listit.onLoad = function() {
 
     gBrowser.addEventListener('DOMContentLoaded', Listit.onPageLoad, false); 
 
-    document.addEventListener("listitPlotSeriesRequest", Listit.onPlotSeriesRequest, false, true);
+    document.addEventListener("listitPlotSeriesRequest", Listit.scatterPlot.onPlotSeriesRequest, false, true);
 
     Listit.logger.trace('Listit.onLoad -- end');
         
@@ -434,77 +436,6 @@ Listit.addJsonToRedditUrl = function(url) {
 // Views //
 ///////////
 
-Listit.displayScatterPlot = function (bDisplay) {
-    Listit.logger.trace("Listit.displayScatterPlot -- ");
-    
-    var plotFrameDoc = document.getElementById('plotFrame').contentDocument;
-    if (bDisplay) {
-        plotFrameDoc.getElementById('graphs-div').style.display   = 'block';
-        plotFrameDoc.getElementById('messages-div').style.display = 'none';
-        
-        // Force resize, otherwise it won't resize if previous tab doesn't contain discussion
-        var cw = document.getElementById('plotFrame').contentWindow.wrappedJSObject.onResize();
-    } else {
-        plotFrameDoc.getElementById('graphs-div').style.display   = 'none';
-        plotFrameDoc.getElementById('messages-div').style.display = 'block';
-    }
-}
-
-Listit.onPlotSeriesRequest = function (event) {
-
-try{  
-    Listit.logger.debug("Listit.onPlotSeriesRequest -- "); 
-    var eventBrowserID = Listit.state.getCurrentBrowserID();
-    var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
-    Listit.updateScaterPlot(discussion, false);
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.onPlotSeriesRequest;');
-    Listit.logger.error(ex);
-}    
-}
-
-Listit.getScatterPlotSeries = function(discussion) {
-    
-    var data = Listit.getCommentDataAsTuples(discussion.comments);
-    var plotSeries = [ {
-        data   : data,
-        points : { show: true },
-        color  : 'orangered',
-    } ];
-    return plotSeries;
-}
-
-Listit.updateScaterPlot = function (discussion, doRedraw) {
-    Listit.logger.trace("Listit.updateScaterPlot -- ");
-
-    var plotFrame = document.getElementById('plotFrame');
-    var flotWrapper = plotFrame.contentWindow.flotWrapper;
-    var plotSeries = Listit.getScatterPlotSeries(discussion);
-
-    flotWrapper.setPlotSeries(plotSeries);
-    
-    if (doRedraw) {
-        flotWrapper.drawPlot();
-    }
-}
-
-Listit.resetScaterPlotScale = function () {
-    Listit.logger.trace("Listit.resetScaterPlotScale -- ");
-try{    
-    var eventBrowserID = Listit.state.getCurrentBrowserID();
-    var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
-    
-    var plotFrame = document.getElementById('plotFrame');
-    var flotWrapper = plotFrame.contentWindow.flotWrapper;
-    var plotSeries = Listit.getScatterPlotSeries(discussion);
-    flotWrapper.removeRanges();
-
-    Listit.updateScaterPlot(discussion, true);
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.resetScaterPlotScale;');
-    Listit.logger.error(ex);
-}
-}
 
 Listit.setDetailsFrameHtml = function(html) {
     var detailsFrame = document.getElementById('commentHtmlFrame');
@@ -525,19 +456,19 @@ Listit.updateAllViews = function(state, eventBrowserID) {
     switch (curState.pageStatus) {
         case Listit.PAGE_NOT_LISTIT:
             Listit.setDetailsFrameHtml('<i>The current page is not a reddit discussion</i>');
-            Listit.displayScatterPlot(false);
+            Listit.scatterPlot.display(false);
             curState.removeAllComments();
             break;
         case Listit.PAGE_LOADING:
             Listit.setDetailsFrameHtml('<i>Loading comments, please wait</i>');
-            Listit.displayScatterPlot(false);
+            Listit.scatterPlot.display(false);
             curState.removeAllComments();
             break;
         case Listit.PAGE_READY:
             var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
             Listit.setDetailsFrameHtml('');
-            Listit.displayScatterPlot(true);
-            Listit.updateScaterPlot(discussion, true);
+            Listit.scatterPlot.display(true);
+            Listit.scatterPlot.setDiscussion(discussion, true);
             
             // Sort and set comments in score tree
             var scoreTree = document.getElementById('scoreTree');

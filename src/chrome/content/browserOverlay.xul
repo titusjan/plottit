@@ -14,6 +14,7 @@
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/dateFormat.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/encoder.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/posts.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/scatterPlot.js" />
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/state.js" />
   <!--<script type="application/x-javascript" src="chrome://xulschoolhello/content/testData.js" />-->
   <script type="application/x-javascript" src="chrome://xulschoolhello/content/treeView.js" />
@@ -299,6 +300,7 @@
       </tree>
 
       <splitter id="listitPannelSplitter" collapse="after" resizeafter="closest"/>
+
       <iframe id="commentHtmlFrame" 
         width="200" 
         minwidth="0"        
@@ -307,21 +309,48 @@
      
       <splitter id="listitPannelSplitter2" collapse="after"></splitter>
       <vbox>
+
         <iframe id="plotFrame" 
           flex="1"
           width="200" 
-          minwidth="150"
+          minwidth="50"
           persist="width" 
           src="chrome://xulschoolhello/content/plotframe.html"/>
+
+        <hbox align="baseline">
         
-        <hbox>
-          <button id="plotScaleButton" 
-            onclick="Listit.resetScaterPlotScale(event)"
-            label="Reset Scale" 
-            maxwidth="150"/>
+          <popupset>
+            <menupopup id="listit-scatter-axis-menupopup" position="after_start">
+              <menuitem label="ID"/>
+              <menuitem label="UTC Date &amp; Time" selected="true"/>
+              <menuitem label="Score"/>
+            
+              <menuseparator/>
+            
+              <menuitem 
+                label="Pan &amp; Zoom Allowed" 
+                type="checkbox" 
+                checked="true"  />
+           
+              <menuitem label="Autoscale Enabled"/>
+              <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetScale(event)"/>
+
+            </menupopup>
+          </popupset>
+
+          <button id="listit-scatter-x-axis-button" 
+              popup="listit-scatter-axis-menupopup"
+              label="X-Axis"
+              type="menu"/>
+          <button id="listit-scatter-y-axis-button"
+              popup="listit-scatter-axis-menupopup"
+              label="Y-Axis..."
+              type="menu"/>
+
+          <spacer flex="1"/>            
         </hbox>
-       </vbox> 
-     </hbox> 
+      </vbox> 
+    </hbox> 
   </vbox>    
 </overlay>
 

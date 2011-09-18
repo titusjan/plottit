@@ -7,7 +7,8 @@
     <script language="javascript" type="text/javascript" src="jquery-1.6.2.min.js"></script>
     <script language="javascript" type="text/javascript" src="jquery.flot.min.js"></script>
     <script language="javascript" type="text/javascript" src="jquery.flot.resize.min.js"></script>
-    <script language="javascript" type="text/javascript" src="jquery.flot.selection.min.js"></script>
+    <!--<script language="javascript" type="text/javascript" src="jquery.flot.selection.min.js"></script>-->
+    <script language="javascript" type="text/javascript" src="jquery.flot.navigate.min.js"></script>
     
     <script>
 
@@ -19,9 +20,31 @@
         Listit.initializeLoggers(false, 'Debug'); 
         
         var plotOptions = { 
-            xaxis     : { color: "black", mode: "time" },
-            yaxis     : { color: "black" },
+            //xaxis     : { color: "black", mode: "time" },
+            //yaxis     : { color: "black" },
             selection : { mode: "xy" },
+            xaxis: { 
+                mode: "time",
+                color: "black", 
+                zoomRange: [30000, 1000*3600*24*365.25*10], // 30 sec to 10 years
+                panRange: [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()] 
+            },
+            yaxis: { 
+                color: "black",
+                zoomRange: false,
+                panRange: false, 
+                
+                //zoomRange: [0.1, 10], 
+                //panRange: [-10, 10] 
+                },
+            zoom: {
+                interactive: true,
+                amount: 2.0
+            },
+            pan: {
+                interactive: true
+            }         
+            
         };
         window.flotWrapper = new Listit.FlotWrapper('scatter-plot-div', plotOptions);
         $("#scatter-plot-div").bind("plotselected", function (event, ranges) {
@@ -81,7 +104,7 @@ try {
         } ];
         flotWrapper.setPlotSeries(plotSeries);
         
-        flotWrapper.drawPlot();
+        //flotWrapper.drawPlot();
 } catch (ex) {
         $('#footer-div').text('error: ' + ex);
 }
@@ -104,7 +127,10 @@ try {
 </head>
 <body>
     <div id="graphs-div">
-        <div id="header-div"><center><button id="footer-button" onclick="doTest()">do test</button>Score versus time</center></div>
+        <div id="header-div">
+            <!--<center><button id="footer-button" onclick="doTest()">do test</button>-->
+            <center>Score versus time</center>
+        </div>
         <div id="scatter-plot-div"></div> 
         <div id="footer-div">&nbsp;</div>
     </div>
