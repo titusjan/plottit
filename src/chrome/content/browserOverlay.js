@@ -70,8 +70,6 @@ Listit.onLoad = function() {
 
     gBrowser.addEventListener('DOMContentLoaded', Listit.onPageLoad, false); 
 
-    document.addEventListener("listitPlotSeriesRequest", Listit.scatterPlot.onPlotSeriesRequest, false, true);
-
     Listit.logger.trace('Listit.onLoad -- end');
         
 };

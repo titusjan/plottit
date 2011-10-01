@@ -6,49 +6,23 @@ Listit.FlotWrapper = function (placeHolderDivId, plotOptions) { // Constructor
 
     this.placeHolderDivId = placeHolderDivId;
     this.plotOptions = plotOptions;
-    this.plotSeries = [];
-    this.volatileMode = true; // If true, the plotSeries are flushed after each operation, if false they are cached.
-    this.plot = null;         // Don't call jQuery.plot yet, the placeholder may not be visible
+    this.plot = null; // Don't call jQuery.plot yet, the placeholder may not be visible
 }
 
 Listit.FlotWrapper.prototype.toString = function () {
     return "<Listit.FlotWrapper>";
 };
 
-Listit.FlotWrapper.prototype.triggerPlotSeriesRequest = function () {  // TODO: put placeholderID in eventdata
-    Listit.logger.info("FlotWrapper.triggerPlotSeriesRequest -- ");
-    
-    var event = document.createEvent("Events");
-    event.initEvent("listitPlotSeriesRequest", true, false);
-    var placeHolder = document.getElementById(this.placeHolderDivId);
-    placeHolder.dispatchEvent(event);
-};
 
 Listit.FlotWrapper.prototype.setPlotSeries = function (plotSeries) {
     Listit.logger.trace("FlotWrapper.setPlotSeries -- " + plotSeries);
-    Listit.fbLog(plotSeries);
-    this.plotSeries = plotSeries;
-    this.plot = $.plot($('#'+this.placeHolderDivId), this.plotSeries, this.plotOptions);
+    this.plot = $.plot($('#'+this.placeHolderDivId), plotSeries, this.plotOptions);
 }
 
 Listit.FlotWrapper.prototype.drawPlot = function () {
     Listit.logger.trace("FlotWrapper.drawPlot --");
     this.plot.setupGrid(); // Recalculate (and draw) and set axis scaling, ticks, legend etc.
     this.plot.draw(); // Redraw the canvas (tick values)
-}
-
-/*
-Listit.FlotWrapper.prototype.updatePlot = function () {
-    Listit.logger.trace("FlotWrapper.updatePlot --  options: " + this.plotOptions);
-    this.plot = $.plot($('#'+this.placeHolderDivId), this.plotSeries, this.plotOptions);
-}*/
-
-
-Listit.FlotWrapper.prototype.releasePlotSeries = function (force) {
-    Listit.logger.trace("FlotWrapper.releasePlotSeries -- force: " + force);
-    if (this.volatileMode || force) {
-        this.plotSeries = [];
-    }
 }
 
 /*
@@ -104,15 +78,6 @@ Listit.FlotWrapper.prototype.onPlotSelect = function (event, ranges) {
     this.setRanges(ranges);
     this.plot.clearSelection(true);
     this.drawPlot();
-    
-/*
-    // do the zooming
-    this.setRanges(ranges);
-    this.triggerPlotSeriesRequest();
-    this.drawPlot();
-    this.releasePlotSeries(false);
-    Listit.logger.trace("onPlotSelect done\n");
-*/
 }
 
 
