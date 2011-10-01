@@ -32,7 +32,7 @@ Listit.FlotWrapper.prototype.setPlotSeries = function (plotSeries) {
 }
 
 Listit.FlotWrapper.prototype.drawPlot = function () {
-    Listit.logger.debug("FlotWrapper.drawPlot --  options: " + this.plotOptions);
+    Listit.logger.trace("FlotWrapper.drawPlot --");
     this.plot.setupGrid(); // Recalculate (and draw) and set axis scaling, ticks, legend etc.
     this.plot.draw(); // Redraw the canvas (tick values)
 }
@@ -82,9 +82,9 @@ Listit.FlotWrapper.prototype.setYRange = function (minY, maxY) {
 Listit.FlotWrapper.prototype.setRanges = function (ranges) {
     Listit.logger.trace("FlotWrapper.setRanges -- ranges");
 
-    var msg = "(" +
-        ranges.xaxis.from + ", " + ranges.yaxis.from + "),  (" +
-        ranges.xaxis.to   + ", " + ranges.yaxis.to + ")" ;
+    //var msg = "(" +
+    //    ranges.xaxis.from + ", " + ranges.yaxis.from + "),  (" +
+    //    ranges.xaxis.to   + ", " + ranges.yaxis.to + ")" ;
 
     // clamp the zooming to prevent eternal zoom
     var clampedRanges = ranges;
@@ -98,7 +98,7 @@ Listit.FlotWrapper.prototype.setRanges = function (ranges) {
     this.setYRange(clampedRanges.yaxis.from, clampedRanges.yaxis.to);
 }
 
-
+// Needed when the selection plug-in is used.
 Listit.FlotWrapper.prototype.onPlotSelect = function (event, ranges) {
     Listit.logger.trace("onPlotSelect --");
     this.setRanges(ranges);

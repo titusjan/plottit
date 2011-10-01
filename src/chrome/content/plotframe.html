@@ -26,16 +26,15 @@
             xaxis: { 
                 mode: "time",
                 color: "black", 
-                zoomRange: [30000, 1000*3600*24*365.25*10], // 30 sec to 10 years
-                panRange: [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()] 
+                //zoomRange: [30000, 1000*3600*24*365.25*10], // 30 sec to 10 years
+                //panRange: [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()] 
             },
             yaxis: { 
                 color: "black",
-                zoomRange: false,
-                panRange: false, 
-                
-                //zoomRange: [0.1, 10], 
-                //panRange: [-10, 10] 
+                //zoomRange: false,
+                //panRange: false, 
+                zoomRange: [10, 20000],
+                panRange: [-10000, 10000],
                 },
             zoom: {
                 interactive: true,
@@ -132,7 +131,7 @@ try {
             <center>Score versus time</center>
         </div>
         <div id="scatter-plot-div"></div> 
-        <div id="footer-div">&nbsp;</div>
+        <div id="footer-div"></div>
     </div>
     <div id="messages-div" style="display:none;">
         <i>The current page is not a reddit discussion</i>

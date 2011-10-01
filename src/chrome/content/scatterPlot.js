@@ -63,6 +63,7 @@ try{
 Listit.ScatterPlot.prototype.setDiscussion = function (discussion, doRedraw) {
     Listit.logger.trace("Listit.ScatterPlot.update -- ");
 
+    //Listit.fbLog(this);
     var plotSeries = this.getSeries(discussion);
     this.flotWrapper.setPlotSeries(plotSeries);
     
@@ -71,18 +72,55 @@ Listit.ScatterPlot.prototype.setDiscussion = function (discussion, doRedraw) {
     }
 }
 
-Listit.ScatterPlot.prototype.resetScale = function (event) {
-    Listit.logger.trace("Listit.ScatterPlot.resetScale -- ");
-try{    
-    Listit.logger.debug('Listit.ScatterPlot.resetScale;');
+Listit.ScatterPlot.prototype.resetXScale = function () {
     this.flotWrapper.setXRange(null, null);
+    this.flotWrapper.drawPlot();
+}
+    
+Listit.ScatterPlot.prototype.resetYScale = function () {
     this.flotWrapper.setYRange(null, null);
     this.flotWrapper.drawPlot();
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.ScatterPlot.resetScale;');
-    Listit.logger.error(ex);
 }
+    
+Listit.ScatterPlot.prototype.getAxisByName = function (axisStr) {
+    Listit.assert(axisStr == 'x' || axisStr == 'y', 
+        "Invalid axisStr: " + axisStr);
+    
+    var axes = this.flotWrapper.plot.getAxes();
+    var axis = (axisStr == 'x' ? axes.xaxis : axes.yaxis);
+    return axis;
 }
+
+Listit.ScatterPlot.prototype.togglePanZoomEnabled = function (event, axisStr) {
+    Listit.logger.trace("Listit.ScatterPlot.togglePanZoomEnabled -- ");
+
+    try{    
+        var axis = this.getAxisByName(axisStr)
+
+        var menuItem = event.originalTarget;
+        var oldState = menuItem.getAttribute("checked");
+        Listit.assert(oldState == 'true' || oldState == 'false', 
+            "Invalid 'checked' attribute value: " + oldState);
+
+        if (oldState == 'true') {
+            menuItem.setAttribute('checked', false);
+            axis.options.zoomRange = false;
+            axis.options.panRange = false;
+        } else {
+            menuItem.setAttribute('checked', true);
+            if (axisStr == 'x') {
+                axis.options.zoomRange = [30000, 1000*3600*24*365.25*10]; // 30 sec to 10 years
+                axis.options.panRange  = [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()];
+            } else {
+                axis.options.zoomRange = [10, 20000];
+                axis.options.panRange  = [-10000, 10000] ;
+            }
+        }
+    } catch (ex) {
+        Listit.logger.error('Exception in Listit.ScatterPlot.togglePanZoomEnabled;');
+        Listit.logger.error(ex);
+    }
+}    
 
 
 Listit.ScatterPlot.prototype.getSeries = function(discussion) {

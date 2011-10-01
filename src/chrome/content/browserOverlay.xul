@@ -115,6 +115,7 @@
     <splitter id="listitContentSplitter" collapsed="false"/>
     <hbox id="pannelContent" height="200" persist="height" >
 
+      <!-- The discussion tree -->
       <tree id="scoreTree" hidecolumnpicker="false" enableColumnDrag="true" flex="1" seltype="single" flags="dont-build-content" disableKeyNavigation="true"
             sortDirection="ascending" sortResource="treeID" persist="sortDirection sortResource">
         <treecols pickertooltiptext="Select visible columns">
@@ -301,15 +302,18 @@
 
       <splitter id="listitPannelSplitter" collapse="after" resizeafter="closest"/>
 
+      <!-- Post details -->
       <iframe id="commentHtmlFrame" 
         width="200" 
         minwidth="0"        
         persist="width" 
         src="chrome://xulschoolhello/content/detailsframe.html"/>
+
      
       <splitter id="listitPannelSplitter2" collapse="after"></splitter>
-      <vbox>
 
+      <!-- Scatter plot -->
+      <vbox>
         <iframe id="plotFrame" 
           flex="1"
           width="200" 
@@ -318,34 +322,51 @@
           src="chrome://xulschoolhello/content/plotframe.html"/>
 
         <hbox align="baseline">
-        
-          <popupset>
-            <menupopup id="listit-scatter-axis-menupopup" position="after_start">
+          <button id="listit-scatter-x-axis-button" 
+                label="X-Axis"
+                type="menu">
+            <menupopup id="listit-scatter-x-axis-menupopup">
               <menuitem label="ID"/>
               <menuitem label="UTC Date &amp; Time" selected="true"/>
               <menuitem label="Score"/>
             
               <menuseparator/>
-            
               <menuitem 
+                id="listit-scatter-x-axis-pz-allowed"
                 label="Pan &amp; Zoom Allowed" 
-                type="checkbox" 
-                checked="true"  />
-           
-              <menuitem label="Autoscale Enabled"/>
-              <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetScale(event)"/>
-
+                type="checkbox"
+                autocheck="false"
+                checked="true"
+                persist="checked"
+                oncommand="Listit.scatterPlot.togglePanZoomEnabled(event, 'x');"/>
+              <menuitem label="Autoscale"/>
+              <menuseparator/>
+              <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetXScale()"/>
             </menupopup>
-          </popupset>
-
-          <button id="listit-scatter-x-axis-button" 
-              popup="listit-scatter-axis-menupopup"
-              label="X-Axis"
-              type="menu"/>
+          </button>
+          
           <button id="listit-scatter-y-axis-button"
-              popup="listit-scatter-axis-menupopup"
-              label="Y-Axis..."
-              type="menu"/>
+                label="Y-Axis"
+                type="menu">
+            <menupopup id="listit-scatter-x-axis-menupopup">
+              <menuitem label="ID"/>
+              <menuitem label="UTC Date &amp; Time" selected="true"/>
+              <menuitem label="Score"/>
+            
+              <menuseparator/>
+              <menuitem 
+                id="listit-scatter-y-axis-pz-allowed"
+                label="Pan &amp; Zoom Allowed" 
+                type="checkbox"
+                autocheck="false"
+                checked="true"
+                persist="checked"
+                oncommand="Listit.scatterPlot.togglePanZoomEnabled(event, 'y');"/>
+              <menuitem label="Autoscale Enabled"/>
+              <menuseparator/>
+              <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetYScale()"/>
+            </menupopup>
+          </button>
 
           <spacer flex="1"/>            
         </hbox>
