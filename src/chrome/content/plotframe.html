@@ -18,34 +18,8 @@
         
         // Setup loggers from stand alone html page (will be overridden in Listit.onLoad)
         Listit.initializeLoggers(false, 'Debug'); 
-        
-        var plotOptions = { 
-            //xaxis     : { color: "black", mode: "time" },
-            //yaxis     : { color: "black" },
-            selection : { mode: "xy" },
-            xaxis: { 
-                mode: "time",
-                color: "black", 
-                //zoomRange: [30000, 1000*3600*24*365.25*10], // 30 sec to 10 years
-                //panRange: [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()] 
-            },
-            yaxis: { 
-                color: "black",
-                //zoomRange: false,
-                //panRange: false, 
-                zoomRange: [10, 20000],
-                panRange: [-10000, 10000],
-                },
-            zoom: {
-                interactive: true,
-                amount: 2.0
-            },
-            pan: {
-                interactive: true
-            }         
-            
-        };
-        window.flotWrapper = new Listit.FlotWrapper('scatter-plot-div', plotOptions);
+
+        window.flotWrapper = new Listit.FlotWrapper('scatter-plot-div');
         $("#scatter-plot-div").bind("plotselected", function (event, ranges) {
             window.flotWrapper.onPlotSelect(event, ranges);
         });
@@ -119,7 +93,7 @@ try {
         }
         
         #scatter-plot-div {
-            margin: 5px;
+            margin-right: 5px;
         }
         
     </style>    

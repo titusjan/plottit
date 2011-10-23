@@ -5,23 +5,58 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 //////////////////
 
 // A class that links the data from the current discussion to a flotWrapper.
-// A flotWrapper is a wrapper of a Flot plot inside an regular Html page that
-// can send a listitPlotSeriesRequest request to ask for plot data. It can 
-// optionally cache this and maintain a zoom range.
 
-Listit.ScatterPlot = function (plotFrameId, state) { // Constructor
+// Constructor
+Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale) {
  
     this.plotFrameId = plotFrameId;
     this.plotFrame = document.getElementById(this.plotFrameId);
     this.flotWrapper = this.plotFrame.contentWindow.flotWrapper;
-    
+
     this.state = state;
+    this.axesAutoscale =  axesAutoscale
+    //this.xAxisAutoscale =  xAxisAutoscale;
+    //this.yAxisAutoscale =  yAxisAutoscale;
+    //this.xRange = [null, null];
+    //this.yRange = [null, null];
 }
 
 
 Listit.ScatterPlot.prototype.toString = function () {
     return "Listit.ScatterPlot";
 };
+
+
+Listit.ScatterPlot.prototype.initPlot = function () {
+        
+    Listit.logger.trace("Listit.scatterPlot.initPlot -- ");        
+    var plotOptions = { 
+        selection : { mode: "xy" },
+        xaxis: { 
+            mode: "time",
+            color: "black", 
+            labelHeight: 25, 
+        },
+        yaxis: { 
+            color: "black",
+            zoomRange: [10, 20000],
+            panRange: [-10000, 10000],
+            labelWidth: 25, 
+        },
+        zoom: {
+            interactive: true,
+            amount: Math.sqrt(2.0),
+        },
+        pan: {
+            interactive: true
+        }         
+        
+    };        
+    // Initializes plot if this is the first call
+    this.flotWrapper.createPlot(plotOptions);
+}
+
+
 
 // Shows or hides the graph-div and messages-div inside the plotFrame on the HTML page.
 Listit.ScatterPlot.prototype.display = function (bDisplay) {
@@ -31,6 +66,11 @@ Listit.ScatterPlot.prototype.display = function (bDisplay) {
     if (bDisplay) {
         plotFrameDoc.getElementById('graphs-div').style.display   = 'block';
         plotFrameDoc.getElementById('messages-div').style.display = 'none';
+        
+        if (this.flotWrapper.plot === null) {
+            this.initPlot();
+        }
+        //this.setAxisFromVariableId(variableId);
         
         // Force resize, otherwise it won't resize if previous tab doesn't contain discussion
         var cw = document.getElementById('plotFrame').contentWindow.wrappedJSObject.onResize();
@@ -46,40 +86,60 @@ Listit.ScatterPlot.prototype.getCurrentDiscussion = function () {
     return discussion;
 }
 
-/* Not used 
-Listit.ScatterPlot.prototype.onPlotSeriesRequest = function (event) {
 
-try{  
-    Listit.logger.debug("Listit.onPlotSeriesRequest -- "); 
-    var discussion = this.getCurrentDiscussion();
-    this.setDiscussion(discussion, false);
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.onPlotSeriesRequest;');
-    Listit.logger.error(ex);
-}    
-}
-*/
+Listit.ScatterPlot.prototype.setDiscussion = function (discussion) {
+    Listit.logger.trace("Listit.ScatterPlot.setDiscussion -- ");
 
-Listit.ScatterPlot.prototype.setDiscussion = function (discussion, doRedraw) {
-    Listit.logger.trace("Listit.ScatterPlot.update -- ");
-
-    //Listit.fbLog(this);
+    Listit.fbLog('Listit.ScatterPlot.setDiscussion');
     var plotSeries = this.getSeries(discussion);
-    this.flotWrapper.setPlotSeries(plotSeries);
+    this.flotWrapper.setData(plotSeries);
     
-    if (doRedraw) {
-        this.flotWrapper.drawPlot();
+    if (this.axesAutoscale) {
+        this.flotWrapper.setXRange(null, null);
+        this.flotWrapper.setYRange(null, null);
+    } else {
+        //this.flotWrapper.setXRange(xRange[0], xRange[1]); // TODO: harmonize get/set
+        //this.flotWrapper.setYRange(yRange[0], yRange[1]); // TODO: harmonize get/set
+    }
+    Listit.logger.debug("Autoscale: " + this.axesAutoscale);
+    this.flotWrapper.drawPlot(this.axesAutoscale);
+
+}
+
+Listit.ScatterPlot.prototype.toggleAxesAutoScale = function (checkbox) {
+    
+    Listit.fbLog("toggleAxesAutoScale");
+    
+    //this.axesAutoscale = Listit.stringToBoolean(checkbox.getAttribute("checked"));
+    this.axesAutoscale = Listit.getCheckboxValue(checkbox);
+
+    Listit.fbLog(this.axesAutoscale);
+    
+    if (this.axesAutoscale) {
+        this.flotWrapper.setXRange(null, null);
+        this.flotWrapper.setYRange(null, null);    
+        this.flotWrapper.drawPlot(true);
+    } else {
+        checkbox.setAttribute('checked', 'false'); // set to false for persistence
+        
+        // TODO: set range explicitely?
+        //this.flotWrapper.setXRange(xRange[0], xRange[1]); // TODO: harmonize get/set
+        //this.flotWrapper.setYRange(yRange[0], yRange[1]); // TODO: harmonize get/set
+        
     }
 }
+    
 
 Listit.ScatterPlot.prototype.resetXScale = function () {
     this.flotWrapper.setXRange(null, null);
-    this.flotWrapper.drawPlot();
+    this.flotWrapper.drawPlot(true);
 }
     
 Listit.ScatterPlot.prototype.resetYScale = function () {
     this.flotWrapper.setYRange(null, null);
-    this.flotWrapper.drawPlot();
+    this.flotWrapper.drawPlot(true);
+    Listit.fbLog("resetYScale after rescale");
+    Listit.fbLog(this.flotWrapper.plot.getYAxes()[0]);    
 }
     
 Listit.ScatterPlot.prototype.getAxisByName = function (axisStr) {
@@ -91,18 +151,15 @@ Listit.ScatterPlot.prototype.getAxisByName = function (axisStr) {
     return axis;
 }
 
-Listit.ScatterPlot.prototype.togglePanZoomEnabled = function (event, axisStr) {
-    Listit.logger.trace("Listit.ScatterPlot.togglePanZoomEnabled -- ");
+Listit.ScatterPlot.prototype.togglePanZoomEnabled = function (menuItem, axisStr) {
+    Listit.logger.debug("Listit.ScatterPlot.togglePanZoomEnabled -- ");
 
     try{    
         var axis = this.getAxisByName(axisStr)
+        //var menuItem = event.originalTarget;
+        var wasChecked = Listit.stringToBoolean(menuItem.getAttribute("checked"));
 
-        var menuItem = event.originalTarget;
-        var oldState = menuItem.getAttribute("checked");
-        Listit.assert(oldState == 'true' || oldState == 'false', 
-            "Invalid 'checked' attribute value: " + oldState);
-
-        if (oldState == 'true') {
+        if (wasChecked) {
             menuItem.setAttribute('checked', false);
             axis.options.zoomRange = false;
             axis.options.panRange = false;
@@ -118,6 +175,33 @@ Listit.ScatterPlot.prototype.togglePanZoomEnabled = function (event, axisStr) {
         }
     } catch (ex) {
         Listit.logger.error('Exception in Listit.ScatterPlot.togglePanZoomEnabled;');
+        Listit.logger.error(ex);
+    }
+}    
+
+Listit.ScatterPlot.prototype.toggleAutoscaleEnabled = function (event, axisStr) {
+    Listit.logger.debug("Listit.ScatterPlot.toggleAutoscaleEnabled -- ");
+
+    try{    
+        Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
+
+        var menuItem = event.originalTarget;
+        var wasChecked = Listit.stringToBoolean(menuItem.getAttribute("checked"));
+        
+        if (wasChecked) {
+            menuItem.setAttribute('checked', false);
+        } else {
+            menuItem.setAttribute('checked', true);
+        }
+        if (axisStr == 'x') {
+            Listit.logger.debug("Set X-Axis autoScale to: " + !wasChecked);
+            this.xAxisAutoscale = !wasChecked;
+        } else {
+            Listit.logger.debug("Set Y-Axis autoScale to: " + !wasChecked);
+            this.yAxisAutoscale = !wasChecked;
+        }
+    } catch (ex) {
+        Listit.logger.error('Exception in Listit.ScatterPlot.toggleAutoscaleEnabled;');
         Listit.logger.error(ex);
     }
 }    

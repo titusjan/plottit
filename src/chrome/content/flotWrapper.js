@@ -2,10 +2,9 @@
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 
-Listit.FlotWrapper = function (placeHolderDivId, plotOptions) { // Constructor
+Listit.FlotWrapper = function (placeHolderDivId) { // Constructor
 
     this.placeHolderDivId = placeHolderDivId;
-    this.plotOptions = plotOptions;
     this.plot = null; // Don't call jQuery.plot yet, the placeholder may not be visible
 }
 
@@ -14,31 +13,60 @@ Listit.FlotWrapper.prototype.toString = function () {
 };
 
 
-Listit.FlotWrapper.prototype.setPlotSeries = function (plotSeries) {
-    Listit.logger.trace("FlotWrapper.setPlotSeries -- " + plotSeries);
-    this.plot = $.plot($('#'+this.placeHolderDivId), plotSeries, this.plotOptions);
+// Make sure to call this only when the place holder is visible!
+Listit.FlotWrapper.prototype.createPlot = function (plotOptions) {
+    this.plot = $.plot($('#'+this.placeHolderDivId), [], plotOptions);
+
 }
 
-Listit.FlotWrapper.prototype.drawPlot = function () {
-    Listit.logger.trace("FlotWrapper.drawPlot --");
-    this.plot.setupGrid(); // Recalculate (and draw) and set axis scaling, ticks, legend etc.
-    this.plot.draw(); // Redraw the canvas (tick values)
+Listit.FlotWrapper.prototype.setData = function (plotSeries) {
+    this.plot.setData(plotSeries);
 }
+
+Listit.FlotWrapper.prototype.drawPlot = function (rescale) {
+    if (rescale) {
+        this.plot.setupGrid(); // Recalculate (and draw) and set axis scaling, ticks, legend etc.
+    }
+    this.plot.draw();      // Redraw the canvas (tick values)
+}
+
+
+/* Not used. Always want to setupGrid as well.  TODO: renavme rescalePlot to drawPlot
+Listit.FlotWrapper.prototype.drawPlot = function (rescale) {
+    this.plot.draw();      // Redraw the canvas (tick values)
+}*/
+
 
 /*
-Listit.FlotWrapper.prototype.removeRanges = function () {
-    Listit.logger.debug("FlotWrapper.removeRanges -- ");
-
-    this.setXRange(null, null);
-    this.setYRange(null, null);
-}
-
 // Merges options dictionary into plot options
 Listit.FlotWrapper.prototype.mergeIntoPlotOptions = function (options) {
 
     this.plotOptions = $.extend(true, {}, this.plotOptions, options);   
+}*/
+
+Listit.FlotWrapper.prototype.getCalculatedXRange = function () {
+    var xAxis = this.plot.getXAxes()[0]; 
+    return [xAxis.min, xAxis.max];
 }
-*/
+
+Listit.FlotWrapper.prototype.getCalculatedYRange = function () {
+    var yAxis = this.plot.getYAxes()[0]; 
+    return [yAxis.min, yAxis.max];
+}
+
+
+Listit.FlotWrapper.prototype.getXRange = function () {
+    var axes = this.plot.getAxes();                     // TODO: just use getXAxes?
+    var xAxis = axes.xaxis;
+    return [xAxis.options.min, xAxis.options.max];
+}
+
+Listit.FlotWrapper.prototype.getYRange = function () {
+    var axes = this.plot.getAxes();
+    var yAxis = axes.yaxis;
+    return [yAxis.options.min, yAxis.options.max];
+}
+
 Listit.FlotWrapper.prototype.setXRange = function (minX, maxX) {
     var axes = this.plot.getAxes();
     var xAxis = axes.xaxis;
@@ -77,7 +105,7 @@ Listit.FlotWrapper.prototype.onPlotSelect = function (event, ranges) {
     Listit.logger.trace("onPlotSelect --");
     this.setRanges(ranges);
     this.plot.clearSelection(true);
-    this.drawPlot();
+    this.drawPlot(true); // rescale
 }
 
 

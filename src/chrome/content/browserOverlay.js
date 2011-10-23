@@ -8,10 +8,12 @@ if ('undefined' == typeof(XULSchoolChrome)) {
 
 Listit.debug = function () {
 
+    
     let stringBundle = document.getElementById('xulschoolhello-string-bundle');
     let message = stringBundle.getString('xulschoolhello.greeting.label');
 
     try {
+        Listit.logger.debug('Listit.debug');
         Listit.logger.info(Listit.state.summaryString() );
         Listit.fbLog(Listit.state.summaryString() );
         
@@ -20,7 +22,7 @@ Listit.debug = function () {
         Listit.logger.debug(details.textContent);
         details.contentDocument.body.innerHTML = "Pepijn Kenter <i>rules</i>"
     } catch (ex) {
-        Listit.logger.error('Exception in Listit.sayHello;');
+        Listit.logger.error('Exception in Listit.debug;');
         Listit.logger.error(ex);
         //Listit.fbLog(ex);
     }
@@ -34,7 +36,8 @@ Listit.debug = function () {
 
 // Initializes listit. Is called when the XUL window has loaded
 Listit.onLoad = function() {
-        
+
+try{        
     Listit.initializeLoggers(true, "Debug");
     document.getElementById('plotFrame').contentWindow.Listit.logger = Listit.logger;
     document.getElementById('plotFrame').contentWindow.Listit.fbLog  = Listit.fbLog;
@@ -55,7 +58,10 @@ Listit.onLoad = function() {
         Listit.state.setCurrentBrowser(browser); // we need to have a current browser
     }
 
-    Listit.scatterPlot = new Listit.ScatterPlot('plotFrame', Listit.State);
+    var axesAutoscale = Listit.getCheckboxValue(
+        document.getElementById('listit-scatter-axes-autoscale'));
+    Listit.scatterPlot = new Listit.ScatterPlot('plotFrame', Listit.State, 
+        axesAutoscale);
     
     var scoreTree = document.getElementById('scoreTree');
     scoreTree.view = Listit.state.getCurrentTreeView();
@@ -71,7 +77,10 @@ Listit.onLoad = function() {
     gBrowser.addEventListener('DOMContentLoaded', Listit.onPageLoad, false); 
 
     Listit.logger.trace('Listit.onLoad -- end');
-        
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.onLoad;');
+    Listit.logger.error(ex);
+}        
 };
 
 
@@ -374,7 +383,7 @@ Listit.onPageLoad = function(event) {
         var textContent = Listit.safeGet(body, 'textContent');
     
         if (!textContent) {
-            Listit.debug("No body.textContent found, URL: " + rootDoc.URL);
+            Listit.logger.debug("No body.textContent found, URL: " + rootDoc.URL);
             Listit.updateAllViews(Listit.state, browserID);
             return;
         } 
@@ -466,7 +475,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
             Listit.setDetailsFrameHtml('');
             Listit.scatterPlot.display(true);
-            Listit.scatterPlot.setDiscussion(discussion, true);
+            Listit.scatterPlot.setDiscussion(discussion);
             
             // Sort and set comments in score tree
             var scoreTree = document.getElementById('scoreTree');

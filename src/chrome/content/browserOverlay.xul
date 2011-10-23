@@ -338,8 +338,15 @@
                 autocheck="false"
                 checked="true"
                 persist="checked"
-                oncommand="Listit.scatterPlot.togglePanZoomEnabled(event, 'x');"/>
-              <menuitem label="Autoscale"/>
+                oncommand="Listit.scatterPlot.togglePanZoomEnabled(this, 'x');"/>
+              <!--<menuitem 
+                id="listit-scatter-x-axis-autoscale"
+                label="Autoscale Enabled" 
+                type="checkbox"
+                autocheck="false"
+                checked="true"
+                persist="checked"
+                oncommand="Listit.scatterPlot.toggleAutoscaleEnabled(event, 'x');"/>-->
               <menuseparator/>
               <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetXScale()"/>
             </menupopup>
@@ -361,16 +368,30 @@
                 autocheck="false"
                 checked="true"
                 persist="checked"
-                oncommand="Listit.scatterPlot.togglePanZoomEnabled(event, 'y');"/>
-              <menuitem label="Autoscale Enabled"/>
+                oncommand="Listit.scatterPlot.togglePanZoomEnabled(this, 'y');"/>
+              <!--<menuitem 
+                id="listit-scatter-y-axis-autoscale"
+                label="Autoscale Enabled" 
+                type="checkbox"
+                autocheck="false"
+                checked="true"
+                persist="checked"
+                oncommand="Listit.scatterPlot.toggleAutoscaleEnabled(event, 'y');"/>-->
               <menuseparator/>
               <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetYScale()"/>
             </menupopup>
           </button>
 
+          <checkbox 
+            id="listit-scatter-axes-autoscale"
+            oncommand="Listit.scatterPlot.toggleAxesAutoScale(this)"
+            label="Autoscale" 
+            persist="checked"
+            checked="true" />
+            <!--            -->
           <spacer flex="1"/>            
         </hbox>
-      </vbox> 
+      </vbox> <!-- scatterplot -->
     </hbox> 
   </vbox>    
 </overlay>

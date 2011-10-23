@@ -19,6 +19,34 @@ Listit.safeGet = function(obj, propName) {
     }
 }
 
+// Returns false if the 'checked' attribute is false or no present
+// the 'checked' attribute must be set to false if persistence is requered,
+// if it is just unchecked XUL won't remember this :-(
+Listit.getCheckboxValue = function(checkbox) {
+
+    if (checkbox.hasAttribute('checked')) {
+        return Listit.stringToBoolean(checkbox.getAttribute('checked'))
+    } else {
+        return false;
+    }
+}
+
+// Converts 'true' or 'false' to boolean value
+Listit.stringToBoolean = function(boolStr) {
+
+    Listit.assert(boolStr == 'true' || boolStr == 'false', 
+        "Expected 'true' or 'false', got'" + boolStr + "'");
+    return (boolStr == 'true');
+}
+
+// Converts boolean value to 'true' or 'false'
+Listit.booleanToString = function(boolStr) {
+
+    return boolStr ? 'true' : 'false';
+}
+
+
+
 
 /* not used
 // Loads jQuery into chrome.
