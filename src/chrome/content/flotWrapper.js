@@ -23,8 +23,20 @@ Listit.FlotWrapper.prototype.setData = function (plotSeries) {
     this.plot.setData(plotSeries);
 }
 
+Listit.FlotWrapper.prototype.logRange = function (rescale) {
+    Listit.logger.trace('Listit.FlotWrapper.logRange');
+    var range = this.getYRange();
+    Listit.logger.debug('def range: ' + range[0] + ' ' + range[1]);
+    range = this.getCalculatedYRange();
+    Listit.logger.debug('cal range: ' + range[0] + ' ' + range[1]);
+    
+}
+
 Listit.FlotWrapper.prototype.drawPlot = function (rescale) {
+    Listit.logger.trace('Listit.FlotWrapper.drawPlot');
+
     if (rescale) {
+        Listit.logger.trace('setupGridCalled --');
         this.plot.setupGrid(); // Recalculate (and draw) and set axis scaling, ticks, legend etc.
     }
     this.plot.draw();      // Redraw the canvas (tick values)

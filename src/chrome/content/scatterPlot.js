@@ -1,5 +1,22 @@
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
+/* 
+Bug:
+
+Open: 
+    1) file:///Users/titusjan/Programming/firefox/test_json/reddit_germany_just_sold_200_tanks_to_saudi.json
+    2) file:///Users/titusjan/Programming/firefox/test_json/nailed_it.json (or other tab)
+    
+    (reset firefox)
+    set autoscale first to true, then to false:
+    switch tab and switch back
+    resize plot frame
+    
+    This is because resizing always recalculates new grids (which makes sense).
+    However, apparently setting different data back changes the tick calculation)
+    
+*/
+
 //////////////////
 // ScatterPlot //
 //////////////////
@@ -14,7 +31,7 @@ Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale) {
     this.flotWrapper = this.plotFrame.contentWindow.flotWrapper;
 
     this.state = state;
-    this.axesAutoscale =  axesAutoscale
+    this.axesAutoscale =  axesAutoscale;
     //this.xAxisAutoscale =  xAxisAutoscale;
     //this.yAxisAutoscale =  yAxisAutoscale;
     //this.xRange = [null, null];
@@ -29,19 +46,27 @@ Listit.ScatterPlot.prototype.toString = function () {
 
 Listit.ScatterPlot.prototype.initPlot = function () {
         
-    Listit.logger.trace("Listit.scatterPlot.initPlot -- ");        
+    Listit.logger.debug("Listit.scatterPlot.initPlot -- ");        
     var plotOptions = { 
         selection : { mode: "xy" },
         xaxis: { 
             mode: "time",
             color: "black", 
             labelHeight: 25, 
+            zoomRange: false,
+            panRange: false, 
+            min: new Date('2008-07-09').valueOf(), 
+            max: new Date('2008-09-07').valueOf(), 
+            show: true,
         },
         yaxis: { 
             color: "black",
             zoomRange: [10, 20000],
             panRange: [-10000, 10000],
             labelWidth: 25, 
+            min: -1000, 
+            max: -600,
+            show: true,
         },
         zoom: {
             interactive: true,
@@ -52,8 +77,15 @@ Listit.ScatterPlot.prototype.initPlot = function () {
         }         
         
     };        
+    
     // Initializes plot if this is the first call
     this.flotWrapper.createPlot(plotOptions);
+
+    // Initialize some range (todo: depends on which variables are displayed)
+    //this.flotWrapper.setXRange(new Date('2007-07-09').valueOf(), new Date('2007-09-07').valueOf());
+    //this.flotWrapper.setYRange(-1000, -500);
+    this.flotWrapper.plot.resize();
+    this.flotWrapper.drawPlot(true);
 }
 
 
@@ -88,9 +120,11 @@ Listit.ScatterPlot.prototype.getCurrentDiscussion = function () {
 
 
 Listit.ScatterPlot.prototype.setDiscussion = function (discussion) {
-    Listit.logger.trace("Listit.ScatterPlot.setDiscussion -- ");
+    Listit.logger.debug("Listit.ScatterPlot.setDiscussion -- ");
 
     Listit.fbLog('Listit.ScatterPlot.setDiscussion');
+    var yAxis = this.flotWrapper.plot.getYAxes()[0];
+    Listit.fbLog(yAxis);
     var plotSeries = this.getSeries(discussion);
     this.flotWrapper.setData(plotSeries);
     
@@ -98,8 +132,17 @@ Listit.ScatterPlot.prototype.setDiscussion = function (discussion) {
         this.flotWrapper.setXRange(null, null);
         this.flotWrapper.setYRange(null, null);
     } else {
-        //this.flotWrapper.setXRange(xRange[0], xRange[1]); // TODO: harmonize get/set
-        //this.flotWrapper.setYRange(yRange[0], yRange[1]); // TODO: harmonize get/set
+        this.flotWrapper.logRange();
+
+        //this.flotWrapper.setXRange(null, null);
+        //this.flotWrapper.setYRange(null, null);
+        var xRange = this.flotWrapper.getCalculatedXRange();
+        var yRange = this.flotWrapper.getCalculatedYRange();
+        
+        this.flotWrapper.setXRange(xRange[0], xRange[1]); // TODO: harmonize get/set
+        this.flotWrapper.setYRange(yRange[0], yRange[1]); // TODO: harmonize get/set
+
+        this.flotWrapper.logRange();
     }
     Listit.logger.debug("Autoscale: " + this.axesAutoscale);
     this.flotWrapper.drawPlot(this.axesAutoscale);
@@ -121,11 +164,14 @@ Listit.ScatterPlot.prototype.toggleAxesAutoScale = function (checkbox) {
         this.flotWrapper.drawPlot(true);
     } else {
         checkbox.setAttribute('checked', 'false'); // set to false for persistence
-        
         // TODO: set range explicitely?
-        //this.flotWrapper.setXRange(xRange[0], xRange[1]); // TODO: harmonize get/set
-        //this.flotWrapper.setYRange(yRange[0], yRange[1]); // TODO: harmonize get/set
+        var xRange = this.flotWrapper.getXRange();
+        this.flotWrapper.setXRange(xRange[0], xRange[1]); // TODO: harmonize get/set
         
+        var yRange = this.flotWrapper.getYRange();
+        this.flotWrapper.setYRange(yRange[0], yRange[1]); // TODO: harmonize get/set
+        
+        this.flotWrapper.drawPlot(false);
     }
 }
     
@@ -218,3 +264,10 @@ Listit.ScatterPlot.prototype.getSeries = function(discussion) {
     return plotSeries;
 }
 
+
+Listit.ScatterPlot.prototype.selectVariable = function (varID) {
+        
+    Listit.logger.debug("Listit.scatterPlot.selectVariable -- ");
+        
+    
+}

@@ -14,6 +14,8 @@ Listit.debug = function () {
 
     try {
         Listit.logger.debug('Listit.debug');
+        Listit.scatterPlot.flotWrapper.logRange();
+        /*
         Listit.logger.info(Listit.state.summaryString() );
         Listit.fbLog(Listit.state.summaryString() );
         
@@ -21,6 +23,7 @@ Listit.debug = function () {
         Listit.fbLog(details);
         Listit.logger.debug(details.textContent);
         details.contentDocument.body.innerHTML = "Pepijn Kenter <i>rules</i>"
+        */
     } catch (ex) {
         Listit.logger.error('Exception in Listit.debug;');
         Listit.logger.error(ex);

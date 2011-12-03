@@ -316,7 +316,6 @@
       <vbox>
         <iframe id="plotFrame" 
           flex="1"
-          width="200" 
           minwidth="50"
           persist="width" 
           src="chrome://xulschoolhello/content/plotframe.html"/>
@@ -356,9 +355,21 @@
                 label="Y-Axis"
                 type="menu">
             <menupopup id="listit-scatter-x-axis-menupopup">
-              <menuitem label="ID"/>
-              <menuitem label="UTC Date &amp; Time" selected="true"/>
-              <menuitem label="Score"/>
+              <menuitem 
+                id="listit-scatter-x-axis-score"
+                label="Score"
+                type="radio"
+                name="yvar"
+                checked="true"
+                persist="checked"
+                oncommand="Listit.scatterPlot.selectVariable('score')"/>
+              <menuitem 
+                id="listit-scatter-x-axis-up"
+                label="Up"
+                type="radio"
+                name="yvar"
+                persist="checked"
+                oncommand="Listit.scatterPlot.selectVariable('up')"/>
             
               <menuseparator/>
               <menuitem 
@@ -386,6 +397,7 @@
             id="listit-scatter-axes-autoscale"
             oncommand="Listit.scatterPlot.toggleAxesAutoScale(this)"
             label="Autoscale" 
+            crop="end"
             persist="checked"
             checked="true" />
             <!--            -->
