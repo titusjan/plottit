@@ -44,9 +44,9 @@ Listit.Discussion.prototype.__defineSetter__("url", function(v) { this._url = v}
 Listit.Discussion.prototype.__defineGetter__("comments", function() { return this._comments} );
 Listit.Discussion.prototype.__defineSetter__("comments", function(v) { this._comments = v} );
 
-//////////
+/////////////
 // Comment //
-//////////
+/////////////
 
 Listit.Comment = function () { // Constructor
 
@@ -101,6 +101,10 @@ Listit.Comment.prototype.__defineGetter__("likes", function() {
     return this._ups / (this._ups + this._downs); 
 });
 
+Listit.Comment.prototype.__defineGetter__("likesPerc", function() { 
+    return this._ups / (this._ups + this._downs) * 100;  
+});
+
 Listit.Comment.EPOCH_START_MS = 1134028003 * 1000; // 2005-12-08 07:46:43
 Listit.Comment.prototype.__defineGetter__("hot", function() { 
 
@@ -124,6 +128,10 @@ Listit.Comment.prototype.__defineGetter__("numChars", function() {
 
 Listit.Comment.prototype.__defineGetter__("numReplies", function() { 
     return this._replies.length; 
+});
+
+Listit.Comment.prototype.__defineGetter__("dateCreatedValue", function() { 
+    return this._dateCreated.valueOf(); 
 });
 
 Listit.Comment.prototype.__defineGetter__("debug", function() { 
@@ -160,15 +168,14 @@ Listit.countComments = function(comments) {
 }
 
 
-Listit.getCommentDataAsTuples = function(comments) {
-
+Listit.getCommentDataAsTuples = function(comments, xVarID, yVarID) {
     Listit.assert(comments instanceof Array, 'countComments: comments should be an Array');
-    
+ 
     var result = [];
     for (var idx = 0; idx < comments.length; idx = idx + 1) {
         var comment = comments[idx];
-        result.push( [comment.dateCreated.valueOf(), comment.score]); 
-        result = result.concat(Listit.getCommentDataAsTuples(comment.replies));
+        result.push( [comment[xVarID], comment[yVarID]]); 
+        result = result.concat(Listit.getCommentDataAsTuples(comment.replies, xVarID, yVarID));
     }
     return result;
 }

@@ -15,6 +15,10 @@ Listit.debug = function () {
     try {
         Listit.logger.debug('Listit.debug');
         Listit.scatterPlot.flotWrapper.logRange();
+        
+        Listit.fbLog('Listit.debug');
+        var xAxisVariable = document.getElementById('listit-scatter-x-axis-menupopup');
+        Listit.fbLog(xAxisVariable);        
         /*
         Listit.logger.info(Listit.state.summaryString() );
         Listit.fbLog(Listit.state.summaryString() );
@@ -63,8 +67,11 @@ try{
 
     var axesAutoscale = Listit.getCheckboxValue(
         document.getElementById('listit-scatter-axes-autoscale'));
+        
+    var xAxisVar = document.getElementById('listit-scatter-x-axis-menupopup').getAttribute('xvarselected');
+    var yAxisVar = document.getElementById('listit-scatter-y-axis-menupopup').getAttribute('yvarselected');
     Listit.scatterPlot = new Listit.ScatterPlot('plotFrame', Listit.State, 
-        axesAutoscale);
+        axesAutoscale, xAxisVar, yAxisVar);
     
     var scoreTree = document.getElementById('scoreTree');
     scoreTree.view = Listit.state.getCurrentTreeView();

@@ -24,18 +24,21 @@ Open:
 // A class that links the data from the current discussion to a flotWrapper.
 
 // Constructor
-Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale) {
+Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale, xAxisVariable, yAxisVariable) {
  
     this.plotFrameId = plotFrameId;
     this.plotFrame = document.getElementById(this.plotFrameId);
     this.flotWrapper = this.plotFrame.contentWindow.flotWrapper;
 
-    this.state = state;
+    //this.state = state;                   // Not needed?! todo: remove from parameter list.
+    this.discussion = null;
     this.axesAutoscale =  axesAutoscale;
     //this.xAxisAutoscale =  xAxisAutoscale;
     //this.yAxisAutoscale =  yAxisAutoscale;
     //this.xRange = [null, null];
     //this.yRange = [null, null];
+    this.xAxisVariable = xAxisVariable;
+    this.yAxisVariable = yAxisVariable;
 }
 
 
@@ -86,6 +89,7 @@ Listit.ScatterPlot.prototype.initPlot = function () {
     //this.flotWrapper.setYRange(-1000, -500);
     this.flotWrapper.plot.resize();
     this.flotWrapper.drawPlot(true);
+    this.updatePlotTitle();
 }
 
 
@@ -112,7 +116,10 @@ Listit.ScatterPlot.prototype.display = function (bDisplay) {
     }
 }
 
+
+// NOT USED ?!
 Listit.ScatterPlot.prototype.getCurrentDiscussion = function () {
+    Listit.assert(false, 'Listit.ScatterPlot.getCurrentDiscussion is depricated');
     var eventBrowserID = Listit.state.getCurrentBrowserID();
     var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
     return discussion;
@@ -122,9 +129,7 @@ Listit.ScatterPlot.prototype.getCurrentDiscussion = function () {
 Listit.ScatterPlot.prototype.setDiscussion = function (discussion) {
     Listit.logger.debug("Listit.ScatterPlot.setDiscussion -- ");
 
-    Listit.fbLog('Listit.ScatterPlot.setDiscussion');
-    var yAxis = this.flotWrapper.plot.getYAxes()[0];
-    Listit.fbLog(yAxis);
+    this.discussion = discussion;
     var plotSeries = this.getSeries(discussion);
     this.flotWrapper.setData(plotSeries);
     
@@ -144,7 +149,7 @@ Listit.ScatterPlot.prototype.setDiscussion = function (discussion) {
 
         this.flotWrapper.logRange();
     }
-    Listit.logger.debug("Autoscale: " + this.axesAutoscale);
+    //Listit.logger.debug("Autoscale: " + this.axesAutoscale);
     this.flotWrapper.drawPlot(this.axesAutoscale);
 
 }
@@ -184,8 +189,6 @@ Listit.ScatterPlot.prototype.resetXScale = function () {
 Listit.ScatterPlot.prototype.resetYScale = function () {
     this.flotWrapper.setYRange(null, null);
     this.flotWrapper.drawPlot(true);
-    Listit.fbLog("resetYScale after rescale");
-    Listit.fbLog(this.flotWrapper.plot.getYAxes()[0]);    
 }
     
 Listit.ScatterPlot.prototype.getAxisByName = function (axisStr) {
@@ -255,19 +258,45 @@ Listit.ScatterPlot.prototype.toggleAutoscaleEnabled = function (event, axisStr) 
 
 Listit.ScatterPlot.prototype.getSeries = function(discussion) {
     
-    var data = Listit.getCommentDataAsTuples(discussion.comments);
     var plotSeries = [ {
-        data   : data,
+        data   : [],
         points : { show: true },
         color  : 'orangered',
     } ];
+    if (discussion) {
+        plotSeries[0].data = Listit.getCommentDataAsTuples(discussion.comments, 
+            this.xAxisVariable, this.yAxisVariable);
+    }
     return plotSeries;
 }
 
 
-Listit.ScatterPlot.prototype.selectVariable = function (varID) {
-        
-    Listit.logger.debug("Listit.scatterPlot.selectVariable -- ");
-        
-    
+Listit.ScatterPlot.prototype.setXAxisVariable = function (varID) {
+    this.xAxisVariable = varID;
+    this.resetXScale();
+    this.flotWrapper.setPlotTitle("x: " + varID);
+}
+
+
+Listit.ScatterPlot.prototype.setYAxisVariable = function (menuItem, varID) {
+try{
+    Listit.logger.debug("Listit.ScatterPlot.setYAxisVariable -- ");
+    this.yAxisVariable = varID;
+    this.setDiscussion(this.discussion);
+    this.resetYScale();
+    this.updatePlotTitle();
+
+    Listit.fbLog("Listit.ScatterPlot.setYAxisVariable -- ");    
+    Listit.fbLog(menuItem);
+    var menuPopup = menuItem.parentNode;
+    Listit.fbLog(menuPopup);
+    menuPopup.setAttribute("yvarselected", varID); // store in persistent attribute
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.ScatterPlot.setYAxisVariable;');
+    Listit.logger.error(ex);
+}
+}
+
+Listit.ScatterPlot.prototype.updatePlotTitle = function (varID) {
+   this.flotWrapper.setPlotTitle(this.yAxisVariable + ' vs ' + this.xAxisVariable);
 }

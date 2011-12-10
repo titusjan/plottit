@@ -324,7 +324,9 @@
           <button id="listit-scatter-x-axis-button" 
                 label="X-Axis"
                 type="menu">
-            <menupopup id="listit-scatter-x-axis-menupopup">
+            <menupopup id="listit-scatter-x-axis-menupopup"
+                xvarselected="dateCreatedValue"   
+                persist="xvarselected"> <!-- use peristence to store selected yvar -->
               <menuitem label="ID"/>
               <menuitem label="UTC Date &amp; Time" selected="true"/>
               <menuitem label="Score"/>
@@ -354,23 +356,81 @@
           <button id="listit-scatter-y-axis-button"
                 label="Y-Axis"
                 type="menu">
-            <menupopup id="listit-scatter-x-axis-menupopup">
+            <menupopup id="listit-scatter-y-axis-menupopup"
+                yvarselected="score"   
+                persist="yvarselected"> <!-- use peristence to store selected yvar -->
               <menuitem 
-                id="listit-scatter-x-axis-score"
+                id="listit-scatter-y-axis-depth"
+                label="Depth"
+                type="radio"
+                name="yvar"
+                persist="checked"
+                oncommand="Listit.scatterPlot.setYAxisVariable(this, 'depth')"/>
+              <menuitem 
+                id="listit-scatter-y-axis-score"
                 label="Score"
                 type="radio"
                 name="yvar"
                 checked="true"
                 persist="checked"
-                oncommand="Listit.scatterPlot.selectVariable('score')"/>
+                oncommand="Listit.scatterPlot.setYAxisVariable(this, 'score')"/>
               <menuitem 
-                id="listit-scatter-x-axis-up"
+                id="listit-scatter-y-axis-up"
                 label="Up"
                 type="radio"
                 name="yvar"
                 persist="checked"
-                oncommand="Listit.scatterPlot.selectVariable('up')"/>
-            
+                oncommand="Listit.scatterPlot.setYAxisVariable(this, 'ups')"/>
+              <menuitem 
+                id="listit-scatter-y-axis-down"
+                label="Down"
+                type="radio"
+                name="yvar"
+                persist="checked"
+                oncommand="Listit.scatterPlot.setYAxisVariable(this, 'downs')"/>
+              <menuitem 
+                id="listit-scatter-y-axis-votes"
+                label="Votes"
+                type="radio"
+                name="yvar"
+                persist="checked"
+                oncommand="Listit.scatterPlot.setYAxisVariable(this, 'votes')"/>
+              <menuitem 
+                id="listit-scatter-y-axis-likes"
+                label="Likes"
+                type="radio"
+                name="yvar"
+                persist="checked"
+                oncommand="Listit.scatterPlot.setYAxisVariable(this, 'likesPerc')"/>
+              <menuitem 
+                id="listit-scatter-y-axis-hot"
+                label="Hot"
+                type="radio"
+                name="yvar"
+                persist="checked"
+                oncommand="Listit.scatterPlot.setYAxisVariable(this, 'hot')"/>
+              <menuitem 
+                id="listit-scatter-y-axis-best"
+                label="Best"
+                type="radio"
+                name="yvar"
+                persist="checked"
+                oncommand="Listit.scatterPlot.setYAxisVariable(this, 'best')"/>
+              <menuitem 
+                id="listit-scatter-y-axis-numchars"
+                label="Characters"
+                type="radio"
+                name="yvar"
+                persist="checked"
+                oncommand="Listit.scatterPlot.setYAxisVariable(this, 'numChars')"/>
+              <menuitem 
+                id="listit-scatter-y-axis-numreplies"
+                label="Replies"
+                type="radio"
+                name="yvar"
+                persist="checked"
+                oncommand="Listit.scatterPlot.setYAxisVariable(this, 'numReplies')"/>
+
               <menuseparator/>
               <menuitem 
                 id="listit-scatter-y-axis-pz-allowed"

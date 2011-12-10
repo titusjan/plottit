@@ -23,6 +23,10 @@ Listit.FlotWrapper.prototype.setData = function (plotSeries) {
     this.plot.setData(plotSeries);
 }
 
+Listit.FlotWrapper.prototype.setPlotTitle = function (title) {
+    $('#header-div').text(title);
+}
+
 Listit.FlotWrapper.prototype.logRange = function (rescale) {
     Listit.logger.trace('Listit.FlotWrapper.logRange');
     var range = this.getYRange();
