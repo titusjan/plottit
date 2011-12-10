@@ -21,7 +21,7 @@ Open:
 // ScatterPlot //
 //////////////////
 
-// A class that links the data from the current discussion to a flotWrapper.
+// A class that links the data from the current discussion to a flotWrapper on the plotframe.html page.
 
 // Constructor
 Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale, xAxisVariable, yAxisVariable) {
@@ -33,10 +33,6 @@ Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale, xAxisVariable,
     //this.state = state;                   // Not needed?! todo: remove from parameter list.
     this.discussion = null;
     this.axesAutoscale =  axesAutoscale;
-    //this.xAxisAutoscale =  xAxisAutoscale;
-    //this.yAxisAutoscale =  yAxisAutoscale;
-    //this.xRange = [null, null];
-    //this.yRange = [null, null];
     this.xAxisVariable = xAxisVariable;
     this.yAxisVariable = yAxisVariable;
 }
@@ -46,6 +42,39 @@ Listit.ScatterPlot.prototype.toString = function () {
     return "Listit.ScatterPlot";
 };
 
+
+// Global dictionary with plot settings per variable
+Listit.ScatterPlot.VAR_LONG_NAMES = {
+    'depth'            : 'Depth', 
+    'score'            : 'Score', 
+    'ups'              : 'Up votes', 
+    'downs'            : 'Down votes', 
+    'votes'            : 'Votes', 
+    'likesPerc'        : 'Like', 
+    'hot'              : 'Hot', 
+    'best'             : 'Best', 
+    'numChars'         : 'Characters', 
+    'numReplies'       : 'Replies', 
+    'dateCreatedValue' : 'UTC Date and time' 
+}
+
+
+// Global dictionary with plot settings per variable
+Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
+    'depth'            : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     100] }, 
+    'score'            : { mode: null, panRange: [-10000, 10000], zoomRange: [10,   20000] }, 
+    'ups'              : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000] }, 
+    'downs'            : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000] }, 
+    'votes'            : { mode: null, panRange: [     0, 20000], zoomRange: [10,   20000] }, 
+    'likesPerc'        : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     200] }, // TODO
+    'hot'              : { mode: null, panRange: [-10000, 10000], zoomRange: [ 0.1, 20000] }, 
+    'best'             : { mode: null, panRange: [-10000, 10000], zoomRange: [10,   20000] }, 
+    'numChars'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000] },
+    'numReplies'       : { mode: null, panRange: [     0,  1000], zoomRange: [ 5,    1000] },
+    'dateCreatedValue' : { mode     : "time", 
+                           panRange : [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()], 
+                           zoomRange: [30000, 1000*3600*24*365.25*10] },  // 30 sec to 10 years 
+}
 
 Listit.ScatterPlot.prototype.initPlot = function () {
         
@@ -58,8 +87,8 @@ Listit.ScatterPlot.prototype.initPlot = function () {
             labelHeight: 25, 
             zoomRange: false,
             panRange: false, 
-            min: new Date('2008-07-09').valueOf(), 
-            max: new Date('2008-09-07').valueOf(), 
+            //min: new Date('2008-07-09').valueOf(), 
+            //max: new Date('2008-09-07').valueOf(), 
             show: true,
         },
         yaxis: { 
@@ -67,8 +96,8 @@ Listit.ScatterPlot.prototype.initPlot = function () {
             zoomRange: [10, 20000],
             panRange: [-10000, 10000],
             labelWidth: 25, 
-            min: -1000, 
-            max: -600,
+            //min: -1000, 
+            //max: -600,
             show: true,
         },
         zoom: {
@@ -103,13 +132,14 @@ Listit.ScatterPlot.prototype.display = function (bDisplay) {
         plotFrameDoc.getElementById('graphs-div').style.display   = 'block';
         plotFrameDoc.getElementById('messages-div').style.display = 'none';
         
+        // first time initialize the plot
         if (this.flotWrapper.plot === null) {
             this.initPlot();
         }
-        //this.setAxisFromVariableId(variableId);
         
         // Force resize, otherwise it won't resize if previous tab doesn't contain discussion
-        var cw = document.getElementById('plotFrame').contentWindow.wrappedJSObject.onResize();
+        this.plotFrame.contentWindow.wrappedJSObject.onResize();
+        
     } else {
         plotFrameDoc.getElementById('graphs-div').style.display   = 'none';
         plotFrameDoc.getElementById('messages-div').style.display = 'block';
@@ -156,21 +186,13 @@ Listit.ScatterPlot.prototype.resetYScale = function () {
     this.flotWrapper.drawPlot(true);
 }
     
-Listit.ScatterPlot.prototype.getAxisByName = function (axisStr) {
-    Listit.assert(axisStr == 'x' || axisStr == 'y', 
-        "Invalid axisStr: " + axisStr);
-    
-    var axes = this.flotWrapper.plot.getAxes();
-    var axis = (axisStr == 'x' ? axes.xaxis : axes.yaxis);
-    return axis;
-}
+
 
 Listit.ScatterPlot.prototype.togglePanZoomEnabled = function (menuItem, axisStr) {
     Listit.logger.debug("Listit.ScatterPlot.togglePanZoomEnabled -- ");
 
     try{    
-        var axis = this.getAxisByName(axisStr)
-        //var menuItem = event.originalTarget;
+        var axis = this.flotWrapper.getAxisByName(axisStr)
         var wasChecked = Listit.stringToBoolean(menuItem.getAttribute("checked"));
 
         if (wasChecked) {
@@ -247,21 +269,27 @@ Listit.ScatterPlot.prototype.setYAxisVariable = function (menuItem, varID) {
 try{
     Listit.logger.debug("Listit.ScatterPlot.setYAxisVariable -- ");
     this.yAxisVariable = varID;
+    
+    var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, this.yAxisVariable);
+    var axis = this.flotWrapper.getAxisByName('y')
+    axis.options = this.flotWrapper.mergeOptions(varOptions, axis.options);
+    
     this.setDiscussion(this.discussion);
     this.resetYScale();
     this.updatePlotTitle();
 
-    Listit.fbLog("Listit.ScatterPlot.setYAxisVariable -- ");    
-    Listit.fbLog(menuItem);
     var menuPopup = menuItem.parentNode;
-    Listit.fbLog(menuPopup);
-    menuPopup.setAttribute("yvarselected", varID); // store in persistent attribute
+    menuPopup.setAttribute("yvarselected", this.yAxisVariable); // store in persistent attribute
+    
 } catch (ex) {
     Listit.logger.error('Exception in Listit.ScatterPlot.setYAxisVariable;');
     Listit.logger.error(ex);
 }
 }
 
-Listit.ScatterPlot.prototype.updatePlotTitle = function (varID) {
-   this.flotWrapper.setPlotTitle(this.yAxisVariable + ' vs ' + this.xAxisVariable);
+Listit.ScatterPlot.prototype.updatePlotTitle = function () {
+    this.flotWrapper.setPlotTitle(
+        Listit.getProp(Listit.ScatterPlot.VAR_LONG_NAMES, this.yAxisVariable, this.yAxisVariable) + 
+        ' versus ' +
+        Listit.getProp(Listit.ScatterPlot.VAR_LONG_NAMES, this.xAxisVariable, this.xAxisVariable) );
 }

@@ -19,6 +19,16 @@ Listit.safeGet = function(obj, propName) {
     }
 }
 
+// Returns obj[propName] if the property exists, otherwise returns defaultValue
+Listit.getProp = function(obj, propName, defaultValue) {
+
+    if (obj[propName] !== undefined) {
+        return obj[propName];
+    } else {
+        return defaultValue;
+    }
+}
+
 // Returns false if the 'checked' attribute is false or no present
 // the 'checked' attribute must be set to false if persistence is requered,
 // if it is just unchecked XUL won't remember this :-(
@@ -188,7 +198,7 @@ Listit.compareCaseInsensitiveStrings = function(a, b) {
 /////////////
 
 /*
-Utils.js defines two loggin mechanisms:
+Utils.js defines two logging mechanisms:
     Listit.logger: The log4moz logger object which can be imported only in XUL
     Listit.fbLog: The firebug log function which is useful for inspecting data
     

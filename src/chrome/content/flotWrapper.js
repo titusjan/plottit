@@ -2,6 +2,11 @@
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 
+/*
+/ Wrapper around flot plot with some useful routines.
+/ Used in plotframe.html were jQuery is also included.
+*/
+
 Listit.FlotWrapper = function (placeHolderDivId) { // Constructor
 
     this.placeHolderDivId = placeHolderDivId;
@@ -33,7 +38,6 @@ Listit.FlotWrapper.prototype.logRange = function (rescale) {
     Listit.logger.debug('def range: ' + range[0] + ' ' + range[1]);
     range = this.getCalculatedYRange();
     Listit.logger.debug('cal range: ' + range[0] + ' ' + range[1]);
-    
 }
 
 Listit.FlotWrapper.prototype.drawPlot = function (rescale) {
@@ -46,19 +50,23 @@ Listit.FlotWrapper.prototype.drawPlot = function (rescale) {
     this.plot.draw();      // Redraw the canvas (tick values)
 }
 
+Listit.FlotWrapper.prototype.getAxisByName = function (axisStr) {
+    Listit.assert(axisStr == 'x' || axisStr == 'y', 
+        "Invalid axisStr: " + axisStr);
+    
+    var axes = this.plot.getAxes();
+    var axis = (axisStr == 'x' ? axes.xaxis : axes.yaxis);
+    return axis;
+}
 
-/* Not used. Always want to setupGrid as well.  TODO: renavme rescalePlot to drawPlot
-Listit.FlotWrapper.prototype.drawPlot = function (rescale) {
-    this.plot.draw();      // Redraw the canvas (tick values)
-}*/
 
+// Merges sourceOptions into the targetOptions dictionary
+Listit.FlotWrapper.prototype.mergeOptions = function (sourceOptions, targetOptions) {
+    
+    targetOptions = $.extend(true, {}, targetOptions, sourceOptions);   
+    return targetOptions;
+}
 
-/*
-// Merges options dictionary into plot options
-Listit.FlotWrapper.prototype.mergeIntoPlotOptions = function (options) {
-
-    this.plotOptions = $.extend(true, {}, this.plotOptions, options);   
-}*/
 
 Listit.FlotWrapper.prototype.getCalculatedXRange = function () {
     var xAxis = this.plot.getXAxes()[0]; 
