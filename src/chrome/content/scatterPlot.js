@@ -132,52 +132,17 @@ Listit.ScatterPlot.prototype.setDiscussion = function (discussion) {
     this.discussion = discussion;
     var plotSeries = this.getSeries(discussion);
     this.flotWrapper.setData(plotSeries);
-    
-    if (this.axesAutoscale) {
-        this.flotWrapper.setXRange(null, null);
-        this.flotWrapper.setYRange(null, null);
-    } else {
-        this.flotWrapper.logRange();
-
-        //this.flotWrapper.setXRange(null, null);
-        //this.flotWrapper.setYRange(null, null);
-        var xRange = this.flotWrapper.getCalculatedXRange();
-        var yRange = this.flotWrapper.getCalculatedYRange();
-        
-        this.flotWrapper.setXRange(xRange[0], xRange[1]); // TODO: harmonize get/set
-        this.flotWrapper.setYRange(yRange[0], yRange[1]); // TODO: harmonize get/set
-
-        this.flotWrapper.logRange();
-    }
-    //Listit.logger.debug("Autoscale: " + this.axesAutoscale);
-    this.flotWrapper.drawPlot(this.axesAutoscale);
-
+    this.flotWrapper.setAxesAutoscale(this.axesAutoscale);
 }
 
 Listit.ScatterPlot.prototype.toggleAxesAutoScale = function (checkbox) {
+    Listit.logger.trace("Listit.ScatterPlot.setDiscussion -- ");
     
-    Listit.fbLog("toggleAxesAutoScale");
-    
-    //this.axesAutoscale = Listit.stringToBoolean(checkbox.getAttribute("checked"));
     this.axesAutoscale = Listit.getCheckboxValue(checkbox);
-
-    Listit.fbLog(this.axesAutoscale);
-    
-    if (this.axesAutoscale) {
-        this.flotWrapper.setXRange(null, null);
-        this.flotWrapper.setYRange(null, null);    
-        this.flotWrapper.drawPlot(true);
-    } else {
+    if (!this.axesAutoscale) {
         checkbox.setAttribute('checked', 'false'); // set to false for persistence
-        // TODO: set range explicitely?
-        var xRange = this.flotWrapper.getXRange();
-        this.flotWrapper.setXRange(xRange[0], xRange[1]); // TODO: harmonize get/set
-        
-        var yRange = this.flotWrapper.getYRange();
-        this.flotWrapper.setYRange(yRange[0], yRange[1]); // TODO: harmonize get/set
-        
-        this.flotWrapper.drawPlot(false);
     }
+    this.flotWrapper.setAxesAutoscale(this.axesAutoscale);
 }
     
 

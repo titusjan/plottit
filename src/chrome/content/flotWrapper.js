@@ -116,6 +116,22 @@ Listit.FlotWrapper.prototype.setRanges = function (ranges) {
     this.setYRange(clampedRanges.yaxis.from, clampedRanges.yaxis.to);
 }
 
+Listit.FlotWrapper.prototype.setAxesAutoscale = function (autoScale) {
+    Listit.logger.debug("FlotWrapper.setAxesAutoscale: " + autoScale.toString());
+
+    if (autoScale) {
+        this.setXRange(null, null);
+        this.setYRange(null, null);    
+        this.drawPlot(true);
+    } else {
+        var xRange = this.getXRange();
+        var yRange = this.getYRange();
+        this.setXRange(xRange[0], xRange[1]); // TODO: harmonize get/set
+        this.setYRange(yRange[0], yRange[1]); // TODO: harmonize get/set
+        this.drawPlot(false);
+    }
+}
+
 // Needed when the selection plug-in is used.
 Listit.FlotWrapper.prototype.onPlotSelect = function (event, ranges) {
     Listit.logger.trace("onPlotSelect --");
