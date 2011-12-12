@@ -428,7 +428,7 @@
                 persist="checked"
                 oncommand="Listit.scatterPlot.toggleAutoscaleEnabled(event, 'x');"/>-->
               <menuseparator/>
-              <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetXScale()"/>
+              <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetRange('x')"/>
             </menupopup>
           </button>
           
@@ -529,7 +529,7 @@
                 persist="checked"
                 oncommand="Listit.scatterPlot.toggleAutoscaleEnabled(event, 'y');"/>-->
               <menuseparator/>
-              <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetYScale()"/>
+              <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetRange('y')"/>
             </menupopup>
           </button>
 

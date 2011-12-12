@@ -77,7 +77,9 @@ Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
                            zoomRange: [30000, 1000*3600*24*365.25*10] },  // 30 sec to 10 years 
 }
 
-// To be called the first time the plot is displayed
+// To be called the first time the plot is displayed.
+// Cannot be called in the constructor because the placeholder div may not be visible yet
+// and the flotWrapper.plot may therefore be undefined.
 Listit.ScatterPlot.prototype._initPlot = function () {
         
     Listit.logger.debug("Listit.scatterPlot.initPlot -- ");        
@@ -109,13 +111,13 @@ Listit.ScatterPlot.prototype._initPlot = function () {
         
     };        
     
-    // Draws/creates plot in flotwrapper
-    this.flotWrapper.createPlot(initialPlotOptions);
-
-    // Initialize some range (todo: depends on which variables are displayed)
+    this.flotWrapper.createPlot(initialPlotOptions);     // Draws/creates plot in flotwrapper
+    this._setAxisOptions('x', this.xAxisVariable);
+    this._setAxisOptions('y', this.yAxisVariable);
     this.flotWrapper.plot.resize();
     this.flotWrapper.drawPlot(true);
     this._updatePlotTitle();
+    this.flotWrapper.logRange();
 }
 
 
@@ -129,11 +131,12 @@ Listit.ScatterPlot.prototype.display = function (bDisplay) {
         plotFrameDoc.getElementById('graphs-div').style.display   = 'block';
         plotFrameDoc.getElementById('messages-div').style.display = 'none';
         
+        /*
         // first time initialize the plot
         if (this.flotWrapper.plot === null) {
             this._initPlot();
         }
-        
+        */
         // Force resize, otherwise it won't resize if previous tab doesn't contain discussion
         this.plotFrame.contentWindow.wrappedJSObject.onResize();
         
@@ -171,10 +174,16 @@ Listit.ScatterPlot.prototype._getSeries = function(discussion) {
 Listit.ScatterPlot.prototype.setDiscussion = function (discussion) {
     Listit.logger.debug("Listit.ScatterPlot.setDiscussion -- ");
 
+    var isFirstTime = (this.flotWrapper.plot === null);
+    if (isFirstTime) {
+        this.initialized = true;
+         this._initPlot();
+    }
+        
     this.discussion = discussion;
     var plotSeries = this._getSeries(discussion);
     this.flotWrapper.setData(plotSeries);
-    this.flotWrapper.setAxesAutoscale(this.axesAutoscale);
+    this.flotWrapper.setAxesAutoscale(this.axesAutoscale || isFirstTime);
 }
 
 Listit.ScatterPlot.prototype.toggleAxesAutoScale = function (checkbox) {
@@ -243,14 +252,18 @@ Listit.ScatterPlot.prototype.toggleAutoscaleEnabled = function (event, axisStr) 
 }    
 
 
-Listit.ScatterPlot.prototype._resetRange = function (axisStr) {
+Listit.ScatterPlot.prototype.resetRange = function (axisStr) {
 
-    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
-    if (axisStr == 'x') {
-        this.flotWrapper.resetXRange();
-    } else {
-        this.flotWrapper.resetYRange();
-    }
+    this.flotWrapper.resetRange(axisStr);
+    this.flotWrapper.drawPlot(true);
+}
+
+
+Listit.ScatterPlot.prototype._setAxisOptions = function (axisStr, axisVar) {
+
+    var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, axisVar);
+    var axis = this.flotWrapper.getAxisByName(axisStr);
+    axis.options = this.flotWrapper.mergeOptions(varOptions, axis.options);
 }
 
 Listit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuItem, axisVar) {
@@ -267,13 +280,9 @@ try{
         menuPopup.setAttribute("yvarselected", axisVar); // store in persistent attribute
     }
     
-    // Set axis options for this variable
-    var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, axisVar);
-    var axis = this.flotWrapper.getAxisByName(axisStr);
-    axis.options = this.flotWrapper.mergeOptions(varOptions, axis.options);
-    
+    this._setAxisOptions(axisStr, axisVar);
     this.setDiscussion(this.discussion);
-    this._resetRange(axisStr);
+    this.resetRange(axisStr);
     this._updatePlotTitle();
     
 } catch (ex) {

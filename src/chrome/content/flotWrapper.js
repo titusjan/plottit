@@ -32,7 +32,7 @@ Listit.FlotWrapper.prototype.setPlotTitle = function (title) {
     $('#header-div').text(title);
 }
 
-Listit.FlotWrapper.prototype.logRange = function (rescale) {
+Listit.FlotWrapper.prototype.logRange = function () {
     Listit.logger.trace('Listit.FlotWrapper.logRange');
     var range = this.getYRange();
     Listit.logger.debug('def range: ' + range[0] + ' ' + range[1]);
@@ -124,7 +124,17 @@ Listit.FlotWrapper.prototype.setRanges = function (ranges) {
     this.setYRange(clampedRanges.yaxis.from, clampedRanges.yaxis.to);
 }
 
+Listit.FlotWrapper.prototype.resetRange = function (axisStr) {
 
+    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
+    if (axisStr == 'x') {
+        this.setXRange(null, null);
+    } else {
+        this.setYRange(null, null);
+    }
+}
+
+/*
 Listit.FlotWrapper.prototype.resetXRange = function () {
     this.setXRange(null, null);
 }
@@ -132,6 +142,7 @@ Listit.FlotWrapper.prototype.resetXRange = function () {
 Listit.FlotWrapper.prototype.resetYRange = function () {
     this.setYRange(null, null);
 }
+*/
 
 Listit.FlotWrapper.prototype.setAxesAutoscale = function (autoScale) {
     Listit.logger.debug("FlotWrapper.setAxesAutoscale: " + autoScale.toString());
