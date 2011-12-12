@@ -7,21 +7,56 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 / Used in plotframe.html were jQuery is also included.
 */
 
-Listit.FlotWrapper = function (placeHolderDivId) { // Constructor
-
-    this.placeHolderDivId = placeHolderDivId;
+// Constructor
+// TODO: make all private methods start with underscore
+Listit.FlotWrapper = function (placeHolderDivId) 
+{
     this.plot = null; // Don't call jQuery.plot yet, the placeholder may not be visible
+    this.placeHolderDivId = placeHolderDivId;
+    
+    this.zoomRange = null;
+    this.panRange = null;
+    
+    // The _axisOptionCache is necessary to remember the zoom and pan range when panning and
+    // zooming is disabled. In that case the flot axis.options zoomRange and panRange will be 
+    // set to false and thus the old setting is lost in flot :-(
+    this._axisOptionCache = {};
+    this._axisOptionCache.x = {
+        panZoomEnabled : null,
+        zoomRange : null,
+        panRange : null
+    }
+    this._axisOptionCache.y = {
+        panZoomEnabled : null,
+        zoomRange : null,
+        panRange : null
+    }
 }
+
 
 Listit.FlotWrapper.prototype.toString = function () {
     return "<Listit.FlotWrapper>";
 };
+
+Listit.FlotWrapper.prototype.assertAxisStringIsValid = function (axisStr) {
+    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr); 
+}
+
+Listit.FlotWrapper.prototype.getAxisByName = function (axisStr) {
+    this.assertAxisStringIsValid(axisStr);
+    var axes = this.plot.getAxes();
+    var axis = (axisStr == 'x' ? axes.xaxis : axes.yaxis);
+    return axis;
+}
 
 
 // Make sure to call this only when the place holder is visible!
 Listit.FlotWrapper.prototype.createPlot = function (plotOptions) {
     this.plot = $.plot($('#'+this.placeHolderDivId), [], plotOptions);
 
+    // Pases on the plot options set so far
+    this._updateFlotAxisOptions('x');
+    this._updateFlotAxisOptions('y');
 }
 
 Listit.FlotWrapper.prototype.setData = function (plotSeries) {
@@ -30,14 +65,6 @@ Listit.FlotWrapper.prototype.setData = function (plotSeries) {
 
 Listit.FlotWrapper.prototype.setPlotTitle = function (title) {
     $('#header-div').text(title);
-}
-
-Listit.FlotWrapper.prototype.logRange = function () {
-    Listit.logger.trace('Listit.FlotWrapper.logRange');
-    var range = this.getYRange();
-    Listit.logger.debug('def range: ' + range[0] + ' ' + range[1]);
-    range = this.getCalculatedYRange();
-    Listit.logger.debug('cal range: ' + range[0] + ' ' + range[1]);
 }
 
 Listit.FlotWrapper.prototype.drawPlot = function (rescale) {
@@ -50,23 +77,63 @@ Listit.FlotWrapper.prototype.drawPlot = function (rescale) {
     this.plot.draw();      // Redraw the canvas (tick values)
 }
 
-Listit.FlotWrapper.prototype.getAxisByName = function (axisStr) {
-    Listit.assert(axisStr == 'x' || axisStr == 'y', 
-        "Invalid axisStr: " + axisStr);
-    
-    var axes = this.plot.getAxes();
-    var axis = (axisStr == 'x' ? axes.xaxis : axes.yaxis);
-    return axis;
+
+// Update the flot axis options from the axisOptionCache
+Listit.FlotWrapper.prototype._updateFlotAxisOptions = function (axisStr) {
+
+    Listit.logger.trace('Listit.FlotWrapper._updateFlotAxisOptions --');
+    Listit.assert(this.plot, "In _updateFlotAxisOptions: this.plot not initialized");
+    var axis = this.getAxisByName(axisStr);
+    if (this._axisOptionCache[axisStr].panZoomEnabled) {
+        axis.options.panRange = this._axisOptionCache[axisStr].panRange;
+        axis.options.zoomRange = this._axisOptionCache[axisStr].zoomRange;
+    } else {
+        axis.options.panRange = false;    
+        axis.options.zoomRange = false;
+    }
 }
 
-
 // Merges sourceOptions into the targetOptions dictionary
-Listit.FlotWrapper.prototype.mergeOptions = function (sourceOptions, targetOptions) {
+Listit.FlotWrapper.prototype._mergeOptions = function (sourceOptions, targetOptions) {
     
     targetOptions = $.extend(true, {}, targetOptions, sourceOptions);   
     return targetOptions;
 }
 
+Listit.FlotWrapper.prototype.setAxisOptions = function (axisStr, varOptions) {
+    Listit.logger.trace('Listit.FlotWrapper.setAxisOptions --');
+    this.assertAxisStringIsValid(axisStr);
+    this._axisOptionCache[axisStr].panRange = varOptions.panRange;
+    this._axisOptionCache[axisStr].zoomRange = varOptions.zoomRange;
+    if (this.plot) {
+        var axis = this.getAxisByName(axisStr);
+        axis.options = this._mergeOptions(varOptions, axis.options);
+        this._updateFlotAxisOptions(axisStr);
+    }
+}
+
+Listit.FlotWrapper.prototype.getAxisPanZoomEnabled = function (axisStr) {
+    this.assertAxisStringIsValid(axisStr);
+    return this._axisOptionCache[axisStr].panZoomEnabled;
+}
+
+Listit.FlotWrapper.prototype.setAxisPanZoomEnabled = function (axisStr, enabled) {
+    Listit.logger.trace('Listit.FlotWrapper.setAxisPanZoomEnabled --');
+    this.assertAxisStringIsValid(axisStr);
+    this._axisOptionCache[axisStr].panZoomEnabled = enabled;
+    if (this.plot) {
+        this._updateFlotAxisOptions(axisStr);
+    }
+}
+
+
+Listit.FlotWrapper.prototype.logRange = function () {
+    Listit.logger.trace('Listit.FlotWrapper.logRange');
+    var range = this.getYRange();
+    Listit.logger.debug('def range: ' + range[0] + ' ' + range[1]);
+    range = this.getCalculatedYRange();
+    Listit.logger.debug('cal range: ' + range[0] + ' ' + range[1]);
+}
 
 Listit.FlotWrapper.prototype.getCalculatedXRange = function () {
     var xAxis = this.plot.getXAxes()[0]; 
@@ -134,16 +201,6 @@ Listit.FlotWrapper.prototype.resetRange = function (axisStr) {
     }
 }
 
-
-/*
-Listit.FlotWrapper.prototype.resetXRange = function () {
-    this.setXRange(null, null);
-}
-    
-Listit.FlotWrapper.prototype.resetYRange = function () {
-    this.setYRange(null, null);
-}
-*/
 
 // updateAxesScales
 Listit.FlotWrapper.prototype.setAxesAutoscale = function (autoScale) {

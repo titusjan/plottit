@@ -25,17 +25,22 @@ Open:
 // Private methods start with and underscore.
 
 // Constructor
-Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale, xAxisVariable, yAxisVariable) {
- 
+Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale, 
+        xAxisVariable, yAxisVariable, 
+        xAxisPanZoomEnabled, yAxisPanZoomEnabled) 
+{
     this.plotFrameId = plotFrameId;
     this.plotFrame = document.getElementById(this.plotFrameId);
-    this.flotWrapper = this.plotFrame.contentWindow.flotWrapper;
-
-    //this.state = state;                   // Not needed?! todo: remove from parameter list.
+    
     this.discussion = null;
-    this.axesAutoscale =  axesAutoscale;
     this.xAxisVariable = xAxisVariable;
     this.yAxisVariable = yAxisVariable;
+    
+    this.axesAutoscale =  axesAutoscale;
+
+    this.flotWrapper = this.plotFrame.contentWindow.flotWrapper;
+    this.flotWrapper.setAxisPanZoomEnabled('x', xAxisPanZoomEnabled);
+    this.flotWrapper.setAxisPanZoomEnabled('y', yAxisPanZoomEnabled);
 }
 
 
@@ -141,15 +146,6 @@ Listit.ScatterPlot.prototype.display = function (bDisplay) {
 }
 
 
-// NOT USED. TODO: remove?
-Listit.ScatterPlot.prototype.getCurrentDiscussion = function () {
-    Listit.assert(false, 'Listit.ScatterPlot.getCurrentDiscussion is depricated');
-    var eventBrowserID = Listit.state.getCurrentBrowserID();
-    var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
-    return discussion;
-}
-
-
 Listit.ScatterPlot.prototype._getSeries = function(discussion) {
     
     var plotSeries = [ {
@@ -198,9 +194,7 @@ Listit.ScatterPlot.prototype.togglePanZoomEnabled = function (menuItem, axisStr)
     var wasChecked = Listit.stringToBoolean(menuItem.getAttribute("checked"));
     var enabled = ! wasChecked;
     menuItem.setAttribute('checked', enabled);
-    
-    
-    this._updateAxisOptions(axisStr);
+    this.flotWrapper.setAxisPanZoomEnabled(axisStr, enabled);
 }
 
 
@@ -211,41 +205,13 @@ Listit.ScatterPlot.prototype.resetRange = function (axisStr) {
 }
 
 
-Listit.ScatterPlot.prototype._setPanZoomEnabled = function (axisStr, enabled) {
-try{    
-    Listit.logger.debug("Listit.ScatterPlot.setPanZoomEnabled -- " + enabled);
-    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
-    
-    if (!enabled) {
-        var axis = this.flotWrapper.getAxisByName(axisStr)
-        axis.options.zoomRange = false;
-        axis.options.panRange = false;
-    } else {
-        this._updateAxisOptions(axisStr);
-    }
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.ScatterPlot.togglePanZoomEnabled;');
-    Listit.logger.error(ex);
-}
-}    
-
-
 Listit.ScatterPlot.prototype._updateAxisOptions = function (axisStr) {
 
     Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
     
     var axisVar = (axisStr == 'x') ? this.xAxisVariable : this.yAxisVariable;
     var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, axisVar);
-    var axis = this.flotWrapper.getAxisByName(axisStr);
-    axis.options = this.flotWrapper.mergeOptions(varOptions, axis.options);
-    
-    /*
-    // Disabled pan & zoom these settings apply
-    var axisPanZoomAllowed = (axisStr == 'x') ? this.xAxisPanZoomAllowed : this.yAxisPanZoomAllowed;
-    if (!axisPanZoomAllowed) {
-        axis.options.zoomRange = false;
-        axis.options.panRange = false;    
-    }*/
+    this.flotWrapper.setAxisOptions(axisStr, varOptions);
 }
 
 Listit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuItem, axisVar) {
@@ -262,7 +228,7 @@ try{
         menuPopup.setAttribute("yvarselected", axisVar); // store in persistent attribute
     }
     
-    this._updateAxisOptions(axisStr);
+    this._updateAxisOptions(axisStr); 
     this.setDiscussion(this.discussion);
     this.resetRange(axisStr);
     this._updatePlotTitle();
