@@ -175,6 +175,15 @@ Listit.ScatterPlot.prototype.toggleAxesAutoScale = function (checkbox) {
     this.flotWrapper.setAxesAutoscale(this.axesAutoscale);
 }
     
+Listit.ScatterPlot.prototype.resetScale = function (axisStr) {
+
+    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
+    if (axisStr == 'x') {
+        this.resetXScale();
+    } else {
+        this.resetYScale();
+    }
+}
 
 Listit.ScatterPlot.prototype.resetXScale = function () {
     this.flotWrapper.setXRange(null, null);
@@ -265,21 +274,28 @@ Listit.ScatterPlot.prototype.setXAxisVariable = function (varID) {
 }
 
 
-Listit.ScatterPlot.prototype.setYAxisVariable = function (menuItem, varID) {
+Listit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuItem, axisVar) {
 try{
-    Listit.logger.debug("Listit.ScatterPlot.setYAxisVariable -- ");
-    this.yAxisVariable = varID;
+    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
     
-    var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, this.yAxisVariable);
-    var axis = this.flotWrapper.getAxisByName('y')
+    Listit.logger.debug("Listit.ScatterPlot.setYAxisVariable -- ");
+    var menuPopup = menuItem.parentNode;
+    if (axisStr == 'x') {
+        this.xAxisVariable = axisVar;
+        menuPopup.setAttribute("xvarselected", axisVar); // store in persistent attribute
+    } else {
+        this.yAxisVariable = axisVar;
+        menuPopup.setAttribute("yvarselected", axisVar); // store in persistent attribute
+    }
+    
+    // Set axis options for this variable
+    var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, axisVar);
+    var axis = this.flotWrapper.getAxisByName(axisStr);
     axis.options = this.flotWrapper.mergeOptions(varOptions, axis.options);
     
     this.setDiscussion(this.discussion);
-    this.resetYScale();
+    this.resetScale(axisStr);
     this.updatePlotTitle();
-
-    var menuPopup = menuItem.parentNode;
-    menuPopup.setAttribute("yvarselected", this.yAxisVariable); // store in persistent attribute
     
 } catch (ex) {
     Listit.logger.error('Exception in Listit.ScatterPlot.setYAxisVariable;');
