@@ -419,14 +419,7 @@
                 checked="true"
                 persist="checked"
                 oncommand="Listit.scatterPlot.togglePanZoomEnabled(this, 'x');"/>
-              <!--<menuitem 
-                id="listit-scatter-x-axis-autoscale"
-                label="Autoscale Enabled" 
-                type="checkbox"
-                autocheck="false"
-                checked="true"
-                persist="checked"
-                oncommand="Listit.scatterPlot.toggleAutoscaleEnabled(event, 'x');"/>-->
+
               <menuseparator/>
               <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetRange('x')"/>
             </menupopup>
@@ -520,14 +513,7 @@
                 checked="true"
                 persist="checked"
                 oncommand="Listit.scatterPlot.togglePanZoomEnabled(this, 'y');"/>
-              <!--<menuitem 
-                id="listit-scatter-y-axis-autoscale"
-                label="Autoscale Enabled" 
-                type="checkbox"
-                autocheck="false"
-                checked="true"
-                persist="checked"
-                oncommand="Listit.scatterPlot.toggleAutoscaleEnabled(event, 'y');"/>-->
+
               <menuseparator/>
               <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetRange('y')"/>
             </menupopup>

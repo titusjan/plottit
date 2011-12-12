@@ -134,6 +134,7 @@ Listit.FlotWrapper.prototype.resetRange = function (axisStr) {
     }
 }
 
+
 /*
 Listit.FlotWrapper.prototype.resetXRange = function () {
     this.setXRange(null, null);
@@ -144,20 +145,20 @@ Listit.FlotWrapper.prototype.resetYRange = function () {
 }
 */
 
+// updateAxesScales
 Listit.FlotWrapper.prototype.setAxesAutoscale = function (autoScale) {
     Listit.logger.debug("FlotWrapper.setAxesAutoscale: " + autoScale.toString());
 
     if (autoScale) {
         this.setXRange(null, null);
         this.setYRange(null, null);    
-        this.drawPlot(true);
     } else {
         var xRange = this.getXRange();
         var yRange = this.getYRange();
         this.setXRange(xRange[0], xRange[1]); // TODO: harmonize get/set
         this.setYRange(yRange[0], yRange[1]); // TODO: harmonize get/set
-        this.drawPlot(false);
     }
+    this.drawPlot(autoScale);
 }
 
 // Needed when the selection plug-in is used.

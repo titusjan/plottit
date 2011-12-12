@@ -77,7 +77,7 @@ Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
                            zoomRange: [30000, 1000*3600*24*365.25*10] },  // 30 sec to 10 years 
 }
 
-// To be called the first time the plot is displayed.
+// To be called the first time the plot is drawn.
 // Cannot be called in the constructor because the placeholder div may not be visible yet
 // and the flotWrapper.plot may therefore be undefined.
 Listit.ScatterPlot.prototype._initPlot = function () {
@@ -112,8 +112,8 @@ Listit.ScatterPlot.prototype._initPlot = function () {
     };        
     
     this.flotWrapper.createPlot(initialPlotOptions);     // Draws/creates plot in flotwrapper
-    this._setAxisOptions('x', this.xAxisVariable);
-    this._setAxisOptions('y', this.yAxisVariable);
+    this._updateAxisOptions('x', this.xAxisVariable);
+    this._updateAxisOptions('y', this.yAxisVariable);
     this.flotWrapper.plot.resize();
     this.flotWrapper.drawPlot(true);
     this._updatePlotTitle();
@@ -131,12 +131,6 @@ Listit.ScatterPlot.prototype.display = function (bDisplay) {
         plotFrameDoc.getElementById('graphs-div').style.display   = 'block';
         plotFrameDoc.getElementById('messages-div').style.display = 'none';
         
-        /*
-        // first time initialize the plot
-        if (this.flotWrapper.plot === null) {
-            this._initPlot();
-        }
-        */
         // Force resize, otherwise it won't resize if previous tab doesn't contain discussion
         this.plotFrame.contentWindow.wrappedJSObject.onResize();
         
@@ -194,62 +188,20 @@ Listit.ScatterPlot.prototype.toggleAxesAutoScale = function (checkbox) {
         checkbox.setAttribute('checked', 'false'); // set to false for persistence
     }
     this.flotWrapper.setAxesAutoscale(this.axesAutoscale);
+
 }
  
 
 Listit.ScatterPlot.prototype.togglePanZoomEnabled = function (menuItem, axisStr) {
-    Listit.logger.debug("Listit.ScatterPlot.togglePanZoomEnabled -- ");
+    Listit.logger.trace("Listit.ScatterPlot.togglePanZoomEnabled -- ");
 
-    try{    
-        var axis = this.flotWrapper.getAxisByName(axisStr)
-        var wasChecked = Listit.stringToBoolean(menuItem.getAttribute("checked"));
-
-        if (wasChecked) {
-            menuItem.setAttribute('checked', false);
-            axis.options.zoomRange = false;
-            axis.options.panRange = false;
-        } else {
-            menuItem.setAttribute('checked', true);
-            if (axisStr == 'x') {
-                axis.options.zoomRange = [30000, 1000*3600*24*365.25*10]; // 30 sec to 10 years
-                axis.options.panRange  = [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()];
-            } else {
-                axis.options.zoomRange = [10, 20000];
-                axis.options.panRange  = [-10000, 10000] ;
-            }
-        }
-    } catch (ex) {
-        Listit.logger.error('Exception in Listit.ScatterPlot.togglePanZoomEnabled;');
-        Listit.logger.error(ex);
-    }
-}    
-
-Listit.ScatterPlot.prototype.toggleAutoscaleEnabled = function (event, axisStr) {
-    Listit.logger.debug("Listit.ScatterPlot.toggleAutoscaleEnabled -- ");
-
-    try{    
-        Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
-
-        var menuItem = event.originalTarget;
-        var wasChecked = Listit.stringToBoolean(menuItem.getAttribute("checked"));
-        
-        if (wasChecked) {
-            menuItem.setAttribute('checked', false);
-        } else {
-            menuItem.setAttribute('checked', true);
-        }
-        if (axisStr == 'x') {
-            Listit.logger.debug("Set X-Axis autoScale to: " + !wasChecked);
-            this.xAxisAutoscale = !wasChecked;
-        } else {
-            Listit.logger.debug("Set Y-Axis autoScale to: " + !wasChecked);
-            this.yAxisAutoscale = !wasChecked;
-        }
-    } catch (ex) {
-        Listit.logger.error('Exception in Listit.ScatterPlot.toggleAutoscaleEnabled;');
-        Listit.logger.error(ex);
-    }
-}    
+    var wasChecked = Listit.stringToBoolean(menuItem.getAttribute("checked"));
+    var enabled = ! wasChecked;
+    menuItem.setAttribute('checked', enabled);
+    
+    
+    this._updateAxisOptions(axisStr);
+}
 
 
 Listit.ScatterPlot.prototype.resetRange = function (axisStr) {
@@ -259,11 +211,41 @@ Listit.ScatterPlot.prototype.resetRange = function (axisStr) {
 }
 
 
-Listit.ScatterPlot.prototype._setAxisOptions = function (axisStr, axisVar) {
+Listit.ScatterPlot.prototype._setPanZoomEnabled = function (axisStr, enabled) {
+try{    
+    Listit.logger.debug("Listit.ScatterPlot.setPanZoomEnabled -- " + enabled);
+    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
+    
+    if (!enabled) {
+        var axis = this.flotWrapper.getAxisByName(axisStr)
+        axis.options.zoomRange = false;
+        axis.options.panRange = false;
+    } else {
+        this._updateAxisOptions(axisStr);
+    }
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.ScatterPlot.togglePanZoomEnabled;');
+    Listit.logger.error(ex);
+}
+}    
 
+
+Listit.ScatterPlot.prototype._updateAxisOptions = function (axisStr) {
+
+    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
+    
+    var axisVar = (axisStr == 'x') ? this.xAxisVariable : this.yAxisVariable;
     var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, axisVar);
     var axis = this.flotWrapper.getAxisByName(axisStr);
     axis.options = this.flotWrapper.mergeOptions(varOptions, axis.options);
+    
+    /*
+    // Disabled pan & zoom these settings apply
+    var axisPanZoomAllowed = (axisStr == 'x') ? this.xAxisPanZoomAllowed : this.yAxisPanZoomAllowed;
+    if (!axisPanZoomAllowed) {
+        axis.options.zoomRange = false;
+        axis.options.panRange = false;    
+    }*/
 }
 
 Listit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuItem, axisVar) {
@@ -280,7 +262,7 @@ try{
         menuPopup.setAttribute("yvarselected", axisVar); // store in persistent attribute
     }
     
-    this._setAxisOptions(axisStr, axisVar);
+    this._updateAxisOptions(axisStr);
     this.setDiscussion(this.discussion);
     this.resetRange(axisStr);
     this._updatePlotTitle();
