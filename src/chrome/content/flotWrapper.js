@@ -124,6 +124,15 @@ Listit.FlotWrapper.prototype.setRanges = function (ranges) {
     this.setYRange(clampedRanges.yaxis.from, clampedRanges.yaxis.to);
 }
 
+
+Listit.FlotWrapper.prototype.resetXRange = function () {
+    this.setXRange(null, null);
+}
+    
+Listit.FlotWrapper.prototype.resetYRange = function () {
+    this.setYRange(null, null);
+}
+
 Listit.FlotWrapper.prototype.setAxesAutoscale = function (autoScale) {
     Listit.logger.debug("FlotWrapper.setAxesAutoscale: " + autoScale.toString());
 

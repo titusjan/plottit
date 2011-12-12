@@ -66,7 +66,7 @@ Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
     'ups'              : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000] }, 
     'downs'            : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000] }, 
     'votes'            : { mode: null, panRange: [     0, 20000], zoomRange: [10,   20000] }, 
-    'likesPerc'        : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     200] }, // TODO
+    'likesPerc'        : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     200] }, // TODO: fix
     'hot'              : { mode: null, panRange: [-10000, 10000], zoomRange: [ 0.1, 20000] }, 
     'best'             : { mode: null, panRange: [-10000, 10000], zoomRange: [10,   20000] }, 
     'numChars'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000] },
@@ -110,7 +110,7 @@ Listit.ScatterPlot.prototype.initPlot = function () {
         
     };        
     
-    // Initializes plot if this is the first call
+    // Draws/creates plot in flotwrapper
     this.flotWrapper.createPlot(plotOptions);
 
     // Initialize some range (todo: depends on which variables are displayed)
@@ -175,26 +175,7 @@ Listit.ScatterPlot.prototype.toggleAxesAutoScale = function (checkbox) {
     this.flotWrapper.setAxesAutoscale(this.axesAutoscale);
 }
     
-Listit.ScatterPlot.prototype.resetScale = function (axisStr) {
 
-    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
-    if (axisStr == 'x') {
-        this.resetXScale();
-    } else {
-        this.resetYScale();
-    }
-}
-
-Listit.ScatterPlot.prototype.resetXScale = function () {
-    this.flotWrapper.setXRange(null, null);
-    this.flotWrapper.drawPlot(true);
-}
-    
-Listit.ScatterPlot.prototype.resetYScale = function () {
-    this.flotWrapper.setYRange(null, null);
-    this.flotWrapper.drawPlot(true);
-}
-    
 
 
 Listit.ScatterPlot.prototype.togglePanZoomEnabled = function (menuItem, axisStr) {
@@ -267,18 +248,21 @@ Listit.ScatterPlot.prototype.getSeries = function(discussion) {
 }
 
 
-Listit.ScatterPlot.prototype.setXAxisVariable = function (varID) {
-    this.xAxisVariable = varID;
-    this.resetXScale();
-    this.flotWrapper.setPlotTitle("x: " + varID);
-}
+Listit.ScatterPlot.prototype.resetRange = function (axisStr) {
 
+    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
+    if (axisStr == 'x') {
+        this.flotWrapper.resetXRange();
+    } else {
+        this.flotWrapper.resetYRange();
+    }
+}
 
 Listit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuItem, axisVar) {
 try{
+    Listit.logger.trace("Listit.ScatterPlot.setAxisVariable -- ");
     Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
     
-    Listit.logger.debug("Listit.ScatterPlot.setYAxisVariable -- ");
     var menuPopup = menuItem.parentNode;
     if (axisStr == 'x') {
         this.xAxisVariable = axisVar;
@@ -294,11 +278,11 @@ try{
     axis.options = this.flotWrapper.mergeOptions(varOptions, axis.options);
     
     this.setDiscussion(this.discussion);
-    this.resetScale(axisStr);
+    this.resetRange(axisStr);
     this.updatePlotTitle();
     
 } catch (ex) {
-    Listit.logger.error('Exception in Listit.ScatterPlot.setYAxisVariable;');
+    Listit.logger.error('Exception in Listit.ScatterPlot.setAxisVariable;');
     Listit.logger.error(ex);
 }
 }
