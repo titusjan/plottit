@@ -68,24 +68,33 @@ Listit.ScatterPlot.VAR_LONG_NAMES = {
 
 // Global dictionary with plot settings per variable
 Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
-    'depth'            : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     100], labelWidth: 25 }, 
-    'score'            : { mode: null, panRange: [-10000, 10000], zoomRange: [10,   20000], labelWidth: 25 }, 
-    'ups'              : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25 }, 
-    'downs'            : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25 }, 
-    'votes'            : { mode: null, panRange: [     0, 20000], zoomRange: [10,   20000], labelWidth: 25 }, 
-    'likesPerc'        : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     200], labelWidth: 25 }, // TODO: fix
-    'hot'              : { mode: null, panRange: [-10000, 10000], zoomRange: [ 0.5, 20000], labelWidth: 35 }, 
-    'best'             : { mode: null, panRange: [-10000, 10000], zoomRange: [10,   20000], labelWidth: 25 }, 
-    'numChars'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25 },
-    'numReplies'       : { mode: null, panRange: [     0,  1000], zoomRange: [ 5,    1000], labelWidth: 25 },
+    'depth'            : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     100], labelWidth: 25, tickFormatter: null }, 
+    'score'            : { mode: null, panRange: [-10000, 10000], zoomRange: [10,   20000], labelWidth: 25, tickFormatter: null }, 
+    'ups'              : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null }, 
+    'downs'            : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null }, 
+    'votes'            : { mode: null, panRange: [     0, 20000], zoomRange: [10,   20000], labelWidth: 25, tickFormatter: null }, 
+    'likesPerc'        : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     200], labelWidth: 25, tickFormatter: null }, // TODO: fix
+    'hot'              : { mode: null, panRange: [-10000, 10000], zoomRange: [ 0.5, 20000], labelWidth: 35, tickFormatter: null }, 
+    'best'             : { mode: null, panRange: [-10000, 10000], zoomRange: [10,   20000], labelWidth: 25, tickFormatter: null }, 
+    'numChars'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null },
+    'numReplies'       : { mode: null, panRange: [     0,  1000], zoomRange: [ 5,    1000], labelWidth: 25, tickFormatter: null },
+    'postedAfter'      : { 
+        mode         : null, 
+        panRange     : [0            , 10000*3600*1000], 
+        zoomRange    : [0.1*3600*1000, 10000*3600*1000], 
+        tickFormatter: function (val, axis) 
+            { return new Listit.TimePeriod(val).toStringShort2() },
+        },
     'dateCreatedValue' : { 
-        mode     : "time", 
-        panRange : [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()], 
-        zoomRange: [30000, 1000*3600*24*365.25*10] },  // 30 sec to 10 years 
+        mode         : "time", 
+        tickFormatter: null, 
+        panRange     : [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()], 
+        zoomRange    : [30000, 1000*3600*24*365.25*10] },  // 30 sec to 10 years 
     'dateCreatedLocalValue' : { 
-        mode     : "time", 
-        panRange : [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()], 
-        zoomRange: [30000, 1000*3600*24*365.25*10] },  // 30 sec to 10 years 
+        mode         : "time", 
+        tickFormatter: null, 
+        panRange     : [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()], 
+        zoomRange    : [30000, 1000*3600*24*365.25*10] },  // 30 sec to 10 years 
 }
 
 // To be called the first time the plot is drawn.

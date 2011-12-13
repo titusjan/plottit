@@ -8,6 +8,7 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 Listit.Discussion = function () { // Constructor
 
+    this._refreshDate = new Date();
 }
 
 Listit.Discussion.prototype.toString = function () {
@@ -44,17 +45,27 @@ Listit.Discussion.prototype.__defineSetter__("url", function(v) { this._url = v}
 Listit.Discussion.prototype.__defineGetter__("comments", function() { return this._comments} );
 Listit.Discussion.prototype.__defineSetter__("comments", function(v) { this._comments = v} );
 
+Listit.Discussion.prototype.__defineGetter__("refreshDate", function() { return this._refreshDate} );
+Listit.Discussion.prototype.__defineSetter__("refreshDate", function(v) { this._refreshDate = v} );
+
+
 /////////////
 // Comment //
 /////////////
 
-Listit.Comment = function () { // Constructor
+Listit.Comment = function (discussion) { // Constructor
 
+    // Comment belongs to a discussion
+    this._discussion = discussion;
 }
 
 Listit.Comment.prototype.toString = function () {
     return "<Listit.Comment, id = '" + this.id + "'>";
+
 };
+
+
+Listit.Comment.prototype.__defineGetter__("discussion", function() { return this._discussion} ); // read-only
 
 Listit.Comment.prototype.__defineGetter__("id", function() { return this._id} );
 Listit.Comment.prototype.__defineSetter__("id", function(v) { this._id = v } );
@@ -137,6 +148,11 @@ Listit.Comment.prototype.__defineGetter__("dateCreatedLocalValue", function() {
     return this._dateCreated.valueOf() - this._dateCreated.getTimezoneOffset() * 60000; 
 });
 
+Listit.Comment.prototype.__defineGetter__("postedAfter", function() { 
+    return (this._dateCreated.valueOf() - this.discussion.dateCreated.valueOf()) ; 
+});
+
+
 Listit.Comment.prototype.__defineGetter__("debug", function() { 
     return this._replies.length + 1; 
 });
@@ -209,7 +225,7 @@ Listit.redditT3NodeToDiscussion = function(redditNode) {
 }
 
 
-Listit.redditT1NodeToComment = function(redditNode, depth) {
+Listit.redditT1NodeToComment = function(redditNode, discussion, depth) {
 
     if (redditNode.kind != 't1') { // e.g. kind = 'more'
         //Listit.fbLog(redditNode);
@@ -217,27 +233,27 @@ Listit.redditT1NodeToComment = function(redditNode, depth) {
     } 
 
     var data = redditNode.data;
-    var discussion = new Listit.Comment();
-    discussion.id = data.id;
-    discussion.depth = depth;
-    discussion.author = data.author;
-    discussion.body = Listit.Encoder.htmlDecode(data.body); 
-    discussion.bodyHtml = Listit.Encoder.htmlDecode(data.body_html);
-    discussion.dateCreated = new Date(data.created_utc * 1000);
-    discussion.downs = data.downs;
-    discussion.ups = data.ups;
-    discussion.isOpen = true;  // true if a node is expanded
-    discussion.replies = []; // For convenience always make an empty replies list (TODO: optimize?)
+    var comment = new Listit.Comment(discussion);
+    comment.id = data.id;
+    comment.depth = depth;
+    comment.author = data.author;
+    comment.body = Listit.Encoder.htmlDecode(data.body); 
+    comment.bodyHtml = Listit.Encoder.htmlDecode(data.body_html);
+    comment.dateCreated = new Date(data.created_utc * 1000);
+    comment.downs = data.downs;
+    comment.ups = data.ups;
+    comment.isOpen = true;  // true if a node is expanded
+    comment.replies = []; // For convenience always make an empty replies list (TODO: optimize?)
 
     if (data.replies) {  // Recursively add children
         var children = data.replies.data.children;
         for (var i = 0; i < children.length; i++) {
-            var childNode = Listit.redditT1NodeToComment(children[i], depth + 1);
+            var childNode = Listit.redditT1NodeToComment(children[i], discussion, depth + 1);
             if (childNode) 
-                discussion.replies.push(childNode);
+                comment.replies.push(childNode);
         }
     }
-    return discussion;
+    return comment;
 };
 
 // Get comments in as list (of lists) of ListitNodes
@@ -253,11 +269,13 @@ Listit.getListitDiscussionFromPage = function(redditJsonPage) {
     var children = redditPosts.data.children; // TODO: what is data.after/before?
 
     for (var i = 0; i < children.length; i++) {
-        var listitNode = Listit.redditT1NodeToComment(children[i], 0);
+        var listitNode = Listit.redditT1NodeToComment(children[i], discussion, 0);
         if (listitNode) 
             comments.push(listitNode);
     }
     discussion.comments = comments;
+    Listit.fbLog("getListitDiscussionFromPage");
+    Listit.fbLog(discussion);
     return discussion;
 };
 

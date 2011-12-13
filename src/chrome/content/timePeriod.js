@@ -53,6 +53,22 @@ Listit.TimePeriod.prototype.pad0 = function(n) {
 }
 
 
+Listit.TimePeriod.prototype.toStringShort2 = function () {
+
+    if (this.years) 
+        return this.years + "Y:" + this.months + "M" ;
+    else if (this.months)
+        return this.months + "M:" + this.days + "D" ;
+    else if (this.days)
+        return this.days + "D:" +  this.hours + "h" ;
+    else if (this.hours)
+        return this.hours + "h:" +  this.minutes + "m" ;
+    else if (this.minutes)
+        return this.minutes + "m:" +  this.seconds + "s" ;
+    else
+        return this.seconds + "s";
+};
+
 Listit.TimePeriod.prototype.toStringMedium2 = function () {
 
     if (this.years) 

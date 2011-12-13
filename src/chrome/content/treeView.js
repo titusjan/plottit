@@ -30,7 +30,7 @@ Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
 
     this.treeBox = null;
     this.selection = null;
-    this.refreshDate = new Date();
+    this.refreshDate = new Date(); // TODO: set in discussion
     this.discussionCreated = null;  // set in setDiscussionSorted
     
 }
