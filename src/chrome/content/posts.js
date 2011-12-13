@@ -110,7 +110,6 @@ Listit.Comment.prototype.__defineGetter__("hot", function() {
 
     var s = this.score;
     var order = Listit.log10(Math.max(Math.abs(s), 1));
-    //var sign = (s>1) ? 1 : (s<1) ? -1 : 0;
     var sign = Listit.compare(this._ups, this._downs);
     var epochSeconds = this._dateCreated.valueOf() - Listit.Comment.EPOCH_START_MS;
     return order + sign * epochSeconds / 45000000;
@@ -132,6 +131,10 @@ Listit.Comment.prototype.__defineGetter__("numReplies", function() {
 
 Listit.Comment.prototype.__defineGetter__("dateCreatedValue", function() { 
     return this._dateCreated.valueOf(); 
+});
+
+Listit.Comment.prototype.__defineGetter__("dateCreatedLocalValue", function() { 
+    return this._dateCreated.valueOf() - this._dateCreated.getTimezoneOffset() * 60000; 
 });
 
 Listit.Comment.prototype.__defineGetter__("debug", function() { 

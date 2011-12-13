@@ -51,35 +51,41 @@ Listit.ScatterPlot.prototype.toString = function () {
 
 // Global dictionary with plot settings per variable
 Listit.ScatterPlot.VAR_LONG_NAMES = {
-    'depth'            : 'Depth', 
-    'score'            : 'Score', 
-    'ups'              : 'Up votes', 
-    'downs'            : 'Down votes', 
-    'votes'            : 'Votes', 
-    'likesPerc'        : 'Like', 
-    'hot'              : 'Hot', 
-    'best'             : 'Best', 
-    'numChars'         : 'Characters', 
-    'numReplies'       : 'Replies', 
-    'dateCreatedValue' : 'UTC Date and time' 
+    'depth'                 : 'Depth', 
+    'score'                 : 'Score', 
+    'ups'                   : 'Up votes', 
+    'downs'                 : 'Down votes', 
+    'votes'                 : 'Votes', 
+    'likesPerc'             : 'Like', 
+    'hot'                   : 'Hot', 
+    'best'                  : 'Best', 
+    'numChars'              : 'Characters', 
+    'numReplies'            : 'Replies', 
+    'dateCreatedLocalValue' : 'Date and time',
+    'dateCreatedValue'      : 'UTC Date and time' 
 }
 
 
 // Global dictionary with plot settings per variable
 Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
-    'depth'            : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     100] }, 
-    'score'            : { mode: null, panRange: [-10000, 10000], zoomRange: [10,   20000] }, 
-    'ups'              : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000] }, 
-    'downs'            : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000] }, 
-    'votes'            : { mode: null, panRange: [     0, 20000], zoomRange: [10,   20000] }, 
-    'likesPerc'        : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     200] }, // TODO: fix
-    'hot'              : { mode: null, panRange: [-10000, 10000], zoomRange: [ 0.1, 20000] }, 
-    'best'             : { mode: null, panRange: [-10000, 10000], zoomRange: [10,   20000] }, 
-    'numChars'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000] },
-    'numReplies'       : { mode: null, panRange: [     0,  1000], zoomRange: [ 5,    1000] },
-    'dateCreatedValue' : { mode     : "time", 
-                           panRange : [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()], 
-                           zoomRange: [30000, 1000*3600*24*365.25*10] },  // 30 sec to 10 years 
+    'depth'            : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     100], labelWidth: 25 }, 
+    'score'            : { mode: null, panRange: [-10000, 10000], zoomRange: [10,   20000], labelWidth: 25 }, 
+    'ups'              : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25 }, 
+    'downs'            : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25 }, 
+    'votes'            : { mode: null, panRange: [     0, 20000], zoomRange: [10,   20000], labelWidth: 25 }, 
+    'likesPerc'        : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     200], labelWidth: 25 }, // TODO: fix
+    'hot'              : { mode: null, panRange: [-10000, 10000], zoomRange: [ 0.5, 20000], labelWidth: 35 }, 
+    'best'             : { mode: null, panRange: [-10000, 10000], zoomRange: [10,   20000], labelWidth: 25 }, 
+    'numChars'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25 },
+    'numReplies'       : { mode: null, panRange: [     0,  1000], zoomRange: [ 5,    1000], labelWidth: 25 },
+    'dateCreatedValue' : { 
+        mode     : "time", 
+        panRange : [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()], 
+        zoomRange: [30000, 1000*3600*24*365.25*10] },  // 30 sec to 10 years 
+    'dateCreatedLocalValue' : { 
+        mode     : "time", 
+        panRange : [new Date('2005-01-01').valueOf(), new Date('2015-01-01').valueOf()], 
+        zoomRange: [30000, 1000*3600*24*365.25*10] },  // 30 sec to 10 years 
 }
 
 // To be called the first time the plot is drawn.

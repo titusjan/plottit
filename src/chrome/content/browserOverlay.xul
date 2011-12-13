@@ -401,7 +401,14 @@
                 persist="checked"
                 oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'numReplies')"/>
   
- 
+              <menuitem 
+                id="listit-scatter-x-axis-date-time"
+                label="Date &amp; Time"
+                type="radio"
+                name="xvar"
+                persist="checked"
+                oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'dateCreatedLocalValue')"/>
+
               <menuitem 
                 id="listit-scatter-x-axis-utc-date-time"
                 label="UTC Date &amp; Time"
@@ -409,6 +416,7 @@
                 name="xvar"
                 persist="checked"
                 oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'dateCreatedValue')"/>
+            
             
               <menuseparator/>
               <menuitem 
