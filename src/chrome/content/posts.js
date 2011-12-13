@@ -152,6 +152,10 @@ Listit.Comment.prototype.__defineGetter__("postedAfter", function() {
     return (this._dateCreated.valueOf() - this.discussion.dateCreated.valueOf()) ; 
 });
 
+Listit.Comment.prototype.__defineGetter__("age", function() { 
+    return (this.discussion.refreshDate.valueOf() - this._dateCreated.valueOf()) ; 
+});
+
 
 Listit.Comment.prototype.__defineGetter__("debug", function() { 
     return this._replies.length + 1; 

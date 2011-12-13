@@ -30,9 +30,6 @@ Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
 
     this.treeBox = null;
     this.selection = null;
-    this.refreshDate = new Date(); // TODO: set in discussion
-    this.discussionCreated = null;  // set in setDiscussionSorted
-    
 }
 
 
@@ -53,7 +50,6 @@ Listit.TreeView.prototype.setDiscussionSorted = function(columnID, sortDirection
         comments = this.allComments;
     } else {
         comments = discussion.comments;
-        this.discussionCreated = discussion.dateCreated;
     }
     
     Listit.assert(comments instanceof Array, 'addComments: listitComments should be an Array');
@@ -198,12 +194,10 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
         return Listit.swapArgs(fn);
     }
 }
-/**/
+
 ////
 // Methods that are part of the nsITreeView interface
 ////
-
-
 
 
 Listit.TreeView.prototype.__defineGetter__("rowCount", function() {
@@ -235,14 +229,11 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
         case 'treeLocalDate' : 
             return Listit.dateFormat(rowItem.dateCreated, this.localDateFormat, false);
         case 'treeAge' : 
-            var ageMilliSeconds = this.refreshDate.valueOf() - rowItem.dateCreated.valueOf();
-            return new Listit.TimePeriod(ageMilliSeconds).toString();
+            return new Listit.TimePeriod(rowItem.age).toString();
         case 'treePostedAfter' : 
-            var afterMilliSeconds = rowItem.dateCreated.valueOf() - this.discussionCreated.valueOf();
-            return new Listit.TimePeriod(afterMilliSeconds).toString();
-        //case 'treeDebug'     : return rowItem.debug;
-        //case 'treeDebug'     : return Listit.dateFormat(this.refreshDate, this.utcDateFormat, true);
-        case 'treeDebug'     : return Listit.dateFormat(this.discussionCreated, this.utcDateFormat, true);
+            return new Listit.TimePeriod(rowItem.postedAfter).toString();
+            
+        case 'treeDebug'     : return rowItem.debug;
         //case 'treeDebug'    : return column.width;
         default : return "** Unknown id: '" + column.id + "' **";
     }

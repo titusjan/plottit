@@ -62,7 +62,8 @@ Listit.ScatterPlot.VAR_LONG_NAMES = {
     'numChars'              : 'Characters', 
     'numReplies'            : 'Replies', 
     'dateCreatedLocalValue' : 'Date and time',
-    'dateCreatedValue'      : 'UTC Date and time' 
+    'dateCreatedValue'      : 'UTC Date and time',
+    'postedAfter'           : 'Posted after',
 }
 
 
