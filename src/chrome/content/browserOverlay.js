@@ -343,13 +343,10 @@ Listit.onPageLoad = function(event) {
     if ( isRedditPage && !isJsonPage) {
         // A reddit html page, the json will be load with AJAX
         Listit.logger.debug("Listit.onPageLoad (reddit discussion): URL: " + pageURL);
+
         // Append listit css style to page 
         var $ = doc.defaultView.wrappedJSObject.jQuery;
         var styleElem = $(Listit.SELECTED_ROW_STYLE);
-
-        Listit.fbLog("Listit.onPageLoad (reddit page): URL: " + pageURL);
-        Listit.fbLog(styleElem);
-        Listit.logger.debug("Head length: " + $('head').length);
         $('head').append(styleElem);
         
         // Make AJAX request for corresponding JSON page.
@@ -476,13 +473,16 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             Listit.setDetailsFrameHtml('<i>The current page is not a reddit discussion</i>');
             Listit.scatterPlot.display(false);
             curState.removeAllComments();
+            Listit.setPannelsVisible(false);
             break;
         case Listit.PAGE_LOADING:
+            Listit.setPannelsVisible(true);
             Listit.setDetailsFrameHtml('<i>Loading comments, please wait</i>');
             Listit.scatterPlot.display(false);
             curState.removeAllComments();
             break;
         case Listit.PAGE_READY:
+            Listit.setPannelsVisible(true);
             var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
             Listit.setDetailsFrameHtml('');
             Listit.scatterPlot.display(true);
@@ -505,6 +505,10 @@ Listit.updateAllViews = function(state, eventBrowserID) {
     } // switch
 }
 
+Listit.setPannelsVisible = function (visible) {
+    var pannels = document.getElementById('pannelContent');
+    pannels.hidden = !visible;
+}
 
 Listit.ensureCurrentRowVisible = function () {
     Listit.logger.trace("Listit.ensureCurrentRowVisible -- ");

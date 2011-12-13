@@ -103,7 +103,7 @@ Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
 // and the flotWrapper.plot may therefore be undefined.
 Listit.ScatterPlot.prototype._initPlot = function () {
         
-    Listit.logger.debug("Listit.scatterPlot.initPlot -- ");        
+    Listit.logger.trace("Listit.scatterPlot.initPlot -- ");        
     
     var initialPlotOptions = { 
         selection : { mode: "xy" },
@@ -138,7 +138,6 @@ Listit.ScatterPlot.prototype._initPlot = function () {
     this.flotWrapper.plot.resize();
     this.flotWrapper.drawPlot(true);
     this._updatePlotTitle();
-    this.flotWrapper.logRange();
 }
 
 
@@ -178,7 +177,7 @@ Listit.ScatterPlot.prototype._getSeries = function(discussion) {
 
 
 Listit.ScatterPlot.prototype.setDiscussion = function (discussion) {
-    Listit.logger.debug("Listit.ScatterPlot.setDiscussion -- ");
+    Listit.logger.trace("Listit.ScatterPlot.setDiscussion -- ");
 
     var isFirstTime = (this.flotWrapper.plot === null);
     if (isFirstTime) {
