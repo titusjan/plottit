@@ -42,7 +42,6 @@ Listit.debug = function () {
 ///////////////////////////////////
 
 
-
 // Initializes listit. Is called when the XUL window has loaded
 Listit.onLoad = function() {
 
@@ -53,6 +52,15 @@ try{
 
     Listit.logger.warn(' ---------------- Listit loaded ----------------');
     Listit.logger.trace('Listit.onLoad -- begin');
+
+    // TODO: necessary?
+    //Application = Components.classes["@mozilla.org/fuel/application;1"].getService(Components.interfaces.fuelIApplication);
+    
+    // Test if the extension is executed for the first time.
+    if (Application.extensions)  
+        Listit.onFirstRun(Application.extensions);     // Firefox 3
+    else  
+        Application.getExtensions(Listit.onFirstRun);  // Firefox >= 4
 
     // Initialize state object
     Listit.state = new Listit.State(
@@ -95,11 +103,23 @@ try{
 };
 
 
-
+Listit.onFirstRun = function (extensions) {
+    let extension = extensions.get('helloworld@xulschool.com');  
+    if (extension.firstRun) {  
+        Listit.logger.info("Listit runs for the first time");
+        Listit.installToolbarButtonAtEnd('nav-bar', 'listit-toggle-active-button');
+    } else {
+        Listit.logger.info("Listit runs for the nth time");
+        Listit.installToolbarButtonAtEnd('nav-bar', 'listit-toggle-active-button'); // TODO: remove
+    }
+}  
 
 Listit.onUnload = function() {
     Listit.logger.debug("Listit.onUnload -- "); // TODO: unload event listeners
 }
+
+
+
 
 Listit.SELECTED_ROW_STYLE = "<style type='text/css'>"
     + "div.listit-selected {background-color:#EFF7FF; outline:1px dashed #5F99CF}"
@@ -373,7 +393,7 @@ Listit.onPageLoad = function(event) {
         return;
         
     } else if ( isJsonPage && (isRedditPage || isLocalPage)) {
-        // A JSON page, either reddit or local; process directly
+        // A JSON page, either from reddit.com or local; process directly
         Listit.logger.debug("Listit.onPageLoad (.JSON): URL: " + pageURL);
 
         var rootDoc = Listit.getRootHtmlDocument(doc);
@@ -520,6 +540,11 @@ Listit.ensureCurrentRowVisible = function () {
         Listit.getTreeBoxObject('scoreTree').ensureRowIsVisible(selectedIndex);
     }
 }
+
+Listit.toggleListitActive = function () {
+    Listit.logger.debug("Listit.toggleListitActive -- ");
+}
+
 
 /*
 From: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow

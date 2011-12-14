@@ -4,3 +4,4 @@ locale    xulschoolhello  en-US       jar:chrome/xulschoolhello.jar!/locale/en-U
 
 overlay chrome://browser/content/browser.xul  chrome://xulschoolhello/content/browserOverlay.xul
 resource xulschoolhello modules/
+style chrome://global/content/customizeToolbar.xul chrome://xulschoolhello/skin/toolbar.css

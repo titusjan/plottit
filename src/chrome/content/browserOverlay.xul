@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
-<?xml-stylesheet type="text/css"
-  href="chrome://xulschoolhello/skin/browserOverlay.css" ?>
+<?xml-stylesheet type="text/css" href="chrome://xulschoolhello/skin/browserOverlay.css" ?>
+<?xml-stylesheet type="text/css" href="chrome://xulschoolhello/skin/toolbar.css" ?>
 
 <!DOCTYPE overlay SYSTEM
   "chrome://xulschoolhello/locale/browserOverlay.dtd">
@@ -26,8 +26,17 @@
       src="chrome://xulschoolhello/locale/browserOverlay.properties" />
   </stringbundleset>
 
+  <toolbarpalette id="BrowserToolbarPalette">
+    <toolbarbutton id="listit-toggle-active-button"
+      class="toolbarbutton-1 chromeclass-toolbar-additional" 
+      label="Listit"
+      tooltiptext="Enable/Disable Listit"
+      command="listit-command-toggle-listit-active"/>
+  </toolbarpalette>
+  
   <commandset> <!-- For some reason setting an id to the command set results in no reactions -->
     <command id="listit-command-debug" oncommand="Listit.debug();"/>
+    <command id="listit-command-toggle-listit-active" oncommand="Listit.toggleListitActive();"/>
     <!--<command id="listit-command-set-date-format" oncommand="Listit.setTreeColumnDateFormat(event);"/>-->
   </commandset>
 

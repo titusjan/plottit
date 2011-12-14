@@ -193,6 +193,46 @@ Listit.compareCaseInsensitiveStrings = function(a, b) {
     return Listit.compareStrings(a.toLowerCase(), b.toLowerCase());
 }
 
+/////////
+// XUL //
+/////////
+
+Listit.installToolbarButton = function(toolbarId, id, afterId, beforePermanent) 
+{  
+    // from: https://developer.mozilla.org/en/Code_snippets/Toolbar#Adding_button_by_default
+    if (!document.getElementById(id)) {  
+        var toolbar = document.getElementById(toolbarId);  
+  
+        var before = toolbar.firstChild;  
+        if (afterId) {  
+            let elem = document.getElementById(afterId);  
+            if (elem && elem.parentNode == toolbar)  
+                before = elem.nextElementSibling;  
+        }  
+  
+        toolbar.insertItem(id, before);  
+        toolbar.setAttribute("currentset", toolbar.currentSet);  
+        document.persist(toolbar.id, "currentset");  
+  
+        if (toolbarId == "addon-bar")  
+            toolbar.collapsed = false;  
+    }  
+} 
+
+Listit.installToolbarButtonAtEnd = function(toolbarId, id) 
+{  
+    if (!document.getElementById(id)) {  
+        var toolbar = document.getElementById(toolbarId);  
+  
+        toolbar.insertItem(id, null, null, false);  // Add to the end of the toolbar
+        toolbar.setAttribute("currentset", toolbar.currentSet);  
+        document.persist(toolbar.id, "currentset");  
+  
+        if (toolbarId == "addon-bar")  
+            toolbar.collapsed = false;  
+    }  
+}  
+
 /////////////
 // Logging //
 /////////////
