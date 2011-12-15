@@ -104,7 +104,7 @@ try{
 
 
 Listit.onFirstRun = function (extensions) {
-    let extension = extensions.get('helloworld@xulschool.com');  
+    let extension = extensions.get('listit@titusjan.com');  
     if (extension.firstRun) {  
         Listit.logger.info("Listit runs for the first time");
         Listit.installToolbarButtonAtEnd('nav-bar', 'listit-toggle-active-button');

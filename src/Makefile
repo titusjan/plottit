@@ -2,7 +2,7 @@
 extension_name := listit
 
 # The UUID of the extension.
-extension_uuid := helloworld@xulschool.com
+extension_uuid := listit@titusjan.com
 
 # The name of the profile dir where the extension can be installed.
 //profile_dir := xulschool-dev

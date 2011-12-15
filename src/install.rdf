@@ -4,7 +4,7 @@
   xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-    <em:id>helloworld@xulschool.com</em:id>
+    <em:id>listit@titusjan.com</em:id>
     <em:name>Listit</em:name>
     <em:description>Displays a Reddit discussion in a table and allows it to be sorted as a list</em:description>
     <em:version>0.1</em:version>
