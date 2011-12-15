@@ -370,7 +370,7 @@ Listit.onPageLoad = function(event) {
     var isLocalPage  = Listit.RE_ISLOCAL.test(host) 
 
     if ( isRedditPage && !isJsonPage) {
-        // A reddit html page, the json will be load with AJAX
+        // A reddit html page, the json will be loaded with AJAX
         Listit.logger.debug("Listit.onPageLoad (reddit discussion): URL: " + pageURL);
 
         // Append listit css style to page 
@@ -431,9 +431,9 @@ Listit.onPageLoad = function(event) {
         return;
         
     } else {
-        // All other cases; page to be ignored by Listit
+        // All other cases; page to be ignored by Listit 
         Listit.logger.debug("Page ignored by Listit (ignored), URL: " + pageURL);    
-        Listit.updateAllViews(Listit.state, browserID);
+        Listit.updateAllViews(Listit.state, browserID); // Will hide pannels
         return;
     }
     
@@ -488,7 +488,12 @@ Listit.setDetailsFrameHtml = function(html) {
 
 // Updates all views using the application state
 Listit.updateAllViews = function(state, eventBrowserID) {
-    Listit.logger.trace("Listit.updateAllViews -- ");
+    Listit.logger.debug("Listit.updateAllViews -- ");
+    
+    if ( !Listit.state.listitEnabled) {
+        Listit.setPannelsVisible(false);
+        return;
+    }
 
     // Only update if the events applies to the current browser
     if (eventBrowserID != Listit.state.getCurrentBrowserID()) {
@@ -499,10 +504,13 @@ Listit.updateAllViews = function(state, eventBrowserID) {
     var curState = Listit.state.getCurrentBrowserState();
     switch (curState.pageStatus) {
         case Listit.PAGE_NOT_LISTIT:
-            Listit.setDetailsFrameHtml('<i>The current page is not a reddit discussion</i>');
-            Listit.scatterPlot.display(false);
-            curState.removeAllComments();
-            Listit.setPannelsVisible(false);
+            if (true) {
+                Listit.setPannelsVisible(false);
+            } else { // Debugging
+                Listit.setDetailsFrameHtml('<i>The current page is not a reddit discussion</i>');
+                Listit.scatterPlot.display(false);
+                curState.removeAllComments();
+            }
             break;
         case Listit.PAGE_LOADING:
             Listit.setPannelsVisible(true);
@@ -551,7 +559,15 @@ Listit.ensureCurrentRowVisible = function () {
 }
 
 Listit.toggleListitActive = function () {
+try{
+    Listit.logger.trace("Listit.toggleListitActive -- ");
     this.setListitActive( ! Listit.state.listitEnabled);
+    
+    Listit.updateAllViews(Listit.state, Listit.state.getCurrentBrowserID());
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.toggleListitActive;');
+    Listit.logger.error(ex);
+}        
 }
 
 Listit.setListitActive = function (listitEnabled) {

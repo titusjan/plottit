@@ -204,7 +204,7 @@ Listit.FlotWrapper.prototype.resetRange = function (axisStr) {
 
 // TODO: refactor to updateAxesScale? (make autoscale flotWrapper member)
 Listit.FlotWrapper.prototype.setAxesAutoscale = function (autoScale) {
-    Listit.logger.debug("FlotWrapper.setAxesAutoscale: " + autoScale.toString());
+    Listit.logger.trace("FlotWrapper.setAxesAutoscale: " + autoScale.toString());
 
     if (autoScale) {
         this.setXRange(null, null);

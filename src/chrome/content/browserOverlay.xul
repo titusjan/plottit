@@ -46,7 +46,7 @@
     First reddit comment: Monday 2005-12-12 05:46:44 (UTC)
 -->
   <menupopup id="menu_ToolsPopup">
-    <menu id="xs-hw-hello-menu" label="&listit.hello.label;"
+    <menu id="xs-hw-hello-menu" label="Listit"
         accesskey="&listit.helloMenu.accesskey;"
         insertafter="javascriptConsole,devToolsSeparator">
       <menupopup>
