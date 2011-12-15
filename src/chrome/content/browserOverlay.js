@@ -543,6 +543,9 @@ Listit.ensureCurrentRowVisible = function () {
 
 Listit.toggleListitActive = function () {
     Listit.logger.debug("Listit.toggleListitActive -- ");
+    
+    toolbarButton = document.getElementById('listit-toggle-active-button');
+    
 }
 
 

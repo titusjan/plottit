@@ -1,7 +1,3 @@
-# Make sure to: export OSTYPE
-
-# before running make
-
 # The name of the extension.
 extension_name := xulschoolhello
 
@@ -9,7 +5,7 @@ extension_name := xulschoolhello
 extension_uuid := helloworld@xulschool.com
 
 # The name of the profile dir where the extension can be installed.
-# profile_dir := xulschool-dev
+//profile_dir := xulschool-dev
 profile_dir := py4p8246.Development
 
 # The zip application to be used.
@@ -19,7 +15,7 @@ ZIP := zip
 bin_dir := ../bin
 
 # The target XPI file.
-xpi_file := $(bin_dir)/$(extension_name)2.xpi
+xpi_file := $(bin_dir)/$(extension_name)5.xpi
 
 # The type of operating system this make command is running on.
 os_type := $(patsubst darwin%,darwin,$(shell echo $(OSTYPE)))
@@ -40,7 +36,6 @@ endif
 
 # The temporary location where the extension tree will be copied and built.
 build_dir := $(bin_dir)/build
-modules_dir := $(build_dir)/modules
 
 # The install.rdf file.
 install_rdf := install.rdf
@@ -48,9 +43,14 @@ install_rdf := install.rdf
 # The chrome.manifest file.
 chrome_manifest := chrome.manifest
 
-# The modules directory
-modules := log4moz.js
-#modules := $(wildcard modules/*.js) \
+# The modules (JSM) dir.
+modules_dir := modules
+
+# The defaults dir.
+defaults_dir := defaults
+
+# The preferences dir.
+preferences_dir := $(defaults_dir)/preferences
 
 # This builds the extension XPI file.
 .PHONY: all
@@ -69,40 +69,53 @@ clean:
 # The includes are added after the targets because we want this file to contain
 # the default (first) target.
 include chrome/Makefile.in
+include modules/Makefile.in
 
 # The sources for the XPI file. Uses variables defined in the included
 # Makefiles.
 xpi_built := $(build_dir)/$(install_rdf) \
              $(build_dir)/$(chrome_manifest) \
-             $(modules_dir)/$(modules) \
-             $(chrome_jar_file)
+             $(chrome_jar_file) \
+             $(addprefix $(build_dir)/,$(modules_sources)) \
+             $(build_dir)/$(preferences_dir)/$(extension_name).js
 
 xpi_built_no_dir := $(subst $(build_dir)/,,$(xpi_built))
 
 # This builds everything except for the actual XPI, and then it copies it to the
 # specified profile directory, allowing a quick update that requires no install.
 .PHONY: install
-install: $(build_dir) $(modules_dir) $(xpi_built)
+install: $(build_dir) $(xpi_built)
 	@echo "Installing in profile folder: $(profile_location)"
 	@cp -Rf $(build_dir)/* $(profile_location)
 	@echo "Installing in profile folder. Done!"
 	@echo
 
-$(xpi_file): $(build_dir) $(modules_dir) $(xpi_built)
+$(xpi_file): $(build_dir) $(xpi_built)
 	@echo "Creating XPI file."
 	@cd $(build_dir); $(ZIP) ../$(xpi_file) $(xpi_built_no_dir)
 	@echo "Creating XPI file. Done!"
 
-#$(modules_dir)/$(modules):
-#	@echo "modules_dir source '" $% "', target '" $@ "'"
-#	@cp -f $< $@
+$(build_dir)/$(modules_dir)/%: $(modules_dir)/% $(build_dir)/$(modules_dir)
+	@cp -f $< $@
 
-$(modules_dir): $(build_dir)
-	@if [ ! -x $(modules_dir) ]; \
+$(build_dir)/$(preferences_dir)/%: \
+  $(preferences_dir)/% $(build_dir)/$(preferences_dir)
+	@cp -f $< $@
+
+$(build_dir)/$(defaults_dir)/%: $(defaults_dir)/% $(build_dir)/$(defaults_dir)
+	@cp -f $< $@
+
+$(build_dir)/$(preferences_dir): $(build_dir)/$(defaults_dir)
+	@if [ ! -x $(build_dir)/$(preferences_dir) ]; \
   then \
-    mkdir $(modules_dir); \
+    mkdir $(build_dir)/$(preferences_dir); \
   fi
 
+$(build_dir)/$(defaults_dir):
+	@if [ ! -x $(build_dir)/$(defaults_dir) ]; \
+  then \
+    mkdir $(build_dir)/$(defaults_dir); \
+  fi
 
 $(build_dir)/%: %
 	@cp -f $< $@
@@ -113,3 +126,8 @@ $(build_dir):
     mkdir $(build_dir); \
   fi
 
+$(build_dir)/$(modules_dir):
+	@if [ ! -x $(build_dir)/$(modules_dir) ]; \
+  then \
+    mkdir $(build_dir)/$(modules_dir); \
+  fi
