@@ -9,8 +9,8 @@ if ('undefined' == typeof(XULSchoolChrome)) {
 Listit.debug = function () {
 
     
-    let stringBundle = document.getElementById('xulschoolhello-string-bundle');
-    let message = stringBundle.getString('xulschoolhello.greeting.label');
+    let stringBundle = document.getElementById('listit-string-bundle');
+    let message = stringBundle.getString('listit.greeting.label');
 
     try {
         Listit.logger.debug('Listit.debug');
@@ -104,7 +104,7 @@ try{
 
 
 Listit.onFirstRun = function (extensions) {
-    let extension = extensions.get('helloworld@xulschool.com');  
+    let extension = extensions.get('listit@titusjan.com');  
     if (extension.firstRun) {  
         Listit.logger.info("Listit runs for the first time");
         Listit.installToolbarButtonAtEnd('nav-bar', 'listit-toggle-active-button');

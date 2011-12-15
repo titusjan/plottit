@@ -1,8 +1,13 @@
+# You must make the listit@titusjan.com directory manually before installing
+# Also in bash: export OSTYPE
+# See: https://developer.mozilla.org/en/XUL_School/Setting_Up_a_Development_Environment
+
+
 # The name of the extension.
-extension_name := xulschoolhello
+extension_name := listit
 
 # The UUID of the extension.
-extension_uuid := helloworld@xulschool.com
+extension_uuid := listit@titusjan.com
 
 # The name of the profile dir where the extension can be installed.
 //profile_dir := xulschool-dev
@@ -15,7 +20,7 @@ ZIP := zip
 bin_dir := ../bin
 
 # The target XPI file.
-xpi_file := $(bin_dir)/$(extension_name)5.xpi
+xpi_file := $(bin_dir)/$(extension_name).xpi
 
 # The type of operating system this make command is running on.
 os_type := $(patsubst darwin%,darwin,$(shell echo $(OSTYPE)))
@@ -83,6 +88,7 @@ xpi_built_no_dir := $(subst $(build_dir)/,,$(xpi_built))
 
 # This builds everything except for the actual XPI, and then it copies it to the
 # specified profile directory, allowing a quick update that requires no install.
+# You must make the listit@titusjan.com directory manually before installing.
 .PHONY: install
 install: $(build_dir) $(xpi_built)
 	@echo "Installing in profile folder: $(profile_location)"
