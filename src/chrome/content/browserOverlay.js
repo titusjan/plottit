@@ -15,11 +15,14 @@ Listit.debug = function () {
     try {
         Listit.logger.debug('Listit.debug');
         Listit.fbLog('Listit.debug');
+        Listit.fbLog(Listit.state.summaryString());
+        
+        Listit.fbLog(Application.prefs.get("extensions.listit.listitEnabled").value);
+        
         //var xAxisVariable = document.getElementById('listit-scatter-x-axis-menupopup');
         //Listit.fbLog(xAxisVariable); 
 
 
-        Listit.fbLog(Listit);
         
         /*
         Listit.logger.info(Listit.state.summaryString() );
@@ -42,6 +45,7 @@ Listit.debug = function () {
 ///////////////////////////////////
 
 
+
 // Initializes listit. Is called when the XUL window has loaded
 Listit.onLoad = function() {
 
@@ -62,10 +66,15 @@ try{
     else  
         Application.getExtensions(Listit.onFirstRun);  // Firefox >= 4
 
+    
     // Initialize state object
     Listit.state = new Listit.State(
+        Application.prefs.get("extensions.listit.listitEnabled").value, 
         document.getElementById('treeLocalDate').getAttribute('format'), 
         document.getElementById('treeUtcDate').getAttribute('format') );
+
+    // Sets button tooltip text
+    Listit.setListitActive(Application.prefs.get("extensions.listit.listitEnabled").value);
         
     // Add existing tabs to the state because there won't be a tabOpen
     // event raised for them
@@ -542,10 +551,17 @@ Listit.ensureCurrentRowVisible = function () {
 }
 
 Listit.toggleListitActive = function () {
-    Listit.logger.debug("Listit.toggleListitActive -- ");
+    this.setListitActive( ! Listit.state.listitEnabled);
+}
+
+Listit.setListitActive = function (listitEnabled) {
+    Listit.logger.trace("Listit.setListitActive: " + listitEnabled);
+
+    Listit.state.listitEnabled = listitEnabled;
+    Application.prefs.get("extensions.listit.listitEnabled").value = Listit.state.listitEnabled; 
     
-    toolbarButton = document.getElementById('listit-toggle-active-button');
-    
+    var toolbarButton = document.getElementById('listit-toggle-active-button');
+    toolbarButton.setAttribute('tooltiptext', listitEnabled ? 'Disable Listit': 'Enable Listit');
 }
 
 

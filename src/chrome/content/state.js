@@ -48,8 +48,9 @@ Listit.BrowserState.prototype.setStatus = function (status) {
 ///////////
 
 // The application state of Listit (there will be one per browser window).
-Listit.State = function (localDateFormat, utcDateFormat) { // Constructor
+Listit.State = function (listitEnabled, localDateFormat, utcDateFormat) { // Constructor
 
+    this.listitEnabled = listitEnabled;
     this.currentBrowserID = null;
     this.nextBrowserID = 0;
     this.browserStates = {}
@@ -65,8 +66,9 @@ Listit.State.prototype.toString = function () {
 
 
 Listit.State.prototype.summaryString = function () {
-    return [ 'Tab ' + k + ': ' + (v.treeView.countComments()) for 
-        each ([k,v] in Iterator(this.browserStates))];
+    return 'Enabled: ' + this.listitEnabled + ', ' + 
+        [ 'Tab ' + k + ': ' + (v.treeView.countComments()) for 
+            each ([k,v] in Iterator(this.browserStates))];
 };
 
 
