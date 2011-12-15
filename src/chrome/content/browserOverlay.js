@@ -541,13 +541,15 @@ Listit.ensureCurrentRowVisible = function () {
     }
 }
 
+/*
 Listit.toggleListitActive = function () {
     Listit.logger.debug("Listit.toggleListitActive -- ");
+    Listit.logger.debugApplication.prefs.get("extensions.listit.listitEnabled");
     
     toolbarButton = document.getElementById('listit-toggle-active-button');
-    
+    Listit.fbLog(toolbarButton);
 }
-
+*/
 
 /*
 From: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow
