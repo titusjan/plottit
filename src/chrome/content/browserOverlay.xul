@@ -1,29 +1,29 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
-<?xml-stylesheet type="text/css" href="chrome://listit/skin/browserOverlay.css" ?>
-<?xml-stylesheet type="text/css" href="chrome://listit/skin/toolbar.css" ?>
+<?xml-stylesheet type="text/css" href="chrome://xulschoolhello/skin/browserOverlay.css" ?>
+<?xml-stylesheet type="text/css" href="chrome://xulschoolhello/skin/toolbar.css" ?>
 
 <!DOCTYPE overlay SYSTEM
-  "chrome://listit/locale/browserOverlay.dtd">
+  "chrome://xulschoolhello/locale/browserOverlay.dtd">
 
-<overlay id="listit-browser-overlay"
+<overlay id="xulschoolhello-browser-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script type="application/x-javascript" src="chrome://listit/content/browserOverlay.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/dateFormat.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/encoder.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/posts.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/scatterPlot.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/state.js" />
-  <!--<script type="application/x-javascript" src="chrome://listit/content/testData.js" />-->
-  <script type="application/x-javascript" src="chrome://listit/content/treeView.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/timePeriod.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/utils.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/browserOverlay.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/dateFormat.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/encoder.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/posts.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/scatterPlot.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/state.js" />
+  <!--<script type="application/x-javascript" src="chrome://xulschoolhello/content/testData.js" />-->
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/treeView.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/timePeriod.js" />
+  <script type="application/x-javascript" src="chrome://xulschoolhello/content/utils.js" />
     
   <stringbundleset id="stringbundleset">
-    <stringbundle id="listit-string-bundle"
-      src="chrome://listit/locale/browserOverlay.properties" />
+    <stringbundle id="xulschoolhello-string-bundle"
+      src="chrome://xulschoolhello/locale/browserOverlay.properties" />
   </stringbundleset>
 
   <toolbarpalette id="BrowserToolbarPalette">
@@ -46,13 +46,13 @@
     First reddit comment: Monday 2005-12-12 05:46:44 (UTC)
 -->
   <menupopup id="menu_ToolsPopup">
-    <menu id="xs-hw-hello-menu" label="&listit.hello.label;"
-        accesskey="&listit.helloMenu.accesskey;"
+    <menu id="xs-hw-hello-menu" label="&xulschoolhello.hello.label;"
+        accesskey="&xulschoolhello.helloMenu.accesskey;"
         insertafter="javascriptConsole,devToolsSeparator">
       <menupopup>
-        <menuitem id="listit-hello-menu-item"
-          label="&listit.hello.label;"
-          accesskey="&listit.helloItem.accesskey;"
+        <menuitem id="xulschoolhello-hello-menu-item"
+          label="&xulschoolhello.hello.label;"
+          accesskey="&xulschoolhello.helloItem.accesskey;"
           command="listit-command-debug"/>
       </menupopup>
     </menu>
@@ -316,7 +316,7 @@
         width="200" 
         minwidth="0"        
         persist="width" 
-        src="chrome://listit/content/detailsframe.html"/>
+        src="chrome://xulschoolhello/content/detailsframe.html"/>
 
      
       <splitter id="listitPannelSplitter2" collapse="after"></splitter>
@@ -327,7 +327,7 @@
           flex="1"
           minwidth="50"
           persist="width" 
-          src="chrome://listit/content/plotframe.html"/>
+          src="chrome://xulschoolhello/content/plotframe.html"/>
 
         <!-- Scatter plot X-Axis -->
         <hbox align="baseline">

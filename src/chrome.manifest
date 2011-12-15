@@ -1,7 +1,7 @@
-content   listit              jar:chrome/listit.jar!/content/
-skin      listit  classic/1.0 jar:chrome/listit.jar!/skin/
-locale    listit  en-US       jar:chrome/listit.jar!/locale/en-US/
+content   xulschoolhello              jar:chrome/xulschoolhello.jar!/content/
+skin      xulschoolhello  classic/1.0 jar:chrome/xulschoolhello.jar!/skin/
+locale    xulschoolhello  en-US       jar:chrome/xulschoolhello.jar!/locale/en-US/
 
-overlay chrome://browser/content/browser.xul  chrome://listit/content/browserOverlay.xul
-resource listit modules/
-style chrome://global/content/customizeToolbar.xul chrome://listit/skin/toolbar.css
+overlay chrome://browser/content/browser.xul  chrome://xulschoolhello/content/browserOverlay.xul
+resource xulschoolhello modules/
+style chrome://global/content/customizeToolbar.xul chrome://xulschoolhello/skin/toolbar.css

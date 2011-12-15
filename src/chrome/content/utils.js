@@ -65,7 +65,7 @@ Listit.booleanToString = function(boolStr) {
 Listit.loadjQuery = function(wnd) {
     var loader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
         .getService(Components.interfaces.mozIJSSubScriptLoader);
-    loader.loadSubScript("chrome://listit/content/jquery-1.6.2.min.js", wnd);
+    loader.loadSubScript("chrome://xulschoolhello/content/jquery-1.6.2.min.js", wnd);
     var jQuery = wnd.wrappedJSObject.jQuery.noConflict(true);
     // Load jQuery plugins here...
     //loader.loadSubScript("chrome://clhelper/content/jquery/jquery.hoverIntent.js", jQuery);
@@ -259,7 +259,7 @@ Listit.initializeLoggers = function (bXul, level) {
         if (level == null) level = 'All';
         
         if ('undefined' == typeof(Log4Moz)) {
-            Components.utils.import("resource://listit/log4moz.js");
+            Components.utils.import("resource://xulschoolhello/log4moz.js");
             Listit._configureRootLogger();
             Listit.logger = Log4Moz.repository.getLogger('Listit');
             Listit.logger.level = Log4Moz.Level[level];

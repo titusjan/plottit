@@ -9,8 +9,8 @@ if ('undefined' == typeof(XULSchoolChrome)) {
 Listit.debug = function () {
 
     
-    let stringBundle = document.getElementById('listit-string-bundle');
-    let message = stringBundle.getString('listit.greeting.label');
+    let stringBundle = document.getElementById('xulschoolhello-string-bundle');
+    let message = stringBundle.getString('xulschoolhello.greeting.label');
 
     try {
         Listit.logger.debug('Listit.debug');
@@ -104,7 +104,7 @@ try{
 
 
 Listit.onFirstRun = function (extensions) {
-    let extension = extensions.get('listit@titusjan.com');  
+    let extension = extensions.get('helloworld@xulschool.com');  
     if (extension.firstRun) {  
         Listit.logger.info("Listit runs for the first time");
         Listit.installToolbarButtonAtEnd('nav-bar', 'listit-toggle-active-button');
@@ -541,15 +541,13 @@ Listit.ensureCurrentRowVisible = function () {
     }
 }
 
-/*
 Listit.toggleListitActive = function () {
     Listit.logger.debug("Listit.toggleListitActive -- ");
-    Listit.logger.debugApplication.prefs.get("extensions.listit.listitEnabled");
     
     toolbarButton = document.getElementById('listit-toggle-active-button');
-    Listit.fbLog(toolbarButton);
+    
 }
-*/
+
 
 /*
 From: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow
