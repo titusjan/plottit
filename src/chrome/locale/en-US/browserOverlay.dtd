@@ -1,3 +1,3 @@
-<!ENTITY xulschoolhello.hello.label            "That World!">
-<!ENTITY xulschoolhello.helloMenu.accesskey    "l">
-<!ENTITY xulschoolhello.helloItem.accesskey    "H">
+<!ENTITY listit.hello.label            "That World!">
+<!ENTITY listit.helloMenu.accesskey    "l">
+<!ENTITY listit.helloItem.accesskey    "H">

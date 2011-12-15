@@ -1,5 +1,5 @@
 # The name of the extension.
-extension_name := xulschoolhello
+extension_name := listit
 
 # The UUID of the extension.
 extension_uuid := helloworld@xulschool.com
