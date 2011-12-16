@@ -63,9 +63,6 @@ try{
     Listit.logger.warn(' ---------------- Listit loaded ----------------');
     Listit.logger.trace('Listit.onLoad -- begin');
 
-    // TODO: necessary?
-    //Application = Components.classes["@mozilla.org/fuel/application;1"].getService(Components.interfaces.fuelIApplication);
-    
     // Test if the extension is executed for the first time.
     if (Application.extensions)  
         Listit.onFirstRun(Application.extensions);     // Firefox 3
@@ -388,7 +385,7 @@ try {
             browserState.setStatus(Listit.PAGE_LOADING);
             Listit.ajaxRequestJsonPage(pageURL, browser);
         } else {
-             browserState.setStatus(Listit.PAGE_POSTPONED);
+            browserState.setStatus(Listit.PAGE_POSTPONED);
         }
         Listit.updateAllViews(Listit.state, browserID);
         Listit.logger.debug("Listit.onPageLoad done");
@@ -438,8 +435,7 @@ try {
 
 Listit.ajaxRequestJsonPage = function (pageURL, browser) {
 
-
-    Listit.logger.debug("Listit.ajaxRequestJsonPage -- ");
+    Listit.logger.debug("Listit.ajaxRequestJsonPage: " + pageURL);
     
     // Make AJAX request for corresponding JSON page.
     var jsonURL = Listit.addJsonToRedditUrl(pageURL);
@@ -538,9 +534,17 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             break;
         case Listit.PAGE_POSTPONED:
             Listit.setPannelsVisible(true);
-            Listit.setDetailsFrameHtml('<i>Comments loading postponed</i>');
+            Listit.setDetailsFrameHtml('<i>(Postponed) comments loading</i>');
             Listit.scatterPlot.display(false);
             curState.removeAllComments();
+            Listit.setPannelsVisible(true);
+            
+            // Page loading was postponed... until now.
+            // Load the comments via ajax.
+            var browserState = Listit.state.getCurrentBrowserState()
+            browserState.setStatus(Listit.PAGE_LOADING);
+            var browser = browserState.browser;
+            Listit.ajaxRequestJsonPage(browser.currentURI.asciiSpec, browser);
             break;
         case Listit.PAGE_LOADING:
             Listit.setPannelsVisible(true);
@@ -593,10 +597,6 @@ Listit.toggleListitActive = function () {
     try{
         Listit.logger.trace("Listit.toggleListitActive -- ");
         this.setListitActive( ! Listit.state.listitEnabled);
-        
-        Listit.fbLog("Listit.toggleListitActive -- ");
-        Listit.fbLog(Listit.state.getCurrentTreeView());
-        
         Listit.updateAllViews(Listit.state, Listit.state.getCurrentBrowserID());
     } catch (ex) {
         Listit.logger.error('Exception in Listit.toggleListitActive;');

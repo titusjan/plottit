@@ -11,9 +11,10 @@ Listit.PAGE_READY       = 3; // Comments loaded
 //////////////////
 
 
-// The state per browser in the global browser object;
-Listit.BrowserState = function (localDateFormat, utcDateFormat) { // Constructor
+// The state per browser (in the global browser object);
+Listit.BrowserState = function (browser, localDateFormat, utcDateFormat) { // Constructor
 
+    this.browser = browser; // Keep track of the browser to which this state belongs
     this.pageStatus = Listit.PAGE_NOT_LISTIT;
     this.treeView =  new Listit.TreeView(localDateFormat, utcDateFormat);
     this.selectedComment = null; // The comment that is selected in the table
@@ -98,7 +99,7 @@ Listit.State.prototype.addBrowser = function (browser) {
     } else {
         browserID = this.nextBrowserID.toString();
         Listit.state.nextBrowserID += 1;
-        this.browserStates[browserID] = new Listit.BrowserState(
+        this.browserStates[browserID] = new Listit.BrowserState(browser, 
             this._localDateFormat, this._utcDateFormat);
         browser.setAttribute("ListitBrowserID", browserID);
         Listit.logger.debug("Listit.State.prototype.addBrowser: added browser " + browserID);
