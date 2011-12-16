@@ -329,3 +329,10 @@ Listit._configureRootLogger = function () {
     root.addAppender(dapp);
 }
 
+Listit.logException = function(ex) {
+    Listit.logger.error('EXCEPTION IN ' + ex.fileName + ' line ' + ex.lineNumber + ' : ' + ex.message);
+    Listit.fbLog(ex);
+}
+
+
+

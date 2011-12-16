@@ -86,7 +86,7 @@ Listit.TreeView.prototype._addComments = function(listitComments)  {
 Listit.TreeView.prototype.removeAllComments = function() { // Must be fast because it's called for every page load!
 
     if (this.rowCount != 0) {
-        this.treeBox.rowCountChanged(0, -this.rowCount);
+        if (this.treeBox) this.treeBox.rowCountChanged(0, -this.rowCount);
         this.allComments = [];
         this.visibleComments = [];
     }
@@ -204,7 +204,10 @@ Listit.TreeView.prototype.__defineGetter__("rowCount", function() {
     return this.visibleComments.length; 
 });
 
-Listit.TreeView.prototype.setTree = function(treeBox)  { this.treeBox = treeBox; }
+Listit.TreeView.prototype.setTree = function(treeBox)  { 
+    Listit.logger.trace("Listit.TreeView.setTree, treeBox: " + treeBox);
+    this.treeBox = treeBox; 
+}
 
 Listit.TreeView.prototype.getCellText = function(idx, column) {
 

@@ -278,8 +278,6 @@ Listit.getListitDiscussionFromPage = function(redditJsonPage) {
             comments.push(listitNode);
     }
     discussion.comments = comments;
-    Listit.fbLog("getListitDiscussionFromPage");
-    Listit.fbLog(discussion);
     return discussion;
 };
 

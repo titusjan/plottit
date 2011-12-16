@@ -35,7 +35,7 @@
   </toolbarpalette>
   
   <commandset> <!-- For some reason setting an id to the command set results in no reactions -->
-    <command id="listit-command-debug" oncommand="Listit.debug();"/>
+    <command id="listit-command-debug" oncommand="Listit.myDebugRoutine();"/>
     <command id="listit-command-toggle-listit-active" oncommand="Listit.toggleListitActive();"/>
     <!--<command id="listit-command-set-date-format" oncommand="Listit.setTreeColumnDateFormat(event);"/>-->
   </commandset>

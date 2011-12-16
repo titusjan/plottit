@@ -2,8 +2,9 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 
 Listit.PAGE_NOT_LISTIT  = 0; // Not a page listit can process
-Listit.PAGE_LOADING     = 1; // Loading JSON comments via AJAX
-Listit.PAGE_READY       = 2; // Comments loaded
+Listit.PAGE_POSTPONED   = 1; // Comments loading postponed
+Listit.PAGE_LOADING     = 2; // Loading JSON comments via AJAX
+Listit.PAGE_READY       = 3; // Comments loaded
 
 //////////////////
 // BrowserState //

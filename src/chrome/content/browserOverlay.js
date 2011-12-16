@@ -6,18 +6,23 @@ if ('undefined' == typeof(XULSchoolChrome)) {
     var XULSchoolChrome = {};
 }
 
-Listit.debug = function () {
+Listit.myDebugRoutine = function () {
 
     
     let stringBundle = document.getElementById('listit-string-bundle');
     let message = stringBundle.getString('listit.greeting.label');
+    
+    //var t = Listit.narf.snarf;  // Shows that exception does not show up in firebug or console
 
     try {
         Listit.logger.debug('Listit.debug');
         Listit.fbLog('Listit.debug');
         Listit.fbLog(Listit.state.summaryString());
-        
         Listit.fbLog(Application.prefs.get("extensions.listit.listitEnabled").value);
+        
+        Listit.fbLog(Listit.state.getCurrentTreeView());
+        Listit.fbLog(Listit.state.getCurrentTreeView().treebox);
+
         
         //var xAxisVariable = document.getElementById('listit-scatter-x-axis-menupopup');
         //Listit.fbLog(xAxisVariable); 
@@ -35,7 +40,8 @@ Listit.debug = function () {
         */
     } catch (ex) {
         Listit.logger.error('Exception in Listit.debug;');
-        Listit.logger.error(ex);
+        Listit.logException(ex);
+        //Listit.logException(ex);
         //Listit.fbLog(ex);
     }
 }
@@ -107,7 +113,7 @@ try{
     Listit.logger.trace('Listit.onLoad -- end');
 } catch (ex) {
     Listit.logger.error('Exception in Listit.onLoad;');
-    Listit.logger.error(ex);
+    Listit.logException(ex);
 }        
 };
 
@@ -349,7 +355,7 @@ Listit.RE_ISREDDIT = /www\.reddit\.com\/r\/.*\/comments\//
 Listit.onPageLoad = function(event) {
 
     Listit.logger.trace("Listit.onPageLoad");
-//try {        
+try {        
     var doc = event.originalTarget;
     var pageURL = doc.URL;
     var browser = gBrowser.getBrowserForDocument(doc);
@@ -362,7 +368,7 @@ Listit.onPageLoad = function(event) {
     var browserID = browser.getAttribute("ListitBrowserID");  // TODO: getStateForBrowser?
     var browserState = Listit.state.browserStates[browserID];
     browserState.setStatus(Listit.PAGE_NOT_LISTIT);
-    browserState.removeAllComments();
+    // browserState.removeAllComments(); // why is this necessary?
     
     var host = pageURL.split('?')[0];
     var isRedditPage = Listit.RE_ISREDDIT.test(host);
@@ -373,31 +379,18 @@ Listit.onPageLoad = function(event) {
         // A reddit html page, the json will be loaded with AJAX
         Listit.logger.debug("Listit.onPageLoad (reddit discussion): URL: " + pageURL);
 
-        // Append listit css style to page 
+        // Append listit css style to reddit page (so we can highlight selected comment)
         var $ = doc.defaultView.wrappedJSObject.jQuery;
         var styleElem = $(Listit.SELECTED_ROW_STYLE);
         $('head').append(styleElem);
         
-        // Make AJAX request for corresponding JSON page.
-        var jsonURL = Listit.addJsonToRedditUrl(pageURL);
-        var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
-                      .createInstance(Components.interfaces.nsIXMLHttpRequest);
-                      
-        request.onload = function(aEvent) {
-            Listit.logger.debug("XMLHttpRequest.onload, URL: " + jsonURL);
-            Listit.processJsonPage(aEvent.target.responseText, browser, jsonURL);    
-        };
-        
-        request.onerror = function(aEvent) {
-            Listit.logger.error("XMLHttpRequest.onerror, URL: " + jsonURL)
-            Listit.logger.error("Error status: " + aEvent.target.status);
-        };
-        
-        browserState.setStatus(Listit.PAGE_LOADING);
+        if (Listit.state.listitEnabled) {
+            browserState.setStatus(Listit.PAGE_LOADING);
+            Listit.ajaxRequestJsonPage(pageURL, browser);
+        } else {
+             browserState.setStatus(Listit.PAGE_POSTPONED);
+        }
         Listit.updateAllViews(Listit.state, browserID);
-        
-        request.open("GET", jsonURL, true);
-        request.send(null);      
         Listit.logger.debug("Listit.onPageLoad done");
         return;
         
@@ -437,14 +430,44 @@ Listit.onPageLoad = function(event) {
         return;
     }
     
-//} catch (ex) {
-//    Listit.logger.error('Exception in Listit.onPageLoad;');
-//    Listit.logger.error(ex);
-//}    
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.onPageLoad;');
+    Listit.logException(ex);
 }    
+}    
+
+Listit.ajaxRequestJsonPage = function (pageURL, browser) {
+
+
+    Listit.logger.debug("Listit.ajaxRequestJsonPage -- ");
     
+    // Make AJAX request for corresponding JSON page.
+    var jsonURL = Listit.addJsonToRedditUrl(pageURL);
+    var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
+                  .createInstance(Components.interfaces.nsIXMLHttpRequest);
+                  
+    request.onload = function(aEvent) {
+        try {    
+            Listit.logger.debug("XMLHttpRequest.onload, URL: " + jsonURL);
+            Listit.processJsonPage(aEvent.target.responseText, browser, jsonURL);    
+        } catch (ex) {
+            Listit.logger.error('Exception in Listit. XMLHttpRequest.onload;');
+            Listit.logException(ex);
+        }
+    };
+    
+    request.onerror = function(aEvent) {
+        Listit.logger.error("XMLHttpRequest.onerror, URL: " + jsonURL)
+        Listit.logger.error("Error status: " + aEvent.target.status);
+    };
+
+    request.open("GET", jsonURL, true);
+    request.send(null);      
+}
+
+
 Listit.processJsonPage = function (jsonContent, browser, url) {
-    Listit.logger.trace("Listit.processJsonPage -- ");
+    Listit.logger.debug("Listit.processJsonPage -- ");
 
     try {
         var browserID = browser.getAttribute("ListitBrowserID");
@@ -459,7 +482,7 @@ Listit.processJsonPage = function (jsonContent, browser, url) {
        
     } catch (ex) {
         Listit.logger.error('Failed processing JSON: ' + url.toString());
-        Listit.logger.error(ex);
+        Listit.logException(ex);
     }
 }
 
@@ -502,6 +525,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
     }
 
     var curState = Listit.state.getCurrentBrowserState();
+    Listit.logger.debug("Page statue: " + curState.pageStatus);
     switch (curState.pageStatus) {
         case Listit.PAGE_NOT_LISTIT:
             if (true) {
@@ -511,6 +535,12 @@ Listit.updateAllViews = function(state, eventBrowserID) {
                 Listit.scatterPlot.display(false);
                 curState.removeAllComments();
             }
+            break;
+        case Listit.PAGE_POSTPONED:
+            Listit.setPannelsVisible(true);
+            Listit.setDetailsFrameHtml('<i>Comments loading postponed</i>');
+            Listit.scatterPlot.display(false);
+            curState.removeAllComments();
             break;
         case Listit.PAGE_LOADING:
             Listit.setPannelsVisible(true);
@@ -540,6 +570,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
         default:
             Listit.assert(false, "Invalid pageStatus: " + curState.pageStatus);
     } // switch
+    Listit.logger.debug("Listit.updateAllViews: done ");
 }
 
 Listit.setPannelsVisible = function (visible) {
@@ -559,19 +590,22 @@ Listit.ensureCurrentRowVisible = function () {
 }
 
 Listit.toggleListitActive = function () {
-try{
-    Listit.logger.trace("Listit.toggleListitActive -- ");
-    this.setListitActive( ! Listit.state.listitEnabled);
-    
-    Listit.updateAllViews(Listit.state, Listit.state.getCurrentBrowserID());
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.toggleListitActive;');
-    Listit.logger.error(ex);
-}        
+    try{
+        Listit.logger.trace("Listit.toggleListitActive -- ");
+        this.setListitActive( ! Listit.state.listitEnabled);
+        
+        Listit.fbLog("Listit.toggleListitActive -- ");
+        Listit.fbLog(Listit.state.getCurrentTreeView());
+        
+        Listit.updateAllViews(Listit.state, Listit.state.getCurrentBrowserID());
+    } catch (ex) {
+        Listit.logger.error('Exception in Listit.toggleListitActive;');
+        Listit.logException(ex);
+    }        
 }
 
 Listit.setListitActive = function (listitEnabled) {
-    Listit.logger.trace("Listit.setListitActive: " + listitEnabled);
+    Listit.logger.debug("Listit.setListitActive: " + listitEnabled);
 
     Listit.state.listitEnabled = listitEnabled;
     Application.prefs.get("extensions.listit.listitEnabled").value = Listit.state.listitEnabled; 
