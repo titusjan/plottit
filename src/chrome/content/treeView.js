@@ -258,7 +258,8 @@ Listit.TreeView.prototype.isSorted = function()               { return false; }
 Listit.TreeView.prototype.isEditable = function(idx, column)  { return false; }
 
 Listit.TreeView.prototype.getParentIndex = function(idx) {
-    var thisDepth = this.visibleComments[idx].depth;
+    
+    var thisDepth = this.getLevel(idx);
     if (thisDepth == 0) return -1;
 
     // iterate backwards until we find the item with the lower depth
@@ -268,11 +269,15 @@ Listit.TreeView.prototype.getParentIndex = function(idx) {
 }
 
 Listit.TreeView.prototype.getLevel = function(idx) { 
-    return this.isFlat ? 0 : this.visibleComments[idx].depth 
+    return this.isFlat ? 0 : this.visibleComments[idx].depth; 
 }
 
 
 Listit.TreeView.prototype.hasNextSibling = function(idx, after) {
+
+    // Seems not to be called ?
+    Listit.logger.debug("Listit.TreeView.hasNextSibling: " + idx + ", " + after);
+    
     var thisLevel = this.getLevel(idx);
     for (var t = after + 1; t < this.visibleComments.length; t++) {
         var nextLevel = this.getLevel(t);
@@ -283,6 +288,8 @@ Listit.TreeView.prototype.hasNextSibling = function(idx, after) {
 }
 
 Listit.TreeView.prototype.toggleOpenState = function(idx) {
+
+    Listit.logger.trace("Listit.TreeView.toggleOpenState: " + idx );
 
     if (!this.isContainer(idx)) return;
     if (this.isContainerOpen(idx)) {

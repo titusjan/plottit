@@ -308,7 +308,6 @@ Listit.initializeLoggers = function (bXul, level) {
 }    
 
 
-
 Listit._configureRootLogger = function () {
     
     let root = Log4Moz.repository.rootLogger;
@@ -320,6 +319,7 @@ Listit._configureRootLogger = function () {
     root.level = Log4Moz.Level["All"];
 
     let formatter = new Log4Moz.BasicFormatter();
+    //let formatter = new Listit.LogFormatter();
     let capp = new Log4Moz.ConsoleAppender(formatter); // to the JS Error Console
     capp.level = Log4Moz.Level["Info"];
     root.addAppender(capp);
@@ -334,5 +334,19 @@ Listit.logException = function(ex) {
     Listit.fbLog(ex);
 }
 
+/*
+/////////////////////////
+// Listit.LogFormatter //
+/////////////////////////
 
+Listit.LogFormatter = function (dateFormat) { // Constructor
+    this.dateFormat = dateFormat;
+}
 
+Listit.LogFormatter.prototype.__proto__ = Log4Moz.Formatter.prototype;
+
+Listit.LogFormatter.prototype.format = function (message) {
+    return "YYYYYYY" + message.time + "\t" + message.loggerName + "\t" + message.levelDesc 
+           + "\t" + message.message + "\n";
+}
+*/

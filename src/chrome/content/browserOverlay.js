@@ -20,9 +20,11 @@ Listit.myDebugRoutine = function () {
         Listit.fbLog(Listit.state.summaryString());
         Listit.fbLog(Application.prefs.get("extensions.listit.listitEnabled").value);
         
-        Listit.fbLog(Listit.state.getCurrentTreeView());
-        Listit.fbLog(Listit.state.getCurrentTreeView().treebox);
+        //Listit.fbLog(Listit.state.getCurrentTreeView());
+        //Listit.fbLog(Listit.state.getCurrentTreeView().treebox);
 
+        //Listit.fbLog(new Log4Moz.BasicFormatter());
+        //Listit.fbLog(new Listit.LogFormatter());
         
         //var xAxisVariable = document.getElementById('listit-scatter-x-axis-menupopup');
         //Listit.fbLog(xAxisVariable); 
@@ -507,7 +509,7 @@ Listit.setDetailsFrameHtml = function(html) {
 
 // Updates all views using the application state
 Listit.updateAllViews = function(state, eventBrowserID) {
-    Listit.logger.debug("Listit.updateAllViews -- ");
+    Listit.logger.trace("Listit.updateAllViews -- ");
     
     if ( !Listit.state.listitEnabled) {
         Listit.setPannelsVisible(false);
@@ -521,7 +523,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
     }
 
     var curState = Listit.state.getCurrentBrowserState();
-    Listit.logger.debug("Page statue: " + curState.pageStatus);
+    //Listit.logger.debug("Page status: " + curState.pageStatus);
     switch (curState.pageStatus) {
         case Listit.PAGE_NOT_LISTIT:
             if (true) {
@@ -574,7 +576,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
         default:
             Listit.assert(false, "Invalid pageStatus: " + curState.pageStatus);
     } // switch
-    Listit.logger.debug("Listit.updateAllViews: done ");
+    //Listit.logger.debug("Listit.updateAllViews: done ");
 }
 
 Listit.setPannelsVisible = function (visible) {
