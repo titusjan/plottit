@@ -512,7 +512,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
     Listit.logger.trace("Listit.updateAllViews -- ");
     
     if ( !Listit.state.listitEnabled) {
-        Listit.setPannelsVisible(false);
+        Listit.setListitVisible(false);
         return;
     }
 
@@ -527,19 +527,19 @@ Listit.updateAllViews = function(state, eventBrowserID) {
     switch (curState.pageStatus) {
         case Listit.PAGE_NOT_LISTIT:
             if (true) {
-                Listit.setPannelsVisible(false);
+                Listit.setListitVisible(false);
             } else { // Debugging
-                Listit.setDetailsFrameHtml('<i>The current page is not a reddit discussion</i>');
+                Listit.showDescription('The current page is not a reddit discussion');
                 Listit.scatterPlot.display(false);
                 curState.removeAllComments();
             }
             break;
         case Listit.PAGE_POSTPONED:
-            Listit.setPannelsVisible(true);
-            Listit.setDetailsFrameHtml('<i>(Postponed) comments loading</i>');
+            Listit.setListitVisible(true);
+            Listit.showDescription('(Postponed) comments loading...');
             Listit.scatterPlot.display(false);
             curState.removeAllComments();
-            Listit.setPannelsVisible(true);
+            Listit.setListitVisible(true);
             
             // Page loading was postponed... until now.
             // Load the comments via ajax.
@@ -549,15 +549,15 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             Listit.ajaxRequestJsonPage(browser.currentURI.asciiSpec, browser);
             break;
         case Listit.PAGE_LOADING:
-            Listit.setPannelsVisible(true);
-            Listit.setDetailsFrameHtml('<i>Loading comments, please wait</i>');
+            Listit.setListitVisible(true);
+            Listit.showDescription('Loading comments...');
             Listit.scatterPlot.display(false);
             curState.removeAllComments();
             break;
         case Listit.PAGE_READY:
-            Listit.setPannelsVisible(true);
+            Listit.setListitVisible(true);
+            Listit.hideDescription();
             var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
-            Listit.setDetailsFrameHtml('');
             Listit.scatterPlot.display(true);
             Listit.scatterPlot.setDiscussion(discussion);
             
@@ -579,9 +579,30 @@ Listit.updateAllViews = function(state, eventBrowserID) {
     //Listit.logger.debug("Listit.updateAllViews: done ");
 }
 
-Listit.setPannelsVisible = function (visible) {
-    var pannels = document.getElementById('pannelContent');
-    pannels.hidden = !visible;
+Listit.setListitVisible = function (visible) {
+    try {
+        var deck = document.getElementById('listit-messages-deck');
+        var splitter = document.getElementById('listitContentSplitter');
+        deck.hidden = !visible;
+        splitter.hidden = !visible;
+    } catch (ex) {
+        Listit.logger.error('Exception in Listit.setListitVisible;');
+        Listit.logException(ex);
+    }    
+}
+
+Listit.showDescription = function(msg) {
+    var deck = document.getElementById('listit-messages-deck');
+    deck.selectedIndex = 0;
+    var description = document.getElementById('listit-messages-description');
+    description.value = msg;
+}
+
+Listit.hideDescription = function() {
+    var deck = document.getElementById('listit-messages-deck');
+    deck.selectedIndex = 1;
+    var description = document.getElementById('listit-messages-description');
+    description.value = "Listit...";    
 }
 
 Listit.ensureCurrentRowVisible = function () {

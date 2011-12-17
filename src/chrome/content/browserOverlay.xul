@@ -122,6 +122,11 @@
 
   <vbox id="appcontent" >
     <splitter id="listitContentSplitter" collapsed="false"/>
+    
+    <deck id="listit-messages-deck" selectedIndex="0">
+    
+      <description id="listit-messages-description" value="Listit..."/>    
+      
     <hbox id="pannelContent" height="200" persist="height" >
 
       <!-- The discussion tree -->
@@ -554,6 +559,8 @@
         </hbox>
       </vbox> <!-- scatterplot -->
     </hbox> 
+    
+    </deck>
   </vbox>    
 </overlay>
 
