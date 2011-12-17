@@ -1,1 +1,24 @@
 
+#listit-messages-description {
+    padding: 5px;
+    background-color: white;
+    font:normal x-small verdana, arial, helvetica, sans-serif;
+    font-size:larger;
+}
+
+/*  Reduce margin between scoreTree and listit-tabbox 
+    because there is already a splitter inbetween them */
+
+#scoreTree {
+   margin-right: 0px;
+}
+
+#listit-tabbox {
+   margin-left: 0px;
+}
+
+/* More room for the comment and plot contents */
+#listit-tabpanels {
+    padding: 20px 5px 5px 5px;
+}
+

@@ -123,8 +123,7 @@ Listit.onFirstRun = function (extensions) {
         Listit.logger.info("Listit runs for the first time");
         Listit.installToolbarButtonAtEnd('nav-bar', 'listit-toggle-active-button');
     } else {
-        Listit.logger.info("Listit runs for the nth time");
-        Listit.installToolbarButtonAtEnd('nav-bar', 'listit-toggle-active-button'); // TODO: remove
+        Listit.logger.debug("Listit runs for the nth time");
     }
 }  
 

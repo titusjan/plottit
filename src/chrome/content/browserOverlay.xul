@@ -123,11 +123,11 @@
   <vbox id="appcontent" >
     <splitter id="listitContentSplitter" collapsed="false"/>
     
-    <deck id="listit-messages-deck" selectedIndex="0">
+    <deck id="listit-messages-deck" selectedIndex="0" height="200" persist="height">
     
       <description id="listit-messages-description" value="Listit..."/>    
       
-     <hbox id="pannelContent" height="200" persist="height" >
+      <hbox id="pannelContent">
   
         <!-- The discussion tree -->
         <tree id="scoreTree" hidecolumnpicker="false" enableColumnDrag="true" flex="1" seltype="single" flags="dont-build-content" disableKeyNavigation="true"
@@ -314,24 +314,41 @@
           </treechildren>
         </tree>
   
+
         <splitter id="listitPannelSplitter" collapse="after" resizeafter="closest"/>
   
-        <!-- Post details -->
-        <iframe id="commentHtmlFrame" 
-          width="200" 
-          minwidth="0"        
-          persist="width" 
-          src="chrome://listit/content/detailsframe.html"/>
+        <!-- tabs with plots and stuff -->
+        
+        <tabbox id="listit-tabbox"
+              width="250" 
+              persist="width selectedIndex"
+              minwidth="250"
+              selectedIndex="1">
+          <tabs >
+            <tab label="Comment"/>
+            <tab label="Plot"/>
+          </tabs>
+          <tabpanels id="listit-tabpanels" flex="1">
+          
+            <!-- Post details -->
+            <tabpanel id="listit-comment-tab">
+              <iframe id="commentHtmlFrame" 
+                flex="1"
+                src="chrome://listit/content/detailsframe.html"/>
+            </tabpanel>
+            
+           <tabpanel id="listit-plot-tab">
+            
+
+  
   
        
-        <splitter id="listitPannelSplitter2" collapse="after"></splitter>
+        <!--<splitter id="listitPannelSplitter2" collapse="after"></splitter>-->
   
         <!-- Scatter plot -->
-        <vbox>
+        <vbox flex="1">
           <iframe id="plotFrame" 
             flex="1"
-            minwidth="50"
-            persist="width" 
             src="chrome://listit/content/plotframe.html"/>
   
           <!-- Scatter plot X-Axis -->
@@ -556,12 +573,17 @@
               checked="true" />
               <!--            -->
             <spacer flex="1"/>            
-          </hbox>
+          </hbox> 
         </vbox> <!-- scatterplot -->
-      </hbox> 
-    
+        
+        
+            </tabpanel>
+          </tabpanels>
+        </tabbox>   
+        
+      </hbox> <!-- pannelContent -->
     </deck>
-  </vbox>    
+  </vbox>    <!-- appcontent -->
 </overlay>
 
 <!--
