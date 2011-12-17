@@ -337,245 +337,238 @@
                 src="chrome://listit/content/detailsframe.html"/>
             </tabpanel>
             
-           <tabpanel id="listit-plot-tab">
+            <tabpanel id="listit-plot-tab">
             
-
-  
-  
-       
-        <!--<splitter id="listitPannelSplitter2" collapse="after"></splitter>-->
-  
-        <!-- Scatter plot -->
-        <vbox flex="1">
-          <iframe id="plotFrame" 
-            flex="1"
-            src="chrome://listit/content/plotframe.html"/>
-  
-          <!-- Scatter plot X-Axis -->
-          <hbox align="baseline">
-            <button id="listit-scatter-x-axis-button" 
-                  label="X-Axis"
-                  type="menu">
-              <menupopup id="listit-scatter-x-axis-menupopup"
-                  xvarselected="dateCreatedValue"   
-                  persist="xvarselected"> <!-- use peristence to store selected xvar -->
-                  
-                <menuitem 
-                  id="listit-scatter-x-axis-depth"
-                  label="Depth"
-                  type="radio"
-                  name="xvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'depth')"/>
-                <menuitem 
-                  id="listit-scatter-x-axis-score"
-                  label="Score"
-                  type="radio"
-                  name="xvar"
-                  checked="true"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'score')"/>
-                <menuitem 
-                  id="listit-scatter-x-axis-up"
-                  label="Up"
-                  type="radio"
-                  name="xvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'ups')"/>
-                <menuitem 
-                  id="listit-scatter-x-axis-down"
-                  label="Down"
-                  type="radio"
-                  name="xvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'downs')"/>
-                <menuitem 
-                  id="listit-scatter-x-axis-votes"
-                  label="Votes"
-                  type="radio"
-                  name="xvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'votes')"/>
-                <menuitem 
-                  id="listit-scatter-x-axis-likes"
-                  label="Likes"
-                  type="radio"
-                  name="xvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'likesPerc')"/>
-                <menuitem 
-                  id="listit-scatter-x-axis-hot"
-                  label="Hot"
-                  type="radio"
-                  name="xvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'hot')"/>
-                <menuitem 
-                  id="listit-scatter-x-axis-best"
-                  label="Best"
-                  type="radio"
-                  name="xvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'best')"/>
-                <menuitem 
-                  id="listit-scatter-x-axis-numchars"
-                  label="Characters"
-                  type="radio"
-                  name="xvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'numChars')"/>
-                <menuitem 
-                  id="listit-scatter-x-axis-numreplies"
-                  label="Replies"
-                  type="radio"
-                  name="xvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'numReplies')"/>
-    
-                <menuitem 
-                  id="listit-scatter-x-axis-date-time"
-                  label="Date &amp; Time"
-                  type="radio"
-                  name="xvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'dateCreatedLocalValue')"/>
-                <menuitem 
-                  id="listit-scatter-x-axis-utc-date-time"
-                  label="UTC Date &amp; Time"
-                  type="radio"
-                  name="xvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'dateCreatedValue')"/>
-                <menuitem 
-                  id="listit-scatter-x-axis-after"
-                  label="Posted After"
-                  type="radio"
-                  name="xvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'postedAfter')"/>
-              
-              
-                <menuseparator/>
-                <menuitem 
-                  id="listit-scatter-x-axis-pz-allowed"
-                  label="Pan &amp; Zoom Allowed" 
-                  type="checkbox"
-                  autocheck="false"
-                  checked="true"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.togglePanZoomEnabled(this, 'x');"/>
-  
-                <menuseparator/>
-                <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetRange('x')"/>
-              </menupopup>
-            </button>
-            
-            <!-- Scatter plot Y-Axis -->
-            <button id="listit-scatter-y-axis-button"
-                  label="Y-Axis"
-                  type="menu">
-              <menupopup id="listit-scatter-y-axis-menupopup"
-                  yvarselected="score"   
-                  persist="yvarselected"> <!-- use peristence to store selected yvar -->
-                <menuitem 
-                  id="listit-scatter-y-axis-depth"
-                  label="Depth"
-                  type="radio"
-                  name="yvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'depth')"/>
-                <menuitem 
-                  id="listit-scatter-y-axis-score"
-                  label="Score"
-                  type="radio"
-                  name="yvar"
-                  checked="true"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'score')"/>
-                <menuitem 
-                  id="listit-scatter-y-axis-up"
-                  label="Up"
-                  type="radio"
-                  name="yvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'ups')"/>
-                <menuitem 
-                  id="listit-scatter-y-axis-down"
-                  label="Down"
-                  type="radio"
-                  name="yvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'downs')"/>
-                <menuitem 
-                  id="listit-scatter-y-axis-votes"
-                  label="Votes"
-                  type="radio"
-                  name="yvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'votes')"/>
-                <menuitem 
-                  id="listit-scatter-y-axis-likes"
-                  label="Likes"
-                  type="radio"
-                  name="yvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'likesPerc')"/>
-                <menuitem 
-                  id="listit-scatter-y-axis-hot"
-                  label="Hot"
-                  type="radio"
-                  name="yvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'hot')"/>
-                <menuitem 
-                  id="listit-scatter-y-axis-best"
-                  label="Best"
-                  type="radio"
-                  name="yvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'best')"/>
-                <menuitem 
-                  id="listit-scatter-y-axis-numchars"
-                  label="Characters"
-                  type="radio"
-                  name="yvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'numChars')"/>
-                <menuitem 
-                  id="listit-scatter-y-axis-numreplies"
-                  label="Replies"
-                  type="radio"
-                  name="yvar"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'numReplies')"/>
-  
-                <menuseparator/>
-                <menuitem 
-                  id="listit-scatter-y-axis-pz-allowed"
-                  label="Pan &amp; Zoom Allowed" 
-                  type="checkbox"
-                  autocheck="false"
-                  checked="true"
-                  persist="checked"
-                  oncommand="Listit.scatterPlot.togglePanZoomEnabled(this, 'y');"/>
-  
-                <menuseparator/>
-                <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetRange('y')"/>
-              </menupopup>
-            </button>
-  
-            <checkbox 
-              id="listit-scatter-axes-autoscale"
-              oncommand="Listit.scatterPlot.toggleAxesAutoScale(this)"
-              label="Autoscale" 
-              crop="end"
-              persist="checked"
-              checked="true" />
-              <!--            -->
-            <spacer flex="1"/>            
-          </hbox> 
-        </vbox> <!-- scatterplot -->
+              <!-- Scatter plot -->
+              <vbox flex="1">
+                <iframe id="plotFrame" 
+                  flex="1"
+                  src="chrome://listit/content/plotframe.html"/>
         
+                <!-- Scatter plot X-Axis -->
+                <hbox align="baseline">
+                  <button id="listit-scatter-x-axis-button" 
+                        label="X-Axis"
+                        type="menu">
+                    <menupopup id="listit-scatter-x-axis-menupopup"
+                        xvarselected="dateCreatedValue"   
+                        persist="xvarselected"> <!-- use peristence to store selected xvar -->
+                        
+                      <menuitem 
+                        id="listit-scatter-x-axis-depth"
+                        label="Depth"
+                        type="radio"
+                        name="xvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'depth')"/>
+                      <menuitem 
+                        id="listit-scatter-x-axis-score"
+                        label="Score"
+                        type="radio"
+                        name="xvar"
+                        checked="true"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'score')"/>
+                      <menuitem 
+                        id="listit-scatter-x-axis-up"
+                        label="Up"
+                        type="radio"
+                        name="xvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'ups')"/>
+                      <menuitem 
+                        id="listit-scatter-x-axis-down"
+                        label="Down"
+                        type="radio"
+                        name="xvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'downs')"/>
+                      <menuitem 
+                        id="listit-scatter-x-axis-votes"
+                        label="Votes"
+                        type="radio"
+                        name="xvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'votes')"/>
+                      <menuitem 
+                        id="listit-scatter-x-axis-likes"
+                        label="Likes"
+                        type="radio"
+                        name="xvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'likesPerc')"/>
+                      <menuitem 
+                        id="listit-scatter-x-axis-hot"
+                        label="Hot"
+                        type="radio"
+                        name="xvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'hot')"/>
+                      <menuitem 
+                        id="listit-scatter-x-axis-best"
+                        label="Best"
+                        type="radio"
+                        name="xvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'best')"/>
+                      <menuitem 
+                        id="listit-scatter-x-axis-numchars"
+                        label="Characters"
+                        type="radio"
+                        name="xvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'numChars')"/>
+                      <menuitem 
+                        id="listit-scatter-x-axis-numreplies"
+                        label="Replies"
+                        type="radio"
+                        name="xvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'numReplies')"/>
+          
+                      <menuitem 
+                        id="listit-scatter-x-axis-date-time"
+                        label="Date &amp; Time"
+                        type="radio"
+                        name="xvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'dateCreatedLocalValue')"/>
+                      <menuitem 
+                        id="listit-scatter-x-axis-utc-date-time"
+                        label="UTC Date &amp; Time"
+                        type="radio"
+                        name="xvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'dateCreatedValue')"/>
+                      <menuitem 
+                        id="listit-scatter-x-axis-after"
+                        label="Posted After"
+                        type="radio"
+                        name="xvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'postedAfter')"/>
+                    
+                    
+                      <menuseparator/>
+                      <menuitem 
+                        id="listit-scatter-x-axis-pz-allowed"
+                        label="Pan &amp; Zoom Allowed" 
+                        type="checkbox"
+                        autocheck="false"
+                        checked="true"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.togglePanZoomEnabled(this, 'x');"/>
+        
+                      <menuseparator/>
+                      <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetRange('x')"/>
+                    </menupopup>
+                  </button>
+                  
+                  <!-- Scatter plot Y-Axis -->
+                  <button id="listit-scatter-y-axis-button"
+                        label="Y-Axis"
+                        type="menu">
+                    <menupopup id="listit-scatter-y-axis-menupopup"
+                        yvarselected="score"   
+                        persist="yvarselected"> <!-- use peristence to store selected yvar -->
+                      <menuitem 
+                        id="listit-scatter-y-axis-depth"
+                        label="Depth"
+                        type="radio"
+                        name="yvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'depth')"/>
+                      <menuitem 
+                        id="listit-scatter-y-axis-score"
+                        label="Score"
+                        type="radio"
+                        name="yvar"
+                        checked="true"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'score')"/>
+                      <menuitem 
+                        id="listit-scatter-y-axis-up"
+                        label="Up"
+                        type="radio"
+                        name="yvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'ups')"/>
+                      <menuitem 
+                        id="listit-scatter-y-axis-down"
+                        label="Down"
+                        type="radio"
+                        name="yvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'downs')"/>
+                      <menuitem 
+                        id="listit-scatter-y-axis-votes"
+                        label="Votes"
+                        type="radio"
+                        name="yvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'votes')"/>
+                      <menuitem 
+                        id="listit-scatter-y-axis-likes"
+                        label="Likes"
+                        type="radio"
+                        name="yvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'likesPerc')"/>
+                      <menuitem 
+                        id="listit-scatter-y-axis-hot"
+                        label="Hot"
+                        type="radio"
+                        name="yvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'hot')"/>
+                      <menuitem 
+                        id="listit-scatter-y-axis-best"
+                        label="Best"
+                        type="radio"
+                        name="yvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'best')"/>
+                      <menuitem 
+                        id="listit-scatter-y-axis-numchars"
+                        label="Characters"
+                        type="radio"
+                        name="yvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'numChars')"/>
+                      <menuitem 
+                        id="listit-scatter-y-axis-numreplies"
+                        label="Replies"
+                        type="radio"
+                        name="yvar"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'numReplies')"/>
+        
+                      <menuseparator/>
+                      <menuitem 
+                        id="listit-scatter-y-axis-pz-allowed"
+                        label="Pan &amp; Zoom Allowed" 
+                        type="checkbox"
+                        autocheck="false"
+                        checked="true"
+                        persist="checked"
+                        oncommand="Listit.scatterPlot.togglePanZoomEnabled(this, 'y');"/>
+        
+                      <menuseparator/>
+                      <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetRange('y')"/>
+                    </menupopup>
+                  </button>
+        
+                  <checkbox 
+                    id="listit-scatter-axes-autoscale"
+                    oncommand="Listit.scatterPlot.toggleAxesAutoScale(this)"
+                    label="Autoscale" 
+                    crop="end"
+                    persist="checked"
+                    checked="true" />
+                    <!--            -->
+                  <spacer flex="1"/>            
+                </hbox> 
+              </vbox> <!-- scatterplot -->
         
             </tabpanel>
           </tabpanels>
