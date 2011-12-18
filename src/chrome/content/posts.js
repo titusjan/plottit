@@ -126,7 +126,7 @@ Listit.Comment.prototype.__defineGetter__("hot", function() {
     return order + sign * epochSeconds / 45000000;
 });
 
-Listit.Comment.prototype.__defineGetter__("best", function() { 
+Listit.Comment.prototype.__defineGetter__("best", function() { // Not yet implemented
     var s = this.score;
     var sign = Listit.compare(this._ups, this._downs);
     return sign;

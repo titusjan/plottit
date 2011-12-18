@@ -1,59 +1,6 @@
 
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
-// XULSchoolChrome name space
-if ('undefined' == typeof(XULSchoolChrome)) {
-    var XULSchoolChrome = {};
-}
-
-Listit.myDebugRoutine = function () {
-
-    
-    let stringBundle = document.getElementById('listit-string-bundle');
-    let message = stringBundle.getString('listit.greeting.label');
-    
-    //var t = Listit.narf.snarf;  // Shows that exception does not show up in firebug or console
-
-    try {
-        Listit.logger.debug('Listit.debug');
-        Listit.fbLog('Listit.debug');
-        Listit.fbLog(Listit.state.summaryString());
-        Listit.fbLog(Application.prefs.get("extensions.listit.listitEnabled").value);
-        
-        //Listit.fbLog(Listit.state.getCurrentTreeView());
-        //Listit.fbLog(Listit.state.getCurrentTreeView().treebox);
-
-        //Listit.fbLog(new Log4Moz.BasicFormatter());
-        //Listit.fbLog(new Listit.LogFormatter());
-        
-        //var xAxisVariable = document.getElementById('listit-scatter-x-axis-menupopup');
-        //Listit.fbLog(xAxisVariable); 
-
-
-        
-        /*
-        Listit.logger.info(Listit.state.summaryString() );
-        Listit.fbLog(Listit.state.summaryString() );
-        
-        var details = document.getElementById('commentHtmlFrame');
-        Listit.fbLog(details);
-        Listit.logger.debug(details.textContent);
-        details.contentDocument.body.innerHTML = "Pepijn Kenter <i>rules</i>"
-        */
-    } catch (ex) {
-        Listit.logger.error('Exception in Listit.debug;');
-        Listit.logException(ex);
-        //Listit.logException(ex);
-        //Listit.fbLog(ex);
-    }
-}
-
-///////////////////////////////////
-//                               //
-///////////////////////////////////
-
-
-
 // Initializes listit. Is called when the XUL window has loaded
 Listit.onLoad = function() {
 
@@ -637,6 +584,34 @@ Listit.setListitActive = function (listitEnabled) {
 }
 
 
+/* //not yet implemented 
+
+Listit.collapseExpandRedditComment = function(commentId) {
+    Listit.logger.trace("Listit.collapseExpandRedditComment -- ");
+    
+    var selectedIndex = document.getElementById('scoreTree').currentIndex;
+    var curState = Listit.state.getCurrentBrowserState();
+    var prevSelectedComment = curState.selectedComment;
+    var selectedComment = curState.treeView.visibleComments[selectedIndex];
+    Listit.setDetailsFrameHtml(selectedComment.bodyHtml);
+    curState.selectedComment = selectedComment;
+    
+    // Select post in reddit page
+    var $ = content.wrappedJSObject.jQuery;
+    if (prevSelectedComment !== null) {
+        $('div.id-t1_' + prevSelectedComment.id + ' div.entry')
+            .filter(':first').removeClass('listit-selected');
+    }
+    var offset = $('div.id-t1_' + selectedComment.id)
+                    .filter(':visible').find('div.entry:first')
+                    .addClass('listit-selected')
+                    .offset();
+    if (offset) {
+        $('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
+    }
+}
+*/
+
 /*
 From: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow
     If true, useCapture indicates that the user wishes to add the event listener for the capture 
@@ -651,3 +626,49 @@ From: https://developer.mozilla.org/en/XUL_School/Adding_Events_and_Commands
 // Call Listit.onLoad to intialize 
 window.addEventListener('load', Listit.onLoad, true);
 
+
+///////////////////////////////////
+//          DEBUGGING            //
+///////////////////////////////////
+
+Listit.myDebugRoutine = function () {
+
+    
+    let stringBundle = document.getElementById('listit-string-bundle');
+    let message = stringBundle.getString('listit.greeting.label');
+    
+    //var t = Listit.narf.snarf;  // Shows that exception does not show up in firebug or console
+
+    try {
+        Listit.logger.debug('Listit.debug');
+        Listit.fbLog('Listit.debug');
+        Listit.fbLog(Listit.state.summaryString());
+        Listit.fbLog(Application.prefs.get("extensions.listit.listitEnabled").value);
+        
+        //Listit.fbLog(Listit.state.getCurrentTreeView());
+        //Listit.fbLog(Listit.state.getCurrentTreeView().treebox);
+
+        //Listit.fbLog(new Log4Moz.BasicFormatter());
+        //Listit.fbLog(new Listit.LogFormatter());
+        
+        //var xAxisVariable = document.getElementById('listit-scatter-x-axis-menupopup');
+        //Listit.fbLog(xAxisVariable); 
+
+
+        
+        /*
+        Listit.logger.info(Listit.state.summaryString() );
+        Listit.fbLog(Listit.state.summaryString() );
+        
+        var details = document.getElementById('commentHtmlFrame');
+        Listit.fbLog(details);
+        Listit.logger.debug(details.textContent);
+        details.contentDocument.body.innerHTML = "Pepijn Kenter <i>rules</i>"
+        */
+    } catch (ex) {
+        Listit.logger.error('Exception in Listit.debug;');
+        Listit.logException(ex);
+        //Listit.logException(ex);
+        //Listit.fbLog(ex);
+    }
+}
