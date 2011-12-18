@@ -137,6 +137,41 @@ Listit.log10 = function (x) {
     return Math.LOG10E * Math.log(x);
 }
 
+
+// Makes a histogram of an array of numbers. 
+// Histogram has bins of with binWidth. The bins are defined as: [b*k+offset, b*(k+1)+offset)
+// If offset is not defined, it is set to 0.
+// The function returns an array of tuples, each tuple is a [binStart, binCount], only
+// bins having a binCount are returned.
+//
+Listit.createHistogram = function (data, binWidth, offset) {
+
+    if (!offset) offset = 0;
+    
+    // Put data in bins
+    var binNumbers = [ Math.floor( (d-offset)/binWidth ) for each (d in data)];
+
+    // Count occurences
+    var occurs = {};
+    for (let [i, binNr] in Iterator(binNumbers)) {
+        if (binNr in occurs) {
+            occurs[binNr] += 1;
+        } else {
+            occurs[binNr] = 1;
+        }   
+    }
+   
+    // Convert occurences dictionary to array of [binStart, binCount] tuples
+    var histogram = [ [binNr * binWidth + offset, binCount] for each 
+        ([binNr, binCount] in Iterator(occurs))];
+    
+     // Sort by binStart
+    histogram.sort( function (a, b) { return a[0] - b[0] })
+
+    return histogram;
+}
+
+
 /////////////
 // Sorting //
 /////////////

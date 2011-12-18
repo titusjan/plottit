@@ -35,6 +35,8 @@ Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale,
     this.discussion = null;
     this.xAxisVariable = xAxisVariable;
     this.yAxisVariable = yAxisVariable;
+    this.histogramMode = this._axisVariableIsHistogram(xAxisVariable);
+    this.binWidth = 5;
     
     this.axesAutoscale =  axesAutoscale;
 
@@ -51,6 +53,8 @@ Listit.ScatterPlot.prototype.toString = function () {
 
 // Global dictionary with plot settings per variable
 Listit.ScatterPlot.VAR_LONG_NAMES = {
+    'binCount'              : 'Counted',  // used for yvar in historgrams
+    'hist_score'            : 'Score', 
     'depth'                 : 'Depth', 
     'score'                 : 'Score', 
     'ups'                   : 'Up votes', 
@@ -69,6 +73,7 @@ Listit.ScatterPlot.VAR_LONG_NAMES = {
 
 // Global dictionary with plot settings per variable
 Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
+    'binCount'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null }, 
     'depth'            : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     100], labelWidth: 25, tickFormatter: null }, 
     'score'            : { mode: null, panRange: [-10000, 10000], zoomRange: [10,   20000], labelWidth: 25, tickFormatter: null }, 
     'ups'              : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null }, 
@@ -162,17 +167,28 @@ Listit.ScatterPlot.prototype.display = function (bDisplay) {
 
 
 Listit.ScatterPlot.prototype._getSeries = function(discussion) {
+
     
-    var plotSeries = [ {
-        data   : [],
-        points : { show: true },
-        color  : 'orangered',
-    } ];
-    if (discussion) {
-        plotSeries[0].data = Listit.getCommentDataAsTuples(discussion.comments, 
+    var plotSerie = {
+        data      : [],
+        color     : 'orangered',
+    };
+
+    if (this.histogramMode) {
+        plotSerie.bars = { show: true, barWidth: this.binWidth, fill: true, 
+            fillColor: 'rgba(255, 69, 0, 0.3)' }; // orangered 0.3 opacity
+        var data = Listit.getCommentDataAsList(discussion.comments, 
+            this.xAxisVariable.substring(5)); // remove 'hist_' from xAxisVariable
+
+        Listit.logger.debug("Creating histogram for " + data.length + " elements");
+        plotSerie.data = Listit.createHistogram(data, this.binWidth);
+        Listit.logger.debug("Created histogram");
+    } else {
+        plotSerie.points = { show: true };
+        plotSerie.data = Listit.getCommentDataAsList(discussion.comments, 
             this.xAxisVariable, this.yAxisVariable);
     }
-    return plotSeries;
+    return [ plotSerie ];
 }
 
 
@@ -225,9 +241,24 @@ Listit.ScatterPlot.prototype._updateAxisOptions = function (axisStr) {
     Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
     
     var axisVar = (axisStr == 'x') ? this.xAxisVariable : this.yAxisVariable;
+    if (this._axisVariableIsHistogram(axisVar)) {
+        // Remove 'hist_' from axisVar to get options
+        axisVar = axisVar.substr(5) 
+    }
     var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, axisVar);
+    
+    // Hack to set the y options for histogram to binCount. TODO: make cleaner solutions
+    if (axisStr == 'y' && this.histogramMode) { 
+        var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, 'binCount');
+    }
     this.flotWrapper.setAxisOptions(axisStr, varOptions);
 }
+
+
+Listit.ScatterPlot.prototype._axisVariableIsHistogram = function (axisVar) {
+    return (axisVar.substring(0, 4) == 'hist');
+}
+
 
 Listit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuItem, axisVar) {
 try{
@@ -238,25 +269,39 @@ try{
     if (axisStr == 'x') {
         this.xAxisVariable = axisVar;
         menuPopup.setAttribute("xvarselected", axisVar); // store in persistent attribute
+        
+        this.histogramMode = this._axisVariableIsHistogram(axisVar);
+        Listit.logger.debug("Scatterplot histogram mode is " + this.histogramMode);
     } else {
         this.yAxisVariable = axisVar;
         menuPopup.setAttribute("yvarselected", axisVar); // store in persistent attribute
     }
     
     this._updateAxisOptions(axisStr); 
+    if (axisStr == 'x') this._updateAxisOptions('y'); // Hack to also update the y options for histograms.
     this.setDiscussion(this.discussion);
     this.resetRange(axisStr);
     this._updatePlotTitle();
     
 } catch (ex) {
     Listit.logger.error('Exception in Listit.ScatterPlot.setAxisVariable;');
-    Listit.logger.error(ex);
+    Listit.logException(ex);
 }
 }
 
+
 Listit.ScatterPlot.prototype._updatePlotTitle = function () {
-    this.flotWrapper.setPlotTitle(
-        Listit.getProp(Listit.ScatterPlot.VAR_LONG_NAMES, this.yAxisVariable, this.yAxisVariable) + 
-        ' versus ' +
-        Listit.getProp(Listit.ScatterPlot.VAR_LONG_NAMES, this.xAxisVariable, this.xAxisVariable) );
+    if (this.histogramMode) {
+        this.flotWrapper.setPlotTitle(
+            Listit.getProp(Listit.ScatterPlot.VAR_LONG_NAMES, 
+                this.xAxisVariable, this.xAxisVariable) + 
+            ' histogram');
+    } else {
+        this.flotWrapper.setPlotTitle(
+            Listit.getProp(Listit.ScatterPlot.VAR_LONG_NAMES, 
+                this.yAxisVariable, this.yAxisVariable) + 
+            ' versus ' +
+            Listit.getProp(Listit.ScatterPlot.VAR_LONG_NAMES, 
+                this.xAxisVariable, this.xAxisVariable) );
+    }
 }

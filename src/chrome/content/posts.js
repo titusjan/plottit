@@ -191,14 +191,20 @@ Listit.countComments = function(comments) {
 }
 
 
-Listit.getCommentDataAsTuples = function(comments, xVarID, yVarID) {
+Listit.getCommentDataAsList = function(comments, xVarID, yVarID) {
     Listit.assert(comments instanceof Array, 'countComments: comments should be an Array');
  
     var result = [];
     for (var idx = 0; idx < comments.length; idx = idx + 1) {
         var comment = comments[idx];
-        result.push( [comment[xVarID], comment[yVarID]]); 
-        result = result.concat(Listit.getCommentDataAsTuples(comment.replies, xVarID, yVarID));
+        if (yVarID) {
+            // yvar set, return array of tuples
+            result.push( [comment[xVarID], comment[yVarID]]); 
+        } else {
+            // no yvar set, return array of scalars
+            result.push( comment[xVarID] );
+        }
+        result = result.concat(Listit.getCommentDataAsList(comment.replies, xVarID, yVarID));
     }
     return result;
 }
