@@ -40,6 +40,7 @@ try{
         Listit.getCheckboxValue(document.getElementById('listit-scatter-axes-autoscale')), 
         document.getElementById('listit-scatter-x-axis-menupopup').getAttribute('xvarselected'), 
         document.getElementById('listit-scatter-y-axis-menupopup').getAttribute('yvarselected'), 
+        parseFloat(document.getElementById('listit-bin-width-menulist').value), 
         Listit.getCheckboxValue(document.getElementById('listit-scatter-x-axis-pz-allowed')), 
         Listit.getCheckboxValue(document.getElementById('listit-scatter-y-axis-pz-allowed')));
     

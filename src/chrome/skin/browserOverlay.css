@@ -22,3 +22,14 @@
     padding: 20px 5px 5px 5px;
 }
 
+
+/* Smaller bin width list menu to save space */
+#listit-bin-width-menulist {
+    width: 100px;
+}
+
+/* This, unfortunately doesn't work (on OS-X at least). */
+#listit-bin-width-menupopup {
+    width: 150px;
+}
+

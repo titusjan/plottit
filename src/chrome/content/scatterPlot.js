@@ -26,7 +26,7 @@ Open:
 
 // Constructor
 Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale, 
-        xAxisVariable, yAxisVariable, 
+        xAxisVariable, yAxisVariable, binWidth, 
         xAxisPanZoomEnabled, yAxisPanZoomEnabled) 
 {
     this.plotFrameId = plotFrameId;
@@ -36,7 +36,7 @@ Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale,
     this.xAxisVariable = xAxisVariable;
     this.yAxisVariable = yAxisVariable;
     this.histogramMode = this._axisVariableIsHistogram(xAxisVariable);
-    this.binWidth = 5;
+    this.binWidth = binWidth;
     
     this.axesAutoscale =  axesAutoscale;
 
@@ -168,6 +168,7 @@ Listit.ScatterPlot.prototype.display = function (bDisplay) {
 
 Listit.ScatterPlot.prototype._getSeries = function(discussion) {
 
+    Listit.logger.debug("Listit.ScatterPlot._getSeries");
     
     var plotSerie = {
         data      : [],
@@ -241,10 +242,7 @@ Listit.ScatterPlot.prototype._updateAxisOptions = function (axisStr) {
     Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
     
     var axisVar = (axisStr == 'x') ? this.xAxisVariable : this.yAxisVariable;
-    if (this._axisVariableIsHistogram(axisVar)) {
-        // Remove 'hist_' from axisVar to get options
-        axisVar = axisVar.substr(5) 
-    }
+    axisVar = this._removeHistPrefix(axisVar);
     var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, axisVar);
     
     // Hack to set the y options for histogram to binCount. TODO: make cleaner solutions
@@ -257,6 +255,16 @@ Listit.ScatterPlot.prototype._updateAxisOptions = function (axisStr) {
 
 Listit.ScatterPlot.prototype._axisVariableIsHistogram = function (axisVar) {
     return (axisVar.substring(0, 4) == 'hist');
+}
+
+Listit.ScatterPlot.prototype._removeHistPrefix = function (axisVar) {
+
+    // Remove 'hist_' from axisVar if present
+    if (this._axisVariableIsHistogram(axisVar)) {
+        return axisVar.substr(5) 
+    } else {
+        return axisVar
+    }
 }
 
 
@@ -290,11 +298,27 @@ try{
 }
 
 
+Listit.ScatterPlot.prototype.setBinWidth = function (menuList) {
+    try{
+        this.binWidth = parseFloat(menuList.getAttribute('value'));
+        Listit.fbLog(this.binWidth);
+        
+        if (this.histogramMode) {
+            this.setDiscussion(this.discussion);
+            this.resetRange('y');
+        }
+    } catch (ex) {
+        Listit.logger.error('Exception in Listit.ScatterPlot.setAxisVariable;');
+        Listit.logException(ex);
+    }
+}
+
+
 Listit.ScatterPlot.prototype._updatePlotTitle = function () {
     if (this.histogramMode) {
         this.flotWrapper.setPlotTitle(
             Listit.getProp(Listit.ScatterPlot.VAR_LONG_NAMES, 
-                this.xAxisVariable, this.xAxisVariable) + 
+                this._removeHistPrefix(this.xAxisVariable), this.xAxisVariable) + 
             ' histogram');
     } else {
         this.flotWrapper.setPlotTitle(

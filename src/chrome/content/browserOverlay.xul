@@ -656,6 +656,38 @@
                   </button>
         
                   <!-- Bin Width -->
+                  <menulist id="listit-bin-width-menulist"
+                      label="Bin width" 
+                      value="10" 
+                      persist="value"
+                      oncommand="Listit.scatterPlot.setBinWidth(this);">
+                    <menupopup id="listit-bin-width-menupopup">
+                      <menuitem value="0.1" label="0.1"/>
+                      <menuitem value="0.2" label="0.2"/>
+                      <menuitem value="0.5" label="0.5"/> 
+                      <menuitem value="1"   label="1"/>
+                      <menuitem value="2"   label="2"/>
+                      <menuitem value="5"   label="5"/> 
+                      <menuitem value="10"  label="10"/>
+                      <menuitem value="20"  label="20"/>
+                      <menuitem value="50"  label="50"/> 
+                      <menuitem value="100" label="100"/>
+                      <menuseparator/>
+                      <menuitem value="60000"     label="1 minutes"/>
+                      <menuitem value="300000"    label="5 minutes"/>
+                      <menuitem value="600000"    label="10 minutes"/>
+                      <menuitem value="900000"    label="15 minutes"/>
+                      <menuitem value="1800000"   label="30 minutes"/>
+                      <menuitem value="3600000"   label="1 hour"/>
+                      <menuitem value="10800000"  label="3 hours"/>
+                      <menuitem value="21600000"  label="6 hours"/>
+                      <menuitem value="43200000"  label="12 hours"/>
+                      <menuitem value="86400000"  label="1 day"/>
+                      <menuitem value="604800000" label="7 days"/>
+                    </menupopup>
+                  </menulist>
+                  
+                  <!-- Autoscale checkbox -->
                   <checkbox 
                     id="listit-scatter-axes-autoscale"
                     oncommand="Listit.scatterPlot.toggleAxesAutoScale(this)"
