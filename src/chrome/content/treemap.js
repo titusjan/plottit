@@ -1,7 +1,8 @@
-// Needs Javascript 1.8 because of the reduce call.
-
 
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
+
+
+
 
 
 /////////////
@@ -10,8 +11,11 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 Listit.TreeMap = function (data) { // Constructor
 
-    this.data = data; 
-    this.root = this.createNodesFromArray(data);
+    this.root = null;
+    if (data instanceof Listit.Discussion) 
+        this.root = this.createNodesFromDiscussion(data);
+    else if (data instanceof Array) 
+        this.root = this.createNodesFromArray(data);
     
 }
 
@@ -23,14 +27,47 @@ Listit.TreeMap.prototype.toString = function () {
 Listit.TreeMap.prototype._assert = function(expression, message) {
     if (!expression) throw new Error(message);
 }
-//this._assert(data instanceof Array, '_createNodes: data should be an Array');
+//
 
+
+Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion) {
+
+    this._assert(discussion instanceof Listit.Discussion, 
+        'createNodesFromDiscussion: data should be a Listit.Discussion');
+
+    // Create root node
+    var node = new Listit.TreeMap.Node(0);
+    for (let [idx, child] in Iterator(discussion.comments)) {
+        node.addChild( this._auxCreateNodeFromComment(child) );
+    }
+    return node;
+    
+    node._calculatesubtreeValues();
+    return node;
+}
+
+
+Listit.TreeMap.prototype._auxCreateNodeFromComment  = function (comment) {
+
+    var value = comment.score
+    if (value < 1) value = 1;
+    var node = new Listit.TreeMap.Node(value);
+    
+    for (let [idx, child] in Iterator(comment.replies)) {
+        node.addChild( this._auxCreateNodeFromComment(child) );
+    }
+    return node;
+}
 
 Listit.TreeMap.prototype.createNodesFromArray = function (data) {
+
+    this._assert(data instanceof Array, 
+        'createNodesFromArray: data should be an Array');
     var node = this._auxCreateNodesFromArray(data);
     node._calculatesubtreeValues();
     return node;
 }
+
 
 Listit.TreeMap.prototype._auxCreateNodesFromArray = function (data) {
 
@@ -137,7 +174,7 @@ Listit.TreeMap.Node.prototype.render = function (context, depth) {
     var color = 'hsl(' + depth/maxDepth*255 + ', 100%, 50%)';
     context.fillStyle = color;
     
-    context.lineWidth = 2;
+    context.lineWidth = 0.5;
     context.strokeStyle ='black';
     
     var rect = this.rectangle;
