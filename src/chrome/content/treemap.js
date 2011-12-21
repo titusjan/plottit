@@ -1,3 +1,5 @@
+// Needs Javascript 1.8 because of the reduce call.
+
 
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
@@ -26,7 +28,7 @@ Listit.TreeMap._assert = function(expression, message) {
 
 Listit.TreeMap.prototype.createNodesFromArray = function (data) {
     var node = this._auxCreateNodesFromArray(data);
-    node._calculateSumValues();
+    node._calculatesubtreeValues();
     return node;
 }
 
@@ -38,7 +40,7 @@ Listit.TreeMap.prototype._auxCreateNodesFromArray = function (data) {
         return node;
     } else {
         // Create branche node
-        var node = new Listit.TreeMap.Node(0); // branch nodes doesn't have a value
+        var node = new Listit.TreeMap.Node(0); // branch nodes doesn't have a nodeValue
         for (let [idx, elem] in Iterator(data)) {
             node.addChild( this._auxCreateNodesFromArray(elem) );
         }
@@ -53,10 +55,10 @@ Listit.TreeMap.prototype._auxCreateNodesFromArray = function (data) {
 // TreeMap.Node //
 //////////////////
 
-Listit.TreeMap.Node = function (value) { // Constructor
+Listit.TreeMap.Node = function (nodeValue) { // Constructor
     
-    this.value = value;
-    this.sumValue = null;
+    this.nodeValue = nodeValue;
+    this.subtreeValue = null;
     this._children = null;
     this.rectangle = null;
 }
@@ -81,15 +83,64 @@ Listit.TreeMap.Node.prototype.addChild = function (child) {
     this._children.push(child);
 }
 
-// Makes the sumValue element equal to the value property plus the sum of the value
-// property of all the children.
-Listit.TreeMap.Node.prototype._calculateSumValues = function () {
+// Makes the subtreeValue element equal to the nodeValue property plus the sum of the nodeValue
+// properties of the descendants.
+Listit.TreeMap.Node.prototype._calculatesubtreeValues = function () {
 
-    console.log("_calculateSumValues: ", this.value);
-    var sum = this.value;
+    //console.log("_calculatesubtreeValues: ", this.nodeValue);
+    var sum = this.nodeValue;
     for (let [idx, child] in Iterator(this.children)) {
-        sum += child._calculateSumValues();
+        sum += child._calculatesubtreeValues();
     }
-    this.sumValue = sum;
+    this.subtreeValue = sum;
     return sum;
 }
+
+
+
+Listit.TreeMap.Node.prototype.calculateLayout = function (x, y, width, height) {
+
+    //console.log("calculateLayout: ", x, y, width, height, (height > width));
+    
+    this.rectangle = { x: x, y: y, width: width, height: height }
+    
+    var values = [ c.subtreeValue for each (c in this.children)];
+    var sumValues = values.reduce(function (a,b) { return a+b }, 0); // sum of the values array
+    var accumSize = 0; 
+    for (let [idx, child] in Iterator(this.children)) {
+        
+        var relSize = values[idx]/sumValues;
+        if (height > width) {
+            // Lay out from top to bottom.
+            child.calculateLayout(x, y+accumSize, width, relSize*height);
+            accumSize += relSize*height;
+        } else {
+            // Lay out from left to right.
+            child.calculateLayout(x+accumSize, y, relSize*width, height);
+            accumSize += relSize*width;
+        }
+    }
+}
+
+Listit.TreeMap.Node.prototype.render = function (context, depth) {
+    
+    if (!depth) depth = 0;
+   
+    var maxDepth = 10;
+    context.lineWidth = (depth < maxDepth) ? maxDepth-depth+2 : 1;
+    
+    var color = 'hsl(' + depth/maxDepth*255 + ', 100%, 50%)';
+    context.fillStyle = color;
+    
+    context.lineWidth = 2;
+    context.strokeStyle ='black';
+    
+    var rect = this.rectangle;
+    context.fillRect(rect.x, rect.y, rect.width, rect.height);
+    context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+    
+    for (let [idx, child] in Iterator(this.children)) {
+        child.render(context, depth+1);
+    }
+}
+
