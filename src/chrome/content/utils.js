@@ -138,11 +138,12 @@ Listit.log10 = function (x) {
 }
 
 
-// Makes a histogram of an array of numbers. 
-// Histogram has bins of with binWidth. The bins are defined as: [b*k+offset, b*(k+1)+offset)
-// If offset is not defined, it is set to 0.
-// The function returns an array of tuples, each tuple is a [binStart, binCount], only
-// bins having a binCount are returned.
+// Makes a histogram of an array of numbers. It returns an array of tuples where 
+// each tuple is [binStart, binCount]. Only bins having a binCount are returned.
+// The data parameter should be an array of floats. Bins specifies the width of the 
+// bins of the histogram. The offset parameter is optional (default=0); one of the 
+// bins (k=0) starts at this offset. The bins are thus defined as the intervals: 
+//   [binWidth*k+offset, binWidth*(k+1)+offset) where k is a certain integer. 
 //
 Listit.createHistogram = function (data, binWidth, offset) {
 
