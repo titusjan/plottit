@@ -20,7 +20,7 @@ Listit.TreeMap.prototype.toString = function () {
 };
 
 // Helper function
-Listit.TreeMap._assert = function(expression, message) {
+Listit.TreeMap.prototype._assert = function(expression, message) {
     if (!expression) throw new Error(message);
 }
 //this._assert(data instanceof Array, '_createNodes: data should be an Array');
@@ -67,6 +67,10 @@ Listit.TreeMap.Node.prototype.toString = function () {
     return "Listit.TreeMap.Node";
 };
 
+Listit.TreeMap.Node.prototype._assert = function(expression, message) { // helper function
+    if (!expression) throw new Error(message);
+}
+
 Listit.TreeMap.Node.prototype.__defineGetter__("children", function() { 
     // Make sure that an empty list is returned if there are no children defined.
     // This is so that we don't have to create empty lists objects for the leave nodes.
@@ -105,11 +109,12 @@ Listit.TreeMap.Node.prototype.calculateLayout = function (x, y, width, height) {
     this.rectangle = { x: x, y: y, width: width, height: height }
     
     var values = [ c.subtreeValue for each (c in this.children)];
-    var sumValues = values.reduce(function (a,b) { return a+b }, 0); // sum of the values array
+    values.push(this.nodeValue);
+    
     var accumSize = 0; 
     for (let [idx, child] in Iterator(this.children)) {
         
-        var relSize = values[idx]/sumValues;
+        var relSize = values[idx]/this.subtreeValue;
         if (height > width) {
             // Lay out from top to bottom.
             child.calculateLayout(x, y+accumSize, width, relSize*height);
