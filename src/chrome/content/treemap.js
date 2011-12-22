@@ -1,10 +1,6 @@
 
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
-
-
-
-
 /////////////
 // TreeMap //
 /////////////
@@ -37,8 +33,9 @@ Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion) {
 
     // Create root node
     var node = new Listit.TreeMap.Node(0);
-    for (let [idx, child] in Iterator(discussion.comments)) {
-        node.addChild( this._auxCreateNodeFromComment(child) );
+    for (let [idx, reply] in Iterator(discussion.comments)) {
+        var child = node.addChild( this._auxCreateNodeFromComment(reply) );
+        node.value += child.value;
     }
     return node;
     
@@ -49,27 +46,20 @@ Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion) {
 
 Listit.TreeMap.prototype._auxCreateNodeFromComment  = function (comment) {
 
-    var value = comment.score
+    //var value = comment.score;
+    var value = comment.numChars;
     if (value < 1) value = 1;
     var node = new Listit.TreeMap.Node(value);
     
-    for (let [idx, child] in Iterator(comment.replies)) {
-        node.addChild( this._auxCreateNodeFromComment(child) );
+    for (let [idx, reply] in Iterator(comment.replies)) {
+        var child = node.addChild( this._auxCreateNodeFromComment(reply) );
+        node.value += child.value;
     }
     return node;
 }
 
+
 Listit.TreeMap.prototype.createNodesFromArray = function (data) {
-
-    this._assert(data instanceof Array, 
-        'createNodesFromArray: data should be an Array');
-    var node = this._auxCreateNodesFromArray(data);
-    node._calculatesubtreeValues();
-    return node;
-}
-
-
-Listit.TreeMap.prototype._auxCreateNodesFromArray = function (data) {
 
     if ( !(data instanceof Array) ) {
         // Create leave node
@@ -77,9 +67,10 @@ Listit.TreeMap.prototype._auxCreateNodesFromArray = function (data) {
         return node;
     } else {
         // Create branche node
-        var node = new Listit.TreeMap.Node(0); // branch nodes doesn't have a nodeValue
+        var node = new Listit.TreeMap.Node(0);
         for (let [idx, elem] in Iterator(data)) {
-            node.addChild( this._auxCreateNodesFromArray(elem) );
+            var child = node.addChild( this.createNodesFromArray(elem) );
+            node.value += child.value; // branch node.value is sum of childrens value
         }
         return node;
     }
@@ -92,10 +83,9 @@ Listit.TreeMap.prototype._auxCreateNodesFromArray = function (data) {
 // TreeMap.Node //
 //////////////////
 
-Listit.TreeMap.Node = function (nodeValue) { // Constructor
+Listit.TreeMap.Node = function (value) { // Constructor
     
-    this.nodeValue = nodeValue;
-    this.subtreeValue = null;
+    this.value = value;   // for a branch node this should be the sum of its childrens values
     this._children = null;
     this.rectangle = null;
 }
@@ -122,19 +112,11 @@ Listit.TreeMap.Node.prototype.__defineSetter__("children", function(v) { this._c
 Listit.TreeMap.Node.prototype.addChild = function (child) {
     if (this._children == null) this._children = [];
     this._children.push(child);
+    return child;
 }
 
-// Makes the subtreeValue element equal to the nodeValue property plus the sum of the nodeValue
-// properties of the descendants.
-Listit.TreeMap.Node.prototype._calculatesubtreeValues = function () {
-
-    //console.log("_calculatesubtreeValues: ", this.nodeValue);
-    var sum = this.nodeValue;
-    for (let [idx, child] in Iterator(this.children)) {
-        sum += child._calculatesubtreeValues();
-    }
-    this.subtreeValue = sum;
-    return sum;
+Listit.TreeMap.Node.prototype.isLeaveNode = function () {
+    return this.children.length = 0;
 }
 
 
@@ -145,13 +127,12 @@ Listit.TreeMap.Node.prototype.calculateLayout = function (x, y, width, height) {
     
     this.rectangle = { x: x, y: y, width: width, height: height }
     
-    var values = [ c.subtreeValue for each (c in this.children)];
-    values.push(this.nodeValue);
+    var values = [ c.value for each (c in this.children)];
     
     var accumSize = 0; 
     for (let [idx, child] in Iterator(this.children)) {
         
-        var relSize = values[idx]/this.subtreeValue;
+        var relSize = values[idx]/this.value;
         if (height > width) {
             // Lay out from top to bottom.
             child.calculateLayout(x, y+accumSize, width, relSize*height);
@@ -166,15 +147,17 @@ Listit.TreeMap.Node.prototype.calculateLayout = function (x, y, width, height) {
 
 Listit.TreeMap.Node.prototype.render = function (context, depth) {
     
+    if (!this.isLeaveNode) return;
+     
     if (!depth) depth = 0;
    
-    var maxDepth = 10;
+    var maxDepth = 7;
     context.lineWidth = (depth < maxDepth) ? maxDepth-depth+2 : 1;
     
     var color = 'hsl(' + depth/maxDepth*255 + ', 100%, 50%)';
     context.fillStyle = color;
     
-    context.lineWidth = 0.5;
+    context.lineWidth = 0.3;
     context.strokeStyle ='black';
     
     var rect = this.rectangle;
