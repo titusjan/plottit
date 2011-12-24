@@ -44,8 +44,8 @@ Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion) {
 
 Listit.TreeMap.prototype._auxCreateNodeFromComment = function (comment) {
 
-    //var value = 1;
-    var value = comment.score;
+    var value = 1;
+    //var value = comment.score;
     //var value = comment.numChars;
 
     if ( comment.numReplies == 0 ) {
@@ -159,6 +159,7 @@ Listit.TreeMap.Node.prototype.sortNodesByValueDescending = function () {
     }
 }
 
+/*
 Listit.TreeMap.Node.prototype.calculateLayout = function (x, y, width, height) {
 
     //console.log("calculateLayout: ", x, y, width, height, (height > width));
@@ -180,13 +181,43 @@ Listit.TreeMap.Node.prototype.calculateLayout = function (x, y, width, height) {
         }
     }
 }
+*/
+
+Listit.TreeMap.Node.prototype.layoutInStrips = function (rectangle) {
+
+    if (rectangle) this.rectangle = rectangle;
+    
+    // layout node
+    this._layoutStrip(this.rectangle.x, this.rectangle.y, 
+        this.rectangle.width, this.rectangle.height) 
+        
+    for (let [idx, child] in Iterator(this.children)) {
+        child.layoutInStrips();
+    }
+}
+
+
+
+
+Listit.TreeMap.Node.prototype.layoutSquarified = function (rectangle) {
+
+    if (rectangle) this.rectangle = rectangle;
+    
+    // layout node
+    this._squarify(this.rectangle.x, this.rectangle.y, 
+        this.rectangle.width, this.rectangle.height) 
+        
+    for (let [idx, child] in Iterator(this.children)) {
+        child.layoutSquarified();
+    }
+}
 
 
 
 // Lays out the children[start, end] of the node
-Listit.TreeMap.Node.prototype._layoutChildren = function (x, y, width, height, start, end) {
+Listit.TreeMap.Node.prototype._layoutStrip = function (x, y, width, height, start, end) {
 
-    console.log('Listit.TreeMap.Node._layoutChildren', x, y, width, height, start, end);
+    //console.log('Listit.TreeMap.Node._layoutStrip', x, y, width, height, start, end);
 
     var layoutSum = this.children.slice(start, end).
         reduce( function (prev, cur) { return prev+cur.value }, 0);
@@ -204,15 +235,14 @@ Listit.TreeMap.Node.prototype._layoutChildren = function (x, y, width, height, s
             child.rectangle = { x: x+accumSize, y: y, width: relSize*width, height: height };
             accumSize += relSize*width;
         }
-        console.log('Layout: ', child.value, child.rectangle);
+        //console.log('Layout: ', child.value, child.rectangle);
     }
 }
 
 // Lays out the children of the node using the squarify algorithm.
-Listit.TreeMap.Node.prototype.squarify = function (x, y, width, height) {
+Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
 
     this.rectangle = { x: x, y: y, width: width, height: height };
-    
     
     var valueSum = this.children.reduce( function (prev, cur) { return prev+cur.value }, 0);
     console.log(valueSum);
@@ -236,7 +266,7 @@ Listit.TreeMap.Node.prototype.squarify = function (x, y, width, height) {
             //var tryRow = [c.value for each (c in this.children.slice(start, tryEnd))];
             var tryRow = areas.slice(start, tryEnd);
             var currentAspectRatio = Listit.TreeMap.Node.worstAspectRatio(tryRow, shortestSide);
-            console.log('currentAspectRatio', currentAspectRatio, tryRow);
+            //console.log('currentAspectRatio', currentAspectRatio, tryRow);
                 
             if (currentAspectRatio < bestSoFar) {
                 bestSoFar = currentAspectRatio;
@@ -262,14 +292,14 @@ Listit.TreeMap.Node.prototype.squarify = function (x, y, width, height) {
             // split along width
             var split = width * (layoutSum / restSum);
             console.log('split along width', split);
-            this._layoutChildren(x, y, split, height, start, end);
+            this._layoutStrip(x, y, split, height, start, end);
             width -= split;
             x += split;
         } else {
             // split along height
             var split = height * (layoutSum / restSum);
             console.log('split along height', split);
-            this._layoutChildren(x, y, width, split, start, end);
+            this._layoutStrip(x, y, width, split, start, end);
             height -= split;
             y += split;
         }
@@ -279,22 +309,7 @@ Listit.TreeMap.Node.prototype.squarify = function (x, y, width, height) {
     }
     console.log("---- END ----");
 }  
-    
-/*
-Listit.TreeMap.Node.prototype.squarifyChildren = function (areasDone, areasTodo, width) {
-    var currentAddedToDone = areasDone.concat(valuesTodo.slice(0, 1));
-    
-    if (Listit.TreeMap.worstAspectRatio(areasDone, width) <= Listit.TreeMap.worstAspectRatio(currentAddedToDone, width) {
-        this.squarify(areasTodo.slice(1), currentAddedToDone, width);            
-    } else {
-        // Adding a new rectangle does not improve the aspect ratio; 
-        // lay out the current row and fill the rest of the area recursively.
-        
-        this.layoutRow(areasDone);
-        this.squarify(areasTodo, [], remainingWidth);
-    }
-}
-*/
+
 
 Listit.TreeMap.Node.prototype.render = function (context, depth) {
 
@@ -313,8 +328,8 @@ Listit.TreeMap.Node.prototype.render = function (context, depth) {
         var color = 'hsl(' + depth/maxDepth*255 + ', 100%, 50%)';
         context.fillStyle = color;
         
-        //context.lineWidth = 0.3;
-        context.lineWidth = 0.7;
+        context.lineWidth = 0.3;
+        //context.lineWidth = 0.7;
         context.strokeStyle ='black';
         
         var rect = this.rectangle;
@@ -352,23 +367,3 @@ Listit.TreeMap.Node.worstAspectRatio = function (areas, width) {
     }
     return max;
 }
-
-
-/*
-
-// Returns the aspect ratios given a list of areas of rectangles
-// that share a common width (but have different heigths).
-Listit.TreeMap.Node.aspectRatios = function (areas, width) {
-
-    var sum = areas.reduce(function (prev, cur) { return prev+cur }, 0);
-    return [ (width*width * r) / (sum*sum) for each (r in areas ) ];
-}
-
-// Returns the aspect ratios given a list of areas of rectangles
-// that share a common width (but have different heigths).
-Listit.TreeMap.Node.invAspectRatios = function (areas, width) {
-
-    var sum = areas.reduce(function (prev, cur) { return prev+cur }, 0);
-    return [ (sum*sum) / (width*width * r) for each (r in areas ) ];
-}
-*/
