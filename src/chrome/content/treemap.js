@@ -44,8 +44,8 @@ Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion) {
 
 Listit.TreeMap.prototype._auxCreateNodeFromComment = function (comment) {
 
-    var value = 1;
-    //var value = comment.score;
+    //var value = 1;
+    var value = comment.score;
     //var value = comment.numChars;
 
     if ( comment.numReplies == 0 ) {
@@ -70,7 +70,7 @@ Listit.TreeMap.prototype._auxCreateNodeFromComment = function (comment) {
 
 Listit.TreeMap.prototype.createNodesFromArray = function (data) {
 
-    //console.log('createNodesFromArray', data);
+    //Listit.fbLog('createNodesFromArray', data);
     if ( !(data instanceof Array) ) {
         // Create leaf node
         var node = new Listit.TreeMap.Node(data);
@@ -81,7 +81,7 @@ Listit.TreeMap.prototype.createNodesFromArray = function (data) {
         for (let [idx, elem] in Iterator(data)) {
             node.addChild( this.createNodesFromArray(elem) );
         }
-        //console.log('  --return: createNodesFromArray', node);
+        //Listit.fbLog('  --return: createNodesFromArray', node);
         return node;
     }
 };
@@ -162,7 +162,7 @@ Listit.TreeMap.Node.prototype.sortNodesByValueDescending = function () {
 /*
 Listit.TreeMap.Node.prototype.calculateLayout = function (x, y, width, height) {
 
-    //console.log("calculateLayout: ", x, y, width, height, (height > width));
+    //Listit.fbLog("calculateLayout: ", x, y, width, height, (height > width));
     this.rectangle = { x: x, y: y, width: width, height: height }
     
     var values = [ c.value for each (c in this.children)];
@@ -217,7 +217,7 @@ Listit.TreeMap.Node.prototype.layoutSquarified = function (rectangle) {
 // Lays out the children[start, end] of the node
 Listit.TreeMap.Node.prototype._layoutStrip = function (x, y, width, height, start, end) {
 
-    //console.log('Listit.TreeMap.Node._layoutStrip', x, y, width, height, start, end);
+    //Listit.fbLog('Listit.TreeMap.Node._layoutStrip', x, y, width, height, start, end);
 
     var layoutSum = this.children.slice(start, end).
         reduce( function (prev, cur) { return prev+cur.value }, 0);
@@ -235,7 +235,7 @@ Listit.TreeMap.Node.prototype._layoutStrip = function (x, y, width, height, star
             child.rectangle = { x: x+accumSize, y: y, width: relSize*width, height: height };
             accumSize += relSize*width;
         }
-        //console.log('Layout: ', child.value, child.rectangle);
+        //Listit.fbLog('Layout: ', child.value, child.rectangle);
     }
 }
 
@@ -245,14 +245,12 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
     this.rectangle = { x: x, y: y, width: width, height: height };
     
     var valueSum = this.children.reduce( function (prev, cur) { return prev+cur.value }, 0);
-    console.log(valueSum);
     var areas = [ c.value / valueSum * width*height for each (c in this.children)];
-    console.log('areas', areas);
     
     var start = 0;
     while (start < this.children.length) {
-        console.log("---- LOOP ----");
-        console.log('currentRow', [c.value for each (c in this.children.slice(start))] );
+        //Listit.fbLog("---- LOOP ----");
+        //Listit.fbLog('currentRow', [c.value for each (c in this.children.slice(start))] );
     
         var shortestSide = (height < width) ? height : width;
         var longestSide  = (height >= width) ? height : width;
@@ -266,7 +264,7 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
             //var tryRow = [c.value for each (c in this.children.slice(start, tryEnd))];
             var tryRow = areas.slice(start, tryEnd);
             var currentAspectRatio = Listit.TreeMap.Node.worstAspectRatio(tryRow, shortestSide);
-            //console.log('currentAspectRatio', currentAspectRatio, tryRow);
+            //Listit.fbLog('currentAspectRatio', currentAspectRatio, tryRow);
                 
             if (currentAspectRatio < bestSoFar) {
                 bestSoFar = currentAspectRatio;
@@ -275,7 +273,7 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
             }
         }
         
-        console.log('layoutRow', [c.value for each (c in this.children.slice(start, end))] );
+        //Listit.fbLog('layoutRow', [c.value for each (c in this.children.slice(start, end))] );
         
         // Lay out the current children[start, end]
         var layoutSum = areas.slice(start, end).
@@ -283,22 +281,20 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
         var restSum = areas.slice(start).
             reduce( function (prev, cur) { return prev+cur }, 0);
             
-        console.log('layoutSum', layoutSum);
-        console.log('restSum', restSum);
+        //Listit.fbLog('layoutSum', layoutSum);
+        //Listit.fbLog('restSum', restSum);
 
 
         // Split along the longest side
         if (height < width) {
             // split along width
             var split = width * (layoutSum / restSum);
-            console.log('split along width', split);
             this._layoutStrip(x, y, split, height, start, end);
             width -= split;
             x += split;
         } else {
             // split along height
             var split = height * (layoutSum / restSum);
-            console.log('split along height', split);
             this._layoutStrip(x, y, width, split, start, end);
             height -= split;
             y += split;
@@ -307,17 +303,16 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
         // Process the rest
         start = end;
     }
-    console.log("---- END ----");
 }  
 
 
 Listit.TreeMap.Node.prototype.render = function (context, depth) {
 
-    //console.log(this);
+    //Listit.fbLog(this);
     this._assert(this.rectangle, "Listit.TreeMap.Node.render: No layout for current node"); 
 
     if (!depth) depth = 0;
-    //console.log("Listit.TreeMap.Node.render:", depth, this.isLeafNode(), this);
+    //Listit.fbLog("Listit.TreeMap.Node.render:", depth, this.isLeafNode(), this);
     
     if (this.isLeafNode() ) {
         // Draw node
