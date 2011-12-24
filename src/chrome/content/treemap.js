@@ -44,8 +44,9 @@ Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion) {
 
 Listit.TreeMap.prototype._auxCreateNodeFromComment = function (comment) {
 
-    //var value = comment.score;
-    var value = comment.numChars;
+    //var value = 1;
+    var value = comment.score;
+    //var value = comment.numChars;
 
     if ( comment.numReplies == 0 ) {
         // Create leaf node
@@ -84,8 +85,6 @@ Listit.TreeMap.prototype.createNodesFromArray = function (data) {
         return node;
     }
 };
-
-
 
 
 //////////////////
@@ -153,14 +152,19 @@ Listit.TreeMap.Node.prototype.repr = function () {
 }
 
 
+Listit.TreeMap.Node.prototype.sortNodesByValueDescending = function () {
+    this.children.sort( function(a, b) { return b.value - a.value } );
+    for (let [idx, child] in Iterator(this.children) ) {
+        child.sortNodesByValueDescending();
+    }
+}
+
 Listit.TreeMap.Node.prototype.calculateLayout = function (x, y, width, height) {
 
     //console.log("calculateLayout: ", x, y, width, height, (height > width));
-    
     this.rectangle = { x: x, y: y, width: width, height: height }
     
     var values = [ c.value for each (c in this.children)];
-    
     var accumSize = 0; 
     for (let [idx, child] in Iterator(this.children)) {
         
@@ -177,10 +181,126 @@ Listit.TreeMap.Node.prototype.calculateLayout = function (x, y, width, height) {
     }
 }
 
+
+
+// Lays out the children[start, end] of the node
+Listit.TreeMap.Node.prototype._layoutChildren = function (x, y, width, height, start, end) {
+
+    console.log('Listit.TreeMap.Node._layoutChildren', x, y, width, height, start, end);
+
+    var layoutSum = this.children.slice(start, end).
+        reduce( function (prev, cur) { return prev+cur.value }, 0);
+        
+    var accumSize = 0; 
+    for (let [idx, child] in Iterator(this.children.slice(start, end))) {
+        
+        var relSize = child.value/layoutSum;
+        if (height > width) {
+            // Lay out from top to bottom.
+            child.rectangle = { x: x, y: y+accumSize, width: width, height: relSize*height };
+            accumSize += relSize*height;
+        } else {
+            // Lay out from left to right.
+            child.rectangle = { x: x+accumSize, y: y, width: relSize*width, height: height };
+            accumSize += relSize*width;
+        }
+        console.log('Layout: ', child.value, child.rectangle);
+    }
+}
+
+// Lays out the children of the node using the squarify algorithm.
+Listit.TreeMap.Node.prototype.squarify = function (x, y, width, height) {
+
+    this.rectangle = { x: x, y: y, width: width, height: height };
+    
+    
+    var valueSum = this.children.reduce( function (prev, cur) { return prev+cur.value }, 0);
+    console.log(valueSum);
+    var areas = [ c.value / valueSum * width*height for each (c in this.children)];
+    console.log('areas', areas);
+    
+    var start = 0;
+    while (start < this.children.length) {
+        console.log("---- LOOP ----");
+        console.log('currentRow', [c.value for each (c in this.children.slice(start))] );
+    
+        var shortestSide = (height < width) ? height : width;
+        var longestSide  = (height >= width) ? height : width;
+        
+        // Find end index for which the worst aspect ratio of children[start, end] is the best (lowest)
+        var bestSoFar = 1e9;
+        var end = start;
+        
+        for (var tryEnd = start+1; tryEnd <= this.children.length; tryEnd++) {
+            
+            //var tryRow = [c.value for each (c in this.children.slice(start, tryEnd))];
+            var tryRow = areas.slice(start, tryEnd);
+            var currentAspectRatio = Listit.TreeMap.Node.worstAspectRatio(tryRow, shortestSide);
+            console.log('currentAspectRatio', currentAspectRatio, tryRow);
+                
+            if (currentAspectRatio < bestSoFar) {
+                bestSoFar = currentAspectRatio;
+                end = tryEnd;
+                //break; // TODO?
+            }
+        }
+        
+        console.log('layoutRow', [c.value for each (c in this.children.slice(start, end))] );
+        
+        // Lay out the current children[start, end]
+        var layoutSum = areas.slice(start, end).
+            reduce( function (prev, cur) { return prev+cur }, 0);
+        var restSum = areas.slice(start).
+            reduce( function (prev, cur) { return prev+cur }, 0);
+            
+        console.log('layoutSum', layoutSum);
+        console.log('restSum', restSum);
+
+
+        // Split along the longest side
+        if (height < width) {
+            // split along width
+            var split = width * (layoutSum / restSum);
+            console.log('split along width', split);
+            this._layoutChildren(x, y, split, height, start, end);
+            width -= split;
+            x += split;
+        } else {
+            // split along height
+            var split = height * (layoutSum / restSum);
+            console.log('split along height', split);
+            this._layoutChildren(x, y, width, split, start, end);
+            height -= split;
+            y += split;
+        }
+
+        // Process the rest
+        start = end;
+    }
+    console.log("---- END ----");
+}  
+    
+/*
+Listit.TreeMap.Node.prototype.squarifyChildren = function (areasDone, areasTodo, width) {
+    var currentAddedToDone = areasDone.concat(valuesTodo.slice(0, 1));
+    
+    if (Listit.TreeMap.worstAspectRatio(areasDone, width) <= Listit.TreeMap.worstAspectRatio(currentAddedToDone, width) {
+        this.squarify(areasTodo.slice(1), currentAddedToDone, width);            
+    } else {
+        // Adding a new rectangle does not improve the aspect ratio; 
+        // lay out the current row and fill the rest of the area recursively.
+        
+        this.layoutRow(areasDone);
+        this.squarify(areasTodo, [], remainingWidth);
+    }
+}
+*/
+
 Listit.TreeMap.Node.prototype.render = function (context, depth) {
-    
-    
+
     //console.log(this);
+    this._assert(this.rectangle, "Listit.TreeMap.Node.render: No layout for current node"); 
+
     if (!depth) depth = 0;
     //console.log("Listit.TreeMap.Node.render:", depth, this.isLeafNode(), this);
     
@@ -193,7 +313,8 @@ Listit.TreeMap.Node.prototype.render = function (context, depth) {
         var color = 'hsl(' + depth/maxDepth*255 + ', 100%, 50%)';
         context.fillStyle = color;
         
-        context.lineWidth = 0.3;
+        //context.lineWidth = 0.3;
+        context.lineWidth = 0.7;
         context.strokeStyle ='black';
         
         var rect = this.rectangle;
@@ -208,3 +329,46 @@ Listit.TreeMap.Node.prototype.render = function (context, depth) {
     }
 }
 
+///////
+// Static functions
+
+// Determines the worst aspect ratio given a list of areas of rectangles
+// that share a common width (but have different heigths).
+Listit.TreeMap.Node.normalizeData = function (areas, targetSum) {
+    var sum = areas.reduce(function (prev, cur) { return prev+cur }, 0);
+    return [ area  / sum * targetSum  for each (area in areas ) ];
+}
+
+// Determines the worst aspect ratio given a list of areas of rectangles
+// that share a common width (but have different heigths).
+Listit.TreeMap.Node.worstAspectRatio = function (areas, width) {
+
+    var sum = areas.reduce(function (prev, cur) { return prev+cur }, 0);
+    var max = 0;
+    for (var [idx, area] in Iterator(areas)) {
+        var aspectRatio = (width*width * area) / (sum*sum);
+        if (aspectRatio > max) max = aspectRatio;
+        if (1/aspectRatio > max) max = 1/aspectRatio;
+    }
+    return max;
+}
+
+
+/*
+
+// Returns the aspect ratios given a list of areas of rectangles
+// that share a common width (but have different heigths).
+Listit.TreeMap.Node.aspectRatios = function (areas, width) {
+
+    var sum = areas.reduce(function (prev, cur) { return prev+cur }, 0);
+    return [ (width*width * r) / (sum*sum) for each (r in areas ) ];
+}
+
+// Returns the aspect ratios given a list of areas of rectangles
+// that share a common width (but have different heigths).
+Listit.TreeMap.Node.invAspectRatios = function (areas, width) {
+
+    var sum = areas.reduce(function (prev, cur) { return prev+cur }, 0);
+    return [ (sum*sum) / (width*width * r) for each (r in areas ) ];
+}
+*/
