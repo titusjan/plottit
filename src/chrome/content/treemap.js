@@ -47,10 +47,11 @@ Listit.TreeMap.prototype._auxCreateNodeFromComment = function (comment) {
     //var value = 1;
     var value = comment.score;
     //var value = comment.numChars;
+    if (value < 1) value = 1;
 
     if ( comment.numReplies == 0 ) {
         // Create leaf node
-        return new Listit.TreeMap.Node( value >= 1 ? value : 1 );
+        return new Listit.TreeMap.Node( value );
     } else {
         // Create branch node
         
@@ -317,14 +318,14 @@ Listit.TreeMap.Node.prototype.render = function (context, depth) {
     if (this.isLeafNode() ) {
         // Draw node
    
-        var maxDepth = 7;
-        context.lineWidth = (depth < maxDepth) ? maxDepth-depth+2 : 1;
+        var maxDepth = 12;
+        //context.lineWidth = (depth < maxDepth) ? maxDepth-depth+2 : 1;
         
-        var color = 'hsl(' + depth/maxDepth*255 + ', 100%, 50%)';
+        var color = 'hsl(' + (240-(depth/maxDepth*360)) % 360 + ', 100%, 50%)';
         context.fillStyle = color;
         
-        context.lineWidth = 0.3;
-        //context.lineWidth = 0.7;
+        //context.lineWidth = 0.3;
+        context.lineWidth = 0.7;
         context.strokeStyle ='black';
         
         var rect = this.rectangle;

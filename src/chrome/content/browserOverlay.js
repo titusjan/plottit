@@ -215,7 +215,7 @@ Listit.onClickBodyTreeHeader = function(event) {
     
     // Set after actual sorting for easier dection of error in during sort
     column.setAttribute('structure', newStructure);
-    column.setAttribute('label', 'Body as ' + ((newStructure == 'tree') ? 'tree' : 'list'));
+    column.setAttribute('label', 'Comments as ' + ((newStructure == 'tree') ? 'Tree' : 'List'));
     
     Listit.logger.trace("Listit.onClickBodyTreeHeader done ");
 }
@@ -507,6 +507,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
             Listit.scatterPlot.display(true);
             Listit.scatterPlot.setDiscussion(discussion);
+            Listit.setTreeMapDiscussion(discussion);
             
             // Sort and set comments in score tree
             var scoreTree = document.getElementById('scoreTree');
@@ -537,6 +538,27 @@ Listit.setListitVisible = function (visible) {
         Listit.logException(ex);
     }    
 }
+
+Listit.setTreeMapDiscussion = function(discussion) {
+    try {
+        Listit.logger.debug("Listit.setTreeMapDiscussion --");
+        var treeMap = new Listit.TreeMap(discussion);
+        Listit.logger.debug("Treemap created");
+        treeMap.root.sortNodesByValueDescending();
+        Listit.logger.debug("Treemap sorted");
+        
+        var treeMapFrame = document.getElementById('listit-treemap-frame');
+        treeMapFrame.contentWindow.wrappedJSObject.setTreeMap(treeMap);
+        
+        Listit.logger.debug("Treemap rendered");
+
+    } catch (ex) {
+        Listit.logger.error('Exception in Listit.setTreeMapDiscussion;');
+        Listit.logException(ex);
+    }   
+}
+
+    
 
 Listit.showDescription = function(msg) {
     var deck = document.getElementById('listit-messages-deck');
@@ -645,6 +667,14 @@ Listit.myDebugRoutine = function () {
         Listit.fbLog('Listit.debug');
         Listit.fbLog(Listit.state.summaryString());
         Listit.fbLog(Application.prefs.get("extensions.listit.listitEnabled").value);
+        
+        var treeMapFrame = document.getElementById('listit-treemap-frame');
+        Listit.fbLog(treeMapFrame.contentWindow);
+        Listit.fbLog(treeMapFrame.contentDocument);        
+        Listit.fbLog(treeMapFrame.contentWindow.treeMap);
+        
+        
+        treeMapFrame.contentWindow.wrappedJSObject.myDebug();
         
         //Listit.fbLog(Listit.state.getCurrentTreeView());
         //Listit.fbLog(Listit.state.getCurrentTreeView().treebox);

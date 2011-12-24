@@ -17,6 +17,7 @@
   <script type="application/x-javascript" src="chrome://listit/content/scatterPlot.js" />
   <script type="application/x-javascript" src="chrome://listit/content/state.js" />
   <!--<script type="application/x-javascript" src="chrome://listit/content/testData.js" />-->
+  <script type="application/x-javascript" src="chrome://listit/content/treemap.js" />
   <script type="application/x-javascript" src="chrome://listit/content/treeView.js" />
   <script type="application/x-javascript" src="chrome://listit/content/timePeriod.js" />
   <script type="application/x-javascript" src="chrome://listit/content/utils.js" />
@@ -213,7 +214,7 @@
             
             <treecol id="treeBody"
               width="500"
-              label="Body (tree)"
+              label="Comments (tree)"
               structure="tree"
               persist="width ordinal hidden structure label"
               onclick="Listit.onClickBodyTreeHeader(event)"
@@ -327,6 +328,7 @@
           <tabs >
             <tab label="Comment"/>
             <tab label="Plot"/>
+            <tab label="Treemap"/>            
           </tabs>
           <tabpanels id="listit-tabpanels" flex="1">
           
@@ -337,9 +339,9 @@
                 src="chrome://listit/content/detailsframe.html"/>
             </tabpanel>
             
+            <!-- Scatter plot -->
             <tabpanel id="listit-plot-tab">
-            
-              <!-- Scatter plot -->
+
               <vbox flex="1">
                 <iframe id="plotFrame" 
                   flex="1"
@@ -701,6 +703,14 @@
               </vbox> <!-- scatterplot -->
         
             </tabpanel>
+            
+            <!-- TreeMap -->
+            <tabpanel id="listit-treemap-tab">
+              <iframe id="listit-treemap-frame" 
+                flex="1"
+                src="chrome://listit/content/treemapframe.html"/>
+            </tabpanel>
+            
           </tabpanels>
         </tabbox>   
         
