@@ -56,7 +56,6 @@ Listit.booleanToString = function(boolStr) {
 }
 
 	
-
 Listit.XSSDecode = function(s) {
 
     s = s.replace(/&amp;/g,  "&"); 
@@ -66,7 +65,6 @@ Listit.XSSDecode = function(s) {
     s = s.replace(/&gt;/g,   ">");
     return s;
 }
-
 
 
 

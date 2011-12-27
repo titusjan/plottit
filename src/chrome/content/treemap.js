@@ -270,7 +270,8 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
             if (currentAspectRatio < bestSoFar) {
                 bestSoFar = currentAspectRatio;
                 end = tryEnd;
-                //break; // TODO?
+            } else {
+                break; // TODO?
             }
         }
         
@@ -363,3 +364,4 @@ Listit.TreeMap.Node.worstAspectRatio = function (areas, width) {
     }
     return max;
 }
+
