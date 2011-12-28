@@ -175,20 +175,6 @@ Listit.TreeMap.Node.prototype.layoutInStrips = function (rectangle) {
 }
 
 
-Listit.TreeMap.Node.prototype.layoutSquarified = function (rectangle) {
-
-    if (rectangle) this.rectangle = rectangle;
-    
-    // layout node
-    this._squarify(this.rectangle.x, this.rectangle.y, 
-        this.rectangle.width, this.rectangle.height) 
-        
-    for (let [idx, child] in Iterator(this.children)) {
-        child.layoutSquarified();
-    }
-}
-
-
 // Lays out the children[start, end] of the node
 Listit.TreeMap.Node.prototype._layoutStrip = function (x, y, width, height, start, end) {
 
@@ -213,6 +199,24 @@ Listit.TreeMap.Node.prototype._layoutStrip = function (x, y, width, height, star
         //Listit.fbLog('Layout: ', child.value, child.rectangle);
     }
 }
+
+
+// Layout a tree in so called squarified manner. See "Squariﬁed Treemaps" by
+// by Mark Bruls, Kees Huizing, and Jarke J. van Wijk.
+// www.win.tue.nl/~vanwijk/stm.pdf
+Listit.TreeMap.Node.prototype.layoutSquarified = function (rectangle) {
+
+    if (rectangle) this.rectangle = rectangle;
+    
+    // layout node
+    this._squarify(this.rectangle.x, this.rectangle.y, 
+        this.rectangle.width, this.rectangle.height) 
+        
+    for (let [idx, child] in Iterator(this.children)) {
+        child.layoutSquarified();
+    }
+}
+
 
 // Lays out the children of the node using the squarify algorithm.
 Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
@@ -281,57 +285,62 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
     }
 }  
 
-/*
-Listit.TreeMap.Node.prototype._RenderFlat = function (image, depth) {
 
+Listit.TreeMap.Node.prototype.renderFlat = function (context, depth) {
+
+    if (depth == null) depth = 0;
+    
     if (this.isLeafNode() ) {
         // Draw node
    
         var maxDepth = 12;
-        //image.context.lineWidth = (depth < maxDepth) ? maxDepth-depth+2 : 1;
+        //context.lineWidth = (depth < maxDepth) ? maxDepth-depth+2 : 1;
         
         var color = 'hsl(' + (240-(depth/maxDepth*360)) % 360 + ', 100%, 50%)';
-        image.context.fillStyle = color;
+        context.fillStyle = color;
         
-        //image.context.lineWidth = 0.3;
-        image.context.lineWidth = 0.7;
-        image.context.strokeStyle ='black';
+        //context.lineWidth = 0.3;
+        context.lineWidth = 0.7;
+        //context.strokeStyle ='black';
         
         var rect = this.rectangle;
-        image.context.strokeRect(rect.x, rect.y, rect.width, rect.height);
-        //image.context.fillRect(rect.x, rect.y, rect.width, rect.height);
-        this.renderCushion(image, depth, 0, 0, 0, 0);
-        image.context.strokeRect(rect.x, rect.y, rect.width, rect.height);
-        
+        context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+        context.fillRect(rect.x, rect.y, rect.width, rect.height);
+       
     } else {
         // Draw children
         for (let [idx, child] in Iterator(this.children)) {
-            child._RenderFlat(image, depth + this.depthIncrement);
+            child.renderFlat(context, depth + this.depthIncrement);
         }
     }
-}*/
+}
 
 
-
+// Renders cushioned tree maps. See "Cushion Treemaps: Visualization of Hierarchical Information"
+// by Jarke J. van Wijk and Huub van de Wetering. 
+// www.win.tue.nl/~vanwijk/ctm.pdf
 Listit.TreeMap.Node.prototype.renderCushioned = function (context) {
 
     this._assert(this.rectangle, "Listit.TreeMap.Node.render: No layout for root node"); 
 
     var imgData = context.createImageData(Math.round(this.rectangle.width), Math.round(this.rectangle.height));
     var image = {pixels  : imgData.data, 
-                 context : context, 
+                 context : context, // include canvas context for e.g. debugging.
                  width   : Math.round(this.rectangle.width), 
                  height  : Math.round(this.rectangle.height)}
 
-    this._auxRenderCushioned(image, 0, 0, 0, 0, 0);
+    this._auxRenderCushioned(image, 0, 0, 0, 0, 0); // Start recursion with flat cushion.
 
     context.putImageData(imgData, 0, 0);
 }
 
 
-
+// Auxilairy function to renderCushioned that renders the cushions recursively.
+// The sx1, sy1, sx2, sy2 parameters are the coefficients of the parabola shaped cushions:
+//   f(x, y) = sx2*x^2 + sx1*x + sy2*y^2 + sy1*y + c. 
 Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1, sy1, sx2, sy2) {
 
+    // Adds a new cushion for this level
     var f = 1; 
     var h0 = 0.2;
     var h = h0 * Math.pow(f, depth);
@@ -341,15 +350,15 @@ Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1,
 
     if (this.isLeafNode() ) {
     
-        var Iamb = 40;     // Ambient intensity
+        var Iamb = 40;            // Ambient intensity
         var Isource = 255 - Iamb; // Light source intensity
-        //var Lx = -0.09759;  // Light source from slightly upper right
+        var Lx = 0;               // Light source from above 
+        var Ly = 0;               // Light source must have length 1
+        var Lz = 1;
+        //var Lx = -0.09759;      // Light source from slightly upper right
         //var Ly = 0.19518;
         //var Lz = 0.9759;
-        var Lx = 0;  // Light source from slightly upper right
-        var Ly = 0;
-        var Lz = 1;
-    
+        
         var minX = Math.floor(this.rectangle.x + 0.5);
         var minY = Math.floor(this.rectangle.y + 0.5);
         var maxX = Math.floor(this.rectangle.x + this.rectangle.width - 0.5);
@@ -409,6 +418,7 @@ Listit.TreeMap.Node.worstAspectRatio = function (areas, width) {
 }
 
 
+// Add cusion
 Listit.TreeMap.Node._addRidge = function (v1, v2, h, s1, s2) {
 
     return [s1 + 4*h*(v2+v1)/(v2-v1), s2 - 4*h/(v2-v1)];
