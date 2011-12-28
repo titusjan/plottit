@@ -340,7 +340,7 @@ Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1,
     
     // Adds a new cushion for this level
     var f = 0.9; 
-    var h0 = 0.4;
+    var h0 = 0.2;
     var h = h0 * Math.pow(f, depth);
     var rect = this.rectangle;
     [sx1, sx2] = Listit.TreeMap.Node._addRidge( this.rectangle.x, this.rectangle.width+this.rectangle.x,  h, sx1, sx2);
@@ -348,8 +348,8 @@ Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1,
 
     if (this.isLeafNode() ) {
     
-        var Iamb = 40;            // Ambient intensity
-        var Isource = 255 - Iamb; // Light source intensity
+        var Iamb = 0.15;            // Ambient intensity
+        var Isource = 0.75 - Iamb;  // Light source intensity (choosen so that max intensity = 0.85)
         var Lx = 0;               // Light source from above 
         var Ly = 0;               // Light source must have length 1
         var Lz = 1;
@@ -370,14 +370,19 @@ Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1,
                 var cosAngle = (nx*Lx + ny*Ly + Lz) / Math.sqrt(nx*nx + ny*ny + 1.0);
                 
                 var Ispec = Isource * cosAngle
-                if (Ispec < 0) Ispec = 0;
-                var Intensity = Iamb + Ispec;
+                var Intensity = Iamb + Math.max(Ispec, 0);
+                
+                var rgb = Listit.hslToRgb(240/360, 1, Intensity);
                 
                 var i = 4 * (x + (y * image.width));
-                image.pixels[i  ] = 0; // R channel
-                image.pixels[i+1] = Intensity; // G channel
-                image.pixels[i+2] = 0; // B channel
+                image.pixels[i  ] = rgb[0]; // R channel
+                image.pixels[i+1] = rgb[1]; // G channel
+                image.pixels[i+2] = rgb[2]; // B channel
                 image.pixels[i+3] = 255; // Alpha channel
+
+                if (i%10000 == 0) {
+                    console.log('rgb', rgb);
+                }                
             }
         }
         
@@ -421,4 +426,79 @@ Listit.TreeMap.Node._addRidge = function (v1, v2, h, s1, s2) {
 
     return [s1 + 4*h*(v2+v1)/(v2-v1), s2 - 4*h/(v2-v1)];
 }
+
+////////////
+// Colors //
+////////////
+
+// From: http://mjijackson.com/
+
+/**
+ * Converts an RGB color value to HSL. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+ * Assumes r, g, and b are contained in the set [0, 255] and
+ * returns h, s, and l in the set [0, 1].
+ *
+ * @param   Number  r       The red color value
+ * @param   Number  g       The green color value
+ * @param   Number  b       The blue color value
+ * @return  Array           The HSL representation
+ */
+Listit.rgbToHsl = function (r, g, b){
+    r /= 255, g /= 255, b /= 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
+
+    if(max == min){
+        h = s = 0; // achromatic
+    }else{
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch(max){
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+
+    return [h, s, l];
+}
+
+/**
+ * Converts an HSL color value to RGB. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+ * Assumes h, s, and l are contained in the set [0, 1] and
+ * returns r, g, and b in the set [0, 255].
+ *
+ * @param   Number  h       The hue
+ * @param   Number  s       The saturation
+ * @param   Number  l       The lightness
+ * @return  Array           The RGB representation
+ */
+Listit.hslToRgb = function (h, s, l){
+    var r, g, b;
+
+    if(s == 0){
+        r = g = b = l; // achromatic
+    }else{
+        function hue2rgb(p, q, t){
+            if(t < 0) t += 1;
+            if(t > 1) t -= 1;
+            if(t < 1/6) return p + (q - p) * 6 * t;
+            if(t < 1/2) return q;
+            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        }
+
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        var p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+
+    return [r * 255, g * 255, b * 255];
+}
+
 
