@@ -97,7 +97,7 @@ Listit.TreeMap.Node = function (value) { // Constructor
     this.value = value;   // for a branch node this should be the sum of its childrens values
     this._depthIncrement = null;
     this._children       = null;
-    this.rectangle       = undefined;
+    this.rectangle       = null;
 }
 
 Listit.TreeMap.Node.prototype.toString = function () {
@@ -154,6 +154,8 @@ Listit.TreeMap.Node.prototype.repr = function () {
 
 
 Listit.TreeMap.Node.prototype.sortNodesByValueDescending = function () {
+
+    if (this.children.length == 0) return; 
     this.children.sort( function(a, b) { return b.value - a.value } );
     for (let [idx, child] in Iterator(this.children) ) {
         child.sortNodesByValueDescending();
@@ -162,7 +164,7 @@ Listit.TreeMap.Node.prototype.sortNodesByValueDescending = function () {
 
 
 Listit.TreeMap.Node.prototype.layoutInStrips = function (rectangle) {
-
+    
     if (rectangle) this.rectangle = rectangle;
     
     // layout node
@@ -205,8 +207,9 @@ Listit.TreeMap.Node.prototype._layoutStrip = function (x, y, width, height, star
 // by Mark Bruls, Kees Huizing, and Jarke J. van Wijk.
 // www.win.tue.nl/~vanwijk/stm.pdf
 Listit.TreeMap.Node.prototype.layoutSquarified = function (rectangle) {
-
-    if (rectangle) this.rectangle = rectangle;
+    
+    // first call needs to set a rectangle, for the children this is done in _squarify
+    if (rectangle) this.rectangle = rectangle;  
     
     // layout node
     this._squarify(this.rectangle.x, this.rectangle.y, 
@@ -228,8 +231,6 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
     
     var start = 0;
     while (start < this.children.length) {
-        //Listit.fbLog("---- LOOP ----");
-        //Listit.fbLog('currentRow', [c.value for each (c in this.children.slice(start))] );
     
         var shortestSide = (height < width) ? height : width;
         var longestSide  = (height >= width) ? height : width;
@@ -240,33 +241,24 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
         
         for (var tryEnd = start+1; tryEnd <= this.children.length; tryEnd++) {
             
-            //var tryRow = [c.value for each (c in this.children.slice(start, tryEnd))];
             var tryRow = areas.slice(start, tryEnd);
             var currentAspectRatio = Listit.TreeMap.Node.worstAspectRatio(tryRow, shortestSide);
-            //Listit.fbLog('currentAspectRatio', currentAspectRatio, tryRow);
                 
             if (currentAspectRatio < bestSoFar) {
                 bestSoFar = currentAspectRatio;
                 end = tryEnd;
             } else {
-                break; // TODO?
+                break;
             }
         }
         
-        //Listit.fbLog('layoutRow', [c.value for each (c in this.children.slice(start, end))] );
-        
-        // Lay out the current children[start, end]
+        // Lay out children[start, end]
         var layoutSum = areas.slice(start, end).
             reduce( function (prev, cur) { return prev+cur }, 0);
         var restSum = areas.slice(start).
             reduce( function (prev, cur) { return prev+cur }, 0);
-            
-        //Listit.fbLog('layoutSum', layoutSum);
-        //Listit.fbLog('restSum', restSum);
 
-
-        // Split along the longest side
-        if (height < width) {
+        if (height < width) { // Split along the longest side
             // split along width
             var split = width * (layoutSum / restSum);
             this._layoutStrip(x, y, split, height, start, end);
@@ -282,12 +274,14 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
 
         // Process the rest
         start = end;
-    }
+    } // while
 }  
 
 
 Listit.TreeMap.Node.prototype.renderFlat = function (context, depth) {
 
+    if (this.value <= 0) return;
+    
     if (depth == null) depth = 0;
     
     if (this.isLeafNode() ) {
@@ -321,13 +315,15 @@ Listit.TreeMap.Node.prototype.renderFlat = function (context, depth) {
 // www.win.tue.nl/~vanwijk/ctm.pdf
 Listit.TreeMap.Node.prototype.renderCushioned = function (context) {
 
+    var rect = this.rectangle;
     this._assert(this.rectangle, "Listit.TreeMap.Node.render: No layout for root node"); 
 
-    var imgData = context.createImageData(Math.round(this.rectangle.width), Math.round(this.rectangle.height));
+    context.clearRect(rect.x, rect.y, rect.width, rect.height);
+    var imgData = context.createImageData(Math.round(rect.width), Math.round(rect.height));
     var image = {pixels  : imgData.data, 
                  context : context, // include canvas context for e.g. debugging.
-                 width   : Math.round(this.rectangle.width), 
-                 height  : Math.round(this.rectangle.height)}
+                 width   : Math.round(rect.width), 
+                 height  : Math.round(rect.height)}
 
     this._auxRenderCushioned(image, 0, 0, 0, 0, 0); // Start recursion with flat cushion.
 
@@ -340,9 +336,11 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context) {
 //   f(x, y) = sx2*x^2 + sx1*x + sy2*y^2 + sy1*y + c. 
 Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1, sy1, sx2, sy2) {
 
+    if (this.value <= 0) return;
+    
     // Adds a new cushion for this level
-    var f = 1; 
-    var h0 = 0.2;
+    var f = 0.9; 
+    var h0 = 0.4;
     var h = h0 * Math.pow(f, depth);
     var rect = this.rectangle;
     [sx1, sx2] = Listit.TreeMap.Node._addRidge( this.rectangle.x, this.rectangle.width+this.rectangle.x,  h, sx1, sx2);
