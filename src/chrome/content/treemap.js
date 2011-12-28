@@ -339,7 +339,7 @@ Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1,
     if (this.value <= 0) return;
     
     // Adds a new cushion for this level
-    var f = 0.9; 
+    var f = 0.5; 
     var h0 = 0.2;
     var h = h0 * Math.pow(f, depth);
     var rect = this.rectangle;
@@ -348,7 +348,7 @@ Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1,
 
     if (this.isLeafNode() ) {
     
-        var Iamb = 0.15;            // Ambient intensity
+        var Iamb = 0.2;            // Ambient intensity
         var Isource = 0.75 - Iamb;  // Light source intensity (choosen so that max intensity = 0.85)
         var Lx = 0;               // Light source from above 
         var Ly = 0;               // Light source must have length 1
