@@ -160,29 +160,6 @@ Listit.TreeMap.Node.prototype.sortNodesByValueDescending = function () {
     }
 }
 
-/*
-Listit.TreeMap.Node.prototype.calculateLayout = function (x, y, width, height) {
-
-    //Listit.fbLog("calculateLayout: ", x, y, width, height, (height > width));
-    this.rectangle = { x: x, y: y, width: width, height: height }
-    
-    var values = [ c.value for each (c in this.children)];
-    var accumSize = 0; 
-    for (let [idx, child] in Iterator(this.children)) {
-        
-        var relSize = values[idx]/this.value;
-        if (height > width) {
-            // Lay out from top to bottom.
-            child.calculateLayout(x, y+accumSize, width, relSize*height);
-            accumSize += relSize*height;
-        } else {
-            // Lay out from left to right.
-            child.calculateLayout(x+accumSize, y, relSize*width, height);
-            accumSize += relSize*width;
-        }
-    }
-}
-*/
 
 Listit.TreeMap.Node.prototype.layoutInStrips = function (rectangle) {
 
@@ -198,8 +175,6 @@ Listit.TreeMap.Node.prototype.layoutInStrips = function (rectangle) {
 }
 
 
-
-
 Listit.TreeMap.Node.prototype.layoutSquarified = function (rectangle) {
 
     if (rectangle) this.rectangle = rectangle;
@@ -212,7 +187,6 @@ Listit.TreeMap.Node.prototype.layoutSquarified = function (rectangle) {
         child.layoutSquarified();
     }
 }
-
 
 
 // Lays out the children[start, end] of the node
@@ -307,39 +281,108 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
     }
 }  
 
+/*
+Listit.TreeMap.Node.prototype._RenderFlat = function (image, depth) {
 
-Listit.TreeMap.Node.prototype.render = function (context, depth) {
-
-    //Listit.fbLog(this);
-    this._assert(this.rectangle, "Listit.TreeMap.Node.render: No layout for current node"); 
-
-    if (!depth) depth = 0;
-    //Listit.fbLog("Listit.TreeMap.Node.render:", depth, this.isLeafNode(), this);
-    
     if (this.isLeafNode() ) {
         // Draw node
    
         var maxDepth = 12;
-        //context.lineWidth = (depth < maxDepth) ? maxDepth-depth+2 : 1;
+        //image.context.lineWidth = (depth < maxDepth) ? maxDepth-depth+2 : 1;
         
         var color = 'hsl(' + (240-(depth/maxDepth*360)) % 360 + ', 100%, 50%)';
-        context.fillStyle = color;
+        image.context.fillStyle = color;
         
-        //context.lineWidth = 0.3;
-        context.lineWidth = 0.7;
-        context.strokeStyle ='black';
+        //image.context.lineWidth = 0.3;
+        image.context.lineWidth = 0.7;
+        image.context.strokeStyle ='black';
         
         var rect = this.rectangle;
-        context.fillRect(rect.x, rect.y, rect.width, rect.height);
-        context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+        image.context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+        //image.context.fillRect(rect.x, rect.y, rect.width, rect.height);
+        this.renderCushion(image, depth, 0, 0, 0, 0);
+        image.context.strokeRect(rect.x, rect.y, rect.width, rect.height);
         
     } else {
         // Draw children
         for (let [idx, child] in Iterator(this.children)) {
-            child.render(context, depth + this.depthIncrement);
+            child._RenderFlat(image, depth + this.depthIncrement);
+        }
+    }
+}*/
+
+
+
+Listit.TreeMap.Node.prototype.renderCushioned = function (context) {
+
+    this._assert(this.rectangle, "Listit.TreeMap.Node.render: No layout for root node"); 
+
+    var imgData = context.createImageData(Math.round(this.rectangle.width), Math.round(this.rectangle.height));
+    var image = {pixels  : imgData.data, 
+                 context : context, 
+                 width   : Math.round(this.rectangle.width), 
+                 height  : Math.round(this.rectangle.height)}
+
+    this._auxRenderCushioned(image, 0, 0, 0, 0, 0);
+
+    context.putImageData(imgData, 0, 0);
+}
+
+
+
+Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1, sy1, sx2, sy2) {
+
+    var f = 1; 
+    var h0 = 0.2;
+    var h = h0 * Math.pow(f, depth);
+    var rect = this.rectangle;
+    [sx1, sx2] = Listit.TreeMap.Node._addRidge( this.rectangle.x, this.rectangle.width+this.rectangle.x,  h, sx1, sx2);
+    [sy1, sy2] = Listit.TreeMap.Node._addRidge( this.rectangle.y, this.rectangle.height+this.rectangle.y, h, sy1, sy2);
+
+    if (this.isLeafNode() ) {
+    
+        var Iamb = 40;     // Ambient intensity
+        var Isource = 255 - Iamb; // Light source intensity
+        //var Lx = -0.09759;  // Light source from slightly upper right
+        //var Ly = 0.19518;
+        //var Lz = 0.9759;
+        var Lx = 0;  // Light source from slightly upper right
+        var Ly = 0;
+        var Lz = 1;
+    
+        var minX = Math.floor(this.rectangle.x + 0.5);
+        var minY = Math.floor(this.rectangle.y + 0.5);
+        var maxX = Math.floor(this.rectangle.x + this.rectangle.width - 0.5);
+        var maxY = Math.floor(this.rectangle.y + this.rectangle.height - 0.5);
+            
+        for (var y = minY; y <= maxY; y += 1) {
+            for (var x = minX; x <= maxX; x += 1) {
+            
+                var nx = - (2 * sx2 * (x+0.5) + sx1); // Normal vector of cushion
+                var ny = - (2 * sy2 * (y+0.5) + sy1); 
+                var cosAngle = (nx*Lx + ny*Ly + Lz) / Math.sqrt(nx*nx + ny*ny + 1.0);
+                
+                var Ispec = Isource * cosAngle
+                if (Ispec < 0) Ispec = 0;
+                var Intensity = Iamb + Ispec;
+                
+                var i = 4 * (x + (y * image.width));
+                image.pixels[i  ] = 0; // R channel
+                image.pixels[i+1] = Intensity; // G channel
+                image.pixels[i+2] = 0; // B channel
+                image.pixels[i+3] = 255; // Alpha channel
+            }
+        }
+        
+    } else {
+        // Draw children
+        for (let [idx, child] in Iterator(this.children)) {
+            child._auxRenderCushioned(image, depth + this.depthIncrement, sx1, sy1, sx2, sy2);
         }
     }
 }
+
+
 
 ///////
 // Static functions
@@ -363,5 +406,11 @@ Listit.TreeMap.Node.worstAspectRatio = function (areas, width) {
         if (1/aspectRatio > max) max = 1/aspectRatio;
     }
     return max;
+}
+
+
+Listit.TreeMap.Node._addRidge = function (v1, v2, h, s1, s2) {
+
+    return [s1 + 4*h*(v2+v1)/(v2-v1), s2 - 4*h/(v2-v1)];
 }
 
