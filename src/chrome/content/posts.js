@@ -157,6 +157,10 @@ Listit.Comment.prototype.__defineGetter__("age", function() {
 });
 
 
+Listit.Comment.prototype.__defineGetter__("one", function() { 
+    return 1; 
+});
+
 Listit.Comment.prototype.__defineGetter__("debug", function() { 
     return this._replies.length + 1; 
 });

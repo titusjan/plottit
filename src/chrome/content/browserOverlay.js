@@ -21,9 +21,12 @@ try{
     
     // Initialize state object
     Listit.state = new Listit.State(
-        Application.prefs.get("extensions.listit.listitEnabled").value, 
-        document.getElementById('treeLocalDate').getAttribute('format'), 
-        document.getElementById('treeUtcDate').getAttribute('format') );
+        Application.prefs.get("extensions.listit.listitEnabled").value,    // listitEnabled
+        document.getElementById('treeLocalDate').getAttribute('format'),   // localDateFormat
+        document.getElementById('treeUtcDate').getAttribute('format'),     // utcDateFormat
+        document.getElementById('listit-treemap-size-menulist').value,     // treeMapSizeProperty
+        'none'    // treeMapColorVariable
+        );
 
     // Sets button tooltip text
     Listit.setListitActive(Application.prefs.get("extensions.listit.listitEnabled").value);
@@ -43,7 +46,7 @@ try{
         parseFloat(document.getElementById('listit-bin-width-menulist').value), 
         Listit.getCheckboxValue(document.getElementById('listit-scatter-x-axis-pz-allowed')), 
         Listit.getCheckboxValue(document.getElementById('listit-scatter-y-axis-pz-allowed')));
-    
+        
     var scoreTree = document.getElementById('scoreTree');
     scoreTree.view = Listit.state.getCurrentTreeView();
     
@@ -541,10 +544,12 @@ Listit.setListitVisible = function (visible) {
 
 Listit.setTreeMapDiscussion = function(discussion) {
     try {
+        var sizeProperty = Listit.state.treeMapSizeProperty;
         Listit.logger.debug("Listit.setTreeMapDiscussion --");
-        var treeMap = new Listit.TreeMap(discussion);
+        var treeMap = new Listit.TreeMap(discussion, Listit.state.treeMapSizeProperty);
         Listit.logger.debug("Treemap created");
-        treeMap.root.sortNodesByValueDescending();
+        Listit.fbLog(treeMap);
+        treeMap.root.sortNodesBySizeDescending();
         Listit.logger.debug("Treemap sorted");
         
         var treeMapFrame = document.getElementById('listit-treemap-frame');
@@ -557,6 +562,19 @@ Listit.setTreeMapDiscussion = function(discussion) {
         Listit.logException(ex);
     }   
 }
+
+
+Listit.setTreeMapSizeProperty = function(menuList) {
+    try {
+        Listit.logger.trace("Listit.setTreeMapSizeProperty: " + menuList.value);
+        Listit.state.treeMapSizeProperty = menuList.value;
+        Listit.setTreeMapDiscussion(Listit.state.getCurrentBrowserDiscussion());
+    } catch (ex) {
+        Listit.logger.error('Exception in Listit.setTreeMapSizeProperty;');
+        Listit.logException(ex);
+    }   
+}
+
 
     
 

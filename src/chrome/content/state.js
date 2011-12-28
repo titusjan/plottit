@@ -49,8 +49,14 @@ Listit.BrowserState.prototype.setStatus = function (status) {
 // State //
 ///////////
 
-// The application state of Listit (there will be one per browser window).
-Listit.State = function (listitEnabled, localDateFormat, utcDateFormat) { // Constructor
+// The application state of Listit (there will be one per XUL window).
+Listit.State = function (  // Constructor
+        listitEnabled, 
+        localDateFormat, 
+        utcDateFormat, 
+        treeMapSizeProperty,
+        treeMapColorProperty) 
+{ 
 
     this.listitEnabled = listitEnabled;
     this.currentBrowserID = null;
@@ -59,6 +65,9 @@ Listit.State = function (listitEnabled, localDateFormat, utcDateFormat) { // Con
     
     this._localDateFormat = localDateFormat;
     this._utcDateFormat   = utcDateFormat;
+    
+    this.treeMapSizeProperty = treeMapSizeProperty;
+    this.treeMapColorProperty = treeMapColorProperty;
 
 }
 
@@ -133,6 +142,11 @@ Listit.State.prototype.getCurrentBrowserState = function () {
 
 Listit.State.prototype.getCurrentTreeView = function () {
     return this.browserStates[this.currentBrowserID].treeView;
+}
+
+
+Listit.State.prototype.getCurrentBrowserDiscussion = function () {
+    return this.browserStates[this.currentBrowserID].discussion;
 }
 
 Listit.State.prototype.getUtcDateFormat = function () {

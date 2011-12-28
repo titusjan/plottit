@@ -706,9 +706,32 @@
             
             <!-- TreeMap -->
             <tabpanel id="listit-treemap-tab">
-              <iframe id="listit-treemap-frame" 
-                flex="1"
-                src="chrome://listit/content/treemapframe.html"/>
+            
+              <vbox flex="1">
+                
+                <iframe id="listit-treemap-frame" 
+                  flex="1"
+                  src="chrome://listit/content/treemapframe.html"/>
+        
+                <hbox align="baseline">
+                  <label value="Size"/>
+                  <menulist id="listit-treemap-size-menulist"
+                      label="Size" 
+                      value="numChars" 
+                      persist="value"
+                      oncommand="Listit.setTreeMapSizeProperty(this);">
+                    <menupopup id="listit-bin-width-menupopup">
+                      <menuitem value="score"    label="Score"/>
+                      <menuitem value="ups"      label="Up"/>
+                      <menuitem value="downs"    label="Down"/>
+                      <menuitem value="votes"    label="Votes"/>
+                      <menuitem value="score"    label="Score"/>
+                      <menuitem value="numChars" label="Characters"/>
+                      <menuitem value="one"      label="Same size"/>
+                    </menupopup>
+                  </menulist>
+                </hbox>
+              </vbox>
             </tabpanel>
             
           </tabpanels>

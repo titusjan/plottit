@@ -5,11 +5,11 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 // TreeMap //
 /////////////
 
-Listit.TreeMap = function (data) { // Constructor
+Listit.TreeMap = function (data, sizeProperty) { // Constructor
 
     this.root = null;
     if (data instanceof Listit.Discussion) 
-        this.root = this.createNodesFromDiscussion(data);
+        this.root = this.createNodesFromDiscussion(data, sizeProperty);
     else if (data instanceof Array) 
         this.root = this.createNodesFromArray(data);
     
@@ -26,7 +26,7 @@ Listit.TreeMap.prototype._assert = function(expression, message) {
 //
 
 
-Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion) {
+Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion, sizeProperty) {
 
     this._assert(discussion instanceof Listit.Discussion, 
         'createNodesFromDiscussion: data should be a Listit.Discussion');
@@ -36,17 +36,15 @@ Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion) {
     node.depthIncrement = 0; // this node is the root and does not increase the depth!
     
     for (let [idx, comments] in Iterator(discussion.comments)) {
-        node.addChild( this._auxCreateNodeFromComment(comments) );
+        node.addChild( this._auxCreateNodeFromComment(comments, sizeProperty) );
     }
     return node;
 }
 
 
-Listit.TreeMap.prototype._auxCreateNodeFromComment = function (comment) {
+Listit.TreeMap.prototype._auxCreateNodeFromComment = function (comment, sizeProperty) {
 
-    //var size = 1;
-    var size = comment.score;
-    //var size = comment.numChars;
+    var size = comment[sizeProperty];
     if (size < 1) size = 1;
 
     if ( comment.numReplies == 0 ) {
@@ -61,7 +59,7 @@ Listit.TreeMap.prototype._auxCreateNodeFromComment = function (comment) {
         
         var childrenNode = new Listit.TreeMap.Node(0); 
         for (let [idx, reply] in Iterator(comment.replies)) {
-            childrenNode.addChild( this._auxCreateNodeFromComment(reply) );
+            childrenNode.addChild( this._auxCreateNodeFromComment(reply, sizeProperty) );
         }
         node.addChild(childrenNode); // Add after the childrenNode.size is final!
         return node;
@@ -153,12 +151,12 @@ Listit.TreeMap.Node.prototype.repr = function () {
 }
 
 
-Listit.TreeMap.Node.prototype.sortNodesBysizeDescending = function () {
+Listit.TreeMap.Node.prototype.sortNodesBySizeDescending = function () {
 
     if (this.children.length == 0) return; 
     this.children.sort( function(a, b) { return b.size - a.size } );
     for (let [idx, child] in Iterator(this.children) ) {
-        child.sortNodesBysizeDescending();
+        child.sortNodesBySizeDescending();
     }
 }
 
