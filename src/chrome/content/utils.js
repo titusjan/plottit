@@ -58,6 +58,8 @@ Listit.booleanToString = function(boolStr) {
 	
 Listit.XSSDecode = function(s) {
 
+    if (!s) return "";
+    
     s = s.replace(/&amp;/g,  "&"); 
     s = s.replace(/&#39;/g,  "'"); 
     s = s.replace(/&quot;/g, '"');
