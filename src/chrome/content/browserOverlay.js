@@ -21,11 +21,12 @@ try{
     
     // Initialize state object
     Listit.state = new Listit.State(
-        Application.prefs.get("extensions.listit.listitEnabled").value,    // listitEnabled
-        document.getElementById('treeLocalDate').getAttribute('format'),   // localDateFormat
-        document.getElementById('treeUtcDate').getAttribute('format'),     // utcDateFormat
-        document.getElementById('listit-treemap-size-menulist').value,     // treeMapSizeProperty
-        'none'    // treeMapColorVariable
+        Application.prefs.get("extensions.listit.listitEnabled").value,     // listitEnabled
+        document.getElementById('treeLocalDate').getAttribute('format'),    // localDateFormat
+        document.getElementById('treeUtcDate').getAttribute('format'),      // utcDateFormat
+        document.getElementById('listit-treemap-size-menulist').value,      // treeMapSizeProperty
+        Listit.HSL_CONVERSION_FUNCTIONS[
+            document.getElementById('listit-treemap-color-menulist').value] // treeMapColorVariable
         );
 
     // Sets button tooltip text
@@ -546,9 +547,12 @@ Listit.setTreeMapDiscussion = function(discussion) {
     try {
         var sizeProperty = Listit.state.treeMapSizeProperty;
         Listit.logger.debug("Listit.setTreeMapDiscussion --");
-        var treeMap = new Listit.TreeMap(discussion, Listit.state.treeMapSizeProperty);
+        
+        var treeMap = new Listit.TreeMap(discussion, 
+            Listit.state.treeMapSizeProperty,
+            Listit.state.fnHslOfComment);
         Listit.logger.debug("Treemap created");
-        Listit.fbLog(treeMap);
+        //Listit.fbLog(treeMap);
         treeMap.root.sortNodesBySizeDescending();
         Listit.logger.debug("Treemap sorted");
         
@@ -575,7 +579,36 @@ Listit.setTreeMapSizeProperty = function(menuList) {
     }   
 }
 
+// Conversion functions that calculate a HSL triplet belonging to a comment.
+Listit.HUE_BLUE = 0.6666666667;
+Listit.HUE_ORANGE_RED = 0.044444444444444446; // is 16/360 degrees
+Listit.HSL_CONVERSION_FUNCTIONS = {
 
+    'none' : function(comment) { return [0, 0, 1] }, // Always grey
+    'depth': function(comment) { return [Listit.HUE_BLUE - (comment.depth/10) % 1, 1, 1] },   // maxdepth is 10
+    'numReplies': function(comment) { return [Listit.HUE_BLUE - (comment.numReplies/50) % 1, 1, 1] },   // maxdepth is 10
+    'score': function(comment) { 
+        
+        if (comment.score == 0) {
+            return [0, 0, 1];
+        } else if (comment.score >= 0) {
+            return [Listit.HUE_ORANGE_RED, Math.min(1, Listit.log10(comment.score) / 3), 1];
+        } else {
+            return [Listit.HUE_BLUE, Math.min(1, 0.79 * Listit.log10(-comment.score) / 3), 1];
+        }
+    },  
+}
+
+Listit.setTreeMapColorProperty = function(menuList) {
+    try {
+        Listit.logger.trace("Listit.setTreeMapColorProperty: " + menuList.value);
+        Listit.state.fnHslOfComment = Listit.HSL_CONVERSION_FUNCTIONS[menuList.value];
+        Listit.setTreeMapDiscussion(Listit.state.getCurrentBrowserDiscussion());
+    } catch (ex) {
+        Listit.logger.error('Exception in Listit.setTreeMapColorProperty;');
+        Listit.logException(ex);
+    }   
+}
     
 
 Listit.showDescription = function(msg) {

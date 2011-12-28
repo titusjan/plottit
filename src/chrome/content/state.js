@@ -55,7 +55,7 @@ Listit.State = function (  // Constructor
         localDateFormat, 
         utcDateFormat, 
         treeMapSizeProperty,
-        treeMapColorProperty) 
+        fnHslOfComment) 
 { 
 
     this.listitEnabled = listitEnabled;
@@ -67,7 +67,7 @@ Listit.State = function (  // Constructor
     this._utcDateFormat   = utcDateFormat;
     
     this.treeMapSizeProperty = treeMapSizeProperty;
-    this.treeMapColorProperty = treeMapColorProperty;
+    this.fnHslOfComment = fnHslOfComment;
 
 }
 

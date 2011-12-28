@@ -714,6 +714,7 @@
                   src="chrome://listit/content/treemapframe.html"/>
         
                 <hbox align="baseline">
+                  
                   <label value="Size"/>
                   <menulist id="listit-treemap-size-menulist"
                       label="Size" 
@@ -725,9 +726,26 @@
                       <menuitem value="ups"      label="Up"/>
                       <menuitem value="downs"    label="Down"/>
                       <menuitem value="votes"    label="Votes"/>
-                      <menuitem value="score"    label="Score"/>
                       <menuitem value="numChars" label="Characters"/>
                       <menuitem value="one"      label="Same size"/>
+                    </menupopup>
+                  </menulist>
+
+                  <label value="Color"/>
+                  <menulist id="listit-treemap-color-menulist"
+                      label="Color" 
+                      value="none" 
+                      persist="value"
+                      oncommand="Listit.setTreeMapColorProperty(this);">
+                    <menupopup id="listit-bin-width-menupopup">
+                      <menuitem value="none"       label="No color"/>
+                      <menuitem value="depth"      label="Depth"/>
+                      <menuitem value="numReplies" label="Replies"/>
+                      <menuitem value="score"      label="Score"/><!--
+                      <menuitem value="ups"        label="Up"/>
+                      <menuitem value="downs"      label="Down"/>
+                      <menuitem value="votes"      label="Votes"/>
+                      <menuitem value="numChars"   label="Characters"/>-->
                     </menupopup>
                   </menulist>
                 </hbox>

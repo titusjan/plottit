@@ -5,11 +5,11 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 // TreeMap //
 /////////////
 
-Listit.TreeMap = function (data, sizeProperty) { // Constructor
+Listit.TreeMap = function (data, sizeProperty, fnHslOfComment) { // Constructor
 
     this.root = null;
     if (data instanceof Listit.Discussion) 
-        this.root = this.createNodesFromDiscussion(data, sizeProperty);
+        this.root = this.createNodesFromDiscussion(data, sizeProperty, fnHslOfComment);
     else if (data instanceof Array) 
         this.root = this.createNodesFromArray(data);
     
@@ -26,7 +26,7 @@ Listit.TreeMap.prototype._assert = function(expression, message) {
 //
 
 
-Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion, sizeProperty) {
+Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion, sizeProperty, fnHslOfComment) {
 
     this._assert(discussion instanceof Listit.Discussion, 
         'createNodesFromDiscussion: data should be a Listit.Discussion');
@@ -36,30 +36,30 @@ Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion, size
     node.depthIncrement = 0; // this node is the root and does not increase the depth!
     
     for (let [idx, comments] in Iterator(discussion.comments)) {
-        node.addChild( this._auxCreateNodeFromComment(comments, sizeProperty) );
+        node.addChild( this._auxCreateNodeFromComment(comments, sizeProperty, fnHslOfComment) );
     }
     return node;
 }
 
 
-Listit.TreeMap.prototype._auxCreateNodeFromComment = function (comment, sizeProperty) {
+Listit.TreeMap.prototype._auxCreateNodeFromComment = function (comment, sizeProperty, fnHslOfComment) {
 
-    var size = comment[sizeProperty];
-    if (size < 1) size = 1;
+    var size = Math.max(1, comment[sizeProperty]); // All sizes < 1 are rendered as 1.
+    var hsl = fnHslOfComment(comment);
 
     if ( comment.numReplies == 0 ) {
         // Create leaf node
-        return new Listit.TreeMap.Node( size );
+        return new Listit.TreeMap.Node( size, hsl[0], hsl[1] );
     } else {
         // Create branch node
         
         var node = new Listit.TreeMap.Node(0);
         node.depthIncrement = 0; // this node is only to split up, does not represent a new depth!
-        node.addChild( new Listit.TreeMap.Node(size) ); 
+        node.addChild( new Listit.TreeMap.Node(size, hsl[0], hsl[1]) ); 
         
         var childrenNode = new Listit.TreeMap.Node(0); 
         for (let [idx, reply] in Iterator(comment.replies)) {
-            childrenNode.addChild( this._auxCreateNodeFromComment(reply, sizeProperty) );
+            childrenNode.addChild( this._auxCreateNodeFromComment(reply, sizeProperty, fnHslOfComment) );
         }
         node.addChild(childrenNode); // Add after the childrenNode.size is final!
         return node;
@@ -90,12 +90,14 @@ Listit.TreeMap.prototype.createNodesFromArray = function (data) {
 // TreeMap.Node //
 //////////////////
 
-Listit.TreeMap.Node = function (size) { // Constructor
+Listit.TreeMap.Node = function (size, hue, saturation) { // Constructor
     
     this.size = size;   // Relative size. For a branch node this should be the sum of its childrens sizes
     this._depthIncrement = null;
     this._children       = null;
     this.rectangle       = null;
+    this._hue            = hue;
+    this._saturation     = saturation;
 }
 
 Listit.TreeMap.Node.prototype.toString = function () {
@@ -116,6 +118,21 @@ Listit.TreeMap.Node.prototype.__defineGetter__("children", function() {
     }
 } );
 Listit.TreeMap.Node.prototype.__defineSetter__("children", function(v) { this._children = v } );
+
+
+// saturation is 1 by default
+Listit.TreeMap.Node.prototype.__defineGetter__("saturation", function() { 
+    return (this._saturation == null) ? 0.5 : this._saturation; 
+} );
+Listit.TreeMap.Node.prototype.__defineSetter__("saturation", function(v) { this._saturation = v } );
+
+
+// hue is 1 by default
+Listit.TreeMap.Node.prototype.__defineGetter__("hue", function() { 
+    return (this._hue == null) ? 0.5 : this._hue; 
+} );
+Listit.TreeMap.Node.prototype.__defineSetter__("hue", function(v) { this._hue = v } );
+
 
 
 // depthIncrement is 1 by default
@@ -370,7 +387,7 @@ Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1,
                 var Ispec = Isource * cosAngle
                 var Intensity = Iamb + Math.max(Ispec, 0);
                 
-                var rgb = Listit.hslToRgb(240/360, 1, Intensity);
+                var rgb = Listit.hslToRgb(this.hue, this.saturation, Intensity);
                 
                 var i = 4 * (x + (y * image.width));
                 image.pixels[i  ] = rgb[0]; // R channel
@@ -422,6 +439,7 @@ Listit.TreeMap.Node._addRidge = function (v1, v2, h, s1, s2) {
 
     return [s1 + 4*h*(v2+v1)/(v2-v1), s2 - 4*h/(v2-v1)];
 }
+
 
 ////////////
 // Colors //
