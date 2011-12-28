@@ -44,26 +44,26 @@ Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion) {
 
 Listit.TreeMap.prototype._auxCreateNodeFromComment = function (comment) {
 
-    //var value = 1;
-    var value = comment.score;
-    //var value = comment.numChars;
-    if (value < 1) value = 1;
+    //var size = 1;
+    var size = comment.score;
+    //var size = comment.numChars;
+    if (size < 1) size = 1;
 
     if ( comment.numReplies == 0 ) {
         // Create leaf node
-        return new Listit.TreeMap.Node( value );
+        return new Listit.TreeMap.Node( size );
     } else {
         // Create branch node
         
         var node = new Listit.TreeMap.Node(0);
         node.depthIncrement = 0; // this node is only to split up, does not represent a new depth!
-        node.addChild( new Listit.TreeMap.Node(value) ); 
+        node.addChild( new Listit.TreeMap.Node(size) ); 
         
         var childrenNode = new Listit.TreeMap.Node(0); 
         for (let [idx, reply] in Iterator(comment.replies)) {
             childrenNode.addChild( this._auxCreateNodeFromComment(reply) );
         }
-        node.addChild(childrenNode); // Add after the childrenNode.value is final!
+        node.addChild(childrenNode); // Add after the childrenNode.size is final!
         return node;
     }
 }
@@ -92,9 +92,9 @@ Listit.TreeMap.prototype.createNodesFromArray = function (data) {
 // TreeMap.Node //
 //////////////////
 
-Listit.TreeMap.Node = function (value) { // Constructor
+Listit.TreeMap.Node = function (size) { // Constructor
     
-    this.value = value;   // for a branch node this should be the sum of its childrens values
+    this.size = size;   // Relative size. For a branch node this should be the sum of its childrens sizes
     this._depthIncrement = null;
     this._children       = null;
     this.rectangle       = null;
@@ -130,7 +130,7 @@ Listit.TreeMap.Node.prototype.__defineSetter__("depthIncrement", function(v) { t
 Listit.TreeMap.Node.prototype.addChild = function (child) {
     if (this._children == null) this._children = [];
     this._children.push(child);
-    this.value += child.value;  // The parent node value must be the sum of the childrens values
+    this.size += child.size;  // The parent node size must be the sum of the childrens sizes
     return child;
 }
 
@@ -142,9 +142,9 @@ Listit.TreeMap.Node.prototype.isLeafNode = function () {
 // Shows return string containing internal representation
 Listit.TreeMap.Node.prototype.repr = function () {
     if (this.isLeafNode() ) {
-        return this.value.toString();
+        return this.size.toString();
     } else {
-        var result = '<' + this.value + ': ';
+        var result = '<' + this.size + ': ';
         var childStrings = [c.repr() for each (c in this.children)];
         result += (childStrings).join(', ');
         result += '>';
@@ -153,12 +153,12 @@ Listit.TreeMap.Node.prototype.repr = function () {
 }
 
 
-Listit.TreeMap.Node.prototype.sortNodesByValueDescending = function () {
+Listit.TreeMap.Node.prototype.sortNodesBysizeDescending = function () {
 
     if (this.children.length == 0) return; 
-    this.children.sort( function(a, b) { return b.value - a.value } );
+    this.children.sort( function(a, b) { return b.size - a.size } );
     for (let [idx, child] in Iterator(this.children) ) {
-        child.sortNodesByValueDescending();
+        child.sortNodesBysizeDescending();
     }
 }
 
@@ -183,12 +183,12 @@ Listit.TreeMap.Node.prototype._layoutStrip = function (x, y, width, height, star
     //Listit.fbLog('Listit.TreeMap.Node._layoutStrip', x, y, width, height, start, end);
 
     var layoutSum = this.children.slice(start, end).
-        reduce( function (prev, cur) { return prev+cur.value }, 0);
+        reduce( function (prev, cur) { return prev+cur.size }, 0);
         
     var accumSize = 0; 
     for (let [idx, child] in Iterator(this.children.slice(start, end))) {
         
-        var relSize = child.value/layoutSum;
+        var relSize = child.size/layoutSum;
         if (height > width) {
             // Lay out from top to bottom.
             child.rectangle = { x: x, y: y+accumSize, width: width, height: relSize*height };
@@ -198,12 +198,12 @@ Listit.TreeMap.Node.prototype._layoutStrip = function (x, y, width, height, star
             child.rectangle = { x: x+accumSize, y: y, width: relSize*width, height: height };
             accumSize += relSize*width;
         }
-        //Listit.fbLog('Layout: ', child.value, child.rectangle);
+        //Listit.fbLog('Layout: ', child.size, child.rectangle);
     }
 }
 
 
-// Layout a tree in so called squarified manner. See "Squariﬁed Treemaps" by
+// Layout a tree in so called squarified manner. See "Squarified Treemaps" by
 // by Mark Bruls, Kees Huizing, and Jarke J. van Wijk.
 // www.win.tue.nl/~vanwijk/stm.pdf
 Listit.TreeMap.Node.prototype.layoutSquarified = function (rectangle) {
@@ -226,8 +226,8 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
 
     this.rectangle = { x: x, y: y, width: width, height: height };
     
-    var valueSum = this.children.reduce( function (prev, cur) { return prev+cur.value }, 0);
-    var areas = [ c.value / valueSum * width*height for each (c in this.children)];
+    var sizeSum = this.children.reduce( function (prev, cur) { return prev+cur.size }, 0);
+    var areas = [ c.size / sizeSum * width*height for each (c in this.children)];
     
     var start = 0;
     while (start < this.children.length) {
@@ -280,7 +280,7 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
 
 Listit.TreeMap.Node.prototype.renderFlat = function (context, depth) {
 
-    if (this.value <= 0) return;
+    if (this.size <= 0) return;
     
     if (depth == null) depth = 0;
     
@@ -336,10 +336,10 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context) {
 //   f(x, y) = sx2*x^2 + sx1*x + sy2*y^2 + sy1*y + c. 
 Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1, sy1, sx2, sy2) {
 
-    if (this.value <= 0) return;
+    if (this.size <= 0) return;
     
     // Adds a new cushion for this level
-    var f = 0.5; 
+    var f = 0.5 ; 
     var h0 = 0.2;
     var h = h0 * Math.pow(f, depth);
     var rect = this.rectangle;
@@ -380,9 +380,7 @@ Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1,
                 image.pixels[i+2] = rgb[2]; // B channel
                 image.pixels[i+3] = 255; // Alpha channel
 
-                if (i%10000 == 0) {
-                    console.log('rgb', rgb);
-                }                
+                //if (i%10000 == 0) { console.log('rgb', rgb); }                
             }
         }
         
@@ -434,14 +432,14 @@ Listit.TreeMap.Node._addRidge = function (v1, v2, h, s1, s2) {
 // From: http://mjijackson.com/
 
 /**
- * Converts an RGB color value to HSL. Conversion formula
+ * Converts an RGB color size to HSL. Conversion formula
  * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
  * Assumes r, g, and b are contained in the set [0, 255] and
  * returns h, s, and l in the set [0, 1].
  *
- * @param   Number  r       The red color value
- * @param   Number  g       The green color value
- * @param   Number  b       The blue color value
+ * @param   Number  r       The red color size
+ * @param   Number  g       The green color size
+ * @param   Number  b       The blue color size
  * @return  Array           The HSL representation
  */
 Listit.rgbToHsl = function (r, g, b){
@@ -466,7 +464,7 @@ Listit.rgbToHsl = function (r, g, b){
 }
 
 /**
- * Converts an HSL color value to RGB. Conversion formula
+ * Converts an HSL color size to RGB. Conversion formula
  * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
  * Assumes h, s, and l are contained in the set [0, 1] and
  * returns r, g, and b in the set [0, 255].
