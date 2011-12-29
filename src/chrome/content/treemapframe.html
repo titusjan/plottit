@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="listit.css" />
+    <script language="javascript" type="application/javascript;version=1.7" src="utils.js"></script>
+    <script language="javascript" type="application/javascript;version=1.8" src="treemap.js"></script>
+
+    <script type="text/javascript">
+
+
+        function setTreeMapDiscussion(discussion) {
+            window.treeMap = new Listit.TreeMap(discussion);
+            window.treeMap.root.layoutSquarified( {x:0, y:0, width:350, height:250});
+            var canvas = document.getElementById('tm-canvas');
+            var context = canvas.getContext('2d');
+            window.treeMap.root.renderCushioned(context);               
+        }
+
+        function setTreeMap(treeMap) {
+            window.treeMap = treeMap;
+            window.treeMap.root.layoutSquarified( {x:0, y:0, width:350, height:250});
+            var canvas = document.getElementById('tm-canvas');
+            var context = canvas.getContext('2d');
+            window.treeMap.root.renderCushioned(context);               
+        }
+
+
+        function myDebug() {
+            var canvas = document.getElementById('tm-canvas');
+            var context = canvas.getContext('2d');
+            context.strokeRect(10, 10, 30, 40);
+        }
+        
+        function main() {
+            Listit.initializeLoggers(false, 'Debug'); 
+            
+            /*
+            var canvas = document.getElementById('tm-canvas');
+            if (canvas.getContext){
+                var context = canvas.getContext('2d');
+            }
+            
+            context.strokeRect(10, 10, 30, 40);
+            */
+        }
+
+    </script>
+  <style type="text/css">
+    canvas { border: 0px solid black; }
+  </style>
+</head>
+<body onload="main();">
+    <canvas id="tm-canvas" width="350" height="250"></canvas>
+</body>
+</html>
