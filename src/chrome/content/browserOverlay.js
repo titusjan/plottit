@@ -546,7 +546,7 @@ Listit.setListitVisible = function (visible) {
     }    
 }
 
-Listit.drawTreeMapCushionedAfterTimeOut = function() {
+Listit.onRenderTreeMapTimeOut = function() {
 
     try {
         Listit.logger.debug("Listit.drawTreeMapCushionedAfterTimeOut: " + window.globalTimeOutId);
@@ -554,8 +554,8 @@ Listit.drawTreeMapCushionedAfterTimeOut = function() {
         treeMapFrame.contentWindow.wrappedJSObject.renderCushioned();
         window.globalTimeOutId = null;
     } catch (ex) {
-            Listit.logger.error('Exception in Listit.setTreeMapDiscussion;');
-            Listit.logException(ex);
+        Listit.logger.error('Exception in Listit.setTreeMapDiscussion;');
+        Listit.logException(ex);
     }   
 }
 
@@ -565,11 +565,12 @@ Listit.renderTreeMap = function(cushionDelay) {
     var treeMapFrame = document.getElementById('listit-treemap-frame');
     treeMapFrame.contentWindow.wrappedJSObject.renderFlat();
     
-    if (true) {
+    var isCushioned = Listit.getCheckboxValue(document.getElementById('listit-treemap-cushions-checkbox'));
+    if (isCushioned) {
         if (window.globalTimeOutId) {
             window.clearTimeout(window.globalTimeOutId); // Cancel previous time out;
         }
-        window.globalTimeOutId = window.setTimeout(Listit.drawTreeMapCushionedAfterTimeOut, cushionDelay);
+        window.globalTimeOutId = window.setTimeout(Listit.onRenderTreeMapTimeOut, cushionDelay);
     }
 }
 

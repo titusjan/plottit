@@ -697,7 +697,7 @@
                     crop="end"
                     persist="checked"
                     checked="true" />
-                    <!--            -->
+
                   <spacer flex="1"/>            
                 </hbox> 
               </vbox> <!-- scatterplot -->
@@ -748,6 +748,15 @@
                       <menuitem value="numChars"   label="Characters"/>-->
                     </menupopup>
                   </menulist>
+                  
+                  <!-- Cushions checkbox -->
+                  <checkbox 
+                    id="listit-treemap-cushions-checkbox"
+                    oncommand="Listit.renderTreeMap(1)"
+                    label="Cushions" 
+                    crop="end"
+                    persist="checked" />
+                    
                 </hbox>
               </vbox>
             </tabpanel>
