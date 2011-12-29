@@ -10,38 +10,50 @@
 
         function setTreeMapDiscussion(discussion) {
             window.treeMap = new Listit.TreeMap(discussion);
-            window.treeMap.root.layoutSquarified( {x:0, y:0, width:350, height:250});
-            var canvas = document.getElementById('tm-canvas');
-            var context = canvas.getContext('2d');
-            window.treeMap.root.renderCushioned(context);               
+            resizeCanvas();             
         }
 
         function setTreeMap(treeMap) {
             window.treeMap = treeMap;
-            window.treeMap.root.layoutSquarified( {x:0, y:0, width:350, height:250});
-            var canvas = document.getElementById('tm-canvas');
-            var context = canvas.getContext('2d');
-            window.treeMap.root.renderCushioned(context);               
+            resizeCanvas();            
         }
 
+        // resizes the canvas to fill the window
+        function resizeCanvas() {
 
-        function myDebug() {
             var canvas = document.getElementById('tm-canvas');
-            var context = canvas.getContext('2d');
-            context.strokeRect(10, 10, 30, 40);
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            window.treeMap.root.layoutSquarified( {x:0, y:0, width:canvas.width, height:canvas.height});
         }
+        
+        function renderFlat() {
+            window.treeMap.root.renderFlat(window.canvasContext);
+        }
+        
+        function renderCushioned() {
+            window.treeMap.root.renderCushioned(window.canvasContext);
+        }
+        
+        /* 
+        // Can't get it to work in xul iframe
+        function drawAfterTimeOut() {
+        
+            window.treeMap.root.renderCushioned(window.canvasContext);
+            window.globalTimeOutId = null;
+        } 
+        
+*/
+
         
         function main() {
             Listit.initializeLoggers(false, 'Debug'); 
+            window.canvasContext = document.getElementById('tm-canvas').getContext('2d');
             
-            /*
-            var canvas = document.getElementById('tm-canvas');
-            if (canvas.getContext){
-                var context = canvas.getContext('2d');
-            }
-            
-            context.strokeRect(10, 10, 30, 40);
-            */
+            // Set event handler
+            // window.onresize = resizeCanvas;
+            // window.globalTimeOutId = null;
+
         }
 
     </script>

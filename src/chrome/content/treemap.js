@@ -30,7 +30,9 @@ Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion, size
 
     this._assert(discussion instanceof Listit.Discussion, 
         'createNodesFromDiscussion: data should be a Listit.Discussion');
-
+    this._assert(sizeProperty, 'sizeProperty is not defined!');    
+    this._assert(fnHslOfComment instanceof Function, 'fnHslOfComment should be a function');
+    
     // Create root node
     var node = new Listit.TreeMap.Node(0);
     node.depthIncrement = 0; // this node is the root and does not increase the depth!
@@ -299,25 +301,17 @@ Listit.TreeMap.Node.prototype.renderFlat = function (context, depth) {
     
     if (depth == null) depth = 0;
     
-    if (this.isLeafNode() ) {
-        // Draw node
-   
-        var maxDepth = 12;
-        //context.lineWidth = (depth < maxDepth) ? maxDepth-depth+2 : 1;
-        
-        var color = 'hsl(' + (240-(depth/maxDepth*360)) % 360 + ', 100%, 50%)';
-        context.fillStyle = color;
-        
-        //context.lineWidth = 0.3;
-        context.lineWidth = 0.7;
-        //context.strokeStyle ='black';
+    if (this.isLeafNode() ) { // Draw node
         
         var rect = this.rectangle;
+        var color = 'hsl(' + this.hue*360 + ', ' + this.saturation*100 + '%, 50%)';
+        context.fillStyle = color;
+        context.lineWidth = 1;
+        context.strokeStyle ='black';
         context.strokeRect(rect.x, rect.y, rect.width, rect.height);
         context.fillRect(rect.x, rect.y, rect.width, rect.height);
-       
-    } else {
-        // Draw children
+
+    } else { // Draw children
         for (let [idx, child] in Iterator(this.children)) {
             child.renderFlat(context, depth + this.depthIncrement);
         }
@@ -376,25 +370,28 @@ Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1,
         var minY = Math.floor(this.rectangle.y + 0.5);
         var maxX = Math.floor(this.rectangle.x + this.rectangle.width - 0.5);
         var maxY = Math.floor(this.rectangle.y + this.rectangle.height - 0.5);
-            
+        
+        pixels = image.pixels;
         for (var y = minY; y <= maxY; y += 1) {
+            var i = 4 * (minX + (y * image.width)); 
             for (var x = minX; x <= maxX; x += 1) {
             
                 var nx = - (2 * sx2 * (x+0.5) + sx1); // Normal vector of cushion
                 var ny = - (2 * sy2 * (y+0.5) + sy1); 
-                var cosAngle = (nx*Lx + ny*Ly + Lz) / Math.sqrt(nx*nx + ny*ny + 1.0);
+                //var cosAngle = (nx*Lx + ny*Ly + Lz) / Math.sqrt(nx*nx + ny*ny + 1.0);
+                var cosAngle = 1 / Math.sqrt(nx*nx + ny*ny + 1.0); // Only for Lxyz = [0,0,1]!
                 
                 var Ispec = Isource * cosAngle
                 var Intensity = Iamb + Math.max(Ispec, 0);
                 
                 var rgb = Listit.hslToRgb(this.hue, this.saturation, Intensity);
                 
-                var i = 4 * (x + (y * image.width));
-                image.pixels[i  ] = rgb[0]; // R channel
-                image.pixels[i+1] = rgb[1]; // G channel
-                image.pixels[i+2] = rgb[2]; // B channel
-                image.pixels[i+3] = 255; // Alpha channel
-
+                //var i = 4 * (x + (y * image.width));
+                pixels[i  ] = rgb[0]; // R channel
+                pixels[i+1] = rgb[1]; // G channel
+                pixels[i+2] = rgb[2]; // B channel
+                pixels[i+3] = 255; // Alpha channel
+                i += 4;
                 //if (i%10000 == 0) { console.log('rgb', rgb); }                
             }
         }
@@ -479,6 +476,15 @@ Listit.rgbToHsl = function (r, g, b){
     return [h, s, l];
 }
 
+Listit.hue2rgb = function (p, q, t){
+    if(t < 0) t += 1;
+    if(t > 1) t -= 1;
+    if(t < 1/6) return p + (q - p) * 6 * t;
+    if(t < 1/2) return q;
+    if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    return p;
+}
+        
 /**
  * Converts an HSL color size to RGB. Conversion formula
  * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
@@ -496,22 +502,12 @@ Listit.hslToRgb = function (h, s, l){
     if(s == 0){
         r = g = b = l; // achromatic
     }else{
-        function hue2rgb(p, q, t){
-            if(t < 0) t += 1;
-            if(t > 1) t -= 1;
-            if(t < 1/6) return p + (q - p) * 6 * t;
-            if(t < 1/2) return q;
-            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-            return p;
-        }
-
         var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
         var p = 2 * l - q;
-        r = hue2rgb(p, q, h + 1/3);
-        g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - 1/3);
+        r = Listit.hue2rgb(p, q, h + 1/3);
+        g = Listit.hue2rgb(p, q, h);
+        b = Listit.hue2rgb(p, q, h - 1/3);
     }
-
     return [r * 255, g * 255, b * 255];
 }
 

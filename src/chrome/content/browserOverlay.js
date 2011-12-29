@@ -52,6 +52,9 @@ try{
     scoreTree.view = Listit.state.getCurrentTreeView();
     
     // Add event handlers 
+    var treeMapFrame = document.getElementById('listit-treemap-frame');
+    treeMapFrame.addEventListener("resize", Listit.onResizeTreeMap, false);
+    
     scoreTree.addEventListener("select", Listit.onRowSelect, false);
         
     var container = gBrowser.tabContainer;
@@ -543,24 +546,59 @@ Listit.setListitVisible = function (visible) {
     }    
 }
 
+Listit.drawTreeMapCushionedAfterTimeOut = function() {
+
+    try {
+        Listit.logger.debug("Listit.drawTreeMapCushionedAfterTimeOut: " + window.globalTimeOutId);
+        var treeMapFrame = document.getElementById('listit-treemap-frame');
+        treeMapFrame.contentWindow.wrappedJSObject.renderCushioned();
+        window.globalTimeOutId = null;
+    } catch (ex) {
+            Listit.logger.error('Exception in Listit.setTreeMapDiscussion;');
+            Listit.logException(ex);
+    }   
+}
+
+Listit.renderTreeMap = function(cushionDelay) {
+
+    if (cushionDelay == null) cushionDelay = 250;
+    var treeMapFrame = document.getElementById('listit-treemap-frame');
+    treeMapFrame.contentWindow.wrappedJSObject.renderFlat();
+    
+    if (true) {
+        if (window.globalTimeOutId) {
+            window.clearTimeout(window.globalTimeOutId); // Cancel previous time out;
+        }
+        window.globalTimeOutId = window.setTimeout(Listit.drawTreeMapCushionedAfterTimeOut, cushionDelay);
+    }
+}
+
+
+Listit.onResizeTreeMap = function(event) {
+
+    try {
+        Listit.logger.trace("Listit.onResizeTreeMap");
+        var treeMapFrame = document.getElementById('listit-treemap-frame');
+        treeMapFrame.contentWindow.wrappedJSObject.resizeCanvas();
+        Listit.renderTreeMap();
+    } catch (ex) {
+        Listit.logger.error('Exception in Listit.onResizeTreeMap;');
+        Listit.logException(ex);
+    } 
+}
+
 Listit.setTreeMapDiscussion = function(discussion) {
     try {
-        var sizeProperty = Listit.state.treeMapSizeProperty;
         Listit.logger.debug("Listit.setTreeMapDiscussion --");
         
         var treeMap = new Listit.TreeMap(discussion, 
             Listit.state.treeMapSizeProperty,
             Listit.state.fnHslOfComment);
-        Listit.logger.debug("Treemap created");
-        //Listit.fbLog(treeMap);
         treeMap.root.sortNodesBySizeDescending();
-        Listit.logger.debug("Treemap sorted");
-        
+
         var treeMapFrame = document.getElementById('listit-treemap-frame');
         treeMapFrame.contentWindow.wrappedJSObject.setTreeMap(treeMap);
-        
-        Listit.logger.debug("Treemap rendered");
-
+        Listit.renderTreeMap()
     } catch (ex) {
         Listit.logger.error('Exception in Listit.setTreeMapDiscussion;');
         Listit.logException(ex);
