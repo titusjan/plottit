@@ -306,7 +306,7 @@ Listit.TreeMap.Node.prototype.renderFlat = function (context, depth) {
         var rect = this.rectangle;
         var color = 'hsl(' + this.hue*360 + ', ' + this.saturation*100 + '%, 50%)';
         context.fillStyle = color;
-        context.lineWidth = 1;
+        context.lineWidth = 0.75; // Don't use 1, this is ugly with antialiassing.
         context.strokeStyle ='black';
         context.strokeRect(rect.x, rect.y, rect.width, rect.height);
         context.fillRect(rect.x, rect.y, rect.width, rect.height);

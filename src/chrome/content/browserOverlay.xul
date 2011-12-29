@@ -752,7 +752,7 @@
                   <!-- Cushions checkbox -->
                   <checkbox 
                     id="listit-treemap-cushions-checkbox"
-                    oncommand="Listit.renderTreeMap(1)"
+                    oncommand="Listit.renderTreeMap(0);"
                     label="Cushions" 
                     crop="end"
                     persist="checked" />

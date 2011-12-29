@@ -561,11 +561,14 @@ Listit.onRenderTreeMapTimeOut = function() {
 
 Listit.renderTreeMap = function(cushionDelay) {
 
-    if (cushionDelay == null) cushionDelay = 250;
     var treeMapFrame = document.getElementById('listit-treemap-frame');
-    treeMapFrame.contentWindow.wrappedJSObject.renderFlat();
-    
+
     var isCushioned = Listit.getCheckboxValue(document.getElementById('listit-treemap-cushions-checkbox'));
+    if (cushionDelay == null)  cushionDelay = 250;
+    if ( ! ((cushionDelay === 0) && isCushioned) ) { // skip flat rendering if there is no cushion delay
+        treeMapFrame.contentWindow.wrappedJSObject.renderFlat();
+    }
+    
     if (isCushioned) {
         if (window.globalTimeOutId) {
             window.clearTimeout(window.globalTimeOutId); // Cancel previous time out;
