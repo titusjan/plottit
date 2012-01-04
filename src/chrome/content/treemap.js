@@ -35,7 +35,6 @@ Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion, size
     
     // Create root node
     var node = new Listit.TreeMap.Node(0, false);
-    node.depthIncrement = 0; // this node is the root and does not increase the depth!
     
     for (let [idx, comments] in Iterator(discussion.comments)) {
         node.addChild( this._auxCreateNodeFromComment(comments, sizeProperty, fnHslOfComment) );
@@ -51,12 +50,10 @@ Listit.TreeMap.prototype._auxCreateNodeFromComment = function (comment, sizeProp
 
     if ( comment.numReplies == 0 ) {
         var node = new Listit.TreeMap.Node( size, true, hsl[0], hsl[1] );
-        node.depthIncrement = 0;
         return node;
     } else {
 
         var node = new Listit.TreeMap.Node(0, true);
-        node.depthIncrement = 0; // this node is only to split up, does not represent a new depth!
         node.addChild( new Listit.TreeMap.Node(size, false, hsl[0], hsl[1]) ); 
         
         var childrenNode = new Listit.TreeMap.Node(0, false); 
@@ -95,7 +92,6 @@ Listit.TreeMap.prototype.createNodesFromArray = function (data) {
 Listit.TreeMap.Node = function (size, addCushion, hue, saturation) { // Constructor
     
     this.size = size;   // Relative size. For a branch node this should be the sum of its childrens sizes
-    this._depthIncrement = null;
     this.addCushion      = addCushion; // Not every internal node may represent a cushion
     this._children       = null;
     this.rectangle       = null;
@@ -135,14 +131,6 @@ Listit.TreeMap.Node.prototype.__defineGetter__("hue", function() {
     return (this._hue == null) ? 0.5 : this._hue; 
 } );
 Listit.TreeMap.Node.prototype.__defineSetter__("hue", function(v) { this._hue = v } );
-
-
-
-// depthIncrement is 1 by default
-Listit.TreeMap.Node.prototype.__defineGetter__("depthIncrement", function() { 
-    return (this._depthIncrement == null) ? 1 : this._depthIncrement; 
-} );
-Listit.TreeMap.Node.prototype.__defineSetter__("depthIncrement", function(v) { this._depthIncrement = v } );
 
 
 Listit.TreeMap.Node.prototype.addChild = function (child) {
@@ -296,11 +284,9 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
 }  
 
 
-Listit.TreeMap.Node.prototype.renderFlat = function (context, depth) {
+Listit.TreeMap.Node.prototype.renderFlat = function (context) {
 
     if (this.size <= 0) return;
-    
-    if (depth == null) depth = 0;
     
     if (this.isLeafNode() ) { // Draw node
         
@@ -314,7 +300,7 @@ Listit.TreeMap.Node.prototype.renderFlat = function (context, depth) {
 
     } else { // Draw children
         for (let [idx, child] in Iterator(this.children)) {
-            child.renderFlat(context, depth + this.depthIncrement);
+            child.renderFlat(context);
         }
     }
 }
@@ -349,13 +335,14 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
         if (node.size <= 0) return;
         var rect = node.rectangle;
         
-        //var h = h0 * Math.pow(f, depth); // The sugestion from the article
-        // The cushions at	depth=0 will be twice the height of those at depth 1 and heigher; 
-        // This gives the best looking results. Otherwise cushions at depth >= 1 will look too steep.
-        var h = (depth===0) ? h0 : (h0/f); // misuse slider-f (f is not the f from the article on this line)
-        //var h = (depth===0) ? 1.2 : (1.2/2.5);
+        if ( node.addCushion) { 
         
-        if ( node.addCushion === true ) { 
+            // The cushions at	depth=0 will be twice the height of those at depth 1 and heigher; 
+            // This gives the best looking results. Otherwise cushions at depth >= 1 will look too steep.
+            var h = (depth===0) ? h0 : (h0/f); // misuse slider-f (f is not the f from the article on this line)
+            //var h = (depth===0) ? 1.2 : (1.2/2.5);
+            //var h = h0 * Math.pow(f, depth); // The sugestion from the article
+        
             // Adds a new cushion for this level
             [sx1, sx2] = Listit.TreeMap.Node._addRidge( rect.x, rect.width+rect.x,  h, sx1, sx2);
             [sy1, sy2] = Listit.TreeMap.Node._addRidge( rect.y, rect.height+rect.y, h, sy1, sy2);
@@ -393,8 +380,9 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
             }
         } else {
             // Draw children
+            if (node.addCusion) depth += 1;
             for (let [idx, child] in Iterator(node.children)) {
-                _auxRenderCushioned(child, depth + node.depthIncrement, sx1, sy1, sx2, sy2);
+                _auxRenderCushioned(child, depth, sx1, sy1, sx2, sy2);
             }
         }
     }
