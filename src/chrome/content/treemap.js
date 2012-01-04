@@ -325,6 +325,73 @@ Listit.TreeMap.Node.prototype.renderFlat = function (context, depth) {
 // www.win.tue.nl/~vanwijk/ctm.pdf
 Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) {
 
+    // Set the light vector
+    var Isource = 1 - 2*Iamb;
+    var L = [-1, -1, 10];
+    var lengthL = Math.sqrt(L[0]*L[0] + L[1]*L[1] + L[2]*L[2]);
+    var Lx = L[0] / lengthL;
+    var Ly = L[1] / lengthL;
+    var Lz = L[2] / lengthL;
+
+    // Auxilairy function to renderCushioned that renders the cushions recursively.
+    // The sx1, sy1, sx2, sy2 parameters are the coefficients of the parabola shaped cushions:
+    //   f(x, y) = sx2*x^2 + sx1*x + sy2*y^2 + sy1*y + c. 
+    function _auxRenderCushioned (node, image, depth, sx1, sy1, sx2, sy2) {
+    
+        if (node.size <= 0) return;
+        var rect = node.rectangle;
+        
+        //var h = h0 * Math.pow(f, depth); // The sugestion from the article
+        // The cushions at	depth=0 will be twice the height of those at depth 1 and heigher; 
+        // This gives the best looking results. Otherwise cushions at depth >= 1 will look too steep.
+        var h = (depth===0) ? h0 : (h0/f); // misuse slider-f (f is not the f from the article on this line)
+        //var h = (depth===0) ? 1.2 : (1.2/2.5);
+        
+        if ( node.addCushion === true ) { 
+            // Adds a new cushion for this level
+            [sx1, sx2] = Listit.TreeMap.Node._addRidge( rect.x, rect.width+rect.x,  h, sx1, sx2);
+            [sy1, sy2] = Listit.TreeMap.Node._addRidge( rect.y, rect.height+rect.y, h, sy1, sy2);
+        }
+        
+        if (node.isLeafNode() ) {
+            
+            var minX = Math.floor(rect.x + 0.5);
+            var minY = Math.floor(rect.y + 0.5);
+            var maxX = Math.floor(rect.x + rect.width - 0.5);
+            var maxY = Math.floor(rect.y + rect.height - 0.5);
+            
+            pixels = image.pixels;
+            for (var y = minY; y <= maxY; y += 1) {
+                var i = 4 * (minX + (y * image.width)); 
+                for (var x = minX; x <= maxX; x += 1) {
+                
+                    var nx = - (2 * sx2 * (x+0.5) + sx1); // Normal vector of cushion
+                    var ny = - (2 * sy2 * (y+0.5) + sy1); 
+                    var cosAngle = (nx*Lx + ny*Ly + Lz) / Math.sqrt(nx*nx + ny*ny + 1.0);
+                    //var cosAngle = 1 / Math.sqrt(nx*nx + ny*ny + 1.0); // Only for Lxyz = [0,0,1]!
+                    
+                    var Ispec = Isource * cosAngle
+                    var Intensity = Iamb + Math.max(Ispec, 0);
+
+                    var rgb = Listit.hslToRgb(node.hue, node.saturation, Intensity);
+    
+                    pixels[i  ] = rgb[0]; // R channel
+                    pixels[i+1] = rgb[1]; // G channel
+                    pixels[i+2] = rgb[2]; // B channel
+                    pixels[i+3] = 255; // Alpha channel
+                    
+                    i += 4; // i = 4 * (x + (y * image.width));
+                }
+            }
+        } else {
+            // Draw children
+            for (let [idx, child] in Iterator(node.children)) {
+                _auxRenderCushioned(child, image, depth + node.depthIncrement, sx1, sy1, sx2, sy2);
+            }
+        }
+    }
+    
+
 
     this._assert(this.rectangle, "Listit.TreeMap.Node.render: No layout for root node"); 
 
@@ -336,78 +403,9 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
                  width   : Math.round(rect.width), 
                  height  : Math.round(rect.height)}
 
-    this._auxRenderCushioned(image, 0, 0, 0, 0, 0, h0, f, Iamb); // Start recursion with flat cushion.
+    _auxRenderCushioned(this, image, 0, 0, 0, 0, 0); // Start recursion with flat cushion.
 
     context.putImageData(imgData, 0, 0);
-}
-
-
-// Auxilairy function to renderCushioned that renders the cushions recursively.
-// The sx1, sy1, sx2, sy2 parameters are the coefficients of the parabola shaped cushions:
-//   f(x, y) = sx2*x^2 + sx1*x + sy2*y^2 + sy1*y + c. 
-Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1, sy1, sx2, sy2, h0, f, Iamb) {
-
-    if (this.size <= 0) return;
-    var rect = this.rectangle;
-    
-    //var h = h0 * Math.pow(f, depth); // The sugestion from the article
-    
-    // The cushions at	depth=0 will be twice the height of those at depth 1 and heigher; 
-    // This gives the best looking results. Otherwise cushions at depth >= 1 will look too steep.
-    var h = (depth===0) ? h0 : (h0/f); // misuse slider-f (f is not the f from the article on this line)
-
-    //var h = (depth===0) ? 1.2 : (1.2/2.5);
-    
-    if ( this.addCushion === true ) { 
-        // Adds a new cushion for this level
-        [sx1, sx2] = Listit.TreeMap.Node._addRidge( rect.x, rect.width+rect.x,  h, sx1, sx2);
-        [sy1, sy2] = Listit.TreeMap.Node._addRidge( rect.y, rect.height+rect.y, h, sy1, sy2);
-    }
-        
-    
-    if (this.isLeafNode() ) {
-    
-        var Isource = 1 - 2*Iamb;
-        var L = [-1, -1, 10];
-        var lengthL = Math.sqrt(L[0]*L[0] + L[1]*L[1] + L[2]*L[2]);
-        var Lx = L[0] / lengthL;
-        var Ly = L[1] / lengthL;
-        var Lz = L[2] / lengthL;
-        
-        var minX = Math.floor(rect.x + 0.5);
-        var minY = Math.floor(rect.y + 0.5);
-        var maxX = Math.floor(rect.x + rect.width - 0.5);
-        var maxY = Math.floor(rect.y + rect.height - 0.5);
-        
-        pixels = image.pixels;
-        for (var y = minY; y <= maxY; y += 1) {
-            var i = 4 * (minX + (y * image.width)); 
-            for (var x = minX; x <= maxX; x += 1) {
-            
-                var nx = - (2 * sx2 * (x+0.5) + sx1); // Normal vector of cushion
-                var ny = - (2 * sy2 * (y+0.5) + sy1); 
-                var cosAngle = (nx*Lx + ny*Ly + Lz) / Math.sqrt(nx*nx + ny*ny + 1.0);
-                //var cosAngle = 1 / Math.sqrt(nx*nx + ny*ny + 1.0); // Only for Lxyz = [0,0,1]!
-                
-                var Ispec = Isource * cosAngle
-                var Intensity = Iamb + Math.max(Ispec, 0);
-                
-                var rgb = Listit.hslToRgb(this.hue, this.saturation, Intensity);
-
-                pixels[i  ] = rgb[0]; // R channel
-                pixels[i+1] = rgb[1]; // G channel
-                pixels[i+2] = rgb[2]; // B channel
-                pixels[i+3] = 255; // Alpha channel
-                
-                i += 4; // i = 4 * (x + (y * image.width));
-            }
-        }
-    } else {
-        // Draw children
-        for (let [idx, child] in Iterator(this.children)) {
-            child._auxRenderCushioned(image, depth + this.depthIncrement, sx1, sy1, sx2, sy2, h0, f, Iamb);
-        }
-    }
 }
 
 
