@@ -96,7 +96,7 @@ Listit.TreeMap.Node = function (size, addCushion, hue, saturation) { // Construc
     
     this.size = size;   // Relative size. For a branch node this should be the sum of its childrens sizes
     this._depthIncrement = null;
-    this.addCushion     = addCushion;
+    this.addCushion      = addCushion; // Not every internal node may represent a cushion
     this._children       = null;
     this.rectangle       = null;
     this._hue            = hue;
@@ -325,9 +325,10 @@ Listit.TreeMap.Node.prototype.renderFlat = function (context, depth) {
 // www.win.tue.nl/~vanwijk/ctm.pdf
 Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) {
 
-    var rect = this.rectangle;
+
     this._assert(this.rectangle, "Listit.TreeMap.Node.render: No layout for root node"); 
 
+    var rect = this.rectangle;
     context.clearRect(rect.x, rect.y, rect.width, rect.height);
     var imgData = context.createImageData(Math.round(rect.width), Math.round(rect.height));
     var image = {pixels  : imgData.data, 
@@ -349,9 +350,13 @@ Listit.TreeMap.Node.prototype._auxRenderCushioned = function (image, depth, sx1,
     if (this.size <= 0) return;
     var rect = this.rectangle;
     
-    //var h = h0 * Math.pow(f, depth);
-    //var h = (depth===0) ? 1.2 : (1.2/2.5);
+    //var h = h0 * Math.pow(f, depth); // The sugestion from the article
+    
+    // The cushions at	depth=0 will be twice the height of those at depth 1 and heigher; 
+    // This gives the best looking results. Otherwise cushions at depth >= 1 will look too steep.
     var h = (depth===0) ? h0 : (h0/f); // misuse slider-f (f is not the f from the article on this line)
+
+    //var h = (depth===0) ? 1.2 : (1.2/2.5);
     
     if ( this.addCushion === true ) { 
         // Adds a new cushion for this level
