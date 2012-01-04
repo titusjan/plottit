@@ -23,7 +23,16 @@
 }
 
 
-/* Smaller bin width list menu to save space */
+/* Smaller bin width list menus to save space */
+#listit-treemap-size-menulist {
+    width: 100px;
+}
+
+/* Smaller bin width list menus to save space */
+#listit-treemap-color-menulist {
+    width: 100px;
+}
+
 #listit-bin-width-menulist {
     width: 100px;
 }
@@ -32,4 +41,5 @@
 #listit-bin-width-menupopup {
     width: 150px;
 }
+
 

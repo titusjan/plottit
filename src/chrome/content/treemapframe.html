@@ -24,15 +24,18 @@
             var canvas = document.getElementById('tm-canvas');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            window.treeMap.root.layoutSquarified( {x:0, y:0, width:canvas.width, height:canvas.height});
+            if (window.treeMap)
+                window.treeMap.root.layoutSquarified( {x:0, y:0, width:canvas.width, height:canvas.height});
         }
         
         function renderFlat() {
-            window.treeMap.root.renderFlat(window.canvasContext);
+            if (window.treeMap)        
+                window.treeMap.root.renderFlat(window.canvasContext);
         }
         
-        function renderCushioned() {
-            window.treeMap.root.renderCushioned(window.canvasContext);
+        function renderCushioned(h0, f, Iamb) {
+            if (window.treeMap)
+                window.treeMap.root.renderCushioned(window.canvasContext, h0, f, Iamb);
         }
         
         /* 

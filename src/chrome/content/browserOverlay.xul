@@ -758,6 +758,31 @@
                     persist="checked" />
                     
                 </hbox>
+                
+                <!-- debug sliders for tweaking treemap parameters -->
+                <hbox align="baseline">
+                    <label value="h0"/>
+                    <scale id="listit-treemap-scale-h0" 
+                      min="0" max="3000" value="1200" increment="50" 
+                      movetoclick="1"
+                      tabindex="100"
+                      onchange="Listit.renderTreeMap(0);"/>
+                      
+                    <label value="q"/>
+                    <scale id="listit-treemap-scale-f" 
+                      min="0" max="4000" value="2500" increment="100" 
+                      movetoclick="1"
+                      tabindex="110"
+                      onchange="Listit.renderTreeMap(0);"/>
+                      
+                    <label value="Iamb"/>
+                    <scale id="listit-treemap-scale-iamb" 
+                      min="0" max="500" value="100" increment="10" 
+                      movetoclick="1"
+                      tabindex="120"
+                      onchange="Listit.renderTreeMap(0);"/>
+                </hbox>
+                  
               </vbox>
             </tabpanel>
             

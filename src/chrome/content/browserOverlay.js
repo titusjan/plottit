@@ -549,9 +549,16 @@ Listit.setListitVisible = function (visible) {
 Listit.onRenderTreeMapTimeOut = function() {
 
     try {
-        Listit.logger.debug("Listit.drawTreeMapCushionedAfterTimeOut: " + window.globalTimeOutId);
+        Listit.logger.trace("Listit.drawTreeMapCushionedAfterTimeOut: " + window.globalTimeOutId);
         var treeMapFrame = document.getElementById('listit-treemap-frame');
-        treeMapFrame.contentWindow.wrappedJSObject.renderCushioned();
+        
+        var sliderH0   = document.getElementById("listit-treemap-scale-h0");
+        var sliderF    = document.getElementById("listit-treemap-scale-f");
+        var sliderIamb = document.getElementById("listit-treemap-scale-iamb");
+        Listit.logger.debug("Listit.drawTreeMapCushionedAfterTimeOut, H0: " + 
+            sliderH0.value/1000 + ', F: ' + sliderF.value/1000 + ', Iamb: ' + sliderIamb.value/1000);
+        
+        treeMapFrame.contentWindow.wrappedJSObject.renderCushioned(sliderH0.value/1000, sliderF.value/1000, sliderIamb.value/1000);
         window.globalTimeOutId = null;
     } catch (ex) {
         Listit.logger.error('Exception in Listit.setTreeMapDiscussion;');
@@ -696,7 +703,9 @@ Listit.setListitActive = function (listitEnabled) {
     Application.prefs.get("extensions.listit.listitEnabled").value = Listit.state.listitEnabled; 
     
     var toolbarButton = document.getElementById('listit-toggle-active-button');
-    toolbarButton.setAttribute('tooltiptext', listitEnabled ? 'Disable Listit': 'Enable Listit');
+    if (toolbarButton) {
+        toolbarButton.setAttribute('tooltiptext', listitEnabled ? 'Disable Listit': 'Enable Listit');
+    }
 }
 
 
