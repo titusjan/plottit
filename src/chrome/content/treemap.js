@@ -325,6 +325,13 @@ Listit.TreeMap.Node.prototype.renderFlat = function (context, depth) {
 // www.win.tue.nl/~vanwijk/ctm.pdf
 Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) {
 
+    // Create pixel map/
+    var rect = this.rectangle;
+    context.clearRect(rect.x, rect.y, rect.width, rect.height);
+    var imgData = context.createImageData(Math.round(rect.width), Math.round(rect.height));
+    var pixels = imgData.data;
+    var imageWidth = Math.round(rect.width);
+
     // Set the light vector
     var Isource = 1 - 2*Iamb;
     var L = [-1, -1, 10];
@@ -333,10 +340,11 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
     var Ly = L[1] / lengthL;
     var Lz = L[2] / lengthL;
 
+
     // Auxilairy function to renderCushioned that renders the cushions recursively.
     // The sx1, sy1, sx2, sy2 parameters are the coefficients of the parabola shaped cushions:
     //   f(x, y) = sx2*x^2 + sx1*x + sy2*y^2 + sy1*y + c. 
-    function _auxRenderCushioned (node, image, depth, sx1, sy1, sx2, sy2) {
+    function _auxRenderCushioned (node, depth, sx1, sy1, sx2, sy2) {
     
         if (node.size <= 0) return;
         var rect = node.rectangle;
@@ -360,9 +368,9 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
             var maxX = Math.floor(rect.x + rect.width - 0.5);
             var maxY = Math.floor(rect.y + rect.height - 0.5);
             
-            pixels = image.pixels;
+            pixels = pixels;
             for (var y = minY; y <= maxY; y += 1) {
-                var i = 4 * (minX + (y * image.width)); 
+                var i = 4 * (minX + (y * imageWidth)); 
                 for (var x = minX; x <= maxX; x += 1) {
                 
                     var nx = - (2 * sx2 * (x+0.5) + sx1); // Normal vector of cushion
@@ -380,30 +388,19 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
                     pixels[i+2] = rgb[2]; // B channel
                     pixels[i+3] = 255; // Alpha channel
                     
-                    i += 4; // i = 4 * (x + (y * image.width));
+                    i += 4; // i = 4 * (x + (y * imageWidth));
                 }
             }
         } else {
             // Draw children
             for (let [idx, child] in Iterator(node.children)) {
-                _auxRenderCushioned(child, image, depth + node.depthIncrement, sx1, sy1, sx2, sy2);
+                _auxRenderCushioned(child, depth + node.depthIncrement, sx1, sy1, sx2, sy2);
             }
         }
     }
     
-
-
-    this._assert(this.rectangle, "Listit.TreeMap.Node.render: No layout for root node"); 
-
-    var rect = this.rectangle;
-    context.clearRect(rect.x, rect.y, rect.width, rect.height);
-    var imgData = context.createImageData(Math.round(rect.width), Math.round(rect.height));
-    var image = {pixels  : imgData.data, 
-                 context : context, // include canvas context for e.g. debugging.
-                 width   : Math.round(rect.width), 
-                 height  : Math.round(rect.height)}
-
-    _auxRenderCushioned(this, image, 0, 0, 0, 0, 0); // Start recursion with flat cushion.
+    // Start recursion with flat cushion.
+    _auxRenderCushioned(this, 0, 0, 0, 0, 0); 
 
     context.putImageData(imgData, 0, 0);
 }
