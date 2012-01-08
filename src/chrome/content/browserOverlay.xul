@@ -760,7 +760,7 @@
                 </hbox>
                 
                 <!-- debug sliders for tweaking treemap parameters -->
-                <hbox align="baseline">
+                <hbox align="baseline" hidden="true">
                     <label value="h0"/>
                     <scale id="listit-treemap-scale-h0" 
                       min="0" max="3000" value="1200" increment="50" 

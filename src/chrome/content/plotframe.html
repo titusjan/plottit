@@ -27,6 +27,7 @@
         onResize();
         $("body").resize(onResize);
 
+        //doTest();
     });
 
     
@@ -49,17 +50,75 @@
             - $("#footer-div").height()
             - plotRimSize; // size of 2*(border + margin + border)
         plotDiv.css('height', height);
+        
+        addAxisDivs(window.flotWrapper);
+    }
+
+
+    function getBoundingBoxForAxis(plot, axis) {
+        var left = axis.box.left, top = axis.box.top,
+            right = left + axis.box.width, bottom = top + axis.box.height;
+
+        /*
+        // some ticks may stick out, enlarge the box to encompass all ticks
+        var cls = axis.direction + axis.n + 'Axis';
+        plot.getPlaceholder().find('.' + cls + ' .tickLabel').each(function () {
+            var pos = $(this).position();
+            left = Math.min(pos.left, left);
+            top = Math.min(pos.top, top);
+            right = Math.max(Math.round(pos.left) + $(this).outerWidth(), right);
+            bottom = Math.max(Math.round(pos.top) + $(this).outerHeight(), bottom);
+        }); */
+        
+        return { left: left, top: top, width: right - left, height: bottom - top };
     }
     
-    function doTest (button) {
-        window.Listit.logger.info('plotFrame.doTest --');
-        window.Listit.fbLog('plotFrame.doTest --');
+    function addAxisDivs(flotWrapper) {
+        
+        var plot = flotWrapper.plot;
+        if (!plot) return;
+        var placeholder = plot.getPlaceholder(); 
+        var overlay = placeholder.children("canvas.overlay");        
 
-        $('#footer-div').text('button pressed');
+        $(".axisTarget").remove();  // Remove old divs
         
-        
-        
-try {
+        $.each(plot.getAxes(), function (i, axis) {
+            if (!axis.show)
+                return;
+            
+            var box = getBoundingBoxForAxis(plot, axis);
+            
+            $('<div class="axisTarget" style="position:absolute;left:' + box.left + 'px;top:' + box.top + 'px;width:' + box.width +  'px;height:' + box.height + 'px"></div>')
+                //.data('axis.direction', axis.direction)
+                //.data('axis.n', axis.n)
+                .css({ backgroundColor: "hsl(210, 100%, 50%)", opacity: 0, 'z-index': 1 })
+                .appendTo(plot.getPlaceholder())
+                .hover(
+                    function () { 
+                        $(this).css({ opacity: 0.3 });
+                        if (axis.direction == 'x') // fix other axis
+                            plot.getAxes().yaxis.options.zoomRange = false;
+                        else 
+                            plot.getAxes().xaxis.options.zoomRange = false;
+                    },
+                    function () { 
+                        $(this).css({ opacity: 0 });
+                        flotWrapper._updateFlotAxisOptions(axis.direction == 'x' ? 'y':'x') // restore zoom settings
+                    }
+                )
+                .click(function () {
+                    //$("#footer-div").text("You clicked the " + axis.direction + axis.n + " axis!")
+                })
+                .mousewheel(function (e, delta) {
+                    overlay.trigger(e, delta);
+                });
+        });
+    }    
+    
+    
+    function doTest (button) { // Debugging function
+        window.Listit.fbLog('plotFrame.doTest --', 'narf');
+
         // Fill plot with debug data
         function getData(x1, x2) {
             var d = [];
@@ -75,13 +134,22 @@ try {
             points : { show: true },
             color  : 'orangered',
         } ];
-        flotWrapper.setPlotSeries(plotSeries);
         
-        //flotWrapper.drawPlot();
-} catch (ex) {
-        $('#footer-div').text('error: ' + ex);
-}
+        var plotOptions = {
+            zoom: { interactive: true, amount: Math.sqrt(2.0) },
+            pan: { interactive: true },
+            xaxis: { zoomRange: null, panRange: null },
+            yaxis: { zoomRange: null, panRange: null },
+        };
+        
+        flotWrapper._axisOptionCache['x'].panZoomEnabled = true;
+        flotWrapper._axisOptionCache['y'].panZoomEnabled = true;
+        flotWrapper.createPlot(plotOptions);
+        flotWrapper.setData(plotSeries);
+        flotWrapper.drawPlot(true);
+        onResize();
     }
+    
     
     </script>
     
