@@ -141,6 +141,16 @@
               hidden="true"/>
             <splitter class="tree-splitter"/>
                       
+            <treecol id="treeAuthor"
+              width="140"
+              label="Author"
+              persist="width ordinal hidden"
+              onclick="Listit.onClickTreeHeader(event)"
+              minwidth="40"
+              maxwidth="150"
+              /> 
+            <splitter class="tree-splitter"/>
+            
             <treecol id="treeLocalDate"
               width="130"
               label="Date   "
@@ -199,15 +209,6 @@
               onclick="Listit.onClickTreeHeader(event)"
               style="text-align: right"
               />
-            <splitter class="tree-splitter"/>
-            
-            <treecol id="treeChars"
-              width="50"  
-              label="Characters   "
-              persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
-              style="text-align: right"
-              /> 
             <splitter class="tree-splitter"/>
             
             <treecol id="treeBody"
@@ -285,17 +286,15 @@
               /> 
             <splitter class="tree-splitter"/>
   
-            <treecol id="treeAuthor"
-              width="140"
-              label="Author"
+            <treecol id="treeChars"
+              width="50"  
+              label="Characters   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
-              minwidth="40"
-              maxwidth="150"
+              style="text-align: right"
               /> 
             <splitter class="tree-splitter"/>
-            
-            
+
             <treecol id="treeDebug"
               width="50"
               label="Debug"
