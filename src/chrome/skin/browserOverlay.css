@@ -13,6 +13,22 @@
    margin-right: 0px;
 }
 
+
+treecol.number {
+    text-align: right;
+}
+
+/*
+::-moz-tree-cell(fuzzed) {
+    background-color: cyan;
+}*/
+
+::-moz-tree-cell-text(fuzzed) {
+    font-style: italic;
+    color: #444444;
+}
+
+
 #listit-tabbox {
    margin-left: 0px;
 }

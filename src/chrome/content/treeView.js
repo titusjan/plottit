@@ -326,8 +326,32 @@ Listit.TreeView.prototype.selectionChanged = function() {}
 Listit.TreeView.prototype.cycleCell = function(idx, column) {}
 Listit.TreeView.prototype.performAction = function(action) {}
 Listit.TreeView.prototype.performActionOnCell = function(action, index, column) {}
-Listit.TreeView.prototype.getRowProperties = function(idx, column, prop) {}
-Listit.TreeView.prototype.getCellProperties = function(idx, column, prop) {}
-Listit.TreeView.prototype.getColumnProperties = function(column, element, prop) {}
+Listit.TreeView.prototype.getRowProperties = function(rowIdx, properties) {}
+Listit.TreeView.prototype.getCellProperties = function(rowIdx, column, properties) {
+    switch (column.id)
+    {
+        //case 'treeLocalDate': 
+        //case 'treeUtcDate': 
+        //case 'treeAge': 
+        //case 'treePostedAfter': 
+        //case 'treeDepth': 
+        //case 'treeReplies': 
+        //case 'treeScore': 
+        case 'treeUp': 
+        case 'treeDown': 
+        case 'treeVotes': 
+        case 'treeLikes': 
+        //case 'treeHot': 
+        case 'treeBest': 
+        //case 'treeChars': 
+        case 'treeDebug': 
+            var atomService = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
+            var prop = atomService.getAtom("fuzzed");
+            properties.AppendElement(prop); 
+            break;
+    } 
+}
+
+Listit.TreeView.prototype.getColumnProperties = function(column, properties) { }
 
 
