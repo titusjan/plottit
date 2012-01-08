@@ -85,8 +85,6 @@
             yaxis: { zoomRange: null, panRange: null },
         };
         
-        flotWrapper._axisOptionCache['x'].panZoomEnabled = true;
-        flotWrapper._axisOptionCache['y'].panZoomEnabled = true;
         flotWrapper.createPlot(plotOptions);
         flotWrapper.setData(plotSeries);
         flotWrapper.drawPlot(true);

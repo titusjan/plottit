@@ -547,19 +547,6 @@
                         persist="checked"
                         oncommand="Listit.scatterPlot.setAxisVariable('x', this, 'postedAfter')"/>
                     
-                    
-                      <menuseparator/>
-                      <menuitem 
-                        id="listit-scatter-x-axis-pz-allowed"
-                        label="Pan &amp; Zoom Allowed" 
-                        type="checkbox"
-                        autocheck="false"
-                        checked="true"
-                        persist="checked"
-                        oncommand="Listit.scatterPlot.togglePanZoomEnabled(this, 'x');"/>
-        
-                      <menuseparator/>
-                      <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetRange('x')"/>
                     </menupopup>
                   </button>
                   
@@ -642,18 +629,6 @@
                         persist="checked"
                         oncommand="Listit.scatterPlot.setAxisVariable('y', this, 'numReplies')"/>
         
-                      <menuseparator/>
-                      <menuitem 
-                        id="listit-scatter-y-axis-pz-allowed"
-                        label="Pan &amp; Zoom Allowed" 
-                        type="checkbox"
-                        autocheck="false"
-                        checked="true"
-                        persist="checked"
-                        oncommand="Listit.scatterPlot.togglePanZoomEnabled(this, 'y');"/>
-        
-                      <menuseparator/>
-                      <menuitem label="Reset Scale" oncommand="Listit.scatterPlot.resetRange('y')"/>
                     </menupopup>
                   </button>
         

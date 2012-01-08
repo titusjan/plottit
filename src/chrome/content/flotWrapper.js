@@ -22,12 +22,10 @@ Listit.FlotWrapper = function (placeHolderDivId)
     // set to false and thus the old setting is lost in flot :-(
     this._axisOptionCache = {};
     this._axisOptionCache.x = {
-        panZoomEnabled : null,
         zoomRange : null,
         panRange : null
     }
     this._axisOptionCache.y = {
-        panZoomEnabled : null,
         zoomRange : null,
         panRange : null
     }
@@ -80,30 +78,21 @@ Listit.FlotWrapper.prototype.drawPlot = function (rescale) {
 // Update the flot axis options from the axisOptionCache
 Listit.FlotWrapper.prototype._updateFlotAxisOptions = function (axisStr) {
     Listit.logger.trace('Listit.FlotWrapper._updateFlotAxisOptions --');
+    Listit.assert(this.plot, "In _updateFlotAxisPanOptions: this.plot not initialized");
     this._updateFlotAxisPanOptions(axisStr);
     this._updateFlotAxisZoomOptions(axisStr);
 }
 
 // Update the flot axis pan options from the axisOptionCache
 Listit.FlotWrapper.prototype._updateFlotAxisPanOptions = function (axisStr) {
-    Listit.assert(this.plot, "In _updateFlotAxisPanOptions: this.plot not initialized");
     var axis = this.getAxisByName(axisStr);
-    if (this._axisOptionCache[axisStr].panZoomEnabled) {
-        axis.options.panRange = this._axisOptionCache[axisStr].panRange;
-    } else {
-        axis.options.panRange = false;    
-    }
+    axis.options.panRange = this._axisOptionCache[axisStr].panRange;
 }
 
 // Update the flot axis zoom options from the axisOptionCache
 Listit.FlotWrapper.prototype._updateFlotAxisZoomOptions = function (axisStr) {
-    Listit.assert(this.plot, "In _updateFlotAxisZoomOptions: this.plot not initialized");
     var axis = this.getAxisByName(axisStr);
-    if (this._axisOptionCache[axisStr].panZoomEnabled) {
-        axis.options.zoomRange = this._axisOptionCache[axisStr].zoomRange;
-    } else {
-        axis.options.zoomRange = false;
-    }
+    axis.options.zoomRange = this._axisOptionCache[axisStr].zoomRange;
 }
 
 // Merges sourceOptions into the targetOptions dictionary
@@ -124,21 +113,6 @@ Listit.FlotWrapper.prototype.setAxisOptions = function (axisStr, varOptions) {
         this._updateFlotAxisOptions(axisStr);
     }
 }
-
-Listit.FlotWrapper.prototype.getAxisPanZoomEnabled = function (axisStr) {
-    this.assertAxisStringIsValid(axisStr);
-    return this._axisOptionCache[axisStr].panZoomEnabled;
-}
-
-Listit.FlotWrapper.prototype.setAxisPanZoomEnabled = function (axisStr, enabled) {
-    Listit.logger.trace('Listit.FlotWrapper.setAxisPanZoomEnabled --');
-    this.assertAxisStringIsValid(axisStr);
-    this._axisOptionCache[axisStr].panZoomEnabled = enabled;
-    if (this.plot) {
-        this._updateFlotAxisOptions(axisStr);
-    }
-}
-
 
 Listit.FlotWrapper.prototype.logRange = function () {
     Listit.logger.trace('Listit.FlotWrapper.logRange');

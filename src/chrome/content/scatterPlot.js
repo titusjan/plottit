@@ -26,8 +26,7 @@ Open:
 
 // Constructor
 Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale, 
-        xAxisVariable, yAxisVariable, binWidth, 
-        xAxisPanZoomEnabled, yAxisPanZoomEnabled) 
+        xAxisVariable, yAxisVariable, binWidth) 
 {
     this.plotFrameId = plotFrameId;
     this.plotFrame = document.getElementById(this.plotFrameId);
@@ -41,8 +40,6 @@ Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale,
     this.axesAutoscale =  axesAutoscale;
 
     this.flotWrapper = this.plotFrame.contentWindow.flotWrapper;
-    this.flotWrapper.setAxisPanZoomEnabled('x', xAxisPanZoomEnabled);
-    this.flotWrapper.setAxisPanZoomEnabled('y', yAxisPanZoomEnabled);
 }
 
 
@@ -229,16 +226,6 @@ Listit.ScatterPlot.prototype.toggleAxesAutoScale = function (checkbox) {
 
 }
  
-
-Listit.ScatterPlot.prototype.togglePanZoomEnabled = function (menuItem, axisStr) {
-    Listit.logger.trace("Listit.ScatterPlot.togglePanZoomEnabled -- ");
-
-    var wasChecked = Listit.stringToBoolean(menuItem.getAttribute("checked"));
-    var enabled = ! wasChecked;
-    menuItem.setAttribute('checked', enabled);
-    this.flotWrapper.setAxisPanZoomEnabled(axisStr, enabled);
-}
-
 
 Listit.ScatterPlot.prototype.resetRange = function (axisStr) {
 
