@@ -54,7 +54,7 @@ Listit.FlotWrapper.prototype.getAxisByName = function (axisStr) {
 Listit.FlotWrapper.prototype.createPlot = function (plotOptions) {
     this.plot = $.plot($('#'+this.placeHolderDivId), [], plotOptions);
 
-    // Pases on the plot options set so far
+    // Pass on the plot options set so far
     this._updateFlotAxisOptions('x');
     this._updateFlotAxisOptions('y');
 }
@@ -271,8 +271,10 @@ Listit.FlotWrapper.prototype.addAxisDivs = function () {
                     flotWrapper._updateFlotAxisZoomOptions( (axis.direction == 'x') ? 'y':'x');
                 }
             )
-            .click(function () {
-                //$("#footer-div").text("You clicked the " + axis.direction + axis.n + " axis!")
+            .dblclick(function () { 
+                // Double click resets the scale for this axis
+                flotWrapper.resetRange(axis.direction);
+                flotWrapper.drawPlot(true);
             })
             .bind("dragstart", function (e) { 
                 e.stopPropagation(); 

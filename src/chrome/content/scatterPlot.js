@@ -109,7 +109,6 @@ Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
 Listit.ScatterPlot.prototype._initPlot = function () {
         
     Listit.logger.trace("Listit.scatterPlot.initPlot -- ");        
-    
     var initialPlotOptions = { 
         selection : { mode: "xy" },
         xaxis: { 
@@ -138,11 +137,22 @@ Listit.ScatterPlot.prototype._initPlot = function () {
     };        
     
     this.flotWrapper.createPlot(initialPlotOptions);     // Draws/creates plot in flotwrapper
+    var plot = this.flotWrapper.plot; // is defined now
     this._updateAxisOptions('x', this.xAxisVariable);
     this._updateAxisOptions('y', this.yAxisVariable);
-    this.flotWrapper.plot.resize();
+    plot.resize();
     this.flotWrapper.drawPlot(true);
     this._updatePlotTitle();
+
+    // Redefine the double click zoom event to reset scale (was zoom).
+    var overlay = plot.getPlaceholder().children("canvas.overlay");  
+    overlay.unbind(plot.getOptions().zoom.trigger);
+    var flotWrapper = this.flotWrapper;
+    overlay.bind('dblclick', function(e) {
+        flotWrapper.resetRange('x');
+        flotWrapper.resetRange('y');
+        flotWrapper.drawPlot(true);
+    });
 }
 
 
