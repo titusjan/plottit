@@ -26,7 +26,12 @@
         
         onResize();
         $("body").resize(onResize);
+        $("body").bind("dragend", function (e) { 
+            window.flotWrapper._updateFlotAxisPanOptions('x'); 
+            window.flotWrapper._updateFlotAxisPanOptions('y'); 
+        });
 
+    
         //doTest();
     });
 

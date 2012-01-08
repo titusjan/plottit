@@ -77,18 +77,31 @@ Listit.FlotWrapper.prototype.drawPlot = function (rescale) {
     this.plot.draw();      // Redraw the canvas (tick values)
 }
 
-
 // Update the flot axis options from the axisOptionCache
 Listit.FlotWrapper.prototype._updateFlotAxisOptions = function (axisStr) {
-
     Listit.logger.trace('Listit.FlotWrapper._updateFlotAxisOptions --');
-    Listit.assert(this.plot, "In _updateFlotAxisOptions: this.plot not initialized");
+    this._updateFlotAxisPanOptions(axisStr);
+    this._updateFlotAxisZoomOptions(axisStr);
+}
+
+// Update the flot axis pan options from the axisOptionCache
+Listit.FlotWrapper.prototype._updateFlotAxisPanOptions = function (axisStr) {
+    Listit.assert(this.plot, "In _updateFlotAxisPanOptions: this.plot not initialized");
     var axis = this.getAxisByName(axisStr);
     if (this._axisOptionCache[axisStr].panZoomEnabled) {
         axis.options.panRange = this._axisOptionCache[axisStr].panRange;
-        axis.options.zoomRange = this._axisOptionCache[axisStr].zoomRange;
     } else {
         axis.options.panRange = false;    
+    }
+}
+
+// Update the flot axis zoom options from the axisOptionCache
+Listit.FlotWrapper.prototype._updateFlotAxisZoomOptions = function (axisStr) {
+    Listit.assert(this.plot, "In _updateFlotAxisZoomOptions: this.plot not initialized");
+    var axis = this.getAxisByName(axisStr);
+    if (this._axisOptionCache[axisStr].panZoomEnabled) {
+        axis.options.zoomRange = this._axisOptionCache[axisStr].zoomRange;
+    } else {
         axis.options.zoomRange = false;
     }
 }
@@ -220,6 +233,7 @@ Listit.FlotWrapper.prototype.setAxesAutoscale = function (autoScale) {
 
 Listit.FlotWrapper.prototype.addAxisDivs = function () {
 
+    var flotWrapper = this;
     var plot = this.plot;
     if (!plot) return;
     var placeholder = plot.getPlaceholder(); 
@@ -246,22 +260,32 @@ Listit.FlotWrapper.prototype.addAxisDivs = function () {
             .hover(
                 function () { 
                     $(this).css({ opacity: 0.3 });
-                    if (axis.direction == 'x') // fix other axis
+                    if (axis.direction == 'x') { // fix other axis
                         plot.getAxes().yaxis.options.zoomRange = false;
-                    else 
+                    } else {
                         plot.getAxes().xaxis.options.zoomRange = false;
+                    }
                 },
                 function () { 
                     $(this).css({ opacity: 0 });
-                    flotWrapper._updateFlotAxisOptions(axis.direction == 'x' ? 'y':'x') // restore zoom settings
+                    flotWrapper._updateFlotAxisZoomOptions( (axis.direction == 'x') ? 'y':'x');
                 }
             )
             .click(function () {
                 //$("#footer-div").text("You clicked the " + axis.direction + axis.n + " axis!")
             })
-            .mousewheel(function (e, delta) {
-                overlay.trigger(e, delta);
-            });
+            .bind("dragstart", function (e) { 
+                e.stopPropagation(); 
+                if (axis.direction == 'x') { // fix other axis
+                    plot.getAxes().yaxis.options.panRange = false;
+                } else {
+                    plot.getAxes().xaxis.options.panRange = false;
+                }                
+                overlay.trigger(e) 
+            } )
+            .bind("drag",      function (e) { e.stopPropagation(); overlay.trigger(e) } )
+            .bind("dragend",   function (e) { overlay.trigger(e) } ) // don't end propagation so it reaches the body.dragend handler             
+            .mousewheel(function (e, delta) { e.stopPropagation(); overlay.trigger(e, delta); });            
     });
 }    
 
