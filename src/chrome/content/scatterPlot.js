@@ -264,22 +264,19 @@ Listit.ScatterPlot.prototype._removeHistPrefix = function (axisVar) {
     }
 }
 
-
-Listit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuItem, axisVar) {
+Listit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuList) {
 try{
     Listit.logger.trace("Listit.ScatterPlot.setAxisVariable -- ");
     Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
     
-    var menuPopup = menuItem.parentNode;
+    var axisVar = menuList.getAttribute('value');
     if (axisStr == 'x') {
         this.xAxisVariable = axisVar;
-        menuPopup.setAttribute("xvarselected", axisVar); // store in persistent attribute
         
         this.histogramMode = this._axisVariableIsHistogram(axisVar);
         Listit.logger.debug("Scatterplot histogram mode is " + this.histogramMode);
     } else {
         this.yAxisVariable = axisVar;
-        menuPopup.setAttribute("yvarselected", axisVar); // store in persistent attribute
     }
     
     this._updateAxisOptions(axisStr); 
