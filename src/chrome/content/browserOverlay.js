@@ -227,7 +227,7 @@ Listit.onClickBodyTreeHeader = function(event) {
     
     // Set after actual sorting for easier dection of error in during sort
     column.setAttribute('structure', newStructure);
-    column.setAttribute('label', 'Comments as ' + ((newStructure == 'tree') ? 'Tree' : 'List'));
+    column.setAttribute('label', 'Comments ' + ((newStructure == 'tree') ? 'tree' : 'list'));
     
     Listit.logger.trace("Listit.onClickBodyTreeHeader done ");
 }

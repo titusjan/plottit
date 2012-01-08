@@ -28,13 +28,9 @@ label.details-label {
 
 /* Smaller width list menus to save space */
 .axis-var {
-    width: 50px;  /* width serves as a min-width; when omitted the drop menulist widht depends on the selecte value :-( */
-    max-width: 150px;
+
+    width: 80px;  /* width serves as a min-width; when omitted the drop menulist widht depends on the selecte value :-( */
+    max-width: 115px;
 }
 
-#listit-tabbox .tab {
-    width: 50px;  /* width serves as a min-width; when omitted the drop menulist widht depends on the selecte value :-( */
-    min-width: 50px;  /* width serves as a min-width; when omitted the drop menulist widht depends on the selecte value :-( */
-    max-width: 150px;
-}
 

@@ -143,7 +143,7 @@
                       
             <treecol id="treeLocalDate"
               width="130"
-              label="Date &amp; Time   "
+              label="Date   "
               persist="width ordinal hidden format"
               format="yyyy-mm-dd HH:MM:ss"
               onclick="Listit.onClickTreeHeader(event)"
@@ -154,7 +154,7 @@
   
             <treecol id="treeUtcDate"
               width="130"
-              label="UTC Date &amp; Time   "
+              label="UTC Date   "
               persist="width ordinal hidden format"
               format="yyyy-mm-dd HH:MM:ss"
               onclick="Listit.onClickTreeHeader(event)"
@@ -175,7 +175,7 @@
                                 
             <treecol id="treePostedAfter"
               width="100"
-              label="Posted After   "
+              label="Posted after   "
               persist="width ordinal hidden format"
               format="HH:MM:ss"
               onclick="Listit.onClickTreeHeader(event)"
@@ -212,7 +212,7 @@
             
             <treecol id="treeBody"
               width="500"
-              label="Comments (tree)"
+              label="Comments"
               structure="tree"
               persist="width ordinal hidden structure label"
               onclick="Listit.onClickBodyTreeHeader(event)"
@@ -298,7 +298,8 @@
             
             <treecol id="treeDebug"
               width="50"
-              label="Debug (refresh date)"
+              label="Debug"
+              hidden="true"
               persist="width ordinal hidden" 
               onclick="Listit.onClickTreeHeader(event)"
               style="text-align: right"
@@ -404,7 +405,7 @@
                     persist="checked"
                     checked="true" />
 
-                  <spacer flex="1"/>            
+                  <!--<spacer flex="1"/> -->
                 </hbox> 
               </vbox> <!-- scatterplot -->
         
@@ -490,7 +491,6 @@
                     persist="checked"
                     checked="true" />
 
-                  <!--<spacer flex="1"/>-->
                 </hbox> 
               </vbox> <!-- histogram -->
         
