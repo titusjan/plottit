@@ -218,6 +218,54 @@ Listit.FlotWrapper.prototype.setAxesAutoscale = function (autoScale) {
     this.drawPlot(autoScale);
 }
 
+Listit.FlotWrapper.prototype.addAxisDivs = function () {
+
+    var plot = this.plot;
+    if (!plot) return;
+    var placeholder = plot.getPlaceholder(); 
+    var overlay = placeholder.children("canvas.overlay");        
+
+    function getBoundingBoxForAxis(plot, axis) {
+        var left = axis.box.left, top = axis.box.top,
+            right = left + axis.box.width, bottom = top + axis.box.height;
+        return { left: left, top: top, width: right - left, height: bottom - top };
+    }    
+
+    $(".axisTarget").remove();  // Remove old divs
+    
+    $.each(plot.getAxes(), function (i, axis) {
+        if (!axis.show)
+            return;
+        
+        var box = getBoundingBoxForAxis(plot, axis);
+        
+        $('<div class="axisTarget" style="position:absolute;left:' 
+                + box.left + 'px;top:' + box.top + 'px;width:' + box.width +  'px;height:' + box.height + 'px"></div>')
+            .css({ backgroundColor: "hsl(210, 100%, 50%)", opacity: 0, 'z-index': 1 })
+            .appendTo(plot.getPlaceholder())
+            .hover(
+                function () { 
+                    $(this).css({ opacity: 0.3 });
+                    if (axis.direction == 'x') // fix other axis
+                        plot.getAxes().yaxis.options.zoomRange = false;
+                    else 
+                        plot.getAxes().xaxis.options.zoomRange = false;
+                },
+                function () { 
+                    $(this).css({ opacity: 0 });
+                    flotWrapper._updateFlotAxisOptions(axis.direction == 'x' ? 'y':'x') // restore zoom settings
+                }
+            )
+            .click(function () {
+                //$("#footer-div").text("You clicked the " + axis.direction + axis.n + " axis!")
+            })
+            .mousewheel(function (e, delta) {
+                overlay.trigger(e, delta);
+            });
+    });
+}    
+
+
 // Needed when the selection plug-in is used.
 Listit.FlotWrapper.prototype.onPlotSelect = function (event, ranges) {
     Listit.logger.trace("onPlotSelect --");

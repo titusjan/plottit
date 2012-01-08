@@ -286,9 +286,10 @@ try{
     }
     
     this._updateAxisOptions(axisStr); 
-    if (axisStr == 'x') this._updateAxisOptions('y'); // Hack to also update the y options for histograms.
+    if (axisStr == 'x') this._updateAxisOptions('y'); // Hack to also update the y options for histograms. TODO: fix
     this.setDiscussion(this.discussion);
     this.resetRange(axisStr);
+    this.flotWrapper.addAxisDivs(); // The widht of the axis can change so recreate the zoom-divs
     this._updatePlotTitle();
     
 } catch (ex) {
