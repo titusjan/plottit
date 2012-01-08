@@ -331,7 +331,7 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
     // The sx1, sy1, sx2, sy2 parameters are the coefficients of the parabola shaped cushions:
     //   f(x, y) = sx2*x^2 + sx1*x + sy2*y^2 + sy1*y + c. 
     function _auxRenderCushioned (node, depth, sx1, sy1, sx2, sy2) {
-    
+        
         if (node.size <= 0) return;
         var rect = node.rectangle;
         
@@ -380,7 +380,7 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
             }
         } else {
             // Draw children
-            if (node.addCusion) depth += 1;
+            if (node.addCushion) depth += 1;
             for (let [idx, child] in Iterator(node.children)) {
                 _auxRenderCushioned(child, depth, sx1, sy1, sx2, sy2);
             }

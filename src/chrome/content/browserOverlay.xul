@@ -12,11 +12,9 @@
 
   <script type="application/x-javascript" src="chrome://listit/content/browserOverlay.js" />
   <script type="application/x-javascript" src="chrome://listit/content/dateFormat.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/encoder.js" />
   <script type="application/x-javascript" src="chrome://listit/content/posts.js" />
   <script type="application/x-javascript" src="chrome://listit/content/scatterPlot.js" />
   <script type="application/x-javascript" src="chrome://listit/content/state.js" />
-  <!--<script type="application/x-javascript" src="chrome://listit/content/testData.js" />-->
   <script type="application/x-javascript" src="chrome://listit/content/treemap.js" />
   <script type="application/x-javascript" src="chrome://listit/content/treeView.js" />
   <script type="application/x-javascript" src="chrome://listit/content/timePeriod.js" />
@@ -351,11 +349,13 @@
                 <hbox align="baseline">
                
                   <!-- Scatter plot X-Axis -->
-                  <label value="X" class="menulist-label"/>
+                  <label value="X" class="details-label"/>
                   <menulist id="listit-scatter-x-axis-menulist" class="axis-var"
                       label="X-Axis" 
                       value="score"
                       persist="value"
+                      flex="1"
+                      crop="end"                       
                       oncommand="Listit.scatterPlot.setAxisVariable('x', this);">                  
                     <menupopup id="listit-scatter-x-axis-menupopup">
                       <menuitem value="depth"                 label="Depth"/>
@@ -374,11 +374,13 @@
                   </menulist>
                   
                   <!-- Scatter plot Y-Axis -->
-                  <label value="Y" class="menulist-label"/>
+                  <label value="Y" class="details-label"/>
                   <menulist id="listit-scatter-y-axis-menulist" class="axis-var"     
                       label="Y-Axis" 
                       value="score"
                       persist="value"
+                      flex="1"
+                      crop="end"                       
                       oncommand="Listit.scatterPlot.setAxisVariable('y', this);">                  
                     <menupopup id="listit-scatter-y-axis-menupopup">
                       <menuitem value="depth"      label="Depth"/>
@@ -420,11 +422,13 @@
                 <hbox align="baseline">
                
                   <!-- Histogram X-Axis -->
-                  <label value="X" class="menulist-label"/>
+                  <label value="X" class="details-label"/>
                   <menulist id="listit-histo-x-axis-menulist" class="axis-var"
                       label="X-Axis" 
                       value="score"
                       persist="value"
+                      flex="1"
+                      crop="end"                       
                       oncommand="Listit.histogram.setAxisVariable('x', this);">                  
                     <menupopup id="listit-histo-x-axis-menupopup">
                       <menuitem value="hist_depth"                 label="Depth"/>
@@ -443,10 +447,12 @@
                   </menulist>
         
                   <!-- Bin Width -->
-                  <menulist id="listit-bin-width-menulist"
+                  <menulist id="listit-bin-width-menulist" class="axis-var"
                       label="Bin width" 
                       value="10" 
                       persist="value"
+                      flex="1"
+                      crop="end"                       
                       oncommand="Listit.histogram.setBinWidth(this);">
                     <menupopup id="listit-bin-width-menupopup">
                       <menuitem value="0.1" label="0.1"/>
@@ -478,12 +484,13 @@
                   <checkbox 
                     id="listit-histo-axes-autoscale"
                     oncommand="Listit.histogram.toggleAxesAutoScale(this)"
-                    label="Autoscale" 
+                    label="Autoscale"
+                    flex="1"
                     crop="end"
                     persist="checked"
                     checked="true" />
 
-                  <spacer flex="1"/>            
+                  <!--<spacer flex="1"/>-->
                 </hbox> 
               </vbox> <!-- histogram -->
         
@@ -500,11 +507,13 @@
         
                 <hbox align="baseline">
                   
-                  <label value="Size"/>
-                  <menulist id="listit-treemap-size-menulist"
+                  <label value="Size" class="details-label"/>
+                  <menulist id="listit-treemap-size-menulist" class="axis-var"
                       label="Size" 
                       value="numChars" 
                       persist="value"
+                      flex="1"
+                      crop="end"                      
                       oncommand="Listit.setTreeMapSizeProperty(this);">
                     <menupopup id="listit-bin-width-menupopup">
                       <menuitem value="score"    label="Score"/>
@@ -516,11 +525,13 @@
                     </menupopup>
                   </menulist>
 
-                  <label value="Color"/>
-                  <menulist id="listit-treemap-color-menulist"
+                  <label value="Color" class="details-label"/>
+                  <menulist id="listit-treemap-color-menulist" class="axis-var"
                       label="Color" 
                       value="none" 
                       persist="value"
+                      flex="1"      
+                      crop="end"
                       oncommand="Listit.setTreeMapColorProperty(this);">
                     <menupopup id="listit-bin-width-menupopup">
                       <menuitem value="none"       label="No color"/>
@@ -540,31 +551,35 @@
                     oncommand="Listit.renderTreeMap(0);"
                     label="Cushions" 
                     crop="end"
+                    flex="1"
                     persist="checked" />
                     
                 </hbox>
                 
                 <!-- debug sliders for tweaking treemap parameters -->
                 <hbox align="baseline" hidden="true">
-                    <label value="h0"/>
-                    <scale id="listit-treemap-scale-h0" 
+                    <label value="h0" class="details-label"/>
+                    <scale id="listit-treemap-scale-h0" class="treemap"
                       min="0" max="3000" value="1200" increment="50" 
                       movetoclick="1"
                       tabindex="100"
+                      flex="1"
                       onchange="Listit.renderTreeMap(0);"/>
                       
-                    <label value="q"/>
-                    <scale id="listit-treemap-scale-f" 
+                    <label value="q" class="details-label"/>
+                    <scale id="listit-treemap-scale-f" class="treemap"
                       min="0" max="4000" value="2500" increment="100" 
                       movetoclick="1"
                       tabindex="110"
+                      flex="1"
                       onchange="Listit.renderTreeMap(0);"/>
                       
-                    <label value="Iamb"/>
-                    <scale id="listit-treemap-scale-iamb" 
+                    <label value="Iamb" class="details-label"/>
+                    <scale id="listit-treemap-scale-iamb" class="treemap"
                       min="0" max="500" value="100" increment="10" 
                       movetoclick="1"
                       tabindex="120"
+                      flex="1"                      
                       onchange="Listit.renderTreeMap(0);"/>
                 </hbox>
                   

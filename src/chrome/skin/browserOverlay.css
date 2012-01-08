@@ -22,33 +22,19 @@
     padding: 20px 5px 5px 5px;
 }
 
-
-/* Smaller bin width list menus to save space */
-#listit-treemap-size-menulist {
-    width: 100px;
-}
-
-/* Smaller bin width list menus to save space */
-#listit-treemap-color-menulist {
-    width: 100px;
-}
-
-label.menulist-label {
+label.details-label {
     margin-right: 2px;
 }
 
-menulist.axis-var {
-    width: 100px;
+/* Smaller width list menus to save space */
+.axis-var {
+    width: 50px;  /* width serves as a min-width; when omitted the drop menulist widht depends on the selecte value :-( */
+    max-width: 150px;
 }
 
-
-#listit-bin-width-menulist {
-    width: 100px;
+#listit-tabbox .tab {
+    width: 50px;  /* width serves as a min-width; when omitted the drop menulist widht depends on the selecte value :-( */
+    min-width: 50px;  /* width serves as a min-width; when omitted the drop menulist widht depends on the selecte value :-( */
+    max-width: 150px;
 }
-
-/* This, unfortunately doesn't work (on OS-X at least). */
-#listit-bin-width-menupopup {
-    width: 150px;
-}
-
 
