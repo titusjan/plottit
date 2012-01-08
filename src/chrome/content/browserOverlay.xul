@@ -328,6 +328,7 @@
           <tabs >
             <tab label="Comment"/>
             <tab label="Plot"/>
+            <tab label="Histogram"/>
             <tab label="Treemap"/>            
           </tabs>
           <tabpanels id="listit-tabpanels" flex="1">
@@ -357,20 +358,6 @@
                       persist="value"
                       oncommand="Listit.scatterPlot.setAxisVariable('x', this);">                  
                     <menupopup id="listit-scatter-x-axis-menupopup">
-                      <menuitem value="hist_depth"                 label="Depth"/>
-                      <menuitem value="hist_score"                 label="Score"/>
-                      <menuitem value="hist_ups"                   label="Up"/>
-                      <menuitem value="hist_downs"                 label="Down"/>
-                      <menuitem value="hist_votes"                 label="Votes"/>
-                      <menuitem value="hist_likesPerc"             label="Likes"/>
-                      <menuitem value="hist_hot"                   label="Hot"/>
-                      <menuitem value="hist_numChars"              label="Characters"/>
-                      <menuitem value="hist_numReplies"            label="Replies"/>
-                      <menuitem value="hist_dateCreatedLocalValue" label="Date"/>
-                      <menuitem value="hist_dateCreatedValue"      label="UTC Date"/>
-                      <menuitem value="hist_postedAfter"           label="Posted after"/>
-                    
-                      <menuseparator/>                    
                       <menuitem value="depth"                 label="Depth"/>
                       <menuitem value="score"                 label="Score"/>
                       <menuitem value="ups"                   label="Up"/>
@@ -406,12 +393,61 @@
                     </menupopup>
                   </menulist>
         
+                  <!-- Autoscale checkbox -->
+                  <checkbox 
+                    id="listit-scatter-axes-autoscale"
+                    oncommand="Listit.scatterPlot.toggleAxesAutoScale(this)"
+                    label="Autoscale" 
+                    crop="end"
+                    persist="checked"
+                    checked="true" />
+
+                  <spacer flex="1"/>            
+                </hbox> 
+              </vbox> <!-- scatterplot -->
+        
+            </tabpanel>
+            
+            
+            <!-- Histogram -->
+            <tabpanel id="listit-histo-tab">
+
+              <vbox flex="1">
+                <iframe id="histoFrame" 
+                  flex="1"
+                  src="chrome://listit/content/plotframe.html"/>
+        
+                <hbox align="baseline">
+               
+                  <!-- Histogram X-Axis -->
+                  <label value="X" class="menulist-label"/>
+                  <menulist id="listit-histo-x-axis-menulist" class="axis-var"
+                      label="X-Axis" 
+                      value="score"
+                      persist="value"
+                      oncommand="Listit.histogram.setAxisVariable('x', this);">                  
+                    <menupopup id="listit-histo-x-axis-menupopup">
+                      <menuitem value="hist_depth"                 label="Depth"/>
+                      <menuitem value="hist_score"                 label="Score"/>
+                      <menuitem value="hist_ups"                   label="Up"/>
+                      <menuitem value="hist_downs"                 label="Down"/>
+                      <menuitem value="hist_votes"                 label="Votes"/>
+                      <menuitem value="hist_likesPerc"             label="Likes"/>
+                      <menuitem value="hist_hot"                   label="Hot"/>
+                      <menuitem value="hist_numChars"              label="Characters"/>
+                      <menuitem value="hist_numReplies"            label="Replies"/>
+                      <menuitem value="hist_dateCreatedLocalValue" label="Date"/>
+                      <menuitem value="hist_dateCreatedValue"      label="UTC Date"/>
+                      <menuitem value="hist_postedAfter"           label="Posted after"/>
+                    </menupopup>
+                  </menulist>
+        
                   <!-- Bin Width -->
                   <menulist id="listit-bin-width-menulist"
                       label="Bin width" 
                       value="10" 
                       persist="value"
-                      oncommand="Listit.scatterPlot.setBinWidth(this);">
+                      oncommand="Listit.histogram.setBinWidth(this);">
                     <menupopup id="listit-bin-width-menupopup">
                       <menuitem value="0.1" label="0.1"/>
                       <menuitem value="0.2" label="0.2"/>
@@ -440,8 +476,8 @@
                   
                   <!-- Autoscale checkbox -->
                   <checkbox 
-                    id="listit-scatter-axes-autoscale"
-                    oncommand="Listit.scatterPlot.toggleAxesAutoScale(this)"
+                    id="listit-histo-axes-autoscale"
+                    oncommand="Listit.histogram.toggleAxesAutoScale(this)"
                     label="Autoscale" 
                     crop="end"
                     persist="checked"
@@ -449,7 +485,7 @@
 
                   <spacer flex="1"/>            
                 </hbox> 
-              </vbox> <!-- scatterplot -->
+              </vbox> <!-- histogram -->
         
             </tabpanel>
             

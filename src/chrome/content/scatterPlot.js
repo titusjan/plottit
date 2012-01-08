@@ -25,7 +25,7 @@ Open:
 // Private methods start with and underscore.
 
 // Constructor
-Listit.ScatterPlot = function (plotFrameId, state, axesAutoscale, 
+Listit.ScatterPlot = function (plotFrameId, axesAutoscale, 
         xAxisVariable, yAxisVariable, binWidth) 
 {
     this.plotFrameId = plotFrameId;
@@ -187,10 +187,7 @@ Listit.ScatterPlot.prototype._getSeries = function(discussion) {
             fillColor: 'rgba(255, 69, 0, 0.3)' }; // orangered 0.3 opacity
         var data = Listit.getCommentDataAsList(discussion.comments, 
             this.xAxisVariable.substring(5)); // remove 'hist_' from xAxisVariable
-
-        Listit.logger.debug("Creating histogram for " + data.length + " elements");
         plotSerie.data = Listit.createHistogram(data, this.binWidth);
-        Listit.logger.debug("Created histogram");
     } else {
         plotSerie.points = { show: true };
         plotSerie.data = Listit.getCommentDataAsList(discussion.comments, 
@@ -242,7 +239,7 @@ Listit.ScatterPlot.prototype._updateAxisOptions = function (axisStr) {
     axisVar = this._removeHistPrefix(axisVar);
     var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, axisVar);
     
-    // Hack to set the y options for histogram to binCount. TODO: make cleaner solutions
+    // Hack to set the y options for histogram to binCount. TODO: make cleaner solution
     if (axisStr == 'y' && this.histogramMode) { 
         var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, 'binCount');
     }
@@ -280,12 +277,13 @@ try{
     }
     
     this._updateAxisOptions(axisStr); 
-    if (axisStr == 'x') this._updateAxisOptions('y'); // Hack to also update the y options for histograms. TODO: fix
+    if (axisStr == 'x' && this.histogramMode) {
+        this._updateAxisOptions('y'); // Hack to also update the y options for histograms. TODO: better?
+    }
     this.setDiscussion(this.discussion);
     this.resetRange(axisStr);
-    this.flotWrapper.addAxisDivs(); // The widht of the axis can change so recreate the zoom-divs
+    this.flotWrapper.addAxisDivs(); // The width of the axis can change so recreate the zoom-divs
     this._updatePlotTitle();
-    
 } catch (ex) {
     Listit.logger.error('Exception in Listit.ScatterPlot.setAxisVariable;');
     Listit.logException(ex);
@@ -296,7 +294,6 @@ try{
 Listit.ScatterPlot.prototype.setBinWidth = function (menuList) {
     try{
         this.binWidth = parseFloat(menuList.getAttribute('value'));
-        Listit.fbLog(this.binWidth);
         
         if (this.histogramMode) {
             this.setDiscussion(this.discussion);

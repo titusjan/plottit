@@ -40,10 +40,17 @@ try{
         Listit.state.setCurrentBrowser(browser); // we need to have a current browser
     }
 
-    Listit.scatterPlot = new Listit.ScatterPlot('plotFrame', Listit.State, 
+    Listit.scatterPlot = new Listit.ScatterPlot('plotFrame', 
         Listit.getCheckboxValue(document.getElementById('listit-scatter-axes-autoscale')), 
         document.getElementById('listit-scatter-x-axis-menulist').getAttribute('value'), 
         document.getElementById('listit-scatter-y-axis-menulist').getAttribute('value'), 
+        parseFloat(document.getElementById('listit-bin-width-menulist').value),
+        0);
+
+    Listit.histogram = new Listit.ScatterPlot('histoFrame', 
+        Listit.getCheckboxValue(document.getElementById('listit-histo-axes-autoscale')), 
+        document.getElementById('listit-histo-x-axis-menulist').getAttribute('value'), 
+        '',
         parseFloat(document.getElementById('listit-bin-width-menulist').value));
         
     var scoreTree = document.getElementById('scoreTree');
@@ -483,6 +490,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             } else { // Debugging
                 Listit.showDescription('The current page is not a reddit discussion');
                 Listit.scatterPlot.display(false);
+                Listit.histogram.display(false);
                 curState.removeAllComments();
             }
             break;
@@ -490,6 +498,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             Listit.setListitVisible(true);
             Listit.showDescription('(Postponed) comments loading...');
             Listit.scatterPlot.display(false);
+            Listit.histogram.display(false);
             curState.removeAllComments();
             Listit.setListitVisible(true);
             
@@ -504,6 +513,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             Listit.setListitVisible(true);
             Listit.showDescription('Loading comments...');
             Listit.scatterPlot.display(false);
+            Listit.histogram.display(false);
             curState.removeAllComments();
             break;
         case Listit.PAGE_READY:
@@ -511,7 +521,9 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             Listit.hideDescription();
             var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
             Listit.scatterPlot.display(true);
+            Listit.histogram.display(true);
             Listit.scatterPlot.setDiscussion(discussion);
+            Listit.histogram.setDiscussion(discussion);
             Listit.setTreeMapDiscussion(discussion);
             
             // Sort and set comments in score tree
