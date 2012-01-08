@@ -33,6 +33,15 @@
     width: 100px;
 }
 
+label.menulist-label {
+    margin-right: 0px;
+}
+
+menulist.axis-var {
+    width: 100px;
+}
+
+
 #listit-bin-width-menulist {
     width: 100px;
 }
