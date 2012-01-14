@@ -109,7 +109,7 @@ Listit.onRowSelect = function(event) {
     curState.selectedComment = selectedComment;
     
     // Hightlght comment in scatter plot
-    Listit.scatterPlot.highlight(selectedComment.id, prevSelectedComment.id);
+    Listit.scatterPlot.highlight(selectedComment.id);
 
     // Select comment in reddit page
     var $ = content.wrappedJSObject.jQuery;

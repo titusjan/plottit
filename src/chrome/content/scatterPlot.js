@@ -216,9 +216,9 @@ Listit.ScatterPlot.prototype.setDiscussion = function (discussion) {
     this.flotWrapper.setAxesAutoscale(this.axesAutoscale || isFirstTime);
 }
 
-Listit.ScatterPlot.prototype.highlight = function (selectedCommentId, prevSelectedCommentId)
+Listit.ScatterPlot.prototype.highlight = function (selectedCommentId)
 {
-    this.flotWrapper.highlight(selectedCommentId, prevSelectedCommentId)
+    this.flotWrapper.highlight(selectedCommentId)
 }
 
 Listit.ScatterPlot.prototype.toggleAxesAutoScale = function (checkbox) {
