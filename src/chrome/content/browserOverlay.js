@@ -108,19 +108,24 @@ Listit.onRowSelect = function(event) {
     Listit.setDetailsFrameHtml(selectedComment.bodyHtml);
     curState.selectedComment = selectedComment;
     
-    // Select post in reddit page
+    // Hightlght comment in scatter plot
+    Listit.scatterPlot.highlight(selectedComment.id, prevSelectedComment.id);
+
+    // Select comment in reddit page
     var $ = content.wrappedJSObject.jQuery;
-    if (prevSelectedComment !== null) {
-        $('div.id-t1_' + prevSelectedComment.id + ' div.entry')
-            .filter(':first').removeClass('listit-selected');
-    }
-    var offset = $('div.id-t1_' + selectedComment.id)
-                    .filter(':visible').find('div.entry:first')
-                    .addClass('listit-selected')
-                    .offset();
-    if (offset) {
-        $('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
-    }
+    if ($) { // e.g. no jQuery when opening only a .json file
+        if (prevSelectedComment !== null) {
+            $('div.id-t1_' + prevSelectedComment.id + ' div.entry')
+                .filter(':first').removeClass('listit-selected');
+        }
+        var offset = $('div.id-t1_' + selectedComment.id)
+                        .filter(':visible').find('div.entry:first')
+                        .addClass('listit-selected')
+                        .offset();
+        if (offset) {
+            $('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
+        }
+    }     
 }
 
 Listit.onTabOpen = function(event) {

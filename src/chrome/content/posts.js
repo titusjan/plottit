@@ -194,7 +194,7 @@ Listit.countComments = function(comments) {
     return result;
 }
 
-
+// Retrieves a flat list of comment property (tuples). Output can be used in flot.
 Listit.getCommentDataAsList = function(comments, xVarID, yVarID) {
     Listit.assert(comments instanceof Array, 'countComments: comments should be an Array');
  

@@ -179,7 +179,7 @@ Listit.ScatterPlot.prototype._getSeries = function(discussion) {
     
     var plotSerie = {
         data      : [],
-        color     : 'orangered',
+        color     : 'rgb(255, 69, 0)', // orangered (must be rgb triplet for highlighting to work)
     };
 
     if (this.histogramMode) {
@@ -208,8 +208,17 @@ Listit.ScatterPlot.prototype.setDiscussion = function (discussion) {
         
     this.discussion = discussion;
     var plotSeries = this._getSeries(discussion);
-    this.flotWrapper.setData(plotSeries);
+    var ids = null;
+    if (!this.histogramMode) {
+        ids = Listit.getCommentDataAsList(discussion.comments, 'id');
+    }
+    this.flotWrapper.setData(plotSeries, ids);
     this.flotWrapper.setAxesAutoscale(this.axesAutoscale || isFirstTime);
+}
+
+Listit.ScatterPlot.prototype.highlight = function (selectedCommentId, prevSelectedCommentId)
+{
+    this.flotWrapper.highlight(selectedCommentId, prevSelectedCommentId)
 }
 
 Listit.ScatterPlot.prototype.toggleAxesAutoScale = function (checkbox) {

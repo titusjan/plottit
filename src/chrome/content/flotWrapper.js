@@ -17,6 +17,10 @@ Listit.FlotWrapper = function (placeHolderDivId)
     this.zoomRange = null;
     this.panRange = null;
     
+    var highlightedIndex = null;
+    this.indexOfId = {};  // maps series.dataIndes to comment.index 
+    this.idOfIndex = {};  // maps comment.index to series.dataIndes
+    
     // The _axisOptionCache is necessary to remember the zoom and pan range when panning and
     // zooming is disabled. In that case the flot axis.options zoomRange and panRange will be 
     // set to false and thus the old setting is lost in flot :-(
@@ -57,8 +61,36 @@ Listit.FlotWrapper.prototype.createPlot = function (plotOptions) {
     this._updateFlotAxisOptions('y');
 }
 
-Listit.FlotWrapper.prototype.setData = function (plotSeries) {
+Listit.FlotWrapper.prototype.setData = function (plotSeries, commentIdList) {
     this.plot.setData(plotSeries);
+    
+    this.highlightedIndex = null;
+    this.indexOfId = {};
+    this.idOfIndex = {}; 
+    
+    if (commentIdList) {
+        for (let [idx, id] in Iterator(commentIdList)) {
+            this.indexOfId[id] = idx;
+            this.idOfIndex[idx] = id;
+        }
+    }
+}
+
+
+Listit.FlotWrapper.prototype.highlight = function (selectedCommentId)
+{
+    this.highlightedIndex = this.indexOfId[selectedCommentId];
+    this.drawHighlight();
+}
+
+Listit.FlotWrapper.prototype.drawHighlight = function ()
+{
+    if (this.plot) {
+        this.plot.unhighlight();
+        if (this.highlightedIndex) {
+            this.plot.highlight(0, this.highlightedIndex);
+        }
+    }
 }
 
 Listit.FlotWrapper.prototype.setPlotTitle = function (title) {
@@ -73,6 +105,8 @@ Listit.FlotWrapper.prototype.drawPlot = function (rescale) {
         this.plot.setupGrid(); // Recalculate (and draw) and set axis scaling, ticks, legend etc.
     }
     this.plot.draw();      // Redraw the canvas (tick values)
+    
+    this.drawHighlight();
 }
 
 // Update the flot axis options from the axisOptionCache

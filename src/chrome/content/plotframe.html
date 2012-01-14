@@ -3,7 +3,7 @@
 <head>
     <link rel="stylesheet" type="text/css" href="listit.css" />
     <script language="javascript" type="application/javascript;version=1.7" src="utils.js"></script>
-    <script language="javascript" type="text/javascript" src="flotWrapper.js"></script>
+    <script language="javascript" type="application/javascript;version=1.7" src="flotWrapper.js"></script>
     <script language="javascript" type="text/javascript" src="jquery-1.6.2.min.js"></script>
     <script language="javascript" type="text/javascript" src="jquery.flot.min.js"></script>
     <script language="javascript" type="text/javascript" src="jquery.flot.resize.min.js"></script>
@@ -18,11 +18,25 @@
         
         // Setup loggers from stand alone html page (will be overridden in Listit.onLoad)
         Listit.initializeLoggers(false, 'Debug'); 
-
+        
         window.flotWrapper = new Listit.FlotWrapper('scatter-plot-div');
-        $("#scatter-plot-div").bind("plotselected", function (event, ranges) {
-            window.flotWrapper.onPlotSelect(event, ranges);
-        });
+        $("#scatter-plot-div")
+            .bind("plotselected", function (event, ranges) {
+                window.flotWrapper.onPlotSelect(event, ranges);
+            })
+            .bind("plotzoom", function (event) {
+                console.log("plotzoom");
+                window.flotWrapper.drawHighlight();
+            })
+            .bind("plotclick", function (event, pos, item) {
+                console.log("plot click event: ", event);
+                console.log("plot click pos: ", pos);
+                console.log("plot click item: ", item);
+                if (item) {
+                    console.log("You clicked point " + item.dataIndex + " in " + item.series.label + ".");
+                    window.flotWrapper.plot.highlight(item.series, item.datapoint);
+                }
+            });
         
         onResize();
         $("body").resize(onResize);
@@ -56,6 +70,8 @@
         plotDiv.css('height', height);
         
         window.flotWrapper.addAxisDivs();
+    
+        window.flotWrapper.drawHighlight();
     }
     
     
@@ -75,7 +91,7 @@
         var plotSeries = [ {
             data   : getData(0, 3 * Math.PI),
             points : { show: true },
-            color  : 'orangered',
+            color  : 'rgb(255, 69, 0)', // orangered (must be rgb triplet for highlighting to work)
         } ];
         
         var plotOptions = {
@@ -83,6 +99,7 @@
             pan: { interactive: true },
             xaxis: { zoomRange: null, panRange: null },
             yaxis: { zoomRange: null, panRange: null },
+            grid: { hoverable: false, clickable: true },
         };
         
         flotWrapper.createPlot(plotOptions);

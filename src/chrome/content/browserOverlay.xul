@@ -546,7 +546,6 @@
                     <scale id="listit-treemap-scale-h0" class="treemap"
                       min="0" max="3000" value="1200" increment="50" 
                       movetoclick="1"
-                      tabindex="100"
                       flex="1"
                       onchange="Listit.renderTreeMap(0);"/>
                       
@@ -554,7 +553,6 @@
                     <scale id="listit-treemap-scale-f" class="treemap"
                       min="0" max="4000" value="2500" increment="100" 
                       movetoclick="1"
-                      tabindex="110"
                       flex="1"
                       onchange="Listit.renderTreeMap(0);"/>
                       
@@ -562,7 +560,6 @@
                     <scale id="listit-treemap-scale-iamb" class="treemap"
                       min="0" max="500" value="100" increment="10" 
                       movetoclick="1"
-                      tabindex="120"
                       flex="1"                      
                       onchange="Listit.renderTreeMap(0);"/>
                 </hbox>
