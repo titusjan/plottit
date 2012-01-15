@@ -99,7 +99,7 @@ Listit.FlotWrapper.prototype.drawHighlight = function ()
 {
     if (this.plot) {
         this.plot.unhighlight();
-        if (this.highlightedIndex) {
+        if (this.highlightedIndex !== null) {
             this.plot.highlight(0, this.highlightedIndex);
         }
     }
