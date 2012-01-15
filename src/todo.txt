@@ -1,0 +1,20 @@
+--- Version 1.0 ---
+
+Best, controversial, page order.
+Depth should start at 1
+
+Bug in view comment when tab is swicthed
+Rename to graphit/plottit.
+
+Plot title/label
+Make release.
+
+--- Version 1.1 ---
+
+Optionally steal focus on page load.
+Better tick marks posted-after/ integers / when autoscale is off.
+
+Load more comments.
+Main page. User page.
+Better handling of adjusting table widths
+
