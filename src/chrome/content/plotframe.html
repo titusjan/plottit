@@ -21,26 +21,27 @@
         
         window.flotWrapper = new Listit.FlotWrapper('scatter-plot-div');
         $("#scatter-plot-div")
-            .bind("plotselected", function (event, ranges) {
-                window.flotWrapper.onPlotSelect(event, ranges);
-            })
+            //.bind("plotselected", function (event, ranges) {
+            //    window.flotWrapper.onPlotSelect(event, ranges);
+            //})
             .bind("plotzoom", function (event) {
-                console.log("plotzoom");
+                Listit.fbLog('plotzoom');            
                 window.flotWrapper.drawHighlight();
             })
             .bind("plotclick", function (event, pos, item) {
                 if (item) {
-                    //window.flotWrapper.plot.highlight(item.series, item.datapoint);
                     window.flotWrapper.onPlotClicked(item);
                 }
             });
         
         onResize();
         $("body").resize(onResize);
-        $("body").bind("dragend", function (e) { 
-            window.flotWrapper._updateFlotAxisPanOptions('x'); 
-            window.flotWrapper._updateFlotAxisPanOptions('y'); 
-        });
+        
+        // Not necessary here? Put in overlay.onDragend
+        //$("body").bind("dragend", function (e) { 
+        //        window.flotWrapper._updateFlotAxisPanOptions('x'); 
+        //        window.flotWrapper._updateFlotAxisPanOptions('y'); 
+        //    });
 
         //doTest();
     });

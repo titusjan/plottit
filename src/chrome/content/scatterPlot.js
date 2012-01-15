@@ -149,11 +149,21 @@ Listit.ScatterPlot.prototype._initPlot = function () {
     var overlay = plot.getPlaceholder().children("canvas.overlay");  
     overlay.unbind(plot.getOptions().zoom.trigger);
     var flotWrapper = this.flotWrapper;
-    overlay.bind('dblclick', function(e) {
-        flotWrapper.resetRange('x');
-        flotWrapper.resetRange('y');
-        flotWrapper.drawPlot(true);
-    });
+    overlay
+        .bind('dblclick', function(e) {
+            flotWrapper.resetRange('x');
+            flotWrapper.resetRange('y');
+            flotWrapper.drawPlot(true);
+        })
+        .bind("dragstart", function (event) { 
+            flotWrapper.removeHighlight();
+        })  
+        .bind("dragend", function (e) { 
+            flotWrapper.drawHighlight();
+            flotWrapper._updateFlotAxisPanOptions('x'); 
+            flotWrapper._updateFlotAxisPanOptions('y');             
+        });
+            
 }
 
 

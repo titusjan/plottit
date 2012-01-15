@@ -86,6 +86,15 @@ Listit.FlotWrapper.prototype.highlight = function (selectedCommentId)
     this.drawHighlight();
 }
 
+
+Listit.FlotWrapper.prototype.removeHighlight = function ()
+{
+    if (this.plot) {
+        this.plot.unhighlight();
+    }
+}
+
+
 Listit.FlotWrapper.prototype.drawHighlight = function ()
 {
     if (this.plot) {

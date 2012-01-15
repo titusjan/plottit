@@ -1,9 +1,10 @@
 --- Version 1.0 ---
 
 Best, controversial, page order.
+Color scales in tree map.
 Depth should start at 1
 
-Bug in view comment when tab is swicthed
+Bug in view comment when tab is switched
 Rename to graphit/plottit.
 
 Plot title/label
