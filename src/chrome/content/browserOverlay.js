@@ -68,6 +68,9 @@ try{
     container.addEventListener("TabSelect", Listit.onTabSelect, false);
 
     gBrowser.addEventListener('DOMContentLoaded', Listit.onPageLoad, false); 
+    
+    // See: https://developer.mozilla.org/en/Code_snippets/Interaction_between_privileged_and_non-privileged_pages
+    window.addEventListener('ListitPlotClickedEvent', Listit.onScatterPlotClicked, false, true); 
 
     Listit.logger.trace('Listit.onLoad -- end');
 } catch (ex) {
@@ -92,23 +95,22 @@ Listit.onUnload = function() {
 }
 
 
-
-
 Listit.SELECTED_ROW_STYLE = "<style type='text/css'>"
     + "div.listit-selected {background-color:#EFF7FF; outline:1px dashed #5F99CF}"
     + "</style>";
-
-Listit.onRowSelect = function(event) {
-    Listit.logger.trace("Listit.onRowSelect -- ");
     
-    var selectedIndex = document.getElementById('scoreTree').currentIndex;
+    
+Listit.selectRow = function(selectedComment) {
+    Listit.logger.trace("Listit.selectRow -- ");
+    
+    if (!selectedComment) return;
+    
     var curState = Listit.state.getCurrentBrowserState();
     var prevSelectedComment = curState.selectedComment;
-    var selectedComment = curState.treeView.visibleComments[selectedIndex];
     Listit.setDetailsFrameHtml(selectedComment.bodyHtml);
     curState.selectedComment = selectedComment;
     
-    // Hightlght comment in scatter plot
+    // Highlight comment in scatter plot
     Listit.scatterPlot.highlight(selectedComment.id);
 
     // Select comment in reddit page
@@ -126,7 +128,29 @@ Listit.onRowSelect = function(event) {
             $('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
         }
     }     
+
 }
+
+Listit.onRowSelect = function(event) {
+    Listit.logger.trace("Listit.onRowSelect -- ");
+    
+    var selectedIndex = document.getElementById('scoreTree').currentIndex;
+    var curState = Listit.state.getCurrentBrowserState();
+    var selectedComment = curState.treeView.visibleComments[selectedIndex];
+    Listit.selectRow(selectedComment);
+}
+
+Listit.onScatterPlotClicked = function(event) {
+    Listit.logger.trace("Listit.onScatterPlotClicked -- ");
+    
+    var commentId = Listit.scatterPlot.flotWrapper.highlightedId;
+    var discussion = Listit.state.getCurrentBrowserDiscussion();
+    var selectedComment = discussion.getCommentById(commentId);
+    Listit.selectRow(selectedComment);
+    Listit.ensureCurrentRowVisible();
+}
+
+
 
 Listit.onTabOpen = function(event) {
     Listit.logger.trace("Listit.onTabOpen -- ");
@@ -777,8 +801,6 @@ Listit.myDebugRoutine = function () {
     let stringBundle = document.getElementById('listit-string-bundle');
     let message = stringBundle.getString('listit.greeting.label');
     
-    //var t = Listit.narf.snarf;  // Shows that exception does not show up in firebug or console
-
     try {
         Listit.logger.debug('Listit.debug');
         Listit.fbLog('Listit.debug');

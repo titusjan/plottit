@@ -17,7 +17,8 @@ Listit.FlotWrapper = function (placeHolderDivId)
     this.zoomRange = null;
     this.panRange = null;
     
-    var highlightedIndex = null;
+    var highlightedIndex = null; // the series index that is highlighted
+    var highlightedId = null;    // the comment.id of that belongs to the point that is highlighted.
     this.indexOfId = {};  // maps series.dataIndes to comment.index 
     this.idOfIndex = {};  // maps comment.index to series.dataIndes
     
@@ -65,6 +66,7 @@ Listit.FlotWrapper.prototype.setData = function (plotSeries, commentIdList) {
     this.plot.setData(plotSeries);
     
     this.highlightedIndex = null;
+    this.highlightedId = null;
     this.indexOfId = {};
     this.idOfIndex = {}; 
     
@@ -80,6 +82,7 @@ Listit.FlotWrapper.prototype.setData = function (plotSeries, commentIdList) {
 Listit.FlotWrapper.prototype.highlight = function (selectedCommentId)
 {
     this.highlightedIndex = this.indexOfId[selectedCommentId];
+    this.highlightedId = selectedCommentId;
     this.drawHighlight();
 }
 
@@ -92,6 +95,22 @@ Listit.FlotWrapper.prototype.drawHighlight = function ()
         }
     }
 }
+
+Listit.FlotWrapper.prototype.onPlotClicked = function (item) {
+    Listit.logger.trace('Listit.FlotWrapper.dispatchListitPlotClicked');
+    
+    if (!item) return;
+    
+    this.highlightedIndex = item.dataIndex;
+    this.highlightedId = this.idOfIndex[item.dataIndex];
+    
+    // Trigger event to so that XUL code can handle it
+    var event = document.createEvent("Events");  
+    event.initEvent("ListitPlotClickedEvent", true, false);  
+    var placeHolder = document.getElementById(this.placeHolderDivId);
+    placeHolder.dispatchEvent(event);  
+}
+
 
 Listit.FlotWrapper.prototype.setPlotTitle = function (title) {
     $('#header-div').text(title);

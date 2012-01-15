@@ -49,6 +49,16 @@ Listit.Discussion.prototype.__defineGetter__("refreshDate", function() { return 
 Listit.Discussion.prototype.__defineSetter__("refreshDate", function(v) { this._refreshDate = v} );
 
 
+Listit.Discussion.prototype.getCommentById = function (commentId) {
+
+    for (let [idx, comment] in Iterator(this.comments)) {
+        var resultingComment = comment.getCommentById(commentId);
+        if (resultingComment) return resultingComment;
+    } 
+    return null;
+};
+
+
 /////////////
 // Comment //
 /////////////
@@ -165,8 +175,21 @@ Listit.Comment.prototype.__defineGetter__("debug", function() {
     return this._replies.length + 1; 
 });
 
+
+Listit.Comment.prototype.getCommentById = function (commentId) {
+    
+    if (this.id === commentId) return this;
+
+    for (let [idx, comment] in Iterator(this._replies)) {
+        var resultingComment = comment.getCommentById(commentId);
+        if (resultingComment) return resultingComment;
+    }   
+    return null;
+};
+
+
 //////
-// Various functions for processing and sorting the comments
+// Various stand alone functions for processing and sorting the comments
 //////
 
 Listit.sortComments = function(comments, comparisonFunction) { 
@@ -217,8 +240,6 @@ Listit.getCommentDataAsList = function(comments, xVarID, yVarID) {
 ////
 // Parse JSON
 ////
-
-
 
 Listit.redditT3NodeToDiscussion = function(redditNode) {
 

@@ -21,9 +21,9 @@ Listit.getTreeBoxObject = function (treeID) {
 Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
 
     this.typeStr = 'treeView';  // TODO in prototype ???
-    this.allComments = [];
-    this.visibleComments = [];
-    this.isFlat = false;     // If body column is a tree of flat
+    this.allComments = [];      // Nested list (tree) of all comments
+    this.visibleComments = [];  // List of comments currently in the table (may be necessary to scroll)
+    this.isFlat = false;        // If body column is a tree of flat
     
     this.localDateFormat = localDateFormat;
     this.utcDateFormat   = utcDateFormat;

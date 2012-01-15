@@ -129,8 +129,12 @@ Listit.ScatterPlot.prototype._initPlot = function () {
         },
         pan: {
             interactive: true
-        }         
-        
+        },         
+        grid: { 
+            hoverable: false, 
+            clickable: !this.histogramMode,
+            autoHighlight: false,
+        }        
     };        
     
     this.flotWrapper.createPlot(initialPlotOptions);     // Draws/creates plot in flotwrapper

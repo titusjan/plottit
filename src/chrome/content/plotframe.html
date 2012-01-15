@@ -29,12 +29,9 @@
                 window.flotWrapper.drawHighlight();
             })
             .bind("plotclick", function (event, pos, item) {
-                console.log("plot click event: ", event);
-                console.log("plot click pos: ", pos);
-                console.log("plot click item: ", item);
                 if (item) {
-                    console.log("You clicked point " + item.dataIndex + " in " + item.series.label + ".");
-                    window.flotWrapper.plot.highlight(item.series, item.datapoint);
+                    //window.flotWrapper.plot.highlight(item.series, item.datapoint);
+                    window.flotWrapper.onPlotClicked(item);
                 }
             });
         
