@@ -159,7 +159,10 @@ Listit.onRowSelect = function(event) {
     var selectedIndex = document.getElementById('scoreTree').currentIndex;
     var curState = Listit.state.getCurrentBrowserState();
     var selectedComment = curState.treeView.visibleComments[selectedIndex];
-    Listit.selectRow(selectedComment);
+    if (selectedComment) { 
+        // selectedComment can be false, e.g. when you click on the headers
+        Listit.selectRow(selectedComment);
+    }
 }
 
 
