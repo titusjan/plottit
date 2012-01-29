@@ -120,9 +120,9 @@
   <!--<button label="Debug" command="listit-command-sort-column"/> -->
 
   <vbox id="appcontent" >
-    <splitter id="listitContentSplitter" collapsed="false"/>
+    <splitter id="listitContentSplitter" collapsed="false" hidden="true"/>
     
-    <deck id="listit-messages-deck" selectedIndex="0" height="200" persist="height">
+    <deck id="listit-messages-deck" selectedIndex="0" height="200" persist="height" hidden="true">
     
       <description id="listit-messages-description" value="Listit..."/>    
       
