@@ -57,7 +57,7 @@ try{
     var treeMapIframe = document.getElementById('listit-treemap-frame');
     //var tmDiv = treeMapIframe.contentWindow.wrappedJSObject.getElementById('tm-div');
     var tmDiv = treeMapIframe.contentWindow.document.getElementById('tm-div');
-    Listit.treeMap = new Listit.TreeMap(tmDiv);
+    Listit.treeMap = new Listit.TreeMap(tmDiv, 3);
     Listit.onResizeTreeMap(); // resize to fill the complete iframe
     
     var scoreTree = document.getElementById('scoreTree'); // TODO: rename to commentTree
@@ -648,10 +648,9 @@ Listit.onResizeTreeMap = function(event) {
     try {
         Listit.logger.trace("Listit.onResizeTreeMap");
         var treeMapFrame = document.getElementById('listit-treemap-frame');
-        var margin = 0;
-        Listit.treeMap.resize(margin, margin, 
-            treeMapFrame.contentWindow.innerWidth-2*margin, 
-            treeMapFrame.contentWindow.innerHeight-2*margin);        
+        Listit.treeMap.resize(0, 0,
+            treeMapFrame.contentWindow.innerWidth, 
+            treeMapFrame.contentWindow.innerHeight);        
                 
         Listit.renderTreeMap();
     } catch (ex) {

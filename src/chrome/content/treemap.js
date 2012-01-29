@@ -6,15 +6,16 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 // TreeMap //
 /////////////
 
-Listit.TreeMap = function (placeHolderDiv) { // Constructor
+Listit.TreeMap = function (placeHolderDiv, padding) { // Constructor
 
     this._assert(placeHolderDiv, 'Placeholder undefined');
     this.placeHolder = placeHolderDiv;
 
-    this._canvasBackground = this._createCanvas(this.placeHolder.id + '-background');
-    this._canvasOverlay = this._createCanvas(this.placeHolder.id + '-overlay');
+    this._canvasBackground = this._createCanvas(this.placeHolder.id + '-background', 'background-canvas');
+    this._canvasOverlay = this._createCanvas(this.placeHolder.id + '-overlay', 'overlay-canvas');
     
     this.root = null;
+    this.padding = (padding) ? padding : 0; // can use padding so that highlighting stands out more
 }
 
 Listit.TreeMap.prototype.__defineGetter__("x", function() { return this._canvasBackground.style.left });
@@ -66,20 +67,26 @@ Listit.TreeMap.prototype.resize = function (x, y, width, height) {
 
 Listit.TreeMap.prototype.layoutSquarified = function () {
     if (this.root) {
-        this.root.layoutSquarified( {x: 0, y: 0, 
-            width: this._canvasBackground.width, height: this._canvasBackground.height});
+        var rootRect = {x: this.padding, y: this.padding, 
+            width: this._canvasBackground.width - 2*this.padding, 
+            height: this._canvasBackground.height - 2*this.padding}
+        this.root.layoutSquarified(rootRect);
     }
 }
 
 Listit.TreeMap.prototype.renderFlat = function () {
+    var context = this._canvasBackground.getContext('2d');
+    context.clearRect(0, 0, this.width, this.height);
     if (this.root) {
-        this.root.renderFlat(this._canvasBackground.getContext('2d'));
+        this.root.renderFlat(context);
     }
 }
 
 Listit.TreeMap.prototype.renderCushioned = function (h0, f, Iamb) {
+    var context = this._canvasBackground.getContext('2d');
+    context.clearRect(0, 0, this.width, this.height);
     if (this.root) {
-        this.root.renderCushioned(this._canvasBackground.getContext('2d'), h0, f, Iamb);
+        this.root.renderCushioned(context, h0, f, Iamb);
     }
 }
 
@@ -104,8 +111,8 @@ Listit.TreeMap.prototype.highlight = function (id) {
     context.clearRect(0, 0, this.width, this.height);
     context.shadowOffsetX = 0.5;
     context.shadowOffsetY = 0.5;
-    context.shadowBlur    = 2;
-    context.shadowColor   = 'black';            
+    context.shadowBlur    = 3;
+    context.shadowColor   = 'rgba(0,0,0,1)';            
     context.lineWidth     = 1.75; // Don't use 1, this is ugly with antialiassing.
     context.strokeStyle   ='white';    
     context.strokeRect(rect.x, rect.y, rect.width, rect.height);
@@ -422,11 +429,10 @@ Listit.TreeMap.Node.prototype.renderFlat = function (context) {
 Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) {
 
     // Create pixel map/
-    var rect = this.rectangle;
-    context.clearRect(rect.x, rect.y, rect.width, rect.height);
-    var imgData = context.createImageData(Math.round(rect.width), Math.round(rect.height));
+    var rootRect = this.rectangle;
+    var imgData = context.createImageData(Math.round(rootRect.width), Math.round(rootRect.height));
     var pixels = imgData.data;
-    var imageWidth = Math.round(rect.width);
+    var imageWidth = Math.round(rootRect.width);
 
     // Set the light vector
     var Isource = 1 - 2*Iamb;
@@ -467,7 +473,7 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
             
             pixels = pixels;
             for (var y = minY; y <= maxY; y += 1) {
-                var i = 4 * (minX + (y * imageWidth)); 
+                var i = 4 * (minX - rootRect.x + ((y-rootRect.y) * imageWidth)); 
                 for (var x = minX; x <= maxX; x += 1) {
                 
                     var nx = - (2 * sx2 * (x+0.5) + sx1); // Normal vector of cushion
@@ -500,7 +506,7 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
     // Start recursion with flat cushion.
     _auxRenderCushioned(this, 0, 0, 0, 0, 0); 
 
-    context.putImageData(imgData, 0, 0);
+    context.putImageData(imgData, rootRect.x, rootRect.y);
 }
 
 
