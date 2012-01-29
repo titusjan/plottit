@@ -15,6 +15,7 @@ Listit.TreeMap = function (placeHolderDiv, padding) { // Constructor
     this._canvasOverlay = this._createCanvas(this.placeHolder.id + '-overlay', 'overlay-canvas');
     
     this.root = null;
+    this.highlightedNodeId = null;
     this.padding = (padding) ? padding : 0; // can use padding so that highlighting stands out more
 }
 
@@ -79,6 +80,7 @@ Listit.TreeMap.prototype.renderFlat = function () {
     context.clearRect(0, 0, this.width, this.height);
     if (this.root) {
         this.root.renderFlat(context);
+        this._drawHighlightedNode();        
     }
 }
 
@@ -87,6 +89,7 @@ Listit.TreeMap.prototype.renderCushioned = function (h0, f, Iamb) {
     context.clearRect(0, 0, this.width, this.height);
     if (this.root) {
         this.root.renderCushioned(context, h0, f, Iamb);
+        this._drawHighlightedNode();
     }
 }
 
@@ -102,20 +105,28 @@ Listit.TreeMap.prototype.getNodeById = function (id) {
 
 Listit.TreeMap.prototype.highlight = function (id) {
 
-    var node = this.getNodeById(id);
-    console.log(node);
-    var rect = node.rectangle;
-    console.log('highlightNode: ', rect.x, rect.y, rect.width, rect.height);
-    
+    this.highlightedNodeId = id;
+    this._drawHighlightedNode();
+}
+
+Listit.TreeMap.prototype._drawHighlightedNode = function () {
+
     var context = this._canvasOverlay.getContext('2d');
-    context.clearRect(0, 0, this.width, this.height);
-    context.shadowOffsetX = 0.5;
-    context.shadowOffsetY = 0.5;
-    context.shadowBlur    = 3;
-    context.shadowColor   = 'rgba(0,0,0,1)';            
-    context.lineWidth     = 1.75; // Don't use 1, this is ugly with antialiassing.
-    context.strokeStyle   ='white';    
-    context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+    context.clearRect(0, 0, this.width, this.height); // clear complete overlay canvas
+    
+    var node = this.getNodeById(this.highlightedNodeId);
+    if (node) {
+    
+        context.shadowOffsetX = 0.5;
+        context.shadowOffsetY = 0.5;
+        context.shadowBlur    = 3;
+        context.shadowColor   = 'rgba(0,0,0,1)';            
+        context.lineWidth     = 1.75; // Don't use 1, this is ugly with antialiassing.
+        context.strokeStyle   ='white';    
+
+        var rect = node.rectangle;
+        context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+    }
 }
 
 
@@ -514,6 +525,8 @@ Listit.TreeMap.Node.prototype.getNodeById = function (id) {
 
     if (this.id === id) return this;
 
+    // Will traverse the complete tree in the worst case but seems fast enough.
+    // We can always make an index later if necessary.
     for (let [idx, node] in Iterator(this.children)) {
         var resultingNode = node.getNodeById(id);
         if (resultingNode) return resultingNode;
