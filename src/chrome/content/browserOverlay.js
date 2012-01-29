@@ -68,6 +68,7 @@ try{
     
     //scoreTree.addEventListener("dblclick", Listit.onTreeDoubleClick, true); doesn't work
     scoreTree.addEventListener("select", Listit.onRowSelect, false);
+    //scoreTree.addEventListener("blur", Listit.onCommentTreeBlur, false); // TODO: think on how better?
         
     var container = gBrowser.tabContainer;
     container.addEventListener("TabOpen", Listit.onTabOpen, false);
@@ -109,17 +110,16 @@ Listit.SELECTED_ROW_STYLE = "<style type='text/css'>"
     
 Listit.selectRow = function(selectedComment) {
     Listit.logger.trace("Listit.selectRow -- ");
-    
-    if (!selectedComment) return;
-    
+try{    
+    var selectedCommentId = selectedComment ? selectedComment.id : null;
     var curState = Listit.state.getCurrentBrowserState();
     var prevSelectedComment = curState.selectedComment;
-    Listit.setDetailsFrameHtml(selectedComment.bodyHtml);
+    Listit.setDetailsFrameHtml(selectedComment ? selectedComment.bodyHtml : '');
     curState.selectedComment = selectedComment;
     
     // Highlight comment in scatter plot and tree map
-    Listit.scatterPlot.highlight(selectedComment.id);
-    Listit.treeMap.highlight(selectedComment.id);
+    Listit.scatterPlot.highlight(selectedCommentId);
+    Listit.treeMap.highlight(selectedCommentId);
 
     // Select comment in reddit page
     var $ = content.wrappedJSObject.jQuery;
@@ -128,7 +128,7 @@ Listit.selectRow = function(selectedComment) {
             $('div.id-t1_' + prevSelectedComment.id + ' div.entry')
                 .filter(':first').removeClass('listit-selected');
         }
-        var offset = $('div.id-t1_' + selectedComment.id)
+        var offset = $('div.id-t1_' + selectedCommentId)
                         .filter(':visible').find('div.entry:first')
                         .addClass('listit-selected')
                         .offset();
@@ -136,7 +136,10 @@ Listit.selectRow = function(selectedComment) {
             $('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
         }
     }     
-
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.selectRow;');
+    Listit.logException(ex);
+}    
 }
 
 
@@ -149,18 +152,21 @@ Listit.onTreeDoubleClick = function(event) {
     event.stopPropagation();
 }*/
 
-
 Listit.onRowSelect = function(event) {
     Listit.logger.trace("Listit.onRowSelect -- ");
-    
-    //Listit.fbLog('onRowSelect');
-    //Listit.fbLog(event);
     
     var selectedIndex = document.getElementById('scoreTree').currentIndex;
     var curState = Listit.state.getCurrentBrowserState();
     var selectedComment = curState.treeView.visibleComments[selectedIndex];
     Listit.selectRow(selectedComment);
 }
+
+
+Listit.onCommentTreeBlur = function(event) {
+    Listit.logger.trace("Listit.onCommentTreeBlur -- ");
+    Listit.selectRow(null);
+}
+
 
 Listit.onScatterPlotClicked = function(event) {
     Listit.logger.trace("Listit.onScatterPlotClicked -- ");
@@ -171,7 +177,6 @@ Listit.onScatterPlotClicked = function(event) {
     Listit.selectRow(selectedComment);
     Listit.ensureCurrentRowVisible();
 }
-
 
 
 Listit.onTabOpen = function(event) {
