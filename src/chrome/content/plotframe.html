@@ -25,7 +25,6 @@
             //    window.flotWrapper.onPlotSelect(event, ranges);
             //})
             .bind("plotzoom", function (event) {
-                Listit.fbLog('plotzoom');            
                 window.flotWrapper.drawHighlight();
             })
             .bind("plotclick", function (event, pos, item) {

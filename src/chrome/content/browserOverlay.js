@@ -53,13 +53,20 @@ try{
         '',
         parseFloat(document.getElementById('listit-bin-width-menulist').value));
         
-    var scoreTree = document.getElementById('scoreTree');
+    
+    var treeMapIframe = document.getElementById('listit-treemap-frame');
+    //var tmDiv = treeMapIframe.contentWindow.wrappedJSObject.getElementById('tm-div');
+    var tmDiv = treeMapIframe.contentWindow.document.getElementById('tm-div');
+    Listit.treeMap = new Listit.TreeMap(tmDiv);
+    Listit.onResizeTreeMap(); // resize to fill the complete iframe
+    
+    var scoreTree = document.getElementById('scoreTree'); // TODO: rename to commentTree
     scoreTree.view = Listit.state.getCurrentTreeView();
     
     // Add event handlers 
-    var treeMapFrame = document.getElementById('listit-treemap-frame');
-    treeMapFrame.addEventListener("resize", Listit.onResizeTreeMap, false);
+    treeMapIframe.addEventListener("resize", Listit.onResizeTreeMap, false);
     
+    //scoreTree.addEventListener("dblclick", Listit.onTreeDoubleClick, true); doesn't work
     scoreTree.addEventListener("select", Listit.onRowSelect, false);
         
     var container = gBrowser.tabContainer;
@@ -110,8 +117,9 @@ Listit.selectRow = function(selectedComment) {
     Listit.setDetailsFrameHtml(selectedComment.bodyHtml);
     curState.selectedComment = selectedComment;
     
-    // Highlight comment in scatter plot
+    // Highlight comment in scatter plot and tree map
     Listit.scatterPlot.highlight(selectedComment.id);
+    Listit.treeMap.highlight(selectedComment.id);
 
     // Select comment in reddit page
     var $ = content.wrappedJSObject.jQuery;
@@ -131,8 +139,22 @@ Listit.selectRow = function(selectedComment) {
 
 }
 
+
+/* doesn't work
+Listit.onTreeDoubleClick = function(event) {
+    Listit.logger.trace("Listit.onRowDoubleClick -- ");
+    // onTreeDoubleClick and onRowselect can both occur when a new row is double-clicked.
+    // Disable expand collapse. Reserving event for future use.
+    event.preventDefault();
+    event.stopPropagation();
+}*/
+
+
 Listit.onRowSelect = function(event) {
     Listit.logger.trace("Listit.onRowSelect -- ");
+    
+    //Listit.fbLog('onRowSelect');
+    //Listit.fbLog(event);
     
     var selectedIndex = document.getElementById('scoreTree').currentIndex;
     var curState = Listit.state.getCurrentBrowserState();
@@ -588,8 +610,7 @@ Listit.setListitVisible = function (visible) {
 Listit.onRenderTreeMapTimeOut = function() {
 
     try {
-        Listit.logger.trace("Listit.drawTreeMapCushionedAfterTimeOut: " + window.globalTimeOutId);
-        var treeMapFrame = document.getElementById('listit-treemap-frame');
+        Listit.logger.trace("Listit.drawTreeMapCushionedAfterTimeOut: " + Listit.globalTimeOutId);
         
         var sliderH0   = document.getElementById("listit-treemap-scale-h0");
         var sliderF    = document.getElementById("listit-treemap-scale-f");
@@ -597,8 +618,8 @@ Listit.onRenderTreeMapTimeOut = function() {
         Listit.logger.debug("Listit.drawTreeMapCushionedAfterTimeOut, H0: " + 
             sliderH0.value/1000 + ', F: ' + sliderF.value/1000 + ', Iamb: ' + sliderIamb.value/1000);
         
-        treeMapFrame.contentWindow.wrappedJSObject.renderCushioned(sliderH0.value/1000, sliderF.value/1000, sliderIamb.value/1000);
-        window.globalTimeOutId = null;
+        Listit.treeMap.renderCushioned(sliderH0.value/1000, sliderF.value/1000, sliderIamb.value/1000);
+        Listit.globalTimeOutId = null;
     } catch (ex) {
         Listit.logger.error('Exception in Listit.setTreeMapDiscussion;');
         Listit.logException(ex);
@@ -607,19 +628,17 @@ Listit.onRenderTreeMapTimeOut = function() {
 
 Listit.renderTreeMap = function(cushionDelay) {
 
-    var treeMapFrame = document.getElementById('listit-treemap-frame');
-
     var isCushioned = Listit.getCheckboxValue(document.getElementById('listit-treemap-cushions-checkbox'));
     if (cushionDelay == null)  cushionDelay = 250;
     if ( ! ((cushionDelay === 0) && isCushioned) ) { // skip flat rendering if there is no cushion delay
-        treeMapFrame.contentWindow.wrappedJSObject.renderFlat();
+        Listit.treeMap.renderFlat();
     }
     
     if (isCushioned) {
-        if (window.globalTimeOutId) {
-            window.clearTimeout(window.globalTimeOutId); // Cancel previous time out;
+        if (Listit.globalTimeOutId) {
+            window.clearTimeout(Listit.globalTimeOutId); // Cancel previous time out;
         }
-        window.globalTimeOutId = window.setTimeout(Listit.onRenderTreeMapTimeOut, cushionDelay);
+        Listit.globalTimeOutId = window.setTimeout(Listit.onRenderTreeMapTimeOut, cushionDelay);
     }
 }
 
@@ -629,7 +648,11 @@ Listit.onResizeTreeMap = function(event) {
     try {
         Listit.logger.trace("Listit.onResizeTreeMap");
         var treeMapFrame = document.getElementById('listit-treemap-frame');
-        treeMapFrame.contentWindow.wrappedJSObject.resizeCanvas();
+        var margin = 0;
+        Listit.treeMap.resize(margin, margin, 
+            treeMapFrame.contentWindow.innerWidth-2*margin, 
+            treeMapFrame.contentWindow.innerHeight-2*margin);        
+                
         Listit.renderTreeMap();
     } catch (ex) {
         Listit.logger.error('Exception in Listit.onResizeTreeMap;');
@@ -639,15 +662,12 @@ Listit.onResizeTreeMap = function(event) {
 
 Listit.setTreeMapDiscussion = function(discussion) {
     try {
-        Listit.logger.debug("Listit.setTreeMapDiscussion --");
+        Listit.logger.trace("Listit.setTreeMapDiscussion --");
         
-        var treeMap = new Listit.TreeMap(discussion, 
+        Listit.treeMap.setDataFromDiscussion(discussion,
             Listit.state.treeMapSizeProperty,
             Listit.state.fnHslOfComment);
-        treeMap.root.sortNodesBySizeDescending();
 
-        var treeMapFrame = document.getElementById('listit-treemap-frame');
-        treeMapFrame.contentWindow.wrappedJSObject.setTreeMap(treeMap);
         Listit.renderTreeMap()
     } catch (ex) {
         Listit.logger.error('Exception in Listit.setTreeMapDiscussion;');

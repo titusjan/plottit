@@ -1,70 +1,26 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<!--
     <link rel="stylesheet" type="text/css" href="listit.css" />
     <script language="javascript" type="application/javascript;version=1.7" src="utils.js"></script>
     <script language="javascript" type="application/javascript;version=1.8" src="treemap.js"></script>
-
+-->
     <script type="text/javascript">
 
-
-        function setTreeMapDiscussion(discussion) {
-            window.treeMap = new Listit.TreeMap(discussion);
-            resizeCanvas();             
-        }
-
-        function setTreeMap(treeMap) {
-            window.treeMap = treeMap;
-            resizeCanvas();            
-        }
-
-        // resizes the canvas to fill the window
-        function resizeCanvas() {
-
-            var canvas = document.getElementById('tm-canvas');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            if (window.treeMap)
-                window.treeMap.root.layoutSquarified( {x:0, y:0, width:canvas.width, height:canvas.height});
-        }
-        
-        function renderFlat() {
-            if (window.treeMap)        
-                window.treeMap.root.renderFlat(window.canvasContext);
-        }
-        
-        function renderCushioned(h0, f, Iamb) {
-            if (window.treeMap)
-                window.treeMap.root.renderCushioned(window.canvasContext, h0, f, Iamb);
-        }
-        
-        /* 
-        // Can't get it to work in xul iframe
-        function drawAfterTimeOut() {
-        
-            window.treeMap.root.renderCushioned(window.canvasContext);
-            window.globalTimeOutId = null;
-        } 
-        
-*/
-
-        
         function main() {
-            Listit.initializeLoggers(false, 'Debug'); 
-            window.canvasContext = document.getElementById('tm-canvas').getContext('2d');
+            //Listit.initializeLoggers(false, 'Debug'); 
             
-            // Set event handler
+            // Set event handler (can't get it to work from here)
             // window.onresize = resizeCanvas;
             // window.globalTimeOutId = null;
-
         }
 
     </script>
-  <style type="text/css">
-    canvas { border: 0px solid black; }
-  </style>
+
 </head>
 <body onload="main();">
-    <canvas id="tm-canvas" width="350" height="250"></canvas>
+    <!--<div id="tm-div" width="350" height="250"></div>-->
+    <div id="tm-div" style="width:300px;height:200px;border:0px solid blue"> </div>
 </body>
 </html>

@@ -1,3 +1,4 @@
+// TODO: the current implementation is very tailored to Listit. Make more generic.
 
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
@@ -5,70 +6,169 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 // TreeMap //
 /////////////
 
-Listit.TreeMap = function (data, sizeProperty, fnHslOfComment) { // Constructor
+Listit.TreeMap = function (placeHolderDiv) { // Constructor
 
-    this.root = null;
-    if (data instanceof Listit.Discussion) 
-        this.root = this.createNodesFromDiscussion(data, sizeProperty, fnHslOfComment);
-    else if (data instanceof Array) 
-        this.root = this.createNodesFromArray(data);
+    this._assert(placeHolderDiv, 'Placeholder undefined');
+    this.placeHolder = placeHolderDiv;
+
+    this._canvasBackground = this._createCanvas(this.placeHolder.id + '-background');
+    this._canvasOverlay = this._createCanvas(this.placeHolder.id + '-overlay');
     
+    this.root = null;
 }
+
+Listit.TreeMap.prototype.__defineGetter__("x", function() { return this._canvasBackground.style.left });
+Listit.TreeMap.prototype.__defineGetter__("y", function() { return this._canvasBackground.style.top  });
+Listit.TreeMap.prototype.__defineGetter__("width",  function() { return this._canvasBackground.width  });
+Listit.TreeMap.prototype.__defineGetter__("height", function() { return this._canvasBackground.height });
 
 Listit.TreeMap.prototype.toString = function () {
     return "Listit.TreeMap";
 };
 
+
 // Helper function
 Listit.TreeMap.prototype._assert = function(expression, message) {
     if (!expression) throw new Error(message);
 }
-//
 
 
-Listit.TreeMap.prototype.createNodesFromDiscussion  = function (discussion, sizeProperty, fnHslOfComment) {
+Listit.TreeMap.prototype._createCanvas = function(id, cls) {
+
+    var canvas = this.placeHolder.ownerDocument.createElement('canvas');
+    canvas.id = id;
+    canvas.className = cls;
+    
+    canvas.style.position = 'absolute';
+    this._resizeCanvas(canvas, 
+        this.placeHolder.offsetLeft, this.placeHolder.offsetTop, 
+        this.placeHolder.clientWidth, this.placeHolder.clientHeight);
+    this.placeHolder.appendChild(canvas);
+
+    return canvas;
+}
+
+Listit.TreeMap.prototype._resizeCanvas = function(canvas, x, y, width, height) {
+    canvas.style.left = x;
+    canvas.style.top  = y;
+    canvas.width      = width;
+    canvas.height     = height;
+}
+
+
+Listit.TreeMap.prototype.resize = function (x, y, width, height) {
+
+    this._resizeCanvas(this._canvasBackground, x, y, width, height);
+    this._resizeCanvas(this._canvasOverlay, x, y, width, height);
+    this.layoutSquarified();
+}
+        
+
+Listit.TreeMap.prototype.layoutSquarified = function () {
+    if (this.root) {
+        this.root.layoutSquarified( {x: 0, y: 0, 
+            width: this._canvasBackground.width, height: this._canvasBackground.height});
+    }
+}
+
+Listit.TreeMap.prototype.renderFlat = function () {
+    if (this.root) {
+        this.root.renderFlat(this._canvasBackground.getContext('2d'));
+    }
+}
+
+Listit.TreeMap.prototype.renderCushioned = function (h0, f, Iamb) {
+    if (this.root) {
+        this.root.renderCushioned(this._canvasBackground.getContext('2d'), h0, f, Iamb);
+    }
+}
+
+
+Listit.TreeMap.prototype.getNodeById = function (id) {
+
+    if (this.root) {
+        return this.root.getNodeById(id)
+    } else {
+        return null;
+    }
+}
+
+Listit.TreeMap.prototype.highlight = function (id) {
+
+    var node = this.getNodeById(id);
+    console.log(node);
+    var rect = node.rectangle;
+    console.log('highlightNode: ', rect.x, rect.y, rect.width, rect.height);
+    
+    var context = this._canvasOverlay.getContext('2d');
+    context.clearRect(0, 0, this.width, this.height);
+    context.shadowOffsetX = 0.5;
+    context.shadowOffsetY = 0.5;
+    context.shadowBlur    = 2;
+    context.shadowColor   = 'black';            
+    context.lineWidth     = 1.75; // Don't use 1, this is ugly with antialiassing.
+    context.strokeStyle   ='white';    
+    context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+}
+
+
+Listit.TreeMap.prototype.setData = function (data) {
+    
+    this.root = data;
+    this.root.sortNodesBySizeDescending();
+    this.layoutSquarified();
+    return data;
+}
+
+
+// TODO: move out of this class
+Listit.TreeMap.prototype.setDataFromDiscussion  = function (discussion, sizeProperty, fnHslOfComment) {
 
     this._assert(discussion instanceof Listit.Discussion, 
-        'createNodesFromDiscussion: data should be a Listit.Discussion');
+        'setDataFromDiscussion: data should be a Listit.Discussion');
     this._assert(sizeProperty, 'sizeProperty is not defined!');    
     this._assert(fnHslOfComment instanceof Function, 'fnHslOfComment should be a function');
     
+    
+    function _auxCreateNodeFromComment (comment, sizeProperty, fnHslOfComment) {
+    
+        var size = Math.max(1, comment[sizeProperty]); // All sizes < 1 are rendered as 1.
+        var hsl = fnHslOfComment(comment);
+    
+        if ( comment.numReplies == 0 ) {
+            var node = new Listit.TreeMap.Node( size, true, comment.id, hsl[0], hsl[1] );
+            return node;
+        } else {
+    
+            var node = new Listit.TreeMap.Node(0, true);
+            node.addChild( new Listit.TreeMap.Node(size, false, comment.id, hsl[0], hsl[1]) ); 
+            
+            var childrenNode = new Listit.TreeMap.Node(0, false); 
+            for (let [idx, reply] in Iterator(comment.replies)) {
+                childrenNode.addChild( _auxCreateNodeFromComment(reply, sizeProperty, fnHslOfComment) );
+            }
+            node.addChild(childrenNode); // Add after the childrenNode.size is final!
+            return node;
+        }
+    }
+
+
     // Create root node
     var node = new Listit.TreeMap.Node(0, false);
     
     for (let [idx, comments] in Iterator(discussion.comments)) {
-        node.addChild( this._auxCreateNodeFromComment(comments, sizeProperty, fnHslOfComment) );
+        node.addChild( _auxCreateNodeFromComment(comments, sizeProperty, fnHslOfComment) );
     }
-    return node;
+    
+    return this.setData(node);
 }
 
 
-Listit.TreeMap.prototype._auxCreateNodeFromComment = function (comment, sizeProperty, fnHslOfComment) {
 
-    var size = Math.max(1, comment[sizeProperty]); // All sizes < 1 are rendered as 1.
-    var hsl = fnHslOfComment(comment);
+// TODO: move out of this class
+Listit.TreeMap.prototype.getDataFromArray = function (data) {
 
-    if ( comment.numReplies == 0 ) {
-        var node = new Listit.TreeMap.Node( size, true, hsl[0], hsl[1] );
-        return node;
-    } else {
-
-        var node = new Listit.TreeMap.Node(0, true);
-        node.addChild( new Listit.TreeMap.Node(size, false, hsl[0], hsl[1]) ); 
-        
-        var childrenNode = new Listit.TreeMap.Node(0, false); 
-        for (let [idx, reply] in Iterator(comment.replies)) {
-            childrenNode.addChild( this._auxCreateNodeFromComment(reply, sizeProperty, fnHslOfComment) );
-        }
-        node.addChild(childrenNode); // Add after the childrenNode.size is final!
-        return node;
-    }
-}
-
-
-Listit.TreeMap.prototype.createNodesFromArray = function (data) {
-
-    //Listit.fbLog('createNodesFromArray', data);
+    //Listit.fbLog('setDataFromArray', data);
     if ( !(data instanceof Array) ) {
         // Create leaf node
         var node = new Listit.TreeMap.Node(data, true);
@@ -77,21 +177,30 @@ Listit.TreeMap.prototype.createNodesFromArray = function (data) {
         // Create branche node
         var node = new Listit.TreeMap.Node(0, true);
         for (let [idx, elem] in Iterator(data)) {
-            node.addChild( this.createNodesFromArray(elem) );
+            node.addChild( this.getDataFromArray(elem) );
         }
-        //Listit.fbLog('  --return: createNodesFromArray', node);
+        //Listit.fbLog('  --return: setDataFromArray', node);
         return node;
     }
 };
 
 
+
+// TODO: move out of this class?
+Listit.TreeMap.prototype.setDataFromArray = function (arr) {
+
+    return this.setData(this.getDataFromArray(arr));
+}
+ 
+
 //////////////////
 // TreeMap.Node //
 //////////////////
 
-Listit.TreeMap.Node = function (size, addCushion, hue, saturation) { // Constructor
+Listit.TreeMap.Node = function (size, addCushion, id, hue, saturation) { // Constructor
     
     this.size = size;   // Relative size. For a branch node this should be the sum of its childrens sizes
+    this.id              = id; 
     this.addCushion      = addCushion; // Not every internal node may represent a cushion
     this._children       = null;
     this.rectangle       = null;
@@ -119,14 +228,14 @@ Listit.TreeMap.Node.prototype.__defineGetter__("children", function() {
 Listit.TreeMap.Node.prototype.__defineSetter__("children", function(v) { this._children = v } );
 
 
-// saturation is 1 by default
+// saturation is 0.5 by default
 Listit.TreeMap.Node.prototype.__defineGetter__("saturation", function() { 
     return (this._saturation == null) ? 0.5 : this._saturation; 
 } );
 Listit.TreeMap.Node.prototype.__defineSetter__("saturation", function(v) { this._saturation = v } );
 
 
-// hue is 1 by default
+// hue is 0.5 by default
 Listit.TreeMap.Node.prototype.__defineGetter__("hue", function() { 
     return (this._hue == null) ? 0.5 : this._hue; 
 } );
@@ -216,6 +325,7 @@ Listit.TreeMap.Node.prototype.layoutSquarified = function (rectangle) {
     
     // first call needs to set a rectangle, for the children this is done in _squarify
     if (rectangle) this.rectangle = rectangle;  
+
     
     // layout node
     this._squarify(this.rectangle.x, this.rectangle.y, 
@@ -394,6 +504,16 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
 }
 
 
+Listit.TreeMap.Node.prototype.getNodeById = function (id) {
+
+    if (this.id === id) return this;
+
+    for (let [idx, node] in Iterator(this.children)) {
+        var resultingNode = node.getNodeById(id);
+        if (resultingNode) return resultingNode;
+    }   
+    return null;
+}
 
 ///////
 // Static functions

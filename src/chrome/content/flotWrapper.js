@@ -4,7 +4,7 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 /*
 / Wrapper around flot plot with some useful routines.
-/ Used in plotframe.html were jQuery is also included.
+/ Used in plotframe.html where jQuery is also included.
 */
 
 // Constructor

@@ -7,6 +7,8 @@ Depth should start at 1
 Bug in view comment when tab is switched
 Rename to graphit/plottit.
 
+Table: disable double click / tooltip
+
 Plot title/label
 Make release.
 
