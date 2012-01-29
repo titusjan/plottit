@@ -14,9 +14,15 @@ Listit.TreeMap = function (placeHolderDiv, padding) { // Constructor
     this._canvasBackground = this._createCanvas(this.placeHolder.id + '-background', 'background-canvas');
     this._canvasOverlay = this._createCanvas(this.placeHolder.id + '-overlay', 'overlay-canvas');
     
+    var thisTreeMap = this;
+    this._canvasOverlay.addEventListener('click',  
+        function (event) { Listit.TreeMap.onClickOverlay(event, thisTreeMap); }, 
+        false);
+    
     this.root = null;
     this.highlightedNodeId = null;
     this.padding = (padding) ? padding : 0; // can use padding so that highlighting stands out more
+    
 }
 
 Listit.TreeMap.prototype.__defineGetter__("x", function() { return this._canvasBackground.style.left });
@@ -80,7 +86,7 @@ Listit.TreeMap.prototype.renderFlat = function () {
     context.clearRect(0, 0, this.width, this.height);
     if (this.root) {
         this.root.renderFlat(context);
-        this._drawHighlightedNode();        
+        this.drawHighlightedNode();        
     }
 }
 
@@ -89,7 +95,18 @@ Listit.TreeMap.prototype.renderCushioned = function (h0, f, Iamb) {
     context.clearRect(0, 0, this.width, this.height);
     if (this.root) {
         this.root.renderCushioned(context, h0, f, Iamb);
-        this._drawHighlightedNode();
+        this.drawHighlightedNode();
+    }
+}
+
+
+
+Listit.TreeMap.prototype.getNodeByXY = function (x, y) {
+
+    if (this.root) {
+        return this.root.getNodeByXY(x, y)
+    } else {
+        return null;
     }
 }
 
@@ -106,10 +123,10 @@ Listit.TreeMap.prototype.getNodeById = function (id) {
 Listit.TreeMap.prototype.highlight = function (id) {
 
     this.highlightedNodeId = id;
-    this._drawHighlightedNode();
+    this.drawHighlightedNode();
 }
 
-Listit.TreeMap.prototype._drawHighlightedNode = function () {
+Listit.TreeMap.prototype.drawHighlightedNode = function () {
 
     var context = this._canvasOverlay.getContext('2d');
     context.clearRect(0, 0, this.width, this.height); // clear complete overlay canvas
@@ -209,11 +226,36 @@ Listit.TreeMap.prototype.setDataFromArray = function (arr) {
 
     return this.setData(this.getDataFromArray(arr));
 }
+
+// Event handlers
+Listit.TreeMap.onClickOverlay = function(clickEvent, treeMap) {
+
+    var node = treeMap.getNodeByXY(clickEvent.layerX, clickEvent.layerY);
+    
+    treeMap.highlightedNode = null;
+    if (node) {
+        treeMap.highlightedNodeId = node.id;
+        
+        // Trigger event to so that XUL code can handle it
+        var tmEvent = document.createEvent("Events");  
+        tmEvent.initEvent("ListitTreeMapClickedEvent", true, false);  
+        clickEvent.target.dispatchEvent(tmEvent);
+    }
+}
  
 
-//////////////////
-// TreeMap.Node //
-//////////////////
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                     TreeMap.Node                                     //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 Listit.TreeMap.Node = function (size, addCushion, id, hue, saturation) { // Constructor
     
@@ -521,14 +563,41 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
 }
 
 
+
+Listit.TreeMap.Node.prototype.getNodeByXY = function (x, y) {
+
+    function inRectangle(x, y, rect) {
+        return (x > rect.x) && (x < rect.x + rect.width) && 
+               (y > rect.y) && (y < rect.y + rect.height);
+    }
+    
+    if (this.isLeafNode()) {
+        if (inRectangle(x,y, this.rectangle)) { 
+            return this
+        } else {
+            return null;
+        }
+    } else {
+        for (let [idx, child] in Iterator(this.children)) {
+            var result = child.getNodeByXY(x, y);
+            if (result) {
+                return result;
+            }
+        }
+        return null;
+    }
+}
+
+
+
 Listit.TreeMap.Node.prototype.getNodeById = function (id) {
 
     if (this.id === id) return this;
 
     // Will traverse the complete tree in the worst case but seems fast enough.
     // We can always make an index later if necessary.
-    for (let [idx, node] in Iterator(this.children)) {
-        var resultingNode = node.getNodeById(id);
+    for (let [idx, child] in Iterator(this.children)) {
+        var resultingNode = child.getNodeById(id);
         if (resultingNode) return resultingNode;
     }   
     return null;

@@ -128,6 +128,7 @@ Listit.ScatterPlot.prototype._initPlot = function () {
             amount: Math.sqrt(2.0),
         },
         pan: {
+            cursor: 'move',
             interactive: true
         },         
         grid: { 
@@ -147,6 +148,7 @@ Listit.ScatterPlot.prototype._initPlot = function () {
 
     // Redefine the double click zoom event to reset scale (was zoom).
     var overlay = plot.getPlaceholder().children("canvas.overlay");  
+
     overlay.unbind(plot.getOptions().zoom.trigger);
     var flotWrapper = this.flotWrapper;
     overlay
@@ -163,7 +165,6 @@ Listit.ScatterPlot.prototype._initPlot = function () {
             flotWrapper._updateFlotAxisPanOptions('x'); 
             flotWrapper._updateFlotAxisPanOptions('y');             
         });
-            
 }
 
 

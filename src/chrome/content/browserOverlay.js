@@ -79,6 +79,7 @@ try{
     
     // See: https://developer.mozilla.org/en/Code_snippets/Interaction_between_privileged_and_non-privileged_pages
     window.addEventListener('ListitPlotClickedEvent', Listit.onScatterPlotClicked, false, true); 
+    window.addEventListener('ListitTreeMapClickedEvent', Listit.onTreeMapClicked, false, true); 
 
     Listit.logger.trace('Listit.onLoad -- end');
 } catch (ex) {
@@ -172,6 +173,17 @@ Listit.onScatterPlotClicked = function(event) {
     Listit.logger.trace("Listit.onScatterPlotClicked -- ");
     
     var commentId = Listit.scatterPlot.flotWrapper.highlightedId;
+    var discussion = Listit.state.getCurrentBrowserDiscussion();
+    var selectedComment = discussion.getCommentById(commentId);
+    Listit.selectRow(selectedComment);
+    Listit.ensureCurrentRowVisible();
+}
+
+
+Listit.onTreeMapClicked = function(event) {
+    Listit.logger.debug("Listit.onTreeMapClicked -- ");
+
+    var commentId = Listit.treeMap.highlightedNodeId;
     var discussion = Listit.state.getCurrentBrowserDiscussion();
     var selectedComment = discussion.getCommentById(commentId);
     Listit.selectRow(selectedComment);

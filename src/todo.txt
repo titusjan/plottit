@@ -9,8 +9,16 @@ Rename to graphit/plottit.
 
 Table: disable double click / tooltip
 
+Only update views of visible tabs
+
 Plot title/label
 Make release.
+
+Fix focus when clicking treemap;
+Unhighlight when clicking in plot
+
+Cleanup:
+    remove attributes from state that are present in user pages.
 
 --- Version 1.1 ---
 
@@ -19,5 +27,6 @@ Better tick marks posted-after/ integers / when autoscale is off.
 
 Load more comments.
 Main page. User page.
-Better handling of adjusting table widths
+Better handling of adjusting table column widths
 
+Steal focus on page load?
