@@ -579,7 +579,7 @@ Listit.TreeMap.Node.prototype.getNodeByXY = function (x, y) {
         }
     } else {
         for (let [idx, child] in Iterator(this.children)) {
-            var result = child.getNodeByXY(x, y);
+            var result = inRectangle(x,y, child.rectangle) && child.getNodeByXY(x, y);
             if (result) {
                 return result;
             }

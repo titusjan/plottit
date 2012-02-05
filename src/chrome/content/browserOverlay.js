@@ -186,11 +186,14 @@ Listit.onScatterPlotClicked = function(event) {
 Listit.onTreeMapClicked = function(event) {
     Listit.logger.debug("Listit.onTreeMapClicked -- ");
 
-    var commentId = Listit.treeMap.highlightedNodeId;
-    var discussion = Listit.state.getCurrentBrowserDiscussion();
-    var selectedComment = discussion.getCommentById(commentId);
-    Listit.selectRow(selectedComment);
-    Listit.ensureCurrentRowVisible();
+    // Test origin of the event; only update the treemap of Listit, not from e.g. a test page.
+    if (event.originalTarget.id == 'tm-div-overlay') {
+        var commentId = Listit.treeMap.highlightedNodeId;
+        var discussion = Listit.state.getCurrentBrowserDiscussion();
+        var selectedComment = discussion.getCommentById(commentId);
+        Listit.selectRow(selectedComment);
+        Listit.ensureCurrentRowVisible();
+    }
 }
 
 
