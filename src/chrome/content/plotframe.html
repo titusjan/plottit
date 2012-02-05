@@ -20,12 +20,23 @@
         Listit.initializeLoggers(false, 'Debug'); 
         
         window.flotWrapper = new Listit.FlotWrapper('scatter-plot-div');
+        
         $("#scatter-plot-div")
             //.bind("plotselected", function (event, ranges) {
             //    window.flotWrapper.onPlotSelect(event, ranges);
             //})
             .bind("plotzoom", function (event) {
                 window.flotWrapper.drawHighlight();
+            })
+            .bind("plothover", function (event, pos, item) {
+                var plt = window.flotWrapper.plot;
+                if (plt) {
+                    if (item) {
+                        plt.getPlaceholder().css('cursor', 'pointer');
+                    } else {
+                        plt.getPlaceholder().css('cursor', 'default');
+                    }
+                }
             })
             .bind("plotclick", function (event, pos, item) {
                 if (item) {

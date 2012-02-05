@@ -132,7 +132,7 @@ Listit.ScatterPlot.prototype._initPlot = function () {
             interactive: true
         },         
         grid: { 
-            hoverable: false, 
+            hoverable: !this.histogramMode, 
             clickable: !this.histogramMode,
             autoHighlight: false,
         }        
