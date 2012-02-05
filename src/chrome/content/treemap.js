@@ -20,7 +20,8 @@ Listit.TreeMap = function (placeHolderDiv, padding) { // Constructor
         false);
     
     this.root = null;
-    this.highlightedNodeId = null;
+    this.selectedNodeId = null;
+    this.previousSelectedNodeId = null;
     this.padding = (padding) ? padding : 0; // can use padding so that highlighting stands out more
     
 }
@@ -86,7 +87,7 @@ Listit.TreeMap.prototype.renderFlat = function () {
     context.clearRect(0, 0, this.width, this.height);
     if (this.root) {
         this.root.renderFlat(context);
-        this.drawHighlightedNode();        
+        this.highlightSelectedNode();        
     }
 }
 
@@ -95,16 +96,21 @@ Listit.TreeMap.prototype.renderCushioned = function (h0, f, Iamb) {
     context.clearRect(0, 0, this.width, this.height);
     if (this.root) {
         this.root.renderCushioned(context, h0, f, Iamb);
-        this.drawHighlightedNode();
+        this.highlightSelectedNode();
     }
 }
 
 
 
-Listit.TreeMap.prototype.getNodeByXY = function (x, y) {
+Listit.TreeMap.prototype.getNodeByXY = function (x, y, returnParentOfId) {
 
     if (this.root) {
-        return this.root.getNodeByXY(x, y)
+        var result = this.root.getNodeByXY(x, y, returnParentOfId)
+        if (returnParentOfId && (result.id == returnParentOfId) ) {
+            return null;
+        } else {
+            return result;
+        }
     } else {
         return null;
     }
@@ -120,18 +126,29 @@ Listit.TreeMap.prototype.getNodeById = function (id) {
     }
 }
 
-Listit.TreeMap.prototype.highlight = function (id) {
 
-    this.highlightedNodeId = id;
-    this.drawHighlightedNode();
+Listit.TreeMap.prototype.selectNode = function (id) {
+
+    if (this.previousSelectedNodeId != this.selectedNodeId ) {
+        this.previousSelectedNodeId = this.selectedNodeId;
+    }
+    this.selectedNodeId = id;
 }
 
-Listit.TreeMap.prototype.drawHighlightedNode = function () {
+
+Listit.TreeMap.prototype.highlight = function (id) {
+
+    this.selectNode(id);
+    this.highlightSelectedNode();
+}
+
+
+Listit.TreeMap.prototype.highlightSelectedNode = function () {
 
     var context = this._canvasOverlay.getContext('2d');
     context.clearRect(0, 0, this.width, this.height); // clear complete overlay canvas
     
-    var node = this.getNodeById(this.highlightedNodeId);
+    var node = this.getNodeById(this.selectedNodeId);
     if (node) {
     
         context.shadowOffsetX = 0.5;
@@ -175,7 +192,7 @@ Listit.TreeMap.prototype.setDataFromDiscussion  = function (discussion, sizeProp
             return node;
         } else {
     
-            var node = new Listit.TreeMap.Node(0, true);
+            var node = new Listit.TreeMap.Node(0, true, comment.id + '__and_children');
             node.addChild( new Listit.TreeMap.Node(size, false, comment.id, hsl[0], hsl[1]) ); 
             
             var childrenNode = new Listit.TreeMap.Node(0, false); 
@@ -230,17 +247,13 @@ Listit.TreeMap.prototype.setDataFromArray = function (arr) {
 // Event handlers
 Listit.TreeMap.onClickOverlay = function(clickEvent, treeMap) {
 
-    var node = treeMap.getNodeByXY(clickEvent.layerX, clickEvent.layerY);
-    
-    treeMap.highlightedNode = null;
-    if (node) {
-        treeMap.highlightedNodeId = node.id;
+    var node = treeMap.getNodeByXY(clickEvent.layerX, clickEvent.layerY, treeMap.previousSelectedNodeId);
+    treeMap.selectNode(node ? node.id : null);
         
-        // Trigger event to so that XUL code can handle it
-        var tmEvent = document.createEvent("Events");  
-        tmEvent.initEvent("ListitTreeMapClickedEvent", true, false);  
-        clickEvent.target.dispatchEvent(tmEvent);
-    }
+    // Trigger event to so that XUL code can handle it
+    var tmEvent = document.createEvent("Events");  
+    tmEvent.initEvent("ListitTreeMapClickedEvent", true, false);  
+    clickEvent.target.dispatchEvent(tmEvent);
 }
  
 
@@ -563,30 +576,36 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
 }
 
 
-
-Listit.TreeMap.Node.prototype.getNodeByXY = function (x, y) {
+Listit.TreeMap.Node.prototype.getNodeByXY = function (x, y, returnParentOfId) {
 
     function inRectangle(x, y, rect) {
         return (x > rect.x) && (x < rect.x + rect.width) && 
                (y > rect.y) && (y < rect.y + rect.height);
     }
     
-    if (this.isLeafNode()) {
-        if (inRectangle(x,y, this.rectangle)) { 
-            return this
-        } else {
-            return null;
-        }
-    } else {
-        for (let [idx, child] in Iterator(this.children)) {
-            var result = inRectangle(x,y, child.rectangle) && child.getNodeByXY(x, y);
-            if (result) {
+    if ( !inRectangle(x,y, this.rectangle)) { return null; }
+
+    if (this.isLeafNode()) { 
+        return this; 
+    }
+    
+    // Don't look further if this is the node whose parent will be returned eventually
+    if (returnParentOfId && this.id && (this.id == returnParentOfId) ) {
+        return this; 
+    }
+    
+    for (let [idx, child] in Iterator(this.children)) {
+        var result = child.getNodeByXY(x, y, returnParentOfId);
+        if (result) {
+            if (returnParentOfId && this.id && result.id && (result.id == returnParentOfId) ) {
+                return this;
+            } else {
                 return result;
             }
         }
-        return null;
     }
-}
+    return null;
+ }
 
 
 

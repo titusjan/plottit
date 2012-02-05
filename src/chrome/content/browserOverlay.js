@@ -188,9 +188,12 @@ Listit.onTreeMapClicked = function(event) {
 
     // Test origin of the event; only update the treemap of Listit, not from e.g. a test page.
     if (event.originalTarget.id == 'tm-div-overlay') {
-        var commentId = Listit.treeMap.highlightedNodeId;
+        var commentId = Listit.treeMap.selectedNodeId;
         var discussion = Listit.state.getCurrentBrowserDiscussion();
         var selectedComment = discussion.getCommentById(commentId);
+        Listit.fbLog('selectedNodeId: ' + commentId);
+        Listit.fbLog(selectedComment);
+        
         Listit.selectRow(selectedComment);
         Listit.ensureCurrentRowVisible();
     }
