@@ -20,8 +20,8 @@ Listit.TreeMap = function (placeHolderDiv, padding) { // Constructor
         false);
     
     this.root = null;
-    this.selectedNodeId = null;
-    this.previousSelectedNodeId = null;
+    this.selectedNode = null;
+    this.previousSelectedNode = null;
     this.padding = (padding) ? padding : 0; // can use padding so that highlighting stands out more
     
 }
@@ -30,6 +30,15 @@ Listit.TreeMap.prototype.__defineGetter__("x", function() { return this._canvasB
 Listit.TreeMap.prototype.__defineGetter__("y", function() { return this._canvasBackground.style.top  });
 Listit.TreeMap.prototype.__defineGetter__("width",  function() { return this._canvasBackground.width  });
 Listit.TreeMap.prototype.__defineGetter__("height", function() { return this._canvasBackground.height });
+
+Listit.TreeMap.prototype.__defineGetter__("selectedNodeId", function() { 
+    return this.selectedNode ? this.selectedNode.id : null;
+});
+
+Listit.TreeMap.prototype.__defineGetter__("previousSelectedNodeId", function() { 
+    return this.previousSelectedNode ? this.previousSelectedNode.id : null;
+});
+
 
 Listit.TreeMap.prototype.toString = function () {
     return "Listit.TreeMap";
@@ -127,18 +136,18 @@ Listit.TreeMap.prototype.getNodeById = function (id) {
 }
 
 
-Listit.TreeMap.prototype.selectNode = function (id) {
+Listit.TreeMap.prototype.selectNode = function (node) {
 
-    if (this.previousSelectedNodeId != this.selectedNodeId ) {
-        this.previousSelectedNodeId = this.selectedNodeId;
+    if (this.previousSelectedNode != this.selectedNode ) {
+        this.previousSelectedNode = this.selectedNode;
     }
-    this.selectedNodeId = id;
+    this.selectedNode = node;
 }
 
 
-Listit.TreeMap.prototype.highlight = function (id) {
+Listit.TreeMap.prototype.highlight = function (nodeId) {
 
-    this.selectNode(id);
+    this.selectNode(this.getNodeById(nodeId));
     this.highlightSelectedNode();
 }
 
@@ -148,7 +157,7 @@ Listit.TreeMap.prototype.highlightSelectedNode = function () {
     var context = this._canvasOverlay.getContext('2d');
     context.clearRect(0, 0, this.width, this.height); // clear complete overlay canvas
     
-    var node = this.getNodeById(this.selectedNodeId);
+    var node = this.selectedNode;
     if (node) {
     
         context.shadowOffsetX = 0.5;
@@ -248,7 +257,7 @@ Listit.TreeMap.prototype.setDataFromArray = function (arr) {
 Listit.TreeMap.onClickOverlay = function(clickEvent, treeMap) {
 
     var node = treeMap.getNodeByXY(clickEvent.layerX, clickEvent.layerY, treeMap.previousSelectedNodeId);
-    treeMap.selectNode(node ? node.id : null);
+    treeMap.selectNode(node);
         
     // Trigger event to so that XUL code can handle it
     var tmEvent = document.createEvent("Events");  

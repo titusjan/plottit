@@ -97,6 +97,60 @@ Listit.TreeView.prototype.indexOfVisibleComment = function(comment) {
     return this.visibleComments.indexOf(comment);
 }
 
+Listit.TreeView.prototype.expandComment = function(comment) {
+    Listit.logger.trace("Listit.TreeView.expandComment: ");
+    this._expandRowByIndex(this.visibleComments.indexOf(comment))
+}
+
+
+Listit.TreeView.prototype._expandRowByIndex = function(idx) {
+    Listit.logger.trace("Listit.TreeView._expandRowByIndex: " + idx );
+    
+    if (idx < 0) return;
+    if (!this.isContainer(idx)) return;
+    if (this.visibleComments[idx].isOpen) return; // container already closed, skip;
+
+    this.visibleComments[idx].isOpen = true;
+    var toInsert = this._getOpenComments(this.visibleComments[idx].replies);
+    for (var i = 0; i < toInsert.length; i++) {
+        this.visibleComments.splice(idx + i + 1, 0, toInsert[i]);
+    }
+    this.treeBox.rowCountChanged(idx + 1, toInsert.length);
+    this.treeBox.invalidateRow(idx);
+}
+
+
+Listit.TreeView.prototype.collapseComment = function(comment) {
+    Listit.logger.trace("Listit.TreeView.collapseComment: ");
+    this._collapseRowByIndex(this.visibleComments.indexOf(comment))
+}
+
+
+Listit.TreeView.prototype._collapseRowByIndex = function(idx) {
+    Listit.logger.trace("Listit.TreeView._collapseRowByIndex: " + idx );
+
+    if (idx < 0) return;
+    if (!this.isContainer(idx)) return;
+    if (!this.visibleComments[idx].isOpen) return; // container already open, skip;
+
+    this.visibleComments[idx].isOpen = false;
+
+    // Walk downwards to next sibling to count children to delete
+    var thisLevel = this.getLevel(idx);
+    var deleteCount = 0;
+    for (var t = idx + 1; t < this.visibleComments.length; t++) {
+        if (this.getLevel(t) > thisLevel)
+            deleteCount++;
+        else break;
+    }
+    if (deleteCount) {
+        this.visibleComments.splice(idx + 1, deleteCount);
+        this.treeBox.rowCountChanged(idx + 1, -deleteCount);
+    }
+    this.treeBox.invalidateRow(idx);
+}
+
+
 Listit.TreeView.prototype._getOpenComments = function(comments) {  
     var openComments = [];
     for (var idx = 0; idx < comments.length; idx = idx + 1) {
@@ -287,35 +341,15 @@ Listit.TreeView.prototype.hasNextSibling = function(idx, after) {
     return false;
 }
 
+
 Listit.TreeView.prototype.toggleOpenState = function(idx) {
-
     Listit.logger.trace("Listit.TreeView.toggleOpenState: " + idx );
-
-    if (!this.isContainer(idx)) return;
+    
     if (this.isContainerOpen(idx)) {
-        this.visibleComments[idx].isOpen = false;
-
-        // Walk downwards to next sibling to count children to delete
-        var thisLevel = this.getLevel(idx);
-        var deleteCount = 0;
-        for (var t = idx + 1; t < this.visibleComments.length; t++) {
-            if (this.getLevel(t) > thisLevel)
-                deleteCount++;
-            else break;
-        }
-        if (deleteCount) {
-            this.visibleComments.splice(idx + 1, deleteCount);
-            this.treeBox.rowCountChanged(idx + 1, -deleteCount);
-        }
+        this._collapseRowByIndex(idx);
     } else {
-        this.visibleComments[idx].isOpen = true;
-        var toInsert = this._getOpenComments(this.visibleComments[idx].replies);
-        for (var i = 0; i < toInsert.length; i++) {
-            this.visibleComments.splice(idx + i + 1, 0, toInsert[i]);
-        }
-        this.treeBox.rowCountChanged(idx + 1, toInsert.length);
+        this._expandRowByIndex(idx)
     }
-    this.treeBox.invalidateRow(idx);
 }
 
 Listit.TreeView.prototype.getImageSrc = function(idx, column) {}
