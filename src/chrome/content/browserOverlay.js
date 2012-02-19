@@ -57,7 +57,7 @@ try{
     var treeMapIframe = document.getElementById('listit-treemap-frame');
     //var tmDiv = treeMapIframe.contentWindow.wrappedJSObject.getElementById('tm-div');
     var tmDiv = treeMapIframe.contentWindow.document.getElementById('tm-div');
-    Listit.treeMap = new Listit.TreeMap(tmDiv, 3);
+    Listit.treeMap = new Listit.TreeMap(tmDiv, 3, !Listit.commentTreeStructureIsFlat()); // mode depends on if comment tree is flat
     Listit.onResizeTreeMap(); // resize to fill the complete iframe
     
     var scoreTree = document.getElementById('scoreTree'); // TODO: rename to commentTree
@@ -137,12 +137,15 @@ Listit.onTreeDoubleClick = function(event) {
     event.stopPropagation();
 }*/
 
+
 // Selects comment and possibly collapses/expands.
 // (set collapsed to null to it this unchanged).
 // Always makes the comment visible by expanding the path to it!. (TODO: parameter?)
 Listit.selectAndExpandOrCollapseComment = function(selectedComment, expand) {
     Listit.logger.trace("Listit.selectAndExpandOrCollapseComment -- ");
 
+    Listit.fbLog('Listit.commentTreeStructureIsFlat: ' + Listit.commentTreeStructureIsFlat());
+    //expand = expand || Listit.commentTreeStructureIsFlat(); // Always expand in flat mode
     Listit.fbLog('Listit.selectAndExpandOrCollapseComment: ' + selectedComment + ', expand: ' + expand);
     var curState = Listit.state.getCurrentBrowserState();
     var makeVisible = true; // ALWAYS MAKE COMMENT VISIBLE BY EXPANDING PATH TO IT
@@ -159,7 +162,8 @@ try{
     var curState = Listit.state.getCurrentBrowserState();
     var selectedComment = curState.selectedComment;
     var selectedCommentId = selectedComment ? selectedComment.id : null;
-    var expand = selectedComment ? (selectedComment.isOpen) : null;
+    Listit.fbLog('Listit.commentTreeStructureIsFlat: ' + Listit.commentTreeStructureIsFlat());
+    var expand =  Listit.commentTreeStructureIsFlat() || (selectedComment ? (selectedComment.isOpen) : null);
     Listit.fbLog('updateViewsForCurrentState ' + selectedCommentId + ', expand: ' + expand);
     
     curState.treeView.selectComment(selectedComment);
@@ -323,8 +327,8 @@ Listit.onClickTreeHeader = function(event) {
 
 
 
-Listit.onClickBodyTreeHeader = function(event) {
-    Listit.logger.trace("Listit.onClickBodyTreeHeader -- ");
+Listit.onClickCommentTreeHeader = function(event) {
+    Listit.logger.trace("Listit.onClickCommentTreeHeader -- ");
     
     if (event.button != 0) return; // Only left mouse button
     
@@ -349,8 +353,20 @@ Listit.onClickBodyTreeHeader = function(event) {
     column.setAttribute('structure', newStructure);
     column.setAttribute('label', 'Comments ' + ((newStructure == 'tree') ? 'tree' : 'list'));
     
-    Listit.logger.trace("Listit.onClickBodyTreeHeader done ");
+    // Set treemap mode so that only parent is returned on repeat select in tree mode
+    Listit.treeMap.returnParentOnRepeatSelectMode = (newStructure == 'tree');
+    
+    Listit.logger.trace("Listit.onClickCommentTreeHeader done ");
 }
+
+
+Listit.commentTreeStructureIsFlat = function() {
+    var structure = document.getElementById('treeBody').getAttribute('structure');
+    Listit.assert(structure == 'flat' || structure == 'tree', 
+        "Invalid tree structure: " + structure);
+    return structure == 'flat';
+}
+
 
 Listit.setTreeColumnDateFormat = function (event) {
     Listit.logger.trace("Listit.setTreeColumnDateFormat -- ");

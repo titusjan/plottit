@@ -210,7 +210,7 @@
               label="Comments"
               structure="tree"
               persist="width ordinal hidden structure label"
-              onclick="Listit.onClickBodyTreeHeader(event)"
+              onclick="Listit.onClickCommentTreeHeader(event)"
               flex="1"
               primary="true"
               minwidth="100"

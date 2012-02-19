@@ -8,7 +8,9 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 // TreeMap //
 /////////////
 
-Listit.TreeMap = function (placeHolderDiv, padding) { // Constructor
+// If returnParentOnRepeatSelectMode == true, the parent node will be returned if 
+// the node was already seleced.
+Listit.TreeMap = function (placeHolderDiv, padding, returnParentOnRepeatSelectMode) { // Constructor
 
     this._assert(placeHolderDiv, 'Placeholder undefined');
     this.placeHolder = placeHolderDiv;
@@ -24,6 +26,7 @@ Listit.TreeMap = function (placeHolderDiv, padding) { // Constructor
     this.root = null;
     this.selectedNode = null;
     this.previousSelectedNode = null;
+    this.returnParentOnRepeatSelectMode = returnParentOnRepeatSelectMode; 
     this.padding = (padding) ? padding : 0; // can use padding so that highlighting stands out more
     
 }
@@ -125,8 +128,10 @@ Listit.TreeMap.prototype.renderCushioned = function (h0, f, Iamb) {
 
 Listit.TreeMap.prototype.getNodeByXY = function (x, y, returnParentOfId) {
 
+    Listit.fbLog('getNodeByXY: ' + this.returnParentOnRepeatSelectMode);
     if (this.root) {
-        var result = this.root.getNodeByXY(x, y, returnParentOfId)
+        var result = this.root.getNodeByXY(x, y, 
+            this.returnParentOnRepeatSelectMode && returnParentOfId);
         if (returnParentOfId && (result.id == returnParentOfId) ) {
             return null;
         } else {
