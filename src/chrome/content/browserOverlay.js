@@ -229,6 +229,7 @@ Listit.onScatterPlotClicked = function(event) {
     var discussion = Listit.state.getCurrentBrowserDiscussion();
     var selectedComment = discussion.getCommentById(commentId);
     Listit.selectAndExpandOrCollapseComment(selectedComment, null);
+    document.getElementById('scoreTree').focus(); // Set focus to comment tree;
 }
 
 
@@ -243,6 +244,7 @@ Listit.onTreeMapClicked = function(event) {
         Listit.fbLog('onTreeMapClicked, selectedNodeId: ' + Listit.treeMap.selectedNodeId);
         
         Listit.selectAndExpandOrCollapseComment(selectedComment, !Listit.treeMap.selectedNodeIsGroup);
+        document.getElementById('scoreTree').focus(); // Set focus to comment tree;
     }
 }
 
