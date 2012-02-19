@@ -337,6 +337,9 @@ Listit.onClickCommentTreeHeader = function(event) {
     var newStructure = (oldStructure == 'tree') ? 'flat' : 'tree';
     Listit.logger.debug('oldStructure: ' + oldStructure);    
     Listit.logger.debug('newStructure: ' + newStructure);    
+
+    column.setAttribute('structure', newStructure);
+    column.setAttribute('label', 'Comments ' + ((newStructure == 'tree') ? 'tree' : 'list'));
     
     var curTreeView = Listit.state.getCurrentTreeView();
     curTreeView.setStructure(newStructure);
@@ -345,16 +348,12 @@ Listit.onClickCommentTreeHeader = function(event) {
     var scoreTree = document.getElementById('scoreTree');
     var sortResource = scoreTree.getAttribute('sortResource');
     var sortDirection = scoreTree.getAttribute('sortDirection');
-    curTreeView.setDiscussionSorted(sortResource, sortDirection, newStructure);
-    //curTreeView.setDiscussionSorted(sortResource, sortDirection, newStructure, curTreeView.discussion);
-    Listit.ensureCurrentRowVisible();
-    
-    // Set after actual sorting for easier dection of error in during sort
-    column.setAttribute('structure', newStructure);
-    column.setAttribute('label', 'Comments ' + ((newStructure == 'tree') ? 'tree' : 'list'));
     
     // Set treemap mode so that only parent is returned on repeat select in tree mode
     Listit.treeMap.returnParentOnRepeatSelectMode = (newStructure == 'tree');
+
+    curTreeView.setDiscussionSorted(sortResource, sortDirection, newStructure);
+    Listit.ensureCurrentRowVisible();
     
     Listit.logger.trace("Listit.onClickCommentTreeHeader done ");
 }
