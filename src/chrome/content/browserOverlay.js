@@ -105,28 +105,6 @@ Listit.onUnload = function() {
 }
 
 
-Listit.SELECTED_ROW_STYLE = "<style type='text/css'>"
-    + "div.listit-selected {background-color:#EFF7FF; outline:1px dashed #5F99CF}"
-    + "</style>";
-    
-
-Listit.selectCommentInRedditPage = function (selectedComment, prevSelectedComment) {
-    var $ = content.wrappedJSObject.jQuery;
-    if ($) { // e.g. no jQuery when page is only a .json file
-        var selectedCommentId = selectedComment ? selectedComment.id : null;
-        if (prevSelectedComment !== null) {
-            $('div.id-t1_' + prevSelectedComment.id + ' div.entry')
-                .filter(':first').removeClass('listit-selected');
-        }
-        var offset = $('div.id-t1_' + selectedCommentId)
-                        .filter(':visible').find('div.entry:first')
-                        .addClass('listit-selected')
-                        .offset();
-        if (offset) {
-            $('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
-        }
-    }
-}
  
 /* doesn't work
 Listit.onTreeDoubleClick = function(event) {
@@ -171,6 +149,7 @@ try{
     Listit.scatterPlot.highlight(selectedCommentId);
     Listit.treeMap.highlight(selectedCommentId, expand);
     Listit.selectCommentInRedditPage(selectedComment, curState.previousSelectedComment);
+    
     Listit.fbLog('----------------------------------------------------');
     Listit.fbLog(' ');
 } catch (ex) {
@@ -213,6 +192,11 @@ Listit.onRowExpandOrCollapse = function(event) {
         // Only update when the expanded node is actually selected.
         Listit.updateViewsForCurrentSelection(); 
     }
+    
+    if (true) { // TODO: setting?
+        Listit.expandOrCollapseRedditComment(event.comment, event.comment.isOpen);
+    }
+        
 }
 
 
@@ -894,34 +878,50 @@ Listit.setListitActive = function (listitEnabled) {
 }
 
 
-/*
-//not yet implemented 
 
-Listit.collapseExpandRedditComment = function(commentId) {
-    Listit.logger.trace("Listit.collapseExpandRedditComment -- ");
+// Style that will be added to reddit page to highlight selected comments.
+Listit.SELECTED_ROW_STYLE = "<style type='text/css'>"
+    + "div.listit-selected {background-color:#EFF7FF; outline:1px dashed #5F99CF}"
+    + "</style>";
     
-    var selectedIndex = document.getElementById('scoreTree').currentIndex;
-    var curState = Listit.state.getCurrentBrowserState();
-    var prevSelectedComment = curState.selectedComment;
-    var selectedComment = curState.treeView.visibleComments[selectedIndex];
-    Listit.setDetailsFrameHtml(selectedComment.bodyHtml);
-    curState.selectedComment = selectedComment;
-    
-    // Select post in reddit page
+
+Listit.selectCommentInRedditPage = function (selectedComment, prevSelectedComment) {
     var $ = content.wrappedJSObject.jQuery;
-    if (prevSelectedComment !== null) {
-        $('div.id-t1_' + prevSelectedComment.id + ' div.entry')
-            .filter(':first').removeClass('listit-selected');
-    }
-    var offset = $('div.id-t1_' + selectedComment.id)
-                    .filter(':visible').find('div.entry:first')
-                    .addClass('listit-selected')
-                    .offset();
-    if (offset) {
-        $('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
+    if ($) { // e.g. no jQuery when page is only a .json file
+        var selectedCommentId = selectedComment ? selectedComment.id : null;
+        if (prevSelectedComment !== null) {
+            $('div.id-t1_' + prevSelectedComment.id + ' div.entry')
+                .filter(':first').removeClass('listit-selected');
+        }
+        var offset = $('div.id-t1_' + selectedCommentId)
+                        .filter(':visible').find('div.entry:first')
+                        .addClass('listit-selected')
+                        .offset();
+        if (offset) {
+            $('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
+        }
     }
 }
-*/
+
+
+Listit.expandOrCollapseRedditComment = function(comment, expand) {
+    Listit.logger.trace("Listit.expandOrCollapseRedditComment -- ");
+    
+    var $ = content.wrappedJSObject.jQuery;
+    if ($) { // e.g. no jQuery when page is only a .json file
+    
+        if (expand) {
+            // there can be 2 two expands: '[+]' and '1 child', we take the first.
+            var anchor = $('div.id-t1_' + comment.id + ' .collapsed:first .expand:first'); 
+            content.wrappedJSObject.showcomment(anchor);
+
+        } else {
+            var anchor = $('div.id-t1_' + comment.id + ' .noncollapsed:first .expand');
+            content.wrappedJSObject.hidecomment(anchor);
+        }
+    }
+}
+
 
 /*
 From: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow

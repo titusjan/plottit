@@ -183,7 +183,7 @@ Listit.TreeMap.prototype.highlightSelectedNode = function () {
     
         context.shadowOffsetX = 0.5;
         context.shadowOffsetY = 0.5;
-        context.shadowBlur    = 3;
+        context.shadowBlur    = this.padding; 
         context.shadowColor   = 'rgba(0,0,0,1)';            
         context.lineWidth     = 1.75; // Don't use 1, this is ugly with antialiassing.
         context.strokeStyle   ='white';    

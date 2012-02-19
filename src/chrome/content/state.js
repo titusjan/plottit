@@ -21,11 +21,12 @@ Listit.BrowserState = function (browser, localDateFormat, utcDateFormat) { // Co
     this._previousSelectedComment = null;
 }
 
-Listit.Comment.prototype.__defineGetter__("selectedComment", function() { return this._selectedComment} );
-Listit.Comment.prototype.__defineSetter__("selectedComment", function(v) { 
+Listit.BrowserState.prototype.__defineGetter__("selectedComment", function() { return this._selectedComment} );
+Listit.BrowserState.prototype.__defineSetter__("selectedComment", function(v) { 
     this._previousSelectedComment = this._selectedComment;
     this._selectedComment = v;
 } );
+Listit.BrowserState.prototype.__defineGetter__("previousSelectedComment", function() { return this._previousSelectedComment} );
 
 
 Listit.BrowserState.prototype.toString = function () {
