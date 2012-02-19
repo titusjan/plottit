@@ -21,15 +21,17 @@ Listit.getTreeBoxObject = function (treeID) {
 Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
 
     this.typeStr = 'treeView';  // TODO in prototype ???
-    this.allComments = [];      // Nested list (tree) of all comments
+    this.discussion = null;     
+    this.allComments = [];      // Nested list (tree) of all comments (TODO: use discussion.comments?)
     this.visibleComments = [];  // List of comments currently in the table (may be necessary to scroll)
     this.isFlat = false;        // If body column is a tree of flat
     
     this.localDateFormat = localDateFormat;
     this.utcDateFormat   = utcDateFormat;
 
+    // Part of the nsITreeView interface
     this.treeBox = null;
-    this.selection = null;
+    this.selection = null; 
 }
 
 
@@ -46,9 +48,12 @@ Listit.TreeView.prototype.setDiscussionSorted = function(columnID, sortDirection
     Listit.logger.trace("setDiscussionSorted -- ")
     
     var comments;
-    if (discussion === undefined) {
+
+    if (discussion === undefined) { 
+        // Nothing changes
         comments = this.allComments;
     } else {
+        this.discussion = discussion;        
         comments = discussion.comments;
     }
     
@@ -92,24 +97,91 @@ Listit.TreeView.prototype.removeAllComments = function() { // Must be fast becau
     }
 }
 
-
-Listit.TreeView.prototype.indexOfVisibleComment = function(comment) {
-    return this.visibleComments.indexOf(comment);
+Listit.TreeView.prototype.getTreeDomElement = function() {
+    // ridiculous steps neccesary to get the tree element.
+    if (this.treeBox == null) return null;
+    return this.treeBox.treeBody.parentNode;
 }
 
-Listit.TreeView.prototype.expandComment = function(comment) {
+
+// Expands the path from the root to the selected comment.
+Listit.TreeView.prototype.expandPath = function(selectedComment) {
+
+    Listit.fbLog('Listit.TreeView.prototype.expandPath: ' + selectedComment);
+
+    if (selectedComment == null) { return null }
+    
+    var path = this.discussion.getCommentPathById(selectedComment.id);
+    Listit.fbLog('expand path: ' +  [ p.id for each (p in path ) ]);
+
+    for (let [idx, comment] in Iterator(path)) {
+        this.expandComment(comment, false);
+    }
+}
+
+Listit.TreeView.prototype.selectComment = function(selectedComment) {
+
+    Listit.fbLog('Listit.TreeView.selectComment: ' + selectedComment);
+    
+    if (selectedComment == null) {
+        Listit.fbLog('clearSelection() called');
+        // First remove the caret from the tree so that when clearSelection triggers the onSelect
+        // event we can have the proper selected index.
+        this.getTreeDomElement().currentIndex = -1; 
+        this.selection.clearSelection();
+    } else { 
+        var selectedIndex = this.indexOfVisibleComment(selectedComment, true);
+        this.selection.select(selectedIndex);
+        this.treeBox.ensureRowIsVisible(selectedIndex);
+    }    
+}
+
+Listit.TreeView.prototype.expandOrCollapseComment = function(selectedComment, expand, makeVisible) {
+    
+    //Listit.fbLog("Listit.TreeView.expandOrCollapseComment: selectedComment: " + selectedComment + ", expand: " + expand );
+    
+    if (selectedComment == null) return;
+    if (expand == null) return;
+    if (expand) {
+        this.expandComment(selectedComment, makeVisible);
+    } else { 
+        this.collapseComment(selectedComment, makeVisible);
+    }
+}
+
+
+// Returns the index of the comment in the visible comments list.
+// Side effect: if makeVisible == true the path to the comment is expanded to make the
+// comment visible in case it's not found.
+Listit.TreeView.prototype.indexOfVisibleComment = function(comment, makeVisible) {
+
+    var index = this.visibleComments.indexOf(comment);
+    if (makeVisible && index == -1) {
+        Listit.fbLog('comment not visible in tree: ' + comment);
+        this.expandPath(comment);
+        var index = this.indexOfVisibleComment(comment, false);
+        Listit.fbLog('expandPath done, index: ' + index);
+    }
+    return index;
+}
+
+Listit.TreeView.prototype.expandComment = function(comment, makeVisible) {
     Listit.logger.trace("Listit.TreeView.expandComment: ");
-    this._expandRowByIndex(this.visibleComments.indexOf(comment))
+    this.expandRowByIndex(this.indexOfVisibleComment(comment, makeVisible))
 }
 
 
-Listit.TreeView.prototype._expandRowByIndex = function(idx) {
-    Listit.logger.trace("Listit.TreeView._expandRowByIndex: " + idx );
+Listit.TreeView.prototype.expandRowByIndex = function(idx) {
+    Listit.logger.trace("Listit.TreeView.expandRowByIndex: " + idx );
+
+    Listit.fbLog("Listit.TreeView.expandRowByIndex: " + idx );
     
     if (idx < 0) return;
-    if (!this.isContainer(idx)) return;
-    if (this.visibleComments[idx].isOpen) return; // container already closed, skip;
-
+    if (this.isContainer(idx) === false) return;
+    if (this.visibleComments[idx].isOpen === true) { 
+        Listit.fbLog('container already open, skipping ....');
+        return; // container already open, skip;
+    }
     this.visibleComments[idx].isOpen = true;
     var toInsert = this._getOpenComments(this.visibleComments[idx].replies);
     for (var i = 0; i < toInsert.length; i++) {
@@ -117,22 +189,34 @@ Listit.TreeView.prototype._expandRowByIndex = function(idx) {
     }
     this.treeBox.rowCountChanged(idx + 1, toInsert.length);
     this.treeBox.invalidateRow(idx);
+
+    // Dispatch event
+    var event = document.createEvent("Events");  
+    event.initEvent("ListitTreeViewExpandCollapseEvent", true, false);  
+    event.expandedOrCollapsedIndex = idx;
+    event.comment = this.visibleComments[idx];
+    event.expanded = true;
+    this.getTreeDomElement().dispatchEvent(event);   
 }
 
 
-Listit.TreeView.prototype.collapseComment = function(comment) {
+Listit.TreeView.prototype.collapseComment = function(comment, makeVisible) {
     Listit.logger.trace("Listit.TreeView.collapseComment: ");
-    this._collapseRowByIndex(this.visibleComments.indexOf(comment))
+    this.collapseRowByIndex(this.indexOfVisibleComment(comment, makeVisible))
 }
 
 
-Listit.TreeView.prototype._collapseRowByIndex = function(idx) {
-    Listit.logger.trace("Listit.TreeView._collapseRowByIndex: " + idx );
+Listit.TreeView.prototype.collapseRowByIndex = function(idx) {
+    Listit.logger.trace("Listit.TreeView.collapseRowByIndex: " + idx );
 
+    Listit.fbLog("Listit.TreeView.collapseRowByIndex: " + idx );
+    
     if (idx < 0) return;
-    if (!this.isContainer(idx)) return;
-    if (!this.visibleComments[idx].isOpen) return; // container already open, skip;
-
+    if (this.isContainer(idx) === false) return;
+    if (this.visibleComments[idx].isOpen === false) {
+        Listit.fbLog('container already closed, skipping ....');
+        return; // container closed open, skip;
+    }
     this.visibleComments[idx].isOpen = false;
 
     // Walk downwards to next sibling to count children to delete
@@ -148,6 +232,14 @@ Listit.TreeView.prototype._collapseRowByIndex = function(idx) {
         this.treeBox.rowCountChanged(idx + 1, -deleteCount);
     }
     this.treeBox.invalidateRow(idx);
+
+    // Dispatch event
+    var event = document.createEvent("Events");  
+    event.initEvent("ListitTreeViewExpandCollapseEvent", true, false);  
+    event.expandedOrCollapsedIndex = idx;    
+    event.comment = this.visibleComments[idx];    
+    event.expanded = false;    
+    this.getTreeDomElement().dispatchEvent(event);    
 }
 
 
@@ -299,7 +391,7 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
 
 
 Listit.TreeView.prototype.isContainer = function(idx) {
-    return !this.isFlat && this.visibleComments[idx].replies.length; // No containers when tree is flat
+    return !this.isFlat && (this.visibleComments[idx].replies.length !== 0); // No containers when tree is flat
 }
 
 Listit.TreeView.prototype.isContainerOpen = function(idx) {
@@ -346,9 +438,9 @@ Listit.TreeView.prototype.toggleOpenState = function(idx) {
     Listit.logger.trace("Listit.TreeView.toggleOpenState: " + idx );
     
     if (this.isContainerOpen(idx)) {
-        this._collapseRowByIndex(idx);
+        this.collapseRowByIndex(idx);
     } else {
-        this._expandRowByIndex(idx)
+        this.expandRowByIndex(idx)
     }
 }
 

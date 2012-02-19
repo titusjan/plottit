@@ -68,6 +68,7 @@ try{
     
     //scoreTree.addEventListener("dblclick", Listit.onTreeDoubleClick, true); doesn't work
     scoreTree.addEventListener("select", Listit.onRowSelect, false);
+    scoreTree.addEventListener("ListitTreeViewExpandCollapseEvent", Listit.onRowExpandOrCollapse, false);
     //scoreTree.addEventListener("blur", Listit.onCommentTreeBlur, false); // TODO: think on how better?
         
     var container = gBrowser.tabContainer;
@@ -108,23 +109,11 @@ Listit.SELECTED_ROW_STYLE = "<style type='text/css'>"
     + "div.listit-selected {background-color:#EFF7FF; outline:1px dashed #5F99CF}"
     + "</style>";
     
-    
-Listit.selectRow = function(selectedComment) {
-    Listit.logger.trace("Listit.selectRow -- ");
-try{    
-    var selectedCommentId = selectedComment ? selectedComment.id : null;
-    var curState = Listit.state.getCurrentBrowserState();
-    var prevSelectedComment = curState.selectedComment;
-    Listit.setDetailsFrameHtml(selectedComment ? selectedComment.bodyHtml : '');
-    curState.selectedComment = selectedComment;
-    
-    // Highlight comment in scatter plot and tree map
-    Listit.scatterPlot.highlight(selectedCommentId);
-    Listit.treeMap.highlight(selectedCommentId);
 
-    // Select comment in reddit page
+Listit.selectCommentInRedditPage = function (selectedComment, prevSelectedComment) {
     var $ = content.wrappedJSObject.jQuery;
-    if ($) { // e.g. no jQuery when opening only a .json file
+    if ($) { // e.g. no jQuery when page is only a .json file
+        var selectedCommentId = selectedComment ? selectedComment.id : null;
         if (prevSelectedComment !== null) {
             $('div.id-t1_' + prevSelectedComment.id + ' div.entry')
                 .filter(':first').removeClass('listit-selected');
@@ -136,14 +125,9 @@ try{
         if (offset) {
             $('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
         }
-    }     
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.selectRow;');
-    Listit.logException(ex);
-}    
+    }
 }
-
-
+ 
 /* doesn't work
 Listit.onTreeDoubleClick = function(event) {
     Listit.logger.trace("Listit.onRowDoubleClick -- ");
@@ -153,22 +137,84 @@ Listit.onTreeDoubleClick = function(event) {
     event.stopPropagation();
 }*/
 
+// Selects comment and possibly collapses/expands.
+// (set collapsed to null to it this unchanged).
+// Always makes the comment visible by expanding the path to it!. (TODO: parameter?)
+Listit.selectAndExpandOrCollapseComment = function(selectedComment, expand) {
+    Listit.logger.trace("Listit.selectAndExpandOrCollapseComment -- ");
+
+    Listit.fbLog('Listit.selectAndExpandOrCollapseComment: ' + selectedComment + ', expand: ' + expand);
+    var curState = Listit.state.getCurrentBrowserState();
+    var makeVisible = true; // ALWAYS MAKE COMMENT VISIBLE BY EXPANDING PATH TO IT
+    curState.treeView.expandOrCollapseComment(selectedComment, expand, makeVisible); // Must be before selection
+    curState.selectedComment = selectedComment;
+    
+    Listit.updateViewsForCurrentState();
+}
+
+// Update tree, comment pane, plots, etc.
+Listit.updateViewsForCurrentState = function() {
+    Listit.logger.trace("Listit.updateViewsForCurrentState -- ");
+try{    
+    var curState = Listit.state.getCurrentBrowserState();
+    var selectedComment = curState.selectedComment;
+    var selectedCommentId = selectedComment ? selectedComment.id : null;
+    var expand = selectedComment ? (selectedComment.isOpen) : null;
+    Listit.fbLog('updateViewsForCurrentState ' + selectedCommentId + ', expand: ' + expand);
+    
+    curState.treeView.selectComment(selectedComment);
+    Listit.setDetailsFrameHtml(selectedComment ? selectedComment.bodyHtml : '');
+    Listit.scatterPlot.highlight(selectedCommentId);
+    Listit.treeMap.highlight(selectedCommentId, expand);
+    Listit.selectCommentInRedditPage(selectedComment, curState.previousSelectedComment);
+    Listit.fbLog('----------------------------------------------------');
+    Listit.fbLog(' ');
+} catch (ex) {
+    Listit.logger.error('Exception in Listit.updateViewsForCurrentState;');
+    Listit.logException(ex);
+}    
+}
+
+
+
 Listit.onRowSelect = function(event) {
     Listit.logger.trace("Listit.onRowSelect -- ");
     
-    var selectedIndex = document.getElementById('scoreTree').currentIndex;
+    // Get current selected row (TODO: use treeview.selection object?)
     var curState = Listit.state.getCurrentBrowserState();
-    var selectedComment = curState.treeView.visibleComments[selectedIndex];
-    if (selectedComment) { 
-        // selectedComment can be false, e.g. when you click on the headers
-        Listit.selectRow(selectedComment);
+    var selectedIndex = document.getElementById('scoreTree').currentIndex;  // Can be -1 when none selected
+    var selectedComment = curState.treeView.visibleComments[selectedIndex]; // Can be undefined if idx = -1
+
+    Listit.fbLog("ON ROW SELECT: " + selectedComment + ', curstateSelected: ' + curState.selectedComment);
+    
+    if (selectedComment == curState.selectedComment) {
+        Listit.fbLog("comment already selected.");
+        return; // comment already selected.
+    }
+    
+    if (selectedComment) {  // selectedComment can be false, e.g. when you click on the headers
+        Listit.selectAndExpandOrCollapseComment(selectedComment, null); 
+    }
+}
+
+Listit.onRowExpandOrCollapse = function(event) {
+    Listit.logger.trace("Listit.onRowExpandOrCollapse -- ");
+    
+    var curState = Listit.state.getCurrentBrowserState();
+    Listit.fbLog("ON EXPAND OR COLLAPSE " + 
+        'expanded: ' + event.expanded + ', idx: ' + event.expandedOrCollapsedIndex +
+        ', comment: ' + event.comment);
+    Listit.fbLog('curState.selectedComment: ' + curState.selectedComment);
+    if (event.comment ==  curState.selectedComment) {
+        // Only update when the expanded node is actually selected.
+        Listit.updateViewsForCurrentState(); 
     }
 }
 
 
 Listit.onCommentTreeBlur = function(event) {
     Listit.logger.trace("Listit.onCommentTreeBlur -- ");
-    Listit.selectRow(null);
+    Listit.selectAndExpandOrCollapseComment(null, null);
 }
 
 
@@ -178,8 +224,7 @@ Listit.onScatterPlotClicked = function(event) {
     var commentId = Listit.scatterPlot.flotWrapper.highlightedId;
     var discussion = Listit.state.getCurrentBrowserDiscussion();
     var selectedComment = discussion.getCommentById(commentId);
-    Listit.selectRow(selectedComment);
-    Listit.ensureCurrentRowVisible();
+    Listit.selectAndExpandOrCollapseComment(selectedComment, null);
 }
 
 
@@ -188,14 +233,12 @@ Listit.onTreeMapClicked = function(event) {
 
     // Test origin of the event; only update the treemap of Listit, not from e.g. a test page.
     if (event.originalTarget.id == 'tm-div-overlay') {
-        var commentId = Listit.treeMap.selectedNodeId;
+        var commentId = Listit.treeMap.selectedNodeBaseId;
         var discussion = Listit.state.getCurrentBrowserDiscussion();
         var selectedComment = discussion.getCommentById(commentId);
-        Listit.fbLog('selectedNodeId: ' + commentId);
-        Listit.fbLog(selectedComment);
+        Listit.fbLog('onTreeMapClicked, selectedNodeId: ' + Listit.treeMap.selectedNodeId);
         
-        Listit.selectRow(selectedComment);
-        Listit.ensureCurrentRowVisible();
+        Listit.selectAndExpandOrCollapseComment(selectedComment, !Listit.treeMap.selectedNodeIsGroup);
     }
 }
 
@@ -758,15 +801,26 @@ Listit.hideDescription = function() {
     description.value = "Listit...";    
 }
 
+/*
 Listit.ensureCurrentRowVisible = function () {
     Listit.logger.trace("Listit.ensureCurrentRowVisible -- ");
 
     var curState = Listit.state.getCurrentBrowserState();
     if (curState.selectedComment != null) {
         var selectedIndex = curState.treeView.indexOfVisibleComment(curState.selectedComment)
+        if (curState.selectedComment.isOpen) {
+            curState.treeView.expandRowByIndex(selectedIndex);
+        } else {
+            curState.treeView.collapseRowByIndex(selectedIndex);
+        }
         curState.treeView.selection.select(selectedIndex);
         Listit.getTreeBoxObject('scoreTree').ensureRowIsVisible(selectedIndex);
     }
+}
+*/
+Listit.ensureCurrentRowVisible = function () {
+    Listit.logger.trace("Listit.ensureCurrentRowVisible -- ");
+    Listit.updateViewsForCurrentState(); // TODO: replace ensureCurrentRowVisible calls by updateViewsForCurrentState
 }
 
 Listit.toggleListitActive = function () {
@@ -793,7 +847,8 @@ Listit.setListitActive = function (listitEnabled) {
 }
 
 
-/* //not yet implemented 
+/*
+//not yet implemented 
 
 Listit.collapseExpandRedditComment = function(commentId) {
     Listit.logger.trace("Listit.collapseExpandRedditComment -- ");

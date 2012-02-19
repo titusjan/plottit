@@ -50,13 +50,26 @@ Listit.Discussion.prototype.__defineSetter__("refreshDate", function(v) { this._
 
 
 Listit.Discussion.prototype.getCommentById = function (commentId) {
-
+    
     for (let [idx, comment] in Iterator(this.comments)) {
         var resultingComment = comment.getCommentById(commentId);
         if (resultingComment) return resultingComment;
     } 
     return null;
 };
+
+Listit.Discussion.prototype.getCommentPathById = function (commentId) {
+
+    for (let [idx, comment] in Iterator(this.comments)) {
+        var path = comment.getCommentPathById(commentId);
+        if (path.length > 0) {
+            return path;
+        }
+    } 
+    return [];
+};
+
+
 
 
 /////////////
@@ -185,6 +198,20 @@ Listit.Comment.prototype.getCommentById = function (commentId) {
         if (resultingComment) return resultingComment;
     }   
     return null;
+};
+
+Listit.Comment.prototype.getCommentPathById = function (commentId) {
+    
+    if (this.id === commentId) { return [this]; }
+
+    for (let [idx, comment] in Iterator(this._replies)) {
+        var path = comment.getCommentPathById(commentId);
+        if (path.length > 0) {
+            path.unshift(this); // prepend this to path
+            return path;
+        }
+    }   
+    return [];
 };
 
 

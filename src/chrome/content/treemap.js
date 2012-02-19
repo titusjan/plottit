@@ -2,6 +2,8 @@
 
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
+
+
 /////////////
 // TreeMap //
 /////////////
@@ -31,6 +33,14 @@ Listit.TreeMap.prototype.__defineGetter__("y", function() { return this._canvasB
 Listit.TreeMap.prototype.__defineGetter__("width",  function() { return this._canvasBackground.width  });
 Listit.TreeMap.prototype.__defineGetter__("height", function() { return this._canvasBackground.height });
 
+Listit.TreeMap.prototype.__defineGetter__("selectedNodeIsGroup", function() { 
+    return this.selectedNode ? this.selectedNode.isGroup : null;
+});
+
+Listit.TreeMap.prototype.__defineGetter__("selectedNodeBaseId", function() { 
+    return this.selectedNode ? this.selectedNode.baseId : null;
+});
+
 Listit.TreeMap.prototype.__defineGetter__("selectedNodeId", function() { 
     return this.selectedNode ? this.selectedNode.id : null;
 });
@@ -38,6 +48,8 @@ Listit.TreeMap.prototype.__defineGetter__("selectedNodeId", function() {
 Listit.TreeMap.prototype.__defineGetter__("previousSelectedNodeId", function() { 
     return this.previousSelectedNode ? this.previousSelectedNode.id : null;
 });
+
+
 
 
 Listit.TreeMap.prototype.toString = function () {
@@ -138,15 +150,19 @@ Listit.TreeMap.prototype.getNodeById = function (id) {
 
 Listit.TreeMap.prototype.selectNode = function (node) {
 
-    if (this.previousSelectedNode != this.selectedNode ) {
+    if (this.previousSelectedNode != this.selectedNode ) { // TODO: is this check necessary?
         this.previousSelectedNode = this.selectedNode;
     }
     this.selectedNode = node;
 }
 
 
-Listit.TreeMap.prototype.highlight = function (nodeId) {
-
+Listit.TreeMap.prototype.highlight = function (nodeId, expand) {
+    
+    if (!expand) { 
+        nodeId = Listit.TreeMap.Node.GROUP_PREFIX + nodeId 
+    };
+    Listit.fbLog('highlight: ' + nodeId);
     this.selectNode(this.getNodeById(nodeId));
     this.highlightSelectedNode();
 }
@@ -201,7 +217,7 @@ Listit.TreeMap.prototype.setDataFromDiscussion  = function (discussion, sizeProp
             return node;
         } else {
     
-            var node = new Listit.TreeMap.Node(0, true, comment.id + '__and_children');
+            var node = new Listit.TreeMap.Node(0, true, Listit.TreeMap.Node.GROUP_PREFIX + comment.id);
             node.addChild( new Listit.TreeMap.Node(size, false, comment.id, hsl[0], hsl[1]) ); 
             
             var childrenNode = new Listit.TreeMap.Node(0, false); 
@@ -289,6 +305,21 @@ Listit.TreeMap.Node = function (size, addCushion, id, hue, saturation) { // Cons
     this._hue            = hue;
     this._saturation     = saturation;
 }
+
+// True if the node contains a parent node plus its children 
+Listit.TreeMap.Node.prototype.__defineGetter__("isGroup", function() { 
+    // Return true iff id starts with group prefix
+    return (this.id.substring(0, Listit.TreeMap.Node.GROUP_PREFIX.length) === Listit.TreeMap.Node.GROUP_PREFIX)
+});
+
+// The node.id minus group prefix (if present)
+Listit.TreeMap.Node.prototype.__defineGetter__("baseId", function() { 
+    if (this.isGroup) {
+        return this.id.substring(Listit.TreeMap.Node.GROUP_PREFIX.length)
+    } else {
+        return this.id;
+    }
+});
 
 Listit.TreeMap.Node.prototype.toString = function () {
     return "Listit.TreeMap.Node";
@@ -632,7 +663,10 @@ Listit.TreeMap.Node.prototype.getNodeById = function (id) {
 }
 
 ///////
-// Static functions
+// Static functions and constants
+
+Listit.TreeMap.Node.GROUP_PREFIX = '__group_' // Constant that is prepended to id when the node is a group
+
 
 // Determines the worst aspect ratio given a list of areas of rectangles
 // that share a common width (but have different heigths).

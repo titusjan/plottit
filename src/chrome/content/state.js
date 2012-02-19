@@ -17,8 +17,16 @@ Listit.BrowserState = function (browser, localDateFormat, utcDateFormat) { // Co
     this.browser = browser; // Keep track of the browser to which this state belongs
     this.pageStatus = Listit.PAGE_NOT_LISTIT;
     this.treeView =  new Listit.TreeView(localDateFormat, utcDateFormat);
-    this.selectedComment = null; // The comment that is selected in the table
+    this._selectedComment = null; // The comment that is selected in the table
+    this._previousSelectedComment = null;
 }
+
+Listit.Comment.prototype.__defineGetter__("selectedComment", function() { return this._selectedComment} );
+Listit.Comment.prototype.__defineSetter__("selectedComment", function(v) { 
+    this._previousSelectedComment = this._selectedComment;
+    this._selectedComment = v;
+} );
+
 
 Listit.BrowserState.prototype.toString = function () {
     return "Listit.BrowserState";
