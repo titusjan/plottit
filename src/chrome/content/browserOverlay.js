@@ -190,7 +190,7 @@ Listit.onRowExpandOrCollapse = function(event) {
     Listit.fbLog('curState.selectedComment: ' + curState.selectedComment);
     if (event.comment ==  curState.selectedComment) {
         // Only update when the expanded node is actually selected.
-        Listit.updateViewsForCurrentSelection(true); 
+        Listit.updateViewsForCurrentSelection(false); 
     }
     
     if (true) { // TODO: setting?
@@ -238,27 +238,27 @@ Listit.onRedditPageClicked = function(event) {
     
     var $ = content.wrappedJSObject.jQuery;
     if ($) { // e.g. no jQuery when page is only a .json file
-        Listit.fbLog('onRedditPageClicked');
-        Listit.fbLog(event.target);
+
         var target = $(event.target);
-        
-        var thing = target.parents('.thing:first').get(0);
-        
-        Listit.fbLog(thing);
+        var thing = target.parents('.thing:first');
+        var div = thing.get(0);
         
         // Find class containing the ID
         var commentId = null;
-        if (thing) {
-            for (let [idx, cls] in Iterator(thing.classList)) {
+        var expand = null;
+        if (div) {
+            for (let [idx, cls] in Iterator(div.classList)) {
                 if (cls.substr(0, 6) == 'id-t1_') {
                     commentId = cls.substr(6);
                     break;
                 }
             }
+            var display = thing.find('.noncollapsed:first').css('display');
+            expand = (display == 'block');
         }
         var discussion = Listit.state.getCurrentBrowserDiscussion();
         var selectedComment = discussion.getCommentById(commentId);
-        Listit.selectAndExpandOrCollapseComment(selectedComment, null, false);        
+        Listit.selectAndExpandOrCollapseComment(selectedComment, expand, false);        
     }
 }
 
