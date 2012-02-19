@@ -155,7 +155,8 @@ Listit.selectAndExpandOrCollapseComment = function(selectedComment, expand) {
     Listit.updateViewsForCurrentState();
 }
 
-// Update tree, comment pane, plots, etc.
+// Update tree, comment pane, plots selection.
+// TODO: rename to indicate only selection is updated.
 Listit.updateViewsForCurrentState = function() {
     Listit.logger.trace("Listit.updateViewsForCurrentState -- ");
 try{    
@@ -278,6 +279,12 @@ Listit.onTabSelect = function(event) {
     scoreTree.view = Listit.state.getCurrentTreeView();    
     
     Listit.updateAllViews(Listit.state, browserID);
+}
+
+Listit.onDetailsTabSelect = function(event) {
+    Listit.logger.trace("Listit.onDetailsTabSelect -- ");
+    Listit.fbLog("Listit.onDetailsTabSelect -- ");
+    Listit.updateAllViews(Listit.state, Listit.state.getCurrentBrowserID());
 }
  
 
@@ -657,11 +664,31 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
             Listit.scatterPlot.display(true);
             Listit.histogram.display(true);
-            Listit.scatterPlot.setDiscussion(discussion);
-            Listit.histogram.setDiscussion(discussion);
-            Listit.setTreeMapDiscussion(discussion);
             
-            // Sort and set comments in score tree
+            var tabPanels = document.getElementById('listit-tabpanels');
+            var selectedPanelId = tabPanels.selectedPanel.id;
+
+            Listit.fbLog("updateAllViews: " + selectedPanelId);
+            switch (selectedPanelId) // only update the visible tab
+            {
+                case 'listit-comment-tab': 
+                    var selectedComment = curState.selectedComment;
+                    Listit.setDetailsFrameHtml(selectedComment ? selectedComment.bodyHtml : '');
+                    break;
+                case 'listit-plot-tab': 
+                    Listit.scatterPlot.setDiscussion(discussion);
+                    break;
+                case 'listit-histo-tab': 
+                    Listit.histogram.setDiscussion(discussion);
+                    break;
+                case 'listit-treemap-tab': 
+                    Listit.setTreeMapDiscussion(discussion);
+                    break;
+                default:
+                    Listit.assert(false, 'Invalid panelId: ' + selectedPanelId);
+            } // switch
+            
+            // Sort and set comments in comment tree
             var scoreTree = document.getElementById('scoreTree');
             var sortResource = scoreTree.getAttribute('sortResource');
             var sortDirection = scoreTree.getAttribute('sortDirection');

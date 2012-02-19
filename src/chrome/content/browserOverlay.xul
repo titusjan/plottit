@@ -308,7 +308,7 @@
               persist="width selectedIndex"
               minwidth="250"
               selectedIndex="1">
-          <tabs >
+          <tabs id="listit-details-tabs" onselect="Listit.onDetailsTabSelect(event)">
             <tab label="Comment"/>
             <tab label="Plot"/>
             <tab label="Histogram"/>
