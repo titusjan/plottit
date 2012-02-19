@@ -152,20 +152,19 @@ Listit.selectAndExpandOrCollapseComment = function(selectedComment, expand) {
     curState.treeView.expandOrCollapseComment(selectedComment, expand, makeVisible); // Must be before selection
     curState.selectedComment = selectedComment;
     
-    Listit.updateViewsForCurrentState();
+    Listit.updateViewsForCurrentSelection();
 }
 
 // Update tree, comment pane, plots selection.
-// TODO: rename to indicate only selection is updated.
-Listit.updateViewsForCurrentState = function() {
-    Listit.logger.trace("Listit.updateViewsForCurrentState -- ");
+Listit.updateViewsForCurrentSelection = function() {
+    Listit.logger.trace("Listit.updateViewsForCurrentSelection -- ");
 try{    
     var curState = Listit.state.getCurrentBrowserState();
     var selectedComment = curState.selectedComment;
     var selectedCommentId = selectedComment ? selectedComment.id : null;
     Listit.fbLog('Listit.commentTreeStructureIsFlat: ' + Listit.commentTreeStructureIsFlat());
     var expand =  Listit.commentTreeStructureIsFlat() || (selectedComment ? (selectedComment.isOpen) : null);
-    Listit.fbLog('updateViewsForCurrentState ' + selectedCommentId + ', expand: ' + expand);
+    Listit.fbLog('updateViewsForCurrentSelection ' + selectedCommentId + ', expand: ' + expand);
     
     curState.treeView.selectComment(selectedComment);
     Listit.setDetailsFrameHtml(selectedComment ? selectedComment.bodyHtml : '');
@@ -175,7 +174,7 @@ try{
     Listit.fbLog('----------------------------------------------------');
     Listit.fbLog(' ');
 } catch (ex) {
-    Listit.logger.error('Exception in Listit.updateViewsForCurrentState;');
+    Listit.logger.error('Exception in Listit.updateViewsForCurrentSelection;');
     Listit.logException(ex);
 }    
 }
@@ -212,7 +211,7 @@ Listit.onRowExpandOrCollapse = function(event) {
     Listit.fbLog('curState.selectedComment: ' + curState.selectedComment);
     if (event.comment ==  curState.selectedComment) {
         // Only update when the expanded node is actually selected.
-        Listit.updateViewsForCurrentState(); 
+        Listit.updateViewsForCurrentSelection(); 
     }
 }
 
@@ -665,6 +664,19 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             Listit.scatterPlot.display(true);
             Listit.histogram.display(true);
             
+            // Sort and set comments in comment tree
+            var scoreTree = document.getElementById('scoreTree');
+            var sortResource = scoreTree.getAttribute('sortResource');
+            var sortDirection = scoreTree.getAttribute('sortDirection');
+            var structure = document.getElementById('treeBody').getAttribute('structure');
+            
+            var column = document.getElementById(sortResource);
+            column.setAttribute('sortDirection', sortDirection);
+            
+            curState.treeView.setDiscussionSorted(column.id, sortDirection, structure, discussion);
+            Listit.ensureCurrentRowVisible();
+            
+            // Update the visible details pane
             var tabPanels = document.getElementById('listit-tabpanels');
             var selectedPanelId = tabPanels.selectedPanel.id;
 
@@ -688,17 +700,8 @@ Listit.updateAllViews = function(state, eventBrowserID) {
                     Listit.assert(false, 'Invalid panelId: ' + selectedPanelId);
             } // switch
             
-            // Sort and set comments in comment tree
-            var scoreTree = document.getElementById('scoreTree');
-            var sortResource = scoreTree.getAttribute('sortResource');
-            var sortDirection = scoreTree.getAttribute('sortDirection');
-            var structure = document.getElementById('treeBody').getAttribute('structure');
+            this.updateViewsForCurrentSelection();
             
-            var column = document.getElementById(sortResource);
-            column.setAttribute('sortDirection', sortDirection);
-            
-            curState.treeView.setDiscussionSorted(column.id, sortDirection, structure, discussion);
-            Listit.ensureCurrentRowVisible();
             break;
         default:
             Listit.assert(false, "Invalid pageStatus: " + curState.pageStatus);
@@ -862,7 +865,7 @@ Listit.ensureCurrentRowVisible = function () {
 */
 Listit.ensureCurrentRowVisible = function () {
     Listit.logger.trace("Listit.ensureCurrentRowVisible -- ");
-    Listit.updateViewsForCurrentState(); // TODO: replace ensureCurrentRowVisible calls by updateViewsForCurrentState
+    Listit.updateViewsForCurrentSelection(); // TODO: replace ensureCurrentRowVisible calls by updateViewsForCurrentSelection
 }
 
 Listit.toggleListitActive = function () {
