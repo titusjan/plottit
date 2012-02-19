@@ -196,7 +196,12 @@ Listit.TreeMap.prototype.highlightSelectedNode = function () {
 
 Listit.TreeMap.prototype.setData = function (data) {
     
+    selectedNodeId = this.selectedNodeId;                 // persist
+    previousSelectedNodeId = this.previousSelectedNodeId; // persist
     this.root = data;
+    this.selectedNode = this.getNodeById(selectedNodeId);
+    this.previousSelectedNode = this.getNodeById(previousSelectedNodeId);
+
     this.root.sortNodesBySizeDescending();
     this.layoutSquarified();
     return data;
