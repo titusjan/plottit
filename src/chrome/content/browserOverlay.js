@@ -119,7 +119,7 @@ Listit.onTreeDoubleClick = function(event) {
 // Selects comment and possibly collapses/expands.
 // (set collapsed to null to it this unchanged).
 // Always makes the comment visible by expanding the path to it!. (TODO: parameter?)
-Listit.selectAndExpandOrCollapseComment = function(selectedComment, expand) {
+Listit.selectAndExpandOrCollapseComment = function(selectedComment, expand, scrollRedditPage) {
     Listit.logger.trace("Listit.selectAndExpandOrCollapseComment -- ");
 
     Listit.fbLog('Listit.commentTreeStructureIsFlat: ' + Listit.commentTreeStructureIsFlat());
@@ -130,11 +130,11 @@ Listit.selectAndExpandOrCollapseComment = function(selectedComment, expand) {
     curState.treeView.expandOrCollapseComment(selectedComment, expand, makeVisible); // Must be before selection
     curState.selectedComment = selectedComment;
     
-    Listit.updateViewsForCurrentSelection();
+    Listit.updateViewsForCurrentSelection(scrollRedditPage);
 }
 
 // Update tree, comment pane, plots selection.
-Listit.updateViewsForCurrentSelection = function() {
+Listit.updateViewsForCurrentSelection = function(scrollRedditPage) {
     Listit.logger.trace("Listit.updateViewsForCurrentSelection -- ");
 try{    
     var curState = Listit.state.getCurrentBrowserState();
@@ -148,7 +148,7 @@ try{
     Listit.setDetailsFrameHtml(selectedComment ? selectedComment.bodyHtml : '');
     Listit.scatterPlot.highlight(selectedCommentId);
     Listit.treeMap.highlight(selectedCommentId, expand);
-    Listit.selectCommentInRedditPage(selectedComment, curState.previousSelectedComment);
+    Listit.selectCommentInRedditPage(selectedComment, curState.previousSelectedComment, scrollRedditPage);
     
     Listit.fbLog('----------------------------------------------------');
     Listit.fbLog(' ');
@@ -176,7 +176,7 @@ Listit.onRowSelect = function(event) {
     }
     
     if (selectedComment) {  // selectedComment can be false, e.g. when you click on the headers
-        Listit.selectAndExpandOrCollapseComment(selectedComment, null); 
+        Listit.selectAndExpandOrCollapseComment(selectedComment, null, true); 
     }
 }
 
@@ -190,7 +190,7 @@ Listit.onRowExpandOrCollapse = function(event) {
     Listit.fbLog('curState.selectedComment: ' + curState.selectedComment);
     if (event.comment ==  curState.selectedComment) {
         // Only update when the expanded node is actually selected.
-        Listit.updateViewsForCurrentSelection(); 
+        Listit.updateViewsForCurrentSelection(true); 
     }
     
     if (true) { // TODO: setting?
@@ -202,7 +202,7 @@ Listit.onRowExpandOrCollapse = function(event) {
 
 Listit.onCommentTreeBlur = function(event) {
     Listit.logger.trace("Listit.onCommentTreeBlur -- ");
-    Listit.selectAndExpandOrCollapseComment(null, null);
+    Listit.selectAndExpandOrCollapseComment(null, null, true);
 }
 
 
@@ -212,7 +212,7 @@ Listit.onScatterPlotClicked = function(event) {
     var commentId = Listit.scatterPlot.flotWrapper.highlightedId;
     var discussion = Listit.state.getCurrentBrowserDiscussion();
     var selectedComment = discussion.getCommentById(commentId);
-    Listit.selectAndExpandOrCollapseComment(selectedComment, null);
+    Listit.selectAndExpandOrCollapseComment(selectedComment, null, true);
     document.getElementById('scoreTree').focus(); // Set focus to comment tree;
 }
 
@@ -227,8 +227,38 @@ Listit.onTreeMapClicked = function(event) {
         var selectedComment = discussion.getCommentById(commentId);
         Listit.fbLog('onTreeMapClicked, selectedNodeId: ' + Listit.treeMap.selectedNodeId);
         
-        Listit.selectAndExpandOrCollapseComment(selectedComment, !Listit.treeMap.selectedNodeIsGroup);
+        Listit.selectAndExpandOrCollapseComment(selectedComment, !Listit.treeMap.selectedNodeIsGroup, true);
         document.getElementById('scoreTree').focus(); // Set focus to comment tree;
+    }
+}
+
+
+Listit.onRedditPageClicked = function(event) {
+    Listit.logger.trace("Listit.onRedditPageClicked -- ");
+    
+    var $ = content.wrappedJSObject.jQuery;
+    if ($) { // e.g. no jQuery when page is only a .json file
+        Listit.fbLog('onRedditPageClicked');
+        Listit.fbLog(event.target);
+        var target = $(event.target);
+        
+        var thing = target.parents('.thing:first').get(0);
+        
+        Listit.fbLog(thing);
+        
+        // Find class containing the ID
+        var commentId = null;
+        if (thing) {
+            for (let [idx, cls] in Iterator(thing.classList)) {
+                if (cls.substr(0, 6) == 'id-t1_') {
+                    commentId = cls.substr(6);
+                    break;
+                }
+            }
+        }
+        var discussion = Listit.state.getCurrentBrowserDiscussion();
+        var selectedComment = discussion.getCommentById(commentId);
+        Listit.selectAndExpandOrCollapseComment(selectedComment, null, false);        
     }
 }
 
@@ -469,6 +499,10 @@ try {
         var styleElem = $(Listit.SELECTED_ROW_STYLE);
         $('head').append(styleElem);
         
+        // When the document is clicked we call ...
+        doc.defaultView.wrappedJSObject.window.addEventListener('click', 
+            Listit.onRedditPageClicked, false, true); 
+        
         if (Listit.state.listitEnabled) {
             browserState.setStatus(Listit.PAGE_LOADING);
             Listit.ajaxRequestJsonPage(pageURL, browser);
@@ -686,7 +720,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
                     Listit.assert(false, 'Invalid panelId: ' + selectedPanelId);
             } // switch
             
-            this.updateViewsForCurrentSelection();
+            this.updateViewsForCurrentSelection(true);
             
             break;
         default:
@@ -851,7 +885,7 @@ Listit.ensureCurrentRowVisible = function () {
 */
 Listit.ensureCurrentRowVisible = function () {
     Listit.logger.trace("Listit.ensureCurrentRowVisible -- ");
-    Listit.updateViewsForCurrentSelection(); // TODO: replace ensureCurrentRowVisible calls by updateViewsForCurrentSelection
+    Listit.updateViewsForCurrentSelection(true); // TODO: replace ensureCurrentRowVisible calls by updateViewsForCurrentSelection
 }
 
 Listit.toggleListitActive = function () {
@@ -885,7 +919,7 @@ Listit.SELECTED_ROW_STYLE = "<style type='text/css'>"
     + "</style>";
     
 
-Listit.selectCommentInRedditPage = function (selectedComment, prevSelectedComment) {
+Listit.selectCommentInRedditPage = function (selectedComment, prevSelectedComment, scrollToComment) {
     var $ = content.wrappedJSObject.jQuery;
     if ($) { // e.g. no jQuery when page is only a .json file
         var selectedCommentId = selectedComment ? selectedComment.id : null;
@@ -897,7 +931,7 @@ Listit.selectCommentInRedditPage = function (selectedComment, prevSelectedCommen
                         .filter(':visible').find('div.entry:first')
                         .addClass('listit-selected')
                         .offset();
-        if (offset) {
+        if (scrollToComment && offset) {
             $('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
         }
     }
