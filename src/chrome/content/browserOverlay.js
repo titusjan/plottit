@@ -106,7 +106,9 @@ Listit.onFirstRun = function (extensions) {
 
 Listit.onUnload = function(event) {
     Listit.logger.debug("Listit.onUnload -- "); 
+    //Listit.logger.debug(event.originalTarget.nodeName); 
 
+    Listit.treeMap.destruct();
     window.removeEventListener('unload', Listit.onUnload, false);
     
     window.removeEventListener('ListitTreeMapClickedEvent', Listit.onTreeMapClicked, false, true);     
@@ -507,10 +509,9 @@ try {
         return;
     }
 
-    var browserID = browser.getAttribute("ListitBrowserID");  // TODO: getStateForBrowser?
+    var browserID = browser.getAttribute("ListitBrowserID");
     var browserState = Listit.state.browserStates[browserID];
     browserState.setStatus(Listit.PAGE_NOT_LISTIT);
-    // browserState.removeAllComments(); // why is this necessary?
     
     var host = pageURL.split('?')[0];
     var isRedditPage = Listit.RE_ISREDDIT.test(host);
@@ -527,8 +528,15 @@ try {
         $('head').append(styleElem);
         
         // When the document is clicked we call ...
-        doc.defaultView.wrappedJSObject.window.addEventListener('click', 
-            Listit.onRedditPageClicked, false, true); 
+        var documentWindow = doc.defaultView.wrappedJSObject.window
+        documentWindow.addEventListener('click', Listit.onRedditPageClicked, false, true); 
+       
+        // Clean up onclick event handler
+        event.originalTarget.defaultView.addEventListener("unload", 
+            function(event) { 
+                documentWindow.addEventListener('click', Listit.onRedditPageClicked, false, true); 
+            }, 
+            true); 
         
         if (Listit.state.listitEnabled) {
             browserState.setStatus(Listit.PAGE_LOADING);

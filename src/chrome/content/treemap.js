@@ -19,9 +19,8 @@ Listit.TreeMap = function (placeHolderDiv, padding, returnParentOnRepeatSelectMo
     this._canvasOverlay = this._createCanvas(this.placeHolder.id + '-overlay', 'overlay-canvas');
     
     var thisTreeMap = this;
-    this._canvasOverlay.addEventListener('click',  
-        function (event) { Listit.TreeMap.onClickOverlay(event, thisTreeMap); }, 
-        false);
+    this.onClickOverlay = function (event) { Listit.TreeMap.onClickOverlay(event, thisTreeMap); };
+    this._canvasOverlay.addEventListener('click', this.onClickOverlay, false);
     
     this.root = null;
     this.selectedNode = null;
@@ -29,6 +28,11 @@ Listit.TreeMap = function (placeHolderDiv, padding, returnParentOnRepeatSelectMo
     this.returnParentOnRepeatSelectMode = returnParentOnRepeatSelectMode; 
     this.padding = (padding) ? padding : 0; // can use padding so that highlighting stands out more
     
+}
+
+Listit.TreeMap.prototype.destruct = function () {
+    Listit.logger.trace('Listit.TreeMap.destruct --');
+    this._canvasOverlay.removeEventListener('click', this.onClickOverlay, false);
 }
 
 Listit.TreeMap.prototype.__defineGetter__("x", function() { return this._canvasBackground.style.left });

@@ -42,3 +42,5 @@ Better handling of adjusting table column widths
 
 Steal focus on page load? Only when configured to do so!
 
+Error handling on Ajax time out
+
