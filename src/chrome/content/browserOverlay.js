@@ -772,7 +772,9 @@ Listit.renderTreeMap = function(cushionDelay) {
         if (Listit.globalTimeOutId) {
             window.clearTimeout(Listit.globalTimeOutId); // Cancel previous time out;
         }
-        Listit.globalTimeOutId = window.setTimeout(Listit.onRenderTreeMapTimeOut, cushionDelay);
+        Listit.globalTimeOutId = window.setTimeout( 
+            function () { Listit.onRenderTreeMapTimeOut() }, // use function expression for validator
+            cushionDelay);
     }
 }
 

@@ -121,10 +121,4 @@ Listit.dateFormat.i18n = {
 	]
 };
 
-/* Disabled
-// For convenience...
-Date.prototype.format = function (mask, utc) {
-	return dateFormat(this, mask, utc);
-};
-*/
 
