@@ -49,26 +49,6 @@ Listit.ScatterPlot.prototype.toString = function () {
 
 
 // Global dictionary with plot settings per variable
-Listit.ScatterPlot.VAR_LONG_NAMES = {
-    'binCount'              : 'Counted',  // used for yvar in historgrams
-    'hist_score'            : 'Score', 
-    'depth'                 : 'Depth', 
-    'score'                 : 'Score', 
-    'ups'                   : 'Up votes', 
-    'downs'                 : 'Down votes', 
-    'votes'                 : 'Votes', 
-    'likesPerc'             : 'Like', 
-    'hot'                   : 'Hot', 
-    'best'                  : 'Best', 
-    'numChars'              : 'Characters', 
-    'numReplies'            : 'Replies', 
-    'dateCreatedLocalValue' : 'Date and time',
-    'dateCreatedValue'      : 'UTC Date and time',
-    'postedAfter'           : 'Posted after',
-}
-
-
-// Global dictionary with plot settings per variable
 Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
     'binCount'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null }, 
     'depth'            : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     100], labelWidth: 25, tickFormatter: null }, 
@@ -331,17 +311,28 @@ Listit.ScatterPlot.prototype.setBinWidth = function (menuList) {
 
 
 Listit.ScatterPlot.prototype._updatePlotTitle = function () {
+
+    function getBundleString (stringBundle, stringId) {
+        try {
+            return stringBundle.getString(stringId);
+        } catch (ex) { // defensive programming in action
+            Listit.logger.error('No string in bundle: ' + stringId);
+            return stringId;
+        }
+    }
+
+    var bundle = document.getElementById('listit-string-bundle');
     if (this.histogramMode) {
         this.flotWrapper.setPlotTitle(
-            Listit.getProp(Listit.ScatterPlot.VAR_LONG_NAMES, 
-                this._removeHistPrefix(this.xAxisVariable), this.xAxisVariable) + 
+            getBundleString(bundle, 'listit.comment.id2label.' + this._removeHistPrefix(this.xAxisVariable)) + 
             ' histogram');
+        return;
     } else {
         this.flotWrapper.setPlotTitle(
-            Listit.getProp(Listit.ScatterPlot.VAR_LONG_NAMES, 
-                this.yAxisVariable, this.yAxisVariable) + 
+            getBundleString(bundle, 
+                'listit.comment.id2label.' + this._removeHistPrefix(this.yAxisVariable)) +
             ' versus ' +
-            Listit.getProp(Listit.ScatterPlot.VAR_LONG_NAMES, 
-                this.xAxisVariable, this.xAxisVariable) );
+            getBundleString(bundle, 
+                'listit.comment.id2label.' + this._removeHistPrefix(this.xAxisVariable)) );
     }
 }
