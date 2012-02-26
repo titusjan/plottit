@@ -318,10 +318,10 @@
               minwidth="250"
               selectedIndex="1">
           <tabs id="listit-details-tabs" onselect="Listit.onDetailsTabSelect(event)">
-            <tab label="Comment"/>
-            <tab label="Plot"/>
-            <tab label="Histogram"/>
-            <tab label="Treemap"/>            
+            <tab label="&listit.comment;"/>
+            <tab label="&listit.plot;"/>
+            <tab label="&listit.histogram;"/>
+            <tab label="&listit.treemap;"/>            
           </tabs>
           <tabpanels id="listit-tabpanels" flex="1">
           
@@ -393,7 +393,7 @@
                   <checkbox 
                     id="listit-scatter-axes-autoscale"
                     oncommand="Listit.scatterPlot.toggleAxesAutoScale(this)"
-                    label="Autoscale" 
+                    label="&listit.autoscale;" 
                     crop="end"
                     persist="checked"
                     checked="true" />
@@ -478,7 +478,7 @@
                   <checkbox 
                     id="listit-histogram-axes-autoscale"
                     oncommand="Listit.histogram.toggleAxesAutoScale(this)"
-                    label="Autoscale"
+                    label="&listit.autoscale;"
                     flex="1"
                     crop="end"
                     persist="checked"
@@ -500,9 +500,9 @@
         
                 <hbox align="baseline">
                   
-                  <label value="Size" class="details-label"/>
+                  <label value="&listit.size;" class="details-label"/>
                   <menulist id="listit-treemap-size-menulist" class="axis-var"
-                      label="Size" 
+                      label="listit.size." 
                       value="numChars" 
                       persist="value"
                       flex="1"
@@ -520,7 +520,7 @@
 
                   <label value="Color" class="details-label"/>
                   <menulist id="listit-treemap-color-menulist" class="axis-var"
-                      label="Color" 
+                      label="&listit.color;" 
                       value="none" 
                       persist="value"
                       flex="1"      

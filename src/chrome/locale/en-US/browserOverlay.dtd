@@ -20,7 +20,14 @@
 <!ENTITY listit.comment.age          "Age">
 <!ENTITY listit.comment.postedAfter  "Posted after">
 
-<!ENTITY listit.treemap.cushions "Cushions">
+<!ENTITY listit.comment          "Comment">
+<!ENTITY listit.plot             "Plot">
+<!ENTITY listit.histogram        "Histogram">
+<!ENTITY listit.autoscale        "Autoscale">
+<!ENTITY listit.size             "Size">
 <!ENTITY listit.size.equal       "Equal size">
+<!ENTITY listit.color            "Color">
 <!ENTITY listit.color.none       "None">
+<!ENTITY listit.treemap          "Treemap">
+<!ENTITY listit.treemap.cushions "Cushions">
 
