@@ -130,10 +130,10 @@
   
         <!-- The discussion tree -->
         <tree id="listit-comment-tree" hidecolumnpicker="false" enableColumnDrag="true" flex="1" seltype="single" flags="dont-build-content" disableKeyNavigation="true"
-              sortDirection="ascending" sortResource="treeID" persist="sortDirection sortResource">
+              sortDirection="ascending" sortResource="listit-comment-tree-column-id" persist="sortDirection sortResource">
           <treecols pickertooltiptext="Select visible columns">
           
-            <treecol id="treeID"
+            <treecol id="listit-comment-tree-column-id"
               width="60"  
               label="ID"
               persist="width ordinal hidden"
@@ -141,7 +141,7 @@
               hidden="true"/>
             <splitter class="tree-splitter"/>
                       
-            <treecol id="treeAuthor"
+            <treecol id="listit-comment-tree-column-author"
               width="140"
               label="Author"
               persist="width ordinal hidden"
@@ -151,7 +151,7 @@
               /> 
             <splitter class="tree-splitter"/>
             
-            <treecol id="treeLocalDate" class="number"
+            <treecol id="listit-comment-tree-column-local-date" class="number"
               width="130"
               label="Date   "
               persist="width ordinal hidden format"
@@ -161,7 +161,7 @@
               />
             <splitter class="tree-splitter"/>
   
-            <treecol id="treeUtcDate" class="number"
+            <treecol id="listit-comment-tree-column-utc-date" class="number"
               width="130"
               label="UTC Date   "
               persist="width ordinal hidden format"

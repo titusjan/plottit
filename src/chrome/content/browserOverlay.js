@@ -22,8 +22,8 @@ try{
     // Initialize state object
     Listit.state = new Listit.State(
         Application.prefs.get("extensions.listit.listitEnabled").value,     // listitEnabled
-        document.getElementById('treeLocalDate').getAttribute('format'),    // localDateFormat
-        document.getElementById('treeUtcDate').getAttribute('format'),      // utcDateFormat
+        document.getElementById('listit-comment-tree-column-local-date').getAttribute('format'),    // localDateFormat
+        document.getElementById('listit-comment-tree-column-utc-date').getAttribute('format'),      // utcDateFormat
         document.getElementById('listit-treemap-size-menulist').value,      // treeMapSizeProperty
         Listit.HSL_CONVERSION_FUNCTIONS[
             document.getElementById('listit-treemap-color-menulist').value] // treeMapColorVariable
@@ -397,13 +397,13 @@ Listit.setTreeColumnDateFormat = function (event) {
 
     var key;
     switch (column.id) {
-        case 'treeLocalDate':
-            Listit.logger.debug("Setting treeLocalDate column format to: " + format);
+        case 'listit-comment-tree-column-local-date':
+            Listit.logger.debug("Setting listit-comment-tree-column-local-date column format to: " + format);
             key = ['localDateFormat'];
             Listit.state.setLocalDateFormat(format);
             break;
-        case 'treeUtcDate':
-            Listit.logger.debug("Setting treeUtcDate column format to: " + format);
+        case 'listit-comment-tree-column-utc-date':
+            Listit.logger.debug("Setting listit-comment-tree-column-utc-date column format to: " + format);
             key = ['utcDateFormat'];
             Listit.state.setUtcDateFormat(format);
             break;

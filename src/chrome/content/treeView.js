@@ -282,10 +282,10 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
     var fn;
     switch (columnID)
     {
-        case 'treeID': 
+        case 'listit-comment-tree-column-id': 
             fn = function(a, b) { return Listit.compareIDs(a.id, b.id) };
             break;
-        case 'treeAuthor':
+        case 'listit-comment-tree-column-author':
             fn = function(a, b) { return Listit.compareCaseInsensitiveStrings(a.author, b.author) };
             break;
         case 'treeScore': 
@@ -324,8 +324,8 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
         case 'treeChars':
             fn = function(a, b) { return Listit.compareNumbers(a.numChars, b.numChars) };
             break;
-        case 'treeLocalDate':
-        case 'treeUtcDate': 
+        case 'listit-comment-tree-column-local-date':
+        case 'listit-comment-tree-column-utc-date': 
         case 'treeAge': 
         case 'treePostedAfter': 
             fn = function(a, b) { return Listit.compareDates(a.dateCreated, b.dateCreated) };    
@@ -360,8 +360,8 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
     var rowItem = this.visibleComments[idx];
     switch (column.id)
     {
-        case 'treeID'        : return rowItem.id;
-        case 'treeAuthor'    : return rowItem.author;
+        case 'listit-comment-tree-column-id'        : return rowItem.id;
+        case 'listit-comment-tree-column-author'    : return rowItem.author;
         case 'treeScore'     : return rowItem.score;
         case 'treeUp'        : return rowItem.ups;
         case 'treeDown'      : return rowItem.downs;
@@ -373,9 +373,9 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
         case 'treeDepth'     : return rowItem.depth;
         case 'treeChars'     : return rowItem.numChars;
         case 'treeBody'      : return rowItem.body;
-        case 'treeUtcDate'   : 
+        case 'listit-comment-tree-column-utc-date'   : 
             return Listit.dateFormat(rowItem.dateCreated, this.utcDateFormat, true);
-        case 'treeLocalDate' : 
+        case 'listit-comment-tree-column-local-date' : 
             return Listit.dateFormat(rowItem.dateCreated, this.localDateFormat, false);
         case 'treeAge' : 
             return new Listit.TimePeriod(rowItem.age).toString();
@@ -456,8 +456,8 @@ Listit.TreeView.prototype.getRowProperties = function(rowIdx, properties) {}
 Listit.TreeView.prototype.getCellProperties = function(rowIdx, column, properties) {
     switch (column.id)
     {
-        //case 'treeLocalDate': 
-        //case 'treeUtcDate': 
+        //case 'listit-comment-tree-column-local-date': 
+        //case 'listit-comment-tree-column-utc-date': 
         //case 'treeAge': 
         //case 'treePostedAfter': 
         //case 'treeDepth': 
