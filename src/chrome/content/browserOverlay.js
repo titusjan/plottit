@@ -2,7 +2,7 @@
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 // Initializes listit. Is called when the XUL window has loaded
-Listit.onLoad = function() {
+Listit.onLoad = function(event) {
 
 try{        
     Listit.initializeLoggers(true, "Debug");
@@ -60,16 +60,14 @@ try{
     Listit.treeMap = new Listit.TreeMap(tmDiv, 3, !Listit.commentTreeStructureIsFlat()); // mode depends on if comment tree is flat
     Listit.onResizeTreeMap(); // resize to fill the complete iframe
     
-    var commentTree = document.getElementById('listit-comment-tree'); // TODO: rename to commentTree
+    var commentTree = document.getElementById('listit-comment-tree');
     commentTree.view = Listit.state.getCurrentTreeView();
     
     // Add event handlers 
     treeMapIframe.addEventListener("resize", Listit.onResizeTreeMap, false);
     
-    //commentTree.addEventListener("dblclick", Listit.onTreeDoubleClick, true); doesn't work
     commentTree.addEventListener("select", Listit.onRowSelect, false);
     commentTree.addEventListener("ListitTreeViewExpandCollapseEvent", Listit.onRowExpandOrCollapse, false);
-    //commentTree.addEventListener("blur", Listit.onCommentTreeBlur, false); // TODO: think on how better?
         
     var container = gBrowser.tabContainer;
     container.addEventListener("TabOpen", Listit.onTabOpen, false);
@@ -82,7 +80,13 @@ try{
     window.addEventListener('ListitPlotClickedEvent', Listit.onScatterPlotClicked, false, true); 
     window.addEventListener('ListitTreeMapClickedEvent', Listit.onTreeMapClicked, false, true); 
 
-    Listit.logger.trace('Listit.onLoad -- end');
+    // Remove event that got us here in the first place
+    window.removeEventListener('load', Listit.onLoad, true);
+
+    Listit.logger.debug(event.originalTarget);
+    window.addEventListener('unload', Listit.onUnload, false); // capture is false (otherwise we get also subwindos unloads)
+
+    Listit.logger.debug('Listit.onLoad -- end');
 } catch (ex) {
     Listit.logger.error('Exception in Listit.onLoad;');
     Listit.logException(ex);
@@ -100,8 +104,28 @@ Listit.onFirstRun = function (extensions) {
     }
 }  
 
-Listit.onUnload = function() {
-    Listit.logger.debug("Listit.onUnload -- "); // TODO: unload event listeners
+Listit.onUnload = function(event) {
+    Listit.logger.debug("Listit.onUnload -- "); 
+
+    window.removeEventListener('unload', Listit.onUnload, false);
+    
+    window.removeEventListener('ListitTreeMapClickedEvent', Listit.onTreeMapClicked, false, true);     
+    window.removeEventListener('ListitPlotClickedEvent', Listit.onScatterPlotClicked, false, true); 
+    gBrowser.removeEventListener('DOMContentLoaded', Listit.onPageLoad, false); 
+
+    var container = gBrowser.tabContainer;
+    container.removeEventListener("TabSelect", Listit.onTabSelect, false);
+    container.removeEventListener("TabClose", Listit.onTabClose, false);
+    container.removeEventListener("TabOpen", Listit.onTabOpen, false);
+
+    var commentTree = document.getElementById('listit-comment-tree');
+    commentTree.removeEventListener("ListitTreeViewExpandCollapseEvent", Listit.onRowExpandOrCollapse, false);
+    commentTree.removeEventListener("select", Listit.onRowSelect, false);
+
+    var treeMapIframe = document.getElementById('listit-treemap-frame');
+    treeMapIframe.removeEventListener("resize", Listit.onResizeTreeMap, false);
+
+    Listit.logger.debug("Listit.onUnload done "); 
 }
 
 
@@ -994,6 +1018,8 @@ Listit.myDebugRoutine = function () {
         Listit.fbLog('Listit.debug');
         Listit.fbLog(Listit.state.summaryString());
         Listit.fbLog(Application.prefs.get("extensions.listit.listitEnabled").value);
+        
+        Listit.fbLog(window);
         
         var treeMapFrame = document.getElementById('listit-treemap-frame');
         Listit.fbLog(treeMapFrame.contentWindow);
