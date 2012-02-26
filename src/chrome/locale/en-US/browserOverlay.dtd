@@ -1,3 +1,3 @@
-<!ENTITY listit.debug.label            "Debug">
-<!ENTITY listit.helloMenu.accesskey    "l">
-<!ENTITY listit.helloItem.accesskey    "H">
+<!ENTITY listit.debug.label                "Debug">
+<!ENTITY listit.listitMenu.accesskey       "l">
+<!ENTITY listit.debugMenuItem.accesskey    "H">

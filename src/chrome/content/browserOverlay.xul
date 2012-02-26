@@ -20,12 +20,12 @@
   <script type="application/x-javascript" src="chrome://listit/content/timePeriod.js" />
   <script type="application/x-javascript" src="chrome://listit/content/utils.js" />
     
-  <stringbundleset id="listit-stringbundleset">
+  <stringbundleset id="stringbundleset">
     <stringbundle id="listit-string-bundle"
       src="chrome://listit/locale/browserOverlay.properties" />
   </stringbundleset>
 
-  <toolbarpalette id="listit-browser-toolbar-palette">
+  <toolbarpalette id="BrowserToolbarPalette">
     <toolbarbutton id="listit-toggle-active-button"
       class="toolbarbutton-1 chromeclass-toolbar-additional" 
       label="Listit"
@@ -46,19 +46,19 @@
 -->
   <menupopup id="menu_ToolsPopup">
     <menu id="listit-tools-menu" label="Listit"
-        accesskey="&listit.helloMenu.accesskey;"
+        accesskey="&listit.listitMenu.accesskey;"
         insertafter="javascriptConsole,devToolsSeparator">
       <menupopup>
         <menuitem id="listit-tools-debug-menu-item"
           label="&listit.debug.label;"
-          accesskey="&listit.helloItem.accesskey;"
+          accesskey="&listit.debugMenuItem.accesskey;"
           command="listit-command-debug"/>
       </menupopup>
     </menu>
   </menupopup>
 
   <popupset>
-    <menupopup id="menuDateFormat" onpopupshowing="Listit.onDateFormatPopupShowing(this);">
+    <menupopup id="listit-date-format-menu" onpopupshowing="Listit.onDateFormatPopupShowing(this);">
     
       <menuitem label="2005-04-29 22:04:53" 
         value="yyyy-mm-dd HH:MM:ss"
@@ -120,7 +120,7 @@
   <!--<button label="Debug" command="listit-command-sort-column"/> -->
 
   <vbox id="appcontent" >
-    <splitter id="listitContentSplitter" collapsed="false" hidden="true"/>
+    <splitter id="listit-content-splitter" collapsed="false" hidden="true"/>
     
     <deck id="listit-messages-deck" selectedIndex="0" height="200" persist="height" hidden="true">
     
@@ -157,7 +157,7 @@
               persist="width ordinal hidden format"
               format="yyyy-mm-dd HH:MM:ss"
               onclick="Listit.onClickTreeHeader(event)"
-              context="menuDateFormat"
+              context="listit-date-format-menu"
               />
             <splitter class="tree-splitter"/>
   
@@ -167,7 +167,7 @@
               persist="width ordinal hidden format"
               format="yyyy-mm-dd HH:MM:ss"
               onclick="Listit.onClickTreeHeader(event)"
-              context="menuDateFormat"
+              context="listit-date-format-menu"
               />
             <splitter class="tree-splitter"/>
   

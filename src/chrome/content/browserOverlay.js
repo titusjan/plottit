@@ -732,7 +732,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
 Listit.setListitVisible = function (visible) {
     try {
         var deck = document.getElementById('listit-messages-deck');
-        var splitter = document.getElementById('listitContentSplitter');
+        var splitter = document.getElementById('listit-content-splitter');
         deck.hidden = !visible;
         splitter.hidden = !visible;
     } catch (ex) {
