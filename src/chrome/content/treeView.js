@@ -288,25 +288,25 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
         case 'listit-comment-tree-column-author':
             fn = function(a, b) { return Listit.compareCaseInsensitiveStrings(a.author, b.author) };
             break;
-        case 'treeScore': 
+        case 'listit-comment-tree-column-score': 
             fn = function(a, b) { return Listit.compareNumbers(a.score, b.score) };
             break;
-        case 'treeUp':
+        case 'listit-comment-tree-column-up':
             fn = function(a, b) { return Listit.compareNumbers(a.ups, b.ups) };
             break;
-        case 'treeDown':
+        case 'listit-comment-tree-column-down':
             fn = function(a, b) { return Listit.compareNumbers(a.downs, b.downs) };
             break;
-        case 'treeVotes':
+        case 'listit-comment-tree-column-votes':
             fn = function(a, b) { return Listit.compareNumbers(a.votes, b.votes) };
             break;
-        case 'treeHot':
+        case 'listit-comment-tree-column-hot':
             fn = function(a, b) { return Listit.compareNumbers(a.hot, b.hot) };
             break;
-        case 'treeBest':
+        case 'listit-comment-tree-column-best':
             fn = function(a, b) { return Listit.compareNumbers(a.best, b.best) };
             break;
-        case 'treeLikes':
+        case 'listit-comment-tree-column-likes':
             fn = function(a, b) { 
                 var resLikes = Listit.compareNumbers(a.likes, b.likes) 
                 if (resLikes == 0) 
@@ -315,19 +315,19 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
                     return resLikes;
             };
             break;
-        case 'treeReplies':
+        case 'listit-comment-tree-column-replies':
             fn = function(a, b) { return Listit.compareNumbers(a.numReplies, b.numReplies) };
             break;
-        case 'treeDepth':
+        case 'listit-comment-tree-column-depth':
             fn = function(a, b) { return Listit.compareNumbers(a.depth, b.depth) };
             break;
-        case 'treeChars':
+        case 'listit-comment-tree-column-chars':
             fn = function(a, b) { return Listit.compareNumbers(a.numChars, b.numChars) };
             break;
         case 'listit-comment-tree-column-local-date':
         case 'listit-comment-tree-column-utc-date': 
-        case 'treeAge': 
-        case 'treePostedAfter': 
+        case 'listit-comment-tree-column-age': 
+        case 'listit-comment-tree-column-posted-after': 
             fn = function(a, b) { return Listit.compareDates(a.dateCreated, b.dateCreated) };    
             break;
         default: 
@@ -362,28 +362,28 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
     {
         case 'listit-comment-tree-column-id'        : return rowItem.id;
         case 'listit-comment-tree-column-author'    : return rowItem.author;
-        case 'treeScore'     : return rowItem.score;
-        case 'treeUp'        : return rowItem.ups;
-        case 'treeDown'      : return rowItem.downs;
-        case 'treeVotes'     : return rowItem.votes;
-        case 'treeHot'       : return rowItem.hot.toFixed(3);
-        case 'treeBest'      : return rowItem.best;
-        case 'treeLikes'     : return (rowItem.likes*100).toFixed(1) + '%';
-        case 'treeReplies'   : return rowItem.numReplies;
-        case 'treeDepth'     : return rowItem.depth;
-        case 'treeChars'     : return rowItem.numChars;
-        case 'treeBody'      : return rowItem.body;
+        case 'listit-comment-tree-column-score'     : return rowItem.score;
+        case 'listit-comment-tree-column-up'        : return rowItem.ups;
+        case 'listit-comment-tree-column-down'      : return rowItem.downs;
+        case 'listit-comment-tree-column-votes'     : return rowItem.votes;
+        case 'listit-comment-tree-column-hot'       : return rowItem.hot.toFixed(3);
+        case 'listit-comment-tree-column-best'      : return rowItem.best;
+        case 'listit-comment-tree-column-likes'     : return (rowItem.likes*100).toFixed(1) + '%';
+        case 'listit-comment-tree-column-replies'   : return rowItem.numReplies;
+        case 'listit-comment-tree-column-depth'     : return rowItem.depth;
+        case 'listit-comment-tree-column-chars'     : return rowItem.numChars;
+        case 'listit-comment-tree-column-body'      : return rowItem.body;
         case 'listit-comment-tree-column-utc-date'   : 
             return Listit.dateFormat(rowItem.dateCreated, this.utcDateFormat, true);
         case 'listit-comment-tree-column-local-date' : 
             return Listit.dateFormat(rowItem.dateCreated, this.localDateFormat, false);
-        case 'treeAge' : 
+        case 'listit-comment-tree-column-age' : 
             return new Listit.TimePeriod(rowItem.age).toString();
-        case 'treePostedAfter' : 
+        case 'listit-comment-tree-column-posted-after' : 
             return new Listit.TimePeriod(rowItem.postedAfter).toString();
             
-        case 'treeDebug'     : return rowItem.debug;
-        //case 'treeDebug'    : return column.width;
+        case 'listit-comment-tree-column-debug'     : return rowItem.debug;
+        //case 'listit-comment-tree-column-debug'    : return column.width;
         default : return "** Unknown id: '" + column.id + "' **";
     }
 }
@@ -458,19 +458,19 @@ Listit.TreeView.prototype.getCellProperties = function(rowIdx, column, propertie
     {
         //case 'listit-comment-tree-column-local-date': 
         //case 'listit-comment-tree-column-utc-date': 
-        //case 'treeAge': 
-        //case 'treePostedAfter': 
-        //case 'treeDepth': 
-        //case 'treeReplies': 
-        //case 'treeScore': 
-        case 'treeUp': 
-        case 'treeDown': 
-        case 'treeVotes': 
-        case 'treeLikes': 
-        //case 'treeHot': 
-        case 'treeBest': 
-        //case 'treeChars': 
-        case 'treeDebug': 
+        //case 'listit-comment-tree-column-age': 
+        //case 'listit-comment-tree-column-posted-after': 
+        //case 'listit-comment-tree-column-depth': 
+        //case 'listit-comment-tree-column-replies': 
+        //case 'listit-comment-tree-column-score': 
+        case 'listit-comment-tree-column-up': 
+        case 'listit-comment-tree-column-down': 
+        case 'listit-comment-tree-column-votes': 
+        case 'listit-comment-tree-column-likes': 
+        //case 'listit-comment-tree-column-hot': 
+        case 'listit-comment-tree-column-best': 
+        //case 'listit-comment-tree-column-chars': 
+        case 'listit-comment-tree-column-debug': 
             var atomService = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
             var prop = atomService.getAtom("fuzzed");
             properties.AppendElement(prop); 

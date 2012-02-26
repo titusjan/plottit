@@ -171,7 +171,7 @@
               />
             <splitter class="tree-splitter"/>
   
-            <treecol id="treeAge" class="number"
+            <treecol id="listit-comment-tree-column-age" class="number"
               width="100"
               label="Age   "
               persist="width ordinal hidden format"
@@ -180,7 +180,7 @@
               />
             <splitter class="tree-splitter"/>
                                 
-            <treecol id="treePostedAfter" class="number"
+            <treecol id="listit-comment-tree-column-posted-after" class="number"
               width="100"
               label="Posted after   "
               persist="width ordinal hidden format"
@@ -189,7 +189,7 @@
               />
             <splitter class="tree-splitter"/>
             
-            <treecol id="treeDepth" class="number"
+            <treecol id="listit-comment-tree-column-depth" class="number"
               width="50"  
               label="Depth   "
               persist="width ordinal hidden"
@@ -197,7 +197,7 @@
               /> 
             <splitter class="tree-splitter"/>
   
-            <treecol id="treeReplies" class="number"
+            <treecol id="listit-comment-tree-column-replies" class="number"
               width="50"
               label="Replies   "
               persist="width ordinal hidden"
@@ -205,7 +205,7 @@
               />
             <splitter class="tree-splitter"/>
             
-            <treecol id="treeBody"
+            <treecol id="listit-comment-tree-column-body"
               width="500"
               label="Comments"
               structure="tree"
@@ -217,7 +217,7 @@
               />
             <splitter class="tree-splitter"/>
             
-            <treecol id="treeScore" class="number"
+            <treecol id="listit-comment-tree-column-score" class="number"
               width="50"
               label="Score   "
               persist="width ordinal hidden"
@@ -225,7 +225,7 @@
               />
             <splitter class="tree-splitter"/>	    
             
-            <treecol id="treeUp" class="number"
+            <treecol id="listit-comment-tree-column-up" class="number"
               width="50"
               label="Up   "
               persist="width ordinal hidden"
@@ -233,7 +233,7 @@
               />
             <splitter class="tree-splitter"/>	    
             
-            <treecol id="treeDown" class="number"
+            <treecol id="listit-comment-tree-column-down" class="number"
               width="50"
               label="Down   "
               persist="width ordinal hidden"
@@ -241,7 +241,7 @@
               />
             <splitter class="tree-splitter"/>
             
-            <treecol id="treeVotes" class="number"
+            <treecol id="listit-comment-tree-column-votes" class="number"
               width="50"
               label="Votes   "
               persist="width ordinal hidden"
@@ -249,7 +249,7 @@
               /> 
             <splitter class="tree-splitter"/>
             
-            <treecol id="treeLikes" class="number"
+            <treecol id="listit-comment-tree-column-likes" class="number"
               width="50"
               label="Likes   "
               persist="width ordinal hidden"
@@ -257,7 +257,7 @@
               /> 
             <splitter class="tree-splitter"/>   
             
-            <treecol id="treeHot" class="number"
+            <treecol id="listit-comment-tree-column-hot" class="number"
               width="50"
               label="Hot   "
               persist="width ordinal hidden"
@@ -265,7 +265,7 @@
               /> 
             <splitter class="tree-splitter"/>       
             
-            <treecol id="treeBest" class="number"
+            <treecol id="listit-comment-tree-column-best" class="number"
               width="50"
               label="Best   "
               persist="width ordinal hidden"
@@ -273,7 +273,7 @@
               /> 
             <splitter class="tree-splitter"/>
   
-            <treecol id="treeChars" class="number"
+            <treecol id="listit-comment-tree-column-chars" class="number"
               width="50"  
               label="Characters   "
               persist="width ordinal hidden"
@@ -281,7 +281,7 @@
               /> 
             <splitter class="tree-splitter"/>
 
-            <treecol id="treeDebug" class="number"
+            <treecol id="listit-comment-tree-column-debug" class="number"
               width="50"
               label="Debug"
               hidden="true"

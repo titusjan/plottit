@@ -336,7 +336,7 @@ Listit.onClickTreeHeader = function(event) {
     Listit.logger.debug('newSortResource: ' + newSortResource);    
     Listit.logger.debug('newSortDirection: ' + newSortDirection);    
     
-    var structure = document.getElementById('treeBody').getAttribute('structure');
+    var structure = document.getElementById('listit-comment-tree-column-body').getAttribute('structure');
     Listit.state.getCurrentTreeView().setDiscussionSorted(column.id, newSortDirection, structure);
     Listit.ensureCurrentRowVisible();
     
@@ -382,7 +382,7 @@ Listit.onClickCommentTreeHeader = function(event) {
 
 
 Listit.commentTreeStructureIsFlat = function() {
-    var structure = document.getElementById('treeBody').getAttribute('structure');
+    var structure = document.getElementById('listit-comment-tree-column-body').getAttribute('structure');
     Listit.assert(structure == 'flat' || structure == 'tree', 
         "Invalid tree structure: " + structure);
     return structure == 'flat';
@@ -688,7 +688,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             var commentTree = document.getElementById('listit-comment-tree');
             var sortResource = commentTree.getAttribute('sortResource');
             var sortDirection = commentTree.getAttribute('sortDirection');
-            var structure = document.getElementById('treeBody').getAttribute('structure');
+            var structure = document.getElementById('listit-comment-tree-column-body').getAttribute('structure');
             
             var column = document.getElementById(sortResource);
             column.setAttribute('sortDirection', sortDirection);

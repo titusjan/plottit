@@ -12,6 +12,7 @@ Table: disable double click / tooltip
 
 Plot title/label
 Make release.
+    - Hide/remove Debug column
 
 
 Cleanup:
