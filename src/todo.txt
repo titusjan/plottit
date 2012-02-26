@@ -12,7 +12,7 @@ Removed eventhandlers in OnUnload
 Table: disable double click / tooltip
 
 Use internationalisation
-Plot title/label
+
 
 Rename to graphit/plottit.
 

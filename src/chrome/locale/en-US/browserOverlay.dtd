@@ -31,3 +31,21 @@
 <!ENTITY listit.treemap          "Treemap">
 <!ENTITY listit.treemap.cushions "Cushions">
 
+<!ENTITY listit.time.second      "second">
+<!ENTITY listit.time.seconds     "seconds">
+<!ENTITY listit.time.minute      "minute">
+<!ENTITY listit.time.minutes     "minutes">
+<!ENTITY listit.time.day         "day">
+<!ENTITY listit.time.days        "days">
+<!ENTITY listit.time.hour        "hour">
+<!ENTITY listit.time.hours       "hours">
+<!ENTITY listit.time.day         "day">
+<!ENTITY listit.time.days        "days">
+<!ENTITY listit.time.week        "week">
+<!ENTITY listit.time.weeks       "weeks">
+<!ENTITY listit.time.month       "month">
+<!ENTITY listit.time.months      "months">
+<!ENTITY listit.time.year        "year">
+<!ENTITY listit.time.years       "years">
+
+
