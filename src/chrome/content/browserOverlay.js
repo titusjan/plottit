@@ -60,16 +60,16 @@ try{
     Listit.treeMap = new Listit.TreeMap(tmDiv, 3, !Listit.commentTreeStructureIsFlat()); // mode depends on if comment tree is flat
     Listit.onResizeTreeMap(); // resize to fill the complete iframe
     
-    var scoreTree = document.getElementById('scoreTree'); // TODO: rename to commentTree
-    scoreTree.view = Listit.state.getCurrentTreeView();
+    var commentTree = document.getElementById('listit-comment-tree'); // TODO: rename to commentTree
+    commentTree.view = Listit.state.getCurrentTreeView();
     
     // Add event handlers 
     treeMapIframe.addEventListener("resize", Listit.onResizeTreeMap, false);
     
-    //scoreTree.addEventListener("dblclick", Listit.onTreeDoubleClick, true); doesn't work
-    scoreTree.addEventListener("select", Listit.onRowSelect, false);
-    scoreTree.addEventListener("ListitTreeViewExpandCollapseEvent", Listit.onRowExpandOrCollapse, false);
-    //scoreTree.addEventListener("blur", Listit.onCommentTreeBlur, false); // TODO: think on how better?
+    //commentTree.addEventListener("dblclick", Listit.onTreeDoubleClick, true); doesn't work
+    commentTree.addEventListener("select", Listit.onRowSelect, false);
+    commentTree.addEventListener("ListitTreeViewExpandCollapseEvent", Listit.onRowExpandOrCollapse, false);
+    //commentTree.addEventListener("blur", Listit.onCommentTreeBlur, false); // TODO: think on how better?
         
     var container = gBrowser.tabContainer;
     container.addEventListener("TabOpen", Listit.onTabOpen, false);
@@ -165,7 +165,7 @@ Listit.onRowSelect = function(event) {
     
     // Get current selected row (TODO: use treeview.selection object?)
     var curState = Listit.state.getCurrentBrowserState();
-    var selectedIndex = document.getElementById('scoreTree').currentIndex;  // Can be -1 when none selected
+    var selectedIndex = document.getElementById('listit-comment-tree').currentIndex;  // Can be -1 when none selected
     var selectedComment = curState.treeView.visibleComments[selectedIndex]; // Can be undefined if idx = -1
 
     Listit.fbLog("ON ROW SELECT: " + selectedComment + ', curstateSelected: ' + curState.selectedComment);
@@ -213,7 +213,7 @@ Listit.onScatterPlotClicked = function(event) {
     var discussion = Listit.state.getCurrentBrowserDiscussion();
     var selectedComment = discussion.getCommentById(commentId);
     Listit.selectAndExpandOrCollapseComment(selectedComment, null, true);
-    document.getElementById('scoreTree').focus(); // Set focus to comment tree;
+    document.getElementById('listit-comment-tree').focus(); // Set focus to comment tree;
 }
 
 
@@ -228,7 +228,7 @@ Listit.onTreeMapClicked = function(event) {
         Listit.fbLog('onTreeMapClicked, selectedNodeId: ' + Listit.treeMap.selectedNodeId);
         
         Listit.selectAndExpandOrCollapseComment(selectedComment, !Listit.treeMap.selectedNodeIsGroup, true);
-        document.getElementById('scoreTree').focus(); // Set focus to comment tree;
+        document.getElementById('listit-comment-tree').focus(); // Set focus to comment tree;
     }
 }
 
@@ -290,8 +290,8 @@ Listit.onTabSelect = function(event) {
     Listit.logger.debug("Listit.onTabSelect: " + browserID + 
         ", URL: " + browser.contentDocument.URL);
     
-    var scoreTree = document.getElementById('scoreTree');
-    scoreTree.view = Listit.state.getCurrentTreeView();    
+    var commentTree = document.getElementById('listit-comment-tree');
+    commentTree.view = Listit.state.getCurrentTreeView();    
     
     Listit.updateAllViews(Listit.state, browserID);
 }
@@ -309,10 +309,10 @@ Listit.onClickTreeHeader = function(event) {
     if (event.button != 0) return; // Only left mouse button
     
     var column = event.originalTarget;
-    var scoreTree = document.getElementById('scoreTree');
-    var oldSortResource = scoreTree.getAttribute('sortResource');
+    var commentTree = document.getElementById('listit-comment-tree');
+    var oldSortResource = commentTree.getAttribute('sortResource');
     var oldColumn = document.getElementById(oldSortResource);
-    var oldSortDirection = scoreTree.getAttribute('sortDirection');
+    var oldSortDirection = commentTree.getAttribute('sortDirection');
     /*
     var oldSortDirection = oldColumn.getAttribute('sortDirection');  // persist direction per column
     if (oldSortDirection != 'ascending' && oldSortDirection != 'descending') {
@@ -341,8 +341,8 @@ Listit.onClickTreeHeader = function(event) {
     Listit.ensureCurrentRowVisible();
     
     // Set after actual sorting for easier dection of error in during sort
-    scoreTree.setAttribute('sortDirection', newSortDirection);
-    scoreTree.setAttribute('sortResource', newSortResource);
+    commentTree.setAttribute('sortDirection', newSortDirection);
+    commentTree.setAttribute('sortResource', newSortResource);
     column.setAttribute('sortDirection', newSortDirection);
     Listit.logger.trace("Listit.onClickTreeHeader done ");
 }
@@ -367,9 +367,9 @@ Listit.onClickCommentTreeHeader = function(event) {
     curTreeView.setStructure(newStructure);
     
     // Sort and set comments in score tree (TODO new function)
-    var scoreTree = document.getElementById('scoreTree');
-    var sortResource = scoreTree.getAttribute('sortResource');
-    var sortDirection = scoreTree.getAttribute('sortDirection');
+    var commentTree = document.getElementById('listit-comment-tree');
+    var sortResource = commentTree.getAttribute('sortResource');
+    var sortDirection = commentTree.getAttribute('sortDirection');
     
     // Set treemap mode so that only parent is returned on repeat select in tree mode
     Listit.treeMap.returnParentOnRepeatSelectMode = (newStructure == 'tree');
@@ -415,9 +415,9 @@ Listit.setTreeColumnDateFormat = function (event) {
     column.setAttribute('format', format);
     
     // Force repainting of the column;
-    var treeBoxColumns = Listit.getTreeBoxObject('scoreTree').columns;
+    var treeBoxColumns = Listit.getTreeBoxObject('listit-comment-tree').columns;
     var nsiTreeColumn = treeBoxColumns.getNamedColumn(column.id);
-    Listit.getTreeBoxObject('scoreTree').invalidateColumn(nsiTreeColumn);        
+    Listit.getTreeBoxObject('listit-comment-tree').invalidateColumn(nsiTreeColumn);        
     
     Listit.logger.trace("Listit.setTreeColumnDateFormat done ");    
 }
@@ -685,9 +685,9 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             Listit.histogram.display(true);
             
             // Sort and set comments in comment tree
-            var scoreTree = document.getElementById('scoreTree');
-            var sortResource = scoreTree.getAttribute('sortResource');
-            var sortDirection = scoreTree.getAttribute('sortDirection');
+            var commentTree = document.getElementById('listit-comment-tree');
+            var sortResource = commentTree.getAttribute('sortResource');
+            var sortDirection = commentTree.getAttribute('sortDirection');
             var structure = document.getElementById('treeBody').getAttribute('structure');
             
             var column = document.getElementById(sortResource);
@@ -881,7 +881,7 @@ Listit.ensureCurrentRowVisible = function () {
             curState.treeView.collapseRowByIndex(selectedIndex);
         }
         curState.treeView.selection.select(selectedIndex);
-        Listit.getTreeBoxObject('scoreTree').ensureRowIsVisible(selectedIndex);
+        Listit.getTreeBoxObject('listit-comment-tree').ensureRowIsVisible(selectedIndex);
     }
 }
 */

@@ -6,10 +6,10 @@
     font-size:larger;
 }
 
-/*  Reduce margin between scoreTree and listit-tabbox 
+/*  Reduce margin between listit-comment-tree and listit-tabbox 
     because there is already a splitter inbetween them */
 
-#scoreTree {
+#listit-comment-tree {
    margin-right: 0px;
 }
 

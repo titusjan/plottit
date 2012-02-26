@@ -126,10 +126,10 @@
     
       <description id="listit-messages-description" value="Listit..."/>    
       
-      <hbox id="pannelContent">
+      <hbox id="listit-content-pannel">
   
         <!-- The discussion tree -->
-        <tree id="scoreTree" hidecolumnpicker="false" enableColumnDrag="true" flex="1" seltype="single" flags="dont-build-content" disableKeyNavigation="true"
+        <tree id="listit-comment-tree" hidecolumnpicker="false" enableColumnDrag="true" flex="1" seltype="single" flags="dont-build-content" disableKeyNavigation="true"
               sortDirection="ascending" sortResource="treeID" persist="sortDirection sortResource">
           <treecols pickertooltiptext="Select visible columns">
           
@@ -570,7 +570,7 @@
           </tabpanels>
         </tabbox>   
         
-      </hbox> <!-- pannelContent -->
+      </hbox> <!-- listit-content-pannel -->
     </deck>
   </vbox>    <!-- appcontent -->
 </overlay>

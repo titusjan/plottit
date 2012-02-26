@@ -3,30 +3,27 @@
 Best, controversial, page order.
 Color scales in tree map.
 Depth should start at 1
+Add page sequence column to tree (use this for second sorting variable)
 
-Bug in view comment when tab is switched
 Rename to graphit/plottit.
 
 Table: disable double click / tooltip
 
-Only update views of visible tabs
 
 Plot title/label
 Make release.
 
-Fix focus when clicking treemap;
-Unhighlight when clicking in plot
 
 Cleanup:
     remove attributes from state that are present in user pages.
 
 --- Version 1.1 ---
 
-Optionally steal focus on page load.
 Better tick marks posted-after/ integers / when autoscale is off.
 
 Load more comments.
 Main page. User page.
 Better handling of adjusting table column widths
 
-Steal focus on page load?
+Steal focus on page load? Only when configured to do so!
+
