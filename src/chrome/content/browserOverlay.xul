@@ -20,12 +20,12 @@
   <script type="application/x-javascript" src="chrome://listit/content/timePeriod.js" />
   <script type="application/x-javascript" src="chrome://listit/content/utils.js" />
     
-  <stringbundleset id="stringbundleset">
+  <stringbundleset id="listit-stringbundleset">
     <stringbundle id="listit-string-bundle"
       src="chrome://listit/locale/browserOverlay.properties" />
   </stringbundleset>
 
-  <toolbarpalette id="BrowserToolbarPalette">
+  <toolbarpalette id="listit-browser-toolbar-palette">
     <toolbarbutton id="listit-toggle-active-button"
       class="toolbarbutton-1 chromeclass-toolbar-additional" 
       label="Listit"
@@ -45,12 +45,12 @@
     First reddit comment: Monday 2005-12-12 05:46:44 (UTC)
 -->
   <menupopup id="menu_ToolsPopup">
-    <menu id="xs-hw-hello-menu" label="Listit"
+    <menu id="listit-tools-menu" label="Listit"
         accesskey="&listit.helloMenu.accesskey;"
         insertafter="javascriptConsole,devToolsSeparator">
       <menupopup>
-        <menuitem id="listit-hello-menu-item"
-          label="&listit.hello.label;"
+        <menuitem id="listit-tools-debug-menu-item"
+          label="&listit.debug.label;"
           accesskey="&listit.helloItem.accesskey;"
           command="listit-command-debug"/>
       </menupopup>
