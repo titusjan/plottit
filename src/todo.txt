@@ -1,18 +1,32 @@
 --- Version 1.0 ---
 
-Best, controversial, page order.
-Color scales in tree map.
-Depth should start at 1
 Add page sequence column to tree (use this for second sorting variable)
+Best, controversial, page order.
+Depth should start at 1
 
-Rename to graphit/plottit.
+Treemap: sorting parent before children
+Adjust Color scales in tree map.
+
+Removed eventhandlers in OnUnload
 
 Table: disable double click / tooltip
 
-
+Use internationalisation
 Plot title/label
+
+Rename to graphit/plottit.
+
+Performance best practices:
+    - Use modules for jQuery?
+    - on plot hover?
+    - Use profiler
+    
 Make release.
+    - Remove todos / code review
     - Hide/remove Debug column
+    - Test windows / linux
+    - No Jar files?
+    
 
 
 Cleanup:

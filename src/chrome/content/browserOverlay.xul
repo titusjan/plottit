@@ -143,7 +143,7 @@
           
             <treecol id="listit-comment-tree-column-id"
               width="60"  
-              label="ID"
+              label="&listit.comment.id;"
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
               hidden="true"/>
@@ -151,7 +151,7 @@
                       
             <treecol id="listit-comment-tree-column-author"
               width="140"
-              label="Author"
+              label="&listit.comment.author;"
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
               minwidth="40"
@@ -161,7 +161,7 @@
             
             <treecol id="listit-comment-tree-column-local-date" class="number"
               width="130"
-              label="Date   "
+              label="&listit.comment.localDate;   "
               persist="width ordinal hidden format"
               format="yyyy-mm-dd HH:MM:ss"
               onclick="Listit.onClickTreeHeader(event)"
@@ -171,7 +171,7 @@
   
             <treecol id="listit-comment-tree-column-utc-date" class="number"
               width="130"
-              label="UTC Date   "
+              label="&listit.comment.utcDate;   "
               persist="width ordinal hidden format"
               format="yyyy-mm-dd HH:MM:ss"
               onclick="Listit.onClickTreeHeader(event)"
@@ -181,7 +181,7 @@
   
             <treecol id="listit-comment-tree-column-age" class="number"
               width="100"
-              label="Age   "
+              label="&listit.comment.age;   "
               persist="width ordinal hidden format"
               format="HH:MM:ss"
               onclick="Listit.onClickTreeHeader(event)"
@@ -190,7 +190,7 @@
                                 
             <treecol id="listit-comment-tree-column-posted-after" class="number"
               width="100"
-              label="Posted after   "
+              label="&listit.comment.postedAfter;   "
               persist="width ordinal hidden format"
               format="HH:MM:ss"
               onclick="Listit.onClickTreeHeader(event)"
@@ -199,7 +199,7 @@
             
             <treecol id="listit-comment-tree-column-depth" class="number"
               width="50"  
-              label="Depth   "
+              label="&listit.comment.depth;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
               /> 
@@ -207,7 +207,7 @@
   
             <treecol id="listit-comment-tree-column-replies" class="number"
               width="50"
-              label="Replies   "
+              label="&listit.comment.replies;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
               />
@@ -227,7 +227,7 @@
             
             <treecol id="listit-comment-tree-column-hot" class="number"
               width="50"
-              label="Hot   "
+              label="&listit.comment.hot;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
               /> 
@@ -235,7 +235,7 @@
             
             <treecol id="listit-comment-tree-column-score" class="number"
               width="50"
-              label="Score   "
+              label="&listit.comment.score;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
               />
@@ -243,7 +243,7 @@
             
             <treecol id="listit-comment-tree-column-up" class="number"
               width="50"
-              label="Up   "
+              label="&listit.comment.up;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
               />
@@ -251,7 +251,7 @@
             
             <treecol id="listit-comment-tree-column-down" class="number"
               width="50"
-              label="Down   "
+              label="&listit.comment.down;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
               />
@@ -259,7 +259,7 @@
             
             <treecol id="listit-comment-tree-column-votes" class="number"
               width="50"
-              label="Votes   "
+              label="&listit.comment.votes;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
               /> 
@@ -267,7 +267,7 @@
             
             <treecol id="listit-comment-tree-column-likes" class="number"
               width="50"
-              label="Likes   "
+              label="&listit.comment.likes;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
               /> 
@@ -276,7 +276,7 @@
             
             <treecol id="listit-comment-tree-column-best" class="number"
               width="50"
-              label="Best   "
+              label="&listit.comment.best;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
               /> 
@@ -284,12 +284,12 @@
   
             <treecol id="listit-comment-tree-column-chars" class="number"
               width="50"  
-              label="Characters   "
+              label="&listit.comment.characters;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
               /> 
             <splitter class="tree-splitter"/>
-
+            <!--
             <treecol id="listit-comment-tree-column-debug" class="number"
               width="50"
               label="Debug"
@@ -298,7 +298,7 @@
               onclick="Listit.onClickTreeHeader(event)"
               /> 
             <splitter class="tree-splitter"/>
-            
+            -->
           </treecols>
   
           <treechildren>
@@ -352,18 +352,18 @@
                       crop="end"                       
                       oncommand="Listit.scatterPlot.setAxisVariable('x', this);">                  
                     <menupopup id="listit-scatter-x-axis-menupopup">
-                      <menuitem value="depth"                 label="Depth"/>
-                      <menuitem value="score"                 label="Score"/>
-                      <menuitem value="ups"                   label="Up"/>
-                      <menuitem value="downs"                 label="Down"/>
-                      <menuitem value="votes"                 label="Votes"/>
-                      <menuitem value="likesPerc"             label="Likes"/>
-                      <menuitem value="hot"                   label="Hot"/>
-                      <menuitem value="numChars"              label="Characters"/>
-                      <menuitem value="numReplies"            label="Replies"/>
-                      <menuitem value="dateCreatedLocalValue" label="Date"/>
-                      <menuitem value="dateCreatedValue"      label="UTC Date"/>
-                      <menuitem value="postedAfter"           label="Posted after"/>
+                      <menuitem value="depth"                 label="&listit.comment.depth;"/>
+                      <menuitem value="score"                 label="&listit.comment.score;"/>
+                      <menuitem value="ups"                   label="&listit.comment.up;"/>
+                      <menuitem value="downs"                 label="&listit.comment.down;"/>
+                      <menuitem value="votes"                 label="&listit.comment.votes;"/>
+                      <menuitem value="likesPerc"             label="&listit.comment.likes;"/>
+                      <menuitem value="hot"                   label="&listit.comment.hot;"/>
+                      <menuitem value="numChars"              label="&listit.comment.characters;"/>
+                      <menuitem value="numReplies"            label="&listit.comment.replies;"/>
+                      <menuitem value="dateCreatedLocalValue" label="&listit.comment.localDate;"/>
+                      <menuitem value="dateCreatedValue"      label="&listit.comment.utcDate;"/>
+                      <menuitem value="postedAfter"           label="&listit.comment.postedAfter;"/>
                     </menupopup>
                   </menulist>
                   
@@ -377,15 +377,15 @@
                       crop="end"                       
                       oncommand="Listit.scatterPlot.setAxisVariable('y', this);">                  
                     <menupopup id="listit-scatter-y-axis-menupopup">
-                      <menuitem value="depth"      label="Depth"/>
-                      <menuitem value="score"      label="Score"/>
-                      <menuitem value="ups"        label="Up"/>
-                      <menuitem value="downs"      label="Down"/>
-                      <menuitem value="votes"      label="Votes"/>
-                      <menuitem value="likesPerc"  label="Likes"/>
-                      <menuitem value="hot"        label="Hot"/>
-                      <menuitem value="numChars"   label="Characters"/>
-                      <menuitem value="numReplies" label="Replies"/>
+                      <menuitem value="depth"      label="&listit.comment.depth;"/>
+                      <menuitem value="score"      label="&listit.comment.score;"/>
+                      <menuitem value="ups"        label="&listit.comment.up;"/>
+                      <menuitem value="downs"      label="&listit.comment.down;"/>
+                      <menuitem value="votes"      label="&listit.comment.votes;"/>
+                      <menuitem value="likesPerc"  label="&listit.comment.likes;"/>
+                      <menuitem value="hot"        label="&listit.comment.hot;"/>
+                      <menuitem value="numChars"   label="&listit.comment.characters;"/>
+                      <menuitem value="numReplies" label="&listit.comment.replies;"/>
                     </menupopup>
                   </menulist>
         
@@ -425,18 +425,18 @@
                       crop="end"                       
                       oncommand="Listit.histogram.setAxisVariable('x', this);">                  
                     <menupopup id="listit-histogram-x-axis-menupopup">
-                      <menuitem value="hist_depth"                 label="Depth"/>
-                      <menuitem value="hist_score"                 label="Score"/>
-                      <menuitem value="hist_ups"                   label="Up"/>
-                      <menuitem value="hist_downs"                 label="Down"/>
-                      <menuitem value="hist_votes"                 label="Votes"/>
-                      <menuitem value="hist_likesPerc"             label="Likes"/>
-                      <menuitem value="hist_hot"                   label="Hot"/>
-                      <menuitem value="hist_numChars"              label="Characters"/>
-                      <menuitem value="hist_numReplies"            label="Replies"/>
-                      <menuitem value="hist_dateCreatedLocalValue" label="Date"/>
-                      <menuitem value="hist_dateCreatedValue"      label="UTC Date"/>
-                      <menuitem value="hist_postedAfter"           label="Posted after"/>
+                      <menuitem value="hist_depth"                 label="&listit.comment.depth;"/>
+                      <menuitem value="hist_score"                 label="&listit.comment.score;"/>
+                      <menuitem value="hist_ups"                   label="&listit.comment.up;"/>
+                      <menuitem value="hist_downs"                 label="&listit.comment.down;"/>
+                      <menuitem value="hist_votes"                 label="&listit.comment.votes;"/>
+                      <menuitem value="hist_likesPerc"             label="&listit.comment.likes;"/>
+                      <menuitem value="hist_hot"                   label="&listit.comment.hot;"/>
+                      <menuitem value="hist_numChars"              label="&listit.comment.characters;"/>
+                      <menuitem value="hist_numReplies"            label="&listit.comment.replies;"/>
+                      <menuitem value="hist_dateCreatedLocalValue" label="&listit.comment.localDate;"/>
+                      <menuitem value="hist_dateCreatedValue"      label="&listit.comment.utcDate;"/>
+                      <menuitem value="hist_postedAfter"           label="&listit.comment.postedAfter;"/>
                     </menupopup>
                   </menulist>
         
@@ -509,12 +509,12 @@
                       crop="end"                      
                       oncommand="Listit.setTreeMapSizeProperty(this);">
                     <menupopup id="listit-bin-width-menupopup">
-                      <menuitem value="score"    label="Score"/>
-                      <menuitem value="ups"      label="Up"/>
-                      <menuitem value="downs"    label="Down"/>
-                      <menuitem value="votes"    label="Votes"/>
-                      <menuitem value="numChars" label="Characters"/>
-                      <menuitem value="one"      label="Same size"/>
+                      <menuitem value="score"    label="&listit.comment.score;"/>
+                      <menuitem value="ups"      label="&listit.comment.up;"/>
+                      <menuitem value="downs"    label="&listit.comment.down;"/>
+                      <menuitem value="votes"    label="&listit.comment.votes;"/>
+                      <menuitem value="numChars" label="&listit.comment.characters;"/>
+                      <menuitem value="one"      label="&listit.size.equal;"/>
                     </menupopup>
                   </menulist>
 
@@ -527,14 +527,14 @@
                       crop="end"
                       oncommand="Listit.setTreeMapColorProperty(this);">
                     <menupopup id="listit-bin-width-menupopup">
-                      <menuitem value="none"       label="No color"/>
-                      <menuitem value="depth"      label="Depth"/>
-                      <menuitem value="numReplies" label="Replies"/>
-                      <menuitem value="score"      label="Score"/><!--
-                      <menuitem value="ups"        label="Up"/>
-                      <menuitem value="downs"      label="Down"/>
-                      <menuitem value="votes"      label="Votes"/>
-                      <menuitem value="numChars"   label="Characters"/>-->
+                      <menuitem value="none"       label="&listit.color.none;"/>
+                      <menuitem value="depth"      label="&listit.comment.depth;"/>
+                      <menuitem value="numReplies" label="&listit.comment.replies;"/>
+                      <menuitem value="score"      label="&listit.comment.score;"/><!--
+                      <menuitem value="ups"        label="&listit.comment.up;"/>
+                      <menuitem value="downs"      label="&listit.comment.down;"/>
+                      <menuitem value="votes"      label="&listit.comment.votes;"/>
+                      <menuitem value="numChars"   label="&listit.comment.characters;"/>-->
                     </menupopup>
                   </menulist>
                   
@@ -542,7 +542,7 @@
                   <checkbox 
                     id="listit-treemap-cushions-checkbox"
                     oncommand="Listit.renderTreeMap(0);"
-                    label="Cushions" 
+                    label="&listit.treemap.cushions;"
                     crop="end"
                     flex="1"
                     persist="checked" />
