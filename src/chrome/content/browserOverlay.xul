@@ -129,8 +129,16 @@
       <hbox id="listit-content-pannel">
   
         <!-- The discussion tree -->
-        <tree id="listit-comment-tree" hidecolumnpicker="false" enableColumnDrag="true" flex="1" seltype="single" flags="dont-build-content" disableKeyNavigation="true"
-              sortDirection="ascending" sortResource="listit-comment-tree-column-id" persist="sortDirection sortResource">
+        <tree id="listit-comment-tree" 
+              hidecolumnpicker="false" 
+              enableColumnDrag="true" 
+              flex="1" 
+              seltype="single" 
+              flags="dont-build-content" 
+              disableKeyNavigation="true"
+              sortDirection="ascending" 
+              sortResource="listit-comment-tree-column-id" 
+              persist="sortDirection sortResource">
           <treecols pickertooltiptext="Select visible columns">
           
             <treecol id="listit-comment-tree-column-id"
@@ -217,6 +225,14 @@
               />
             <splitter class="tree-splitter"/>
             
+            <treecol id="listit-comment-tree-column-hot" class="number"
+              width="50"
+              label="Hot   "
+              persist="width ordinal hidden"
+              onclick="Listit.onClickTreeHeader(event)"
+              /> 
+            <splitter class="tree-splitter"/>                
+            
             <treecol id="listit-comment-tree-column-score" class="number"
               width="50"
               label="Score   "
@@ -256,14 +272,7 @@
               onclick="Listit.onClickTreeHeader(event)"
               /> 
             <splitter class="tree-splitter"/>   
-            
-            <treecol id="listit-comment-tree-column-hot" class="number"
-              width="50"
-              label="Hot   "
-              persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
-              /> 
-            <splitter class="tree-splitter"/>       
+   
             
             <treecol id="listit-comment-tree-column-best" class="number"
               width="50"
@@ -578,7 +587,7 @@
 <!--
 
 TODO: 
-     hot, best, controversial, words?, sigma_score, sigma_up, etc 
+     controversial, words, sequence_counter 
 
 Notes:
 -   An element must have an ID if it uses persistent attribrutes!
