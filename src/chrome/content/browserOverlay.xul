@@ -299,7 +299,7 @@
         </tree>
   
 
-        <splitter id="listitPannelSplitter" collapse="after" resizeafter="closest"/>
+        <splitter id="listit-pannel-splitter" collapse="after" resizeafter="closest"/>
   
         <!-- tabs with plots and stuff -->
         
@@ -318,7 +318,7 @@
           
             <!-- Post details -->
             <tabpanel id="listit-comment-tab">
-              <iframe id="commentHtmlFrame" 
+              <iframe id="listit-comment-html-iframe" 
                 flex="1"
                 src="chrome://listit/content/detailsframe.html"/>
             </tabpanel>
@@ -327,7 +327,7 @@
             <tabpanel id="listit-plot-tab">
 
               <vbox flex="1">
-                <iframe id="plotFrame" 
+                <iframe id="listit-scatter-plot-iframe" 
                   flex="1"
                   src="chrome://listit/content/plotframe.html"/>
         
@@ -397,10 +397,10 @@
             
             
             <!-- Histogram -->
-            <tabpanel id="listit-histo-tab">
+            <tabpanel id="listit-histogram-tab">
 
               <vbox flex="1">
-                <iframe id="histoFrame" 
+                <iframe id="listit-histogram-iframe" 
                   flex="1"
                   src="chrome://listit/content/plotframe.html"/>
         
@@ -408,14 +408,14 @@
                
                   <!-- Histogram X-Axis -->
                   <label value="X" class="details-label"/>
-                  <menulist id="listit-histo-x-axis-menulist" class="axis-var"
+                  <menulist id="listit-histogram-x-axis-menulist" class="axis-var"
                       label="X-Axis" 
                       value="score"
                       persist="value"
                       flex="1"
                       crop="end"                       
                       oncommand="Listit.histogram.setAxisVariable('x', this);">                  
-                    <menupopup id="listit-histo-x-axis-menupopup">
+                    <menupopup id="listit-histogram-x-axis-menupopup">
                       <menuitem value="hist_depth"                 label="Depth"/>
                       <menuitem value="hist_score"                 label="Score"/>
                       <menuitem value="hist_ups"                   label="Up"/>
@@ -467,7 +467,7 @@
                   
                   <!-- Autoscale checkbox -->
                   <checkbox 
-                    id="listit-histo-axes-autoscale"
+                    id="listit-histogram-axes-autoscale"
                     oncommand="Listit.histogram.toggleAxesAutoScale(this)"
                     label="Autoscale"
                     flex="1"

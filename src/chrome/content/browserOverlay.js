@@ -6,8 +6,8 @@ Listit.onLoad = function() {
 
 try{        
     Listit.initializeLoggers(true, "Debug");
-    document.getElementById('plotFrame').contentWindow.Listit.logger = Listit.logger;
-    document.getElementById('plotFrame').contentWindow.Listit.fbLog  = Listit.fbLog;
+    document.getElementById('listit-scatter-plot-iframe').contentWindow.Listit.logger = Listit.logger;
+    document.getElementById('listit-scatter-plot-iframe').contentWindow.Listit.fbLog  = Listit.fbLog;
 
     Listit.logger.warn(' ---------------- Listit loaded ----------------');
     Listit.logger.trace('Listit.onLoad -- begin');
@@ -40,16 +40,16 @@ try{
         Listit.state.setCurrentBrowser(browser); // we need to have a current browser
     }
 
-    Listit.scatterPlot = new Listit.ScatterPlot('plotFrame', 
+    Listit.scatterPlot = new Listit.ScatterPlot('listit-scatter-plot-iframe', 
         Listit.getCheckboxValue(document.getElementById('listit-scatter-axes-autoscale')), 
         document.getElementById('listit-scatter-x-axis-menulist').getAttribute('value'), 
         document.getElementById('listit-scatter-y-axis-menulist').getAttribute('value'), 
         parseFloat(document.getElementById('listit-bin-width-menulist').value),
         0);
 
-    Listit.histogram = new Listit.ScatterPlot('histoFrame', 
-        Listit.getCheckboxValue(document.getElementById('listit-histo-axes-autoscale')), 
-        document.getElementById('listit-histo-x-axis-menulist').getAttribute('value'), 
+    Listit.histogram = new Listit.ScatterPlot('listit-histogram-iframe', 
+        Listit.getCheckboxValue(document.getElementById('listit-histogram-axes-autoscale')), 
+        document.getElementById('listit-histogram-x-axis-menulist').getAttribute('value'), 
         '',
         parseFloat(document.getElementById('listit-bin-width-menulist').value));
         
@@ -623,7 +623,7 @@ Listit.addJsonToRedditUrl = function(url) {
 
 
 Listit.setDetailsFrameHtml = function(html) {
-    var detailsFrame = document.getElementById('commentHtmlFrame');
+    var detailsFrame = document.getElementById('listit-comment-html-iframe');
     detailsFrame.contentDocument.body.innerHTML = html;
 }
 
@@ -710,7 +710,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
                 case 'listit-plot-tab': 
                     Listit.scatterPlot.setDiscussion(discussion);
                     break;
-                case 'listit-histo-tab': 
+                case 'listit-histogram-tab': 
                     Listit.histogram.setDiscussion(discussion);
                     break;
                 case 'listit-treemap-tab': 
@@ -1008,7 +1008,7 @@ Listit.myDebugRoutine = function () {
         Listit.logger.info(Listit.state.summaryString() );
         Listit.fbLog(Listit.state.summaryString() );
         
-        var details = document.getElementById('commentHtmlFrame');
+        var details = document.getElementById('listit-comment-html-iframe');
         Listit.fbLog(details);
         Listit.logger.debug(details.textContent);
         details.contentDocument.body.innerHTML = "Pepijn Kenter <i>rules</i>"
