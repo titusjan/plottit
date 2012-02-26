@@ -361,7 +361,10 @@ Listit.onClickCommentTreeHeader = function(event) {
     Listit.logger.debug('newStructure: ' + newStructure);    
 
     column.setAttribute('structure', newStructure);
-    column.setAttribute('label', 'Comments ' + ((newStructure == 'tree') ? 'tree' : 'list'));
+    var headerLabel = (newStructure == 'tree') ?
+        document.getElementById('listit-string-bundle').getString('listit.comments.asTree') :
+        document.getElementById('listit-string-bundle').getString('listit.comments.asList');
+    column.setAttribute('label', headerLabel);
     
     var curTreeView = Listit.state.getCurrentTreeView();
     curTreeView.setStructure(newStructure);
@@ -909,7 +912,9 @@ Listit.setListitActive = function (listitEnabled) {
     
     var toolbarButton = document.getElementById('listit-toggle-active-button');
     if (toolbarButton) {
-        toolbarButton.setAttribute('tooltiptext', listitEnabled ? 'Disable Listit': 'Enable Listit');
+        toolbarButton.setAttribute('tooltiptext', listitEnabled ? 
+            document.getElementById('listit-string-bundle').getString('listit.disableProgram') :
+            document.getElementById('listit-string-bundle').getString('listit.enableProgram'));
     }
 }
 
@@ -982,7 +987,7 @@ Listit.myDebugRoutine = function () {
 
     
     let stringBundle = document.getElementById('listit-string-bundle');
-    let message = stringBundle.getString('listit.greeting.label');
+    let message = stringBundle.getString('listit.greeting');
     
     try {
         Listit.logger.debug('Listit.debug');
