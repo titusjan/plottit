@@ -148,9 +148,6 @@ Listit.onTreeDoubleClick = function(event) {
 Listit.selectAndExpandOrCollapseComment = function(selectedComment, expand, scrollRedditPage) {
     Listit.logger.trace("Listit.selectAndExpandOrCollapseComment -- ");
 
-    Listit.fbLog('Listit.commentTreeStructureIsFlat: ' + Listit.commentTreeStructureIsFlat());
-    //expand = expand || Listit.commentTreeStructureIsFlat(); // Always expand in flat mode
-    Listit.fbLog('Listit.selectAndExpandOrCollapseComment: ' + selectedComment + ', expand: ' + expand);
     var curState = Listit.state.getCurrentBrowserState();
     var makeVisible = true; // ALWAYS MAKE COMMENT VISIBLE BY EXPANDING PATH TO IT
     curState.treeView.expandOrCollapseComment(selectedComment, expand, makeVisible); // Must be before selection
@@ -166,9 +163,7 @@ try{
     var curState = Listit.state.getCurrentBrowserState();
     var selectedComment = curState.selectedComment;
     var selectedCommentId = selectedComment ? selectedComment.id : null;
-    Listit.fbLog('Listit.commentTreeStructureIsFlat: ' + Listit.commentTreeStructureIsFlat());
     var expand =  Listit.commentTreeStructureIsFlat() || (selectedComment ? (selectedComment.isOpen) : null);
-    Listit.fbLog('updateViewsForCurrentSelection ' + selectedCommentId + ', expand: ' + expand);
     
     curState.treeView.selectComment(selectedComment);
     Listit.setDetailsFrameHtml(selectedComment ? selectedComment.bodyHtml : '');
@@ -176,8 +171,8 @@ try{
     Listit.treeMap.highlight(selectedCommentId, expand);
     Listit.selectCommentInRedditPage(selectedComment, curState.previousSelectedComment, scrollRedditPage);
     
-    Listit.fbLog('----------------------------------------------------');
-    Listit.fbLog(' ');
+    //Listit.fbLog('----------------------------------------------------');
+    //Listit.fbLog(' ');
 } catch (ex) {
     Listit.logger.error('Exception in Listit.updateViewsForCurrentSelection;');
     Listit.logException(ex);
@@ -193,11 +188,8 @@ Listit.onRowSelect = function(event) {
     var curState = Listit.state.getCurrentBrowserState();
     var selectedIndex = document.getElementById('listit-comment-tree').currentIndex;  // Can be -1 when none selected
     var selectedComment = curState.treeView.visibleComments[selectedIndex]; // Can be undefined if idx = -1
-
-    Listit.fbLog("ON ROW SELECT: " + selectedComment + ', curstateSelected: ' + curState.selectedComment);
     
     if (selectedComment == curState.selectedComment) {
-        Listit.fbLog("comment already selected.");
         return; // comment already selected.
     }
     
@@ -735,7 +727,6 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             var tabPanels = document.getElementById('listit-tabpanels');
             var selectedPanelId = tabPanels.selectedPanel.id;
 
-            Listit.fbLog("updateAllViews: " + selectedPanelId);
             switch (selectedPanelId) // only update the visible tab
             {
                 case 'listit-comment-tab': 

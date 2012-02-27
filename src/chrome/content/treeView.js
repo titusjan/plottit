@@ -121,10 +121,7 @@ Listit.TreeView.prototype.expandPath = function(selectedComment) {
 
 Listit.TreeView.prototype.selectComment = function(selectedComment) {
 
-    Listit.fbLog('Listit.TreeView.selectComment: ' + selectedComment);
-    
     if (selectedComment == null) {
-        Listit.fbLog('clearSelection() called');
         // First remove the caret from the tree so that when clearSelection triggers the onSelect
         // event we can have the proper selected index.
         this.getTreeDomElement().currentIndex = -1; 
@@ -300,6 +297,9 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
         case 'listit-comment-tree-column-votes':
             fn = function(a, b) { return Listit.compareNumbers(a.votes, b.votes) };
             break;
+        case 'listit-comment-tree-column-controversial':
+            fn = function(a, b) { return Listit.compareNumbers(a.controversial, b.controversial) };
+            break;
         case 'listit-comment-tree-column-hot':
             fn = function(a, b) { return Listit.compareNumbers(a.hot, b.hot) };
             break;
@@ -360,20 +360,21 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
     var rowItem = this.visibleComments[idx];
     switch (column.id)
     {
-        case 'listit-comment-tree-column-id'        : return rowItem.id;
-        case 'listit-comment-tree-column-author'    : return rowItem.author;
-        case 'listit-comment-tree-column-score'     : return rowItem.score;
-        case 'listit-comment-tree-column-up'        : return rowItem.ups;
-        case 'listit-comment-tree-column-down'      : return rowItem.downs;
-        case 'listit-comment-tree-column-votes'     : return rowItem.votes;
-        case 'listit-comment-tree-column-hot'       : return rowItem.hot.toFixed(3);
-        case 'listit-comment-tree-column-best'      : return rowItem.best;
-        case 'listit-comment-tree-column-likes'     : return (rowItem.likes*100).toFixed(1) + '%';
-        case 'listit-comment-tree-column-replies'   : return rowItem.numReplies;
-        case 'listit-comment-tree-column-depth'     : return rowItem.depth;
-        case 'listit-comment-tree-column-chars'     : return rowItem.numChars;
-        case 'listit-comment-tree-column-body'      : return rowItem.body;
-        case 'listit-comment-tree-column-utc-date'   : 
+        case 'listit-comment-tree-column-id'            : return rowItem.id;
+        case 'listit-comment-tree-column-author'        : return rowItem.author;
+        case 'listit-comment-tree-column-score'         : return rowItem.score;
+        case 'listit-comment-tree-column-up'            : return rowItem.ups;
+        case 'listit-comment-tree-column-down'          : return rowItem.downs;
+        case 'listit-comment-tree-column-votes'         : return rowItem.votes;
+        case 'listit-comment-tree-column-hot'           : return rowItem.hot.toFixed(3);
+        case 'listit-comment-tree-column-controversial' : return rowItem.controversial.toFixed(3);
+        case 'listit-comment-tree-column-best'          : return rowItem.best;
+        case 'listit-comment-tree-column-likes'         : return (rowItem.likes*100).toFixed(1) + '%';
+        case 'listit-comment-tree-column-replies'       : return rowItem.numReplies;
+        case 'listit-comment-tree-column-depth'         : return rowItem.depth;
+        case 'listit-comment-tree-column-chars'         : return rowItem.numChars;
+        case 'listit-comment-tree-column-body'          : return rowItem.body;
+        case 'listit-comment-tree-column-utc-date' : 
             return Listit.dateFormat(rowItem.dateCreated, this.utcDateFormat, true);
         case 'listit-comment-tree-column-local-date' : 
             return Listit.dateFormat(rowItem.dateCreated, this.localDateFormat, false);

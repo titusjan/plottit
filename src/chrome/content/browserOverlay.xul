@@ -272,7 +272,14 @@
               onclick="Listit.onClickTreeHeader(event)"
               /> 
             <splitter class="tree-splitter"/>   
-   
+            
+            <treecol id="listit-comment-tree-column-controversial" class="number"
+              width="50"
+              label="&listit.comment.controversial;   "
+              persist="width ordinal hidden"
+              onclick="Listit.onClickTreeHeader(event)"
+              /> 
+            <splitter class="tree-splitter"/>   
             
             <treecol id="listit-comment-tree-column-best" class="number"
               width="50"
@@ -358,6 +365,7 @@
                       <menuitem value="downs"                 label="&listit.comment.down;"/>
                       <menuitem value="votes"                 label="&listit.comment.votes;"/>
                       <menuitem value="likesPerc"             label="&listit.comment.likes;"/>
+                      <menuitem value="controversial"         label="&listit.comment.controversial;"/>
                       <menuitem value="hot"                   label="&listit.comment.hot;"/>
                       <menuitem value="numChars"              label="&listit.comment.characters;"/>
                       <menuitem value="numReplies"            label="&listit.comment.replies;"/>
@@ -377,15 +385,16 @@
                       crop="end"                       
                       oncommand="Listit.scatterPlot.setAxisVariable('y', this);">                  
                     <menupopup id="listit-scatter-y-axis-menupopup">
-                      <menuitem value="depth"      label="&listit.comment.depth;"/>
-                      <menuitem value="score"      label="&listit.comment.score;"/>
-                      <menuitem value="ups"        label="&listit.comment.up;"/>
-                      <menuitem value="downs"      label="&listit.comment.down;"/>
-                      <menuitem value="votes"      label="&listit.comment.votes;"/>
-                      <menuitem value="likesPerc"  label="&listit.comment.likes;"/>
-                      <menuitem value="hot"        label="&listit.comment.hot;"/>
-                      <menuitem value="numChars"   label="&listit.comment.characters;"/>
-                      <menuitem value="numReplies" label="&listit.comment.replies;"/>
+                      <menuitem value="depth"                 label="&listit.comment.depth;"/>
+                      <menuitem value="score"                 label="&listit.comment.score;"/>
+                      <menuitem value="ups"                   label="&listit.comment.up;"/>
+                      <menuitem value="downs"                 label="&listit.comment.down;"/>
+                      <menuitem value="votes"                 label="&listit.comment.votes;"/>
+                      <menuitem value="likesPerc"             label="&listit.comment.likes;"/>
+                      <menuitem value="controversial"         label="&listit.comment.controversial;"/>
+                      <menuitem value="hot"                   label="&listit.comment.hot;"/>
+                      <menuitem value="numChars"              label="&listit.comment.characters;"/>
+                      <menuitem value="numReplies"            label="&listit.comment.replies;"/>
                     </menupopup>
                   </menulist>
         
@@ -431,6 +440,7 @@
                       <menuitem value="hist_downs"                 label="&listit.comment.down;"/>
                       <menuitem value="hist_votes"                 label="&listit.comment.votes;"/>
                       <menuitem value="hist_likesPerc"             label="&listit.comment.likes;"/>
+                      <menuitem value="hist_controversial"         label="&listit.comment.controversial;"/>
                       <menuitem value="hist_hot"                   label="&listit.comment.hot;"/>
                       <menuitem value="hist_numChars"              label="&listit.comment.characters;"/>
                       <menuitem value="hist_numReplies"            label="&listit.comment.replies;"/>

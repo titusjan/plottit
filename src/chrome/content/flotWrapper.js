@@ -165,7 +165,7 @@ Listit.FlotWrapper.prototype._mergeOptions = function (sourceOptions, targetOpti
 }
 
 Listit.FlotWrapper.prototype.setAxisOptions = function (axisStr, varOptions) {
-    Listit.logger.trace('Listit.FlotWrapper.setAxisOptions --');
+    Listit.logger.trace('Listit.FlotWrapper.setAxisOptions -- ');
     this.assertAxisStringIsValid(axisStr);
     this._axisOptionCache[axisStr].panRange = varOptions.panRange;
     this._axisOptionCache[axisStr].zoomRange = varOptions.zoomRange;

@@ -171,7 +171,6 @@ Listit.TreeMap.prototype.highlight = function (nodeId, expand) {
     if (!expand) { 
         nodeId = Listit.TreeMap.Node.GROUP_PREFIX + nodeId 
     };
-    Listit.fbLog('highlight: ' + nodeId);
     this.selectNode(this.getNodeById(nodeId));
     this.highlightSelectedNode();
 }

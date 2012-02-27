@@ -132,11 +132,18 @@ Listit.Comment.prototype.__defineGetter__("votes", function() {
 });
 
 Listit.Comment.prototype.__defineGetter__("likes", function() { 
-    return this._ups / (this._ups + this._downs); 
+    if (this.votes != 0) 
+        return this._ups / (this.votes); 
+    else 
+        return 0; // prevent divide by zero
 });
 
 Listit.Comment.prototype.__defineGetter__("likesPerc", function() { 
-    return this._ups / (this._ups + this._downs) * 100;  
+    return 100 * this._ups / (this._ups + this._downs) ;  
+});
+
+Listit.Comment.prototype.__defineGetter__("controversial", function() { 
+    return (this.votes) / Math.max(Math.abs(this.score), 1)
 });
 
 Listit.Comment.EPOCH_START_MS = 1134028003 * 1000; // 2005-12-08 07:46:43

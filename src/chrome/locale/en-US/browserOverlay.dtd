@@ -3,22 +3,23 @@
 <!ENTITY listit.debugMenuItem.accesskey    "D">
 
 
-<!ENTITY listit.comment.id           "ID">
-<!ENTITY listit.comment.author       "Author">
-<!ENTITY listit.comment.depth        "Depth">
-<!ENTITY listit.comment.score        "Score">
-<!ENTITY listit.comment.up           "Up">
-<!ENTITY listit.comment.down         "Down">
-<!ENTITY listit.comment.votes        "Votes">
-<!ENTITY listit.comment.likes        "Likes">
-<!ENTITY listit.comment.hot          "Hot">
-<!ENTITY listit.comment.best         "Best">
-<!ENTITY listit.comment.characters   "Characters">
-<!ENTITY listit.comment.replies      "Replies">
-<!ENTITY listit.comment.localDate    "Date">
-<!ENTITY listit.comment.utcDate      "UTC date">
-<!ENTITY listit.comment.age          "Age">
-<!ENTITY listit.comment.postedAfter  "Posted after">
+<!ENTITY listit.comment.id            "ID">
+<!ENTITY listit.comment.author        "Author">
+<!ENTITY listit.comment.depth         "Depth">
+<!ENTITY listit.comment.score         "Score">
+<!ENTITY listit.comment.up            "Up">
+<!ENTITY listit.comment.down          "Down">
+<!ENTITY listit.comment.votes         "Votes">
+<!ENTITY listit.comment.likes         "Likes">
+<!ENTITY listit.comment.controversial "Controversial">
+<!ENTITY listit.comment.hot           "Hot">
+<!ENTITY listit.comment.best          "Best">
+<!ENTITY listit.comment.characters    "Characters">
+<!ENTITY listit.comment.replies       "Replies">
+<!ENTITY listit.comment.localDate     "Date">
+<!ENTITY listit.comment.utcDate       "UTC date">
+<!ENTITY listit.comment.age           "Age">
+<!ENTITY listit.comment.postedAfter   "Posted after">
 
 <!ENTITY listit.comment          "Comment">
 <!ENTITY listit.plot             "Plot">
