@@ -156,11 +156,28 @@ Listit.Comment.prototype.__defineGetter__("hot", function() {
     return order + sign * epochSeconds / 45000000;
 });
 
-Listit.Comment.prototype.__defineGetter__("best", function() { // Not yet implemented
-    var s = this.score;
-    var sign = Listit.compare(this._ups, this._downs);
-    return sign;
+Listit.Comment.prototype.__defineGetter__("best", function() { 
+    
+    // Let b is best(up, down) then, given the number of up and down votes, and
+    // assuming the votes in reddit are distributred binomially, there is 90% confidence that
+    // the least b% of the redditors voters likes the comment. 
+    // We make an 80% confidence interval, so 20% is outside this interval: 10% lower and 10% higher.
+    // This gives the 90% above.
+    
+    var n = this.votes;
+    if (n == 0) return 0;
+
+    var z = 1.281551565545 // 80% confidence.
+    var p = this.likes;
+
+    var left = p + 1/(2*n)*z*z;
+    var right = z*Math.sqrt(p*(1-p)/n + z*z/(4*n*n));
+    var under = 1 + 1/n*z*z;
+
+    return 100 * (left - right) / under; // returns percentage
 });
+
+
 
 Listit.Comment.prototype.__defineGetter__("numChars", function() { 
     return this._body.length; 

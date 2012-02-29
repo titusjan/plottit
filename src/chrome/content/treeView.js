@@ -107,12 +107,10 @@ Listit.TreeView.prototype.getTreeDomElement = function() {
 // Expands the path from the root to the selected comment.
 Listit.TreeView.prototype.expandPath = function(selectedComment) {
 
-    Listit.fbLog('Listit.TreeView.prototype.expandPath: ' + selectedComment);
-
     if (selectedComment == null) { return null }
     
     var path = this.discussion.getCommentPathById(selectedComment.id);
-    Listit.fbLog('expand path: ' +  [ p.id for each (p in path ) ]);
+    //Listit.fbLog('expand path: ' +  [ p.id for each (p in path ) ]);
 
     for (let [idx, comment] in Iterator(path)) {
         this.expandComment(comment, false);
@@ -154,10 +152,8 @@ Listit.TreeView.prototype.indexOfVisibleComment = function(comment, makeVisible)
 
     var index = this.visibleComments.indexOf(comment);
     if (makeVisible && index == -1) {
-        Listit.fbLog('comment not visible in tree: ' + comment);
         this.expandPath(comment);
         var index = this.indexOfVisibleComment(comment, false);
-        Listit.fbLog('expandPath done, index: ' + index);
     }
     return index;
 }
@@ -367,8 +363,8 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
         case 'listit-comment-tree-column-down'          : return rowItem.downs;
         case 'listit-comment-tree-column-votes'         : return rowItem.votes;
         case 'listit-comment-tree-column-hot'           : return rowItem.hot.toFixed(3);
-        case 'listit-comment-tree-column-controversial' : return rowItem.controversial.toFixed(3);
-        case 'listit-comment-tree-column-best'          : return rowItem.best;
+        case 'listit-comment-tree-column-controversial' : return rowItem.controversial.toFixed(2);
+        case 'listit-comment-tree-column-best'          : return rowItem.best.toFixed(1) + '%';
         case 'listit-comment-tree-column-likes'         : return (rowItem.likes*100).toFixed(1) + '%';
         case 'listit-comment-tree-column-replies'       : return rowItem.numReplies;
         case 'listit-comment-tree-column-depth'         : return rowItem.depth;
@@ -469,6 +465,7 @@ Listit.TreeView.prototype.getCellProperties = function(rowIdx, column, propertie
         case 'listit-comment-tree-column-votes': 
         case 'listit-comment-tree-column-likes': 
         //case 'listit-comment-tree-column-hot': 
+        case 'listit-comment-tree-column-controversial': 
         case 'listit-comment-tree-column-best': 
         //case 'listit-comment-tree-column-chars': 
         case 'listit-comment-tree-column-debug': 

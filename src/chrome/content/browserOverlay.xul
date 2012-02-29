@@ -367,6 +367,7 @@
                       <menuitem value="likesPerc"             label="&listit.comment.likes;"/>
                       <menuitem value="controversial"         label="&listit.comment.controversial;"/>
                       <menuitem value="hot"                   label="&listit.comment.hot;"/>
+                      <menuitem value="best"                  label="&listit.comment.best;"/>
                       <menuitem value="numChars"              label="&listit.comment.characters;"/>
                       <menuitem value="numReplies"            label="&listit.comment.replies;"/>
                       <menuitem value="dateCreatedLocalValue" label="&listit.comment.localDate;"/>
@@ -393,6 +394,7 @@
                       <menuitem value="likesPerc"             label="&listit.comment.likes;"/>
                       <menuitem value="controversial"         label="&listit.comment.controversial;"/>
                       <menuitem value="hot"                   label="&listit.comment.hot;"/>
+                      <menuitem value="best"                  label="&listit.comment.best;"/>
                       <menuitem value="numChars"              label="&listit.comment.characters;"/>
                       <menuitem value="numReplies"            label="&listit.comment.replies;"/>
                     </menupopup>
@@ -442,6 +444,7 @@
                       <menuitem value="hist_likesPerc"             label="&listit.comment.likes;"/>
                       <menuitem value="hist_controversial"         label="&listit.comment.controversial;"/>
                       <menuitem value="hist_hot"                   label="&listit.comment.hot;"/>
+                      <menuitem value="hist_best"                  label="&listit.comment.best;"/>
                       <menuitem value="hist_numChars"              label="&listit.comment.characters;"/>
                       <menuitem value="hist_numReplies"            label="&listit.comment.replies;"/>
                       <menuitem value="hist_dateCreatedLocalValue" label="&listit.comment.localDate;"/>
@@ -597,7 +600,7 @@
 <!--
 
 TODO: 
-     controversial, words, sequence_counter 
+ words, sequence_counter 
 
 Notes:
 -   An element must have an ID if it uses persistent attribrutes!
