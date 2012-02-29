@@ -1,7 +1,7 @@
 --- Version 1.0 ---
 
 Add page sequence column to tree (use this for second sorting variable)
-Best, controversial, page order.
+Add page order column
 Depth should start at 1
 
 Treemap: sorting parent before children

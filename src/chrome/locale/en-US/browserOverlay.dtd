@@ -15,6 +15,7 @@
 <!ENTITY listit.comment.hot           "Hot">
 <!ENTITY listit.comment.best          "Best">
 <!ENTITY listit.comment.characters    "Characters">
+<!ENTITY listit.comment.words         "Words">
 <!ENTITY listit.comment.replies       "Replies">
 <!ENTITY listit.comment.localDate     "Date">
 <!ENTITY listit.comment.utcDate       "UTC date">

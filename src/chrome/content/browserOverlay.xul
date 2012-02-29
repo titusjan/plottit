@@ -296,6 +296,14 @@
               onclick="Listit.onClickTreeHeader(event)"
               /> 
             <splitter class="tree-splitter"/>
+  
+            <treecol id="listit-comment-tree-column-words" class="number"
+              width="50"  
+              label="&listit.comment.words;   "
+              persist="width ordinal hidden"
+              onclick="Listit.onClickTreeHeader(event)"
+              /> 
+            <splitter class="tree-splitter"/>
             <!--
             <treecol id="listit-comment-tree-column-debug" class="number"
               width="50"
@@ -369,6 +377,7 @@
                       <menuitem value="hot"                   label="&listit.comment.hot;"/>
                       <menuitem value="best"                  label="&listit.comment.best;"/>
                       <menuitem value="numChars"              label="&listit.comment.characters;"/>
+                      <menuitem value="numWords"              label="&listit.comment.words;"/>
                       <menuitem value="numReplies"            label="&listit.comment.replies;"/>
                       <menuitem value="dateCreatedLocalValue" label="&listit.comment.localDate;"/>
                       <menuitem value="dateCreatedValue"      label="&listit.comment.utcDate;"/>
@@ -396,6 +405,7 @@
                       <menuitem value="hot"                   label="&listit.comment.hot;"/>
                       <menuitem value="best"                  label="&listit.comment.best;"/>
                       <menuitem value="numChars"              label="&listit.comment.characters;"/>
+                      <menuitem value="numWords"              label="&listit.comment.words;"/>                      
                       <menuitem value="numReplies"            label="&listit.comment.replies;"/>
                     </menupopup>
                   </menulist>
@@ -446,6 +456,7 @@
                       <menuitem value="hist_hot"                   label="&listit.comment.hot;"/>
                       <menuitem value="hist_best"                  label="&listit.comment.best;"/>
                       <menuitem value="hist_numChars"              label="&listit.comment.characters;"/>
+                      <menuitem value="hist_numWords"              label="&listit.comment.words;"/>
                       <menuitem value="hist_numReplies"            label="&listit.comment.replies;"/>
                       <menuitem value="hist_dateCreatedLocalValue" label="&listit.comment.localDate;"/>
                       <menuitem value="hist_dateCreatedValue"      label="&listit.comment.utcDate;"/>
@@ -527,6 +538,7 @@
                       <menuitem value="downs"    label="&listit.comment.down;"/>
                       <menuitem value="votes"    label="&listit.comment.votes;"/>
                       <menuitem value="numChars" label="&listit.comment.characters;"/>
+                      <menuitem value="numWords" label="&listit.comment.words;"/>
                       <menuitem value="one"      label="&listit.size.equal;"/>
                     </menupopup>
                   </menulist>

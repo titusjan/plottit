@@ -120,6 +120,9 @@ Listit.Comment.prototype.__defineSetter__("isOpen", function(v) { this._isOpen =
 Listit.Comment.prototype.__defineGetter__("replies", function() { return this._replies} );
 Listit.Comment.prototype.__defineSetter__("replies", function(v) { this._replies = v} );
 
+Listit.Comment.prototype.__defineGetter__("numWords", function() { return this._numWords} );
+Listit.Comment.prototype.__defineSetter__("numWords", function(v) { this._numWords = v} );
+
 /////
 // Derived data
 
@@ -330,6 +333,9 @@ Listit.redditT1NodeToComment = function(redditNode, discussion, depth) {
     comment.ups = data.ups;
     comment.isOpen = true;  // true if a node is expanded
     comment.replies = []; // For convenience always make an empty replies list (TODO: optimize?)
+    
+    words = data.body.match(/\S+/g) // count words
+    comment.numWords = words ? words.length : 0;
 
     if (data.replies) {  // Recursively add children
         var children = data.replies.data.children;

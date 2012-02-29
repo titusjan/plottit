@@ -320,6 +320,9 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
         case 'listit-comment-tree-column-chars':
             fn = function(a, b) { return Listit.compareNumbers(a.numChars, b.numChars) };
             break;
+        case 'listit-comment-tree-column-words':
+            fn = function(a, b) { return Listit.compareNumbers(a.numWords, b.numWords) };
+            break;
         case 'listit-comment-tree-column-local-date':
         case 'listit-comment-tree-column-utc-date': 
         case 'listit-comment-tree-column-age': 
@@ -369,6 +372,7 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
         case 'listit-comment-tree-column-replies'       : return rowItem.numReplies;
         case 'listit-comment-tree-column-depth'         : return rowItem.depth;
         case 'listit-comment-tree-column-chars'         : return rowItem.numChars;
+        case 'listit-comment-tree-column-words'         : return rowItem.numWords;
         case 'listit-comment-tree-column-body'          : return rowItem.body;
         case 'listit-comment-tree-column-utc-date' : 
             return Listit.dateFormat(rowItem.dateCreated, this.utcDateFormat, true);
