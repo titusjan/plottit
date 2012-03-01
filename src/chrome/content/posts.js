@@ -93,6 +93,9 @@ Listit.Comment.prototype.__defineGetter__("discussion", function() { return this
 Listit.Comment.prototype.__defineGetter__("id", function() { return this._id} );
 Listit.Comment.prototype.__defineSetter__("id", function(v) { this._id = v } );
 
+Listit.Comment.prototype.__defineGetter__("pageOrder", function() { return this._pageOrder} );
+Listit.Comment.prototype.__defineSetter__("pageOrder", function(v) { this._pageOrder = v } );
+
 Listit.Comment.prototype.__defineGetter__("depth", function() { return this._depth} );
 Listit.Comment.prototype.__defineSetter__("depth", function(v) { this._depth  = v} );
 
@@ -314,44 +317,50 @@ Listit.redditT3NodeToDiscussion = function(redditNode) {
 }
 
 
-Listit.redditT1NodeToComment = function(redditNode, discussion, depth) {
-
-    if (redditNode.kind != 't1') { // e.g. kind = 'more'
-        //Listit.fbLog(redditNode);
-        return null;
-    } 
-
-    var data = redditNode.data;
-    var comment = new Listit.Comment(discussion);
-    comment.id = data.id;
-    comment.depth = depth;
-    comment.author = data.author;
-    comment.body = Listit.XSSDecode(data.body); 
-    comment.bodyHtml = Listit.XSSDecode(data.body_html);
-    comment.dateCreated = new Date(data.created_utc * 1000);
-    comment.downs = data.downs;
-    comment.ups = data.ups;
-    comment.isOpen = true;  // true if a node is expanded
-    comment.replies = []; // For convenience always make an empty replies list (TODO: optimize?)
-    
-    words = data.body.match(/\S+/g) // count words
-    comment.numWords = words ? words.length : 0;
-
-    if (data.replies) {  // Recursively add children
-        var children = data.replies.data.children;
-        for (var i = 0; i < children.length; i++) {
-            var childNode = Listit.redditT1NodeToComment(children[i], discussion, depth + 1);
-            if (childNode) 
-                comment.replies.push(childNode);
-        }
-    }
-    return comment;
-};
 
 // Get comments in as list (of lists) of ListitNodes
 Listit.getListitDiscussionFromPage = function(redditJsonPage) {
 
-    //Listit.logger.trace('getcommentsFromPage');
+    Listit.logger.trace('getListitDiscussionFromPage');
+
+    var processedNodes = 0;
+    
+    var redditT1NodeToComment = function(redditNode, discussion, depth) {
+    
+        if (redditNode.kind != 't1') { // e.g. kind = 'more'
+            //Listit.fbLog(redditNode);
+            return null;
+        } 
+        
+        processedNodes += 1;
+    
+        var data = redditNode.data;
+        var comment = new Listit.Comment(discussion);
+        comment.id = data.id;
+        comment.pageOrder = processedNodes;
+        comment.depth = depth;
+        comment.author = data.author;
+        comment.body = Listit.XSSDecode(data.body); 
+        comment.bodyHtml = Listit.XSSDecode(data.body_html);
+        comment.dateCreated = new Date(data.created_utc * 1000);
+        comment.downs = data.downs;
+        comment.ups = data.ups;
+        comment.isOpen = true;  // true if a node is expanded
+        comment.replies = []; // For convenience always make an empty replies list (TODO: optimize?)
+        
+        words = data.body.match(/\S+/g) // count words
+        comment.numWords = words ? words.length : 0;
+    
+        if (data.replies) {  // Recursively add children
+            var children = data.replies.data.children;
+            for (var i = 0; i < children.length; i++) {
+                var childNode = redditT1NodeToComment(children[i], discussion, depth + 1);
+                if (childNode) 
+                    comment.replies.push(childNode);
+            }
+        }
+        return comment;
+    };
 
     var redditDiscussion = redditJsonPage[0].data.children[0];    
     var discussion = Listit.redditT3NodeToDiscussion(redditDiscussion);
@@ -361,7 +370,7 @@ Listit.getListitDiscussionFromPage = function(redditJsonPage) {
     var children = redditPosts.data.children; // TODO: what is data.after/before?
 
     for (var i = 0; i < children.length; i++) {
-        var listitNode = Listit.redditT1NodeToComment(children[i], discussion, 0);
+        var listitNode = redditT1NodeToComment(children[i], discussion, 0);
         if (listitNode) 
             comments.push(listitNode);
     }

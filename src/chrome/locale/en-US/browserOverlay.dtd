@@ -4,6 +4,7 @@
 
 
 <!ENTITY listit.comment.id            "ID">
+<!ENTITY listit.comment.pageOrder     "Page order">
 <!ENTITY listit.comment.author        "Author">
 <!ENTITY listit.comment.depth         "Depth">
 <!ENTITY listit.comment.score         "Score">

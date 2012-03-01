@@ -148,6 +148,14 @@
               onclick="Listit.onClickTreeHeader(event)"
               hidden="true"/>
             <splitter class="tree-splitter"/>
+            
+            <treecol id="listit-comment-tree-column-page-order" class="number"
+              width="50"  
+              label="&listit.comment.pageOrder;"
+              persist="width ordinal hidden"
+              onclick="Listit.onClickTreeHeader(event)"
+              hidden="false"/>
+            <splitter class="tree-splitter"/>
                       
             <treecol id="listit-comment-tree-column-author"
               width="140"

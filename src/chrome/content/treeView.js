@@ -278,6 +278,9 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
         case 'listit-comment-tree-column-id': 
             fn = function(a, b) { return Listit.compareIDs(a.id, b.id) };
             break;
+        case 'listit-comment-tree-column-page-order': 
+            fn = function(a, b) { return Listit.compareNumbers(a.pageOrder, b.pageOrder) };
+            break;
         case 'listit-comment-tree-column-author':
             fn = function(a, b) { return Listit.compareCaseInsensitiveStrings(a.author, b.author) };
             break;
@@ -360,6 +363,7 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
     switch (column.id)
     {
         case 'listit-comment-tree-column-id'            : return rowItem.id;
+        case 'listit-comment-tree-column-page-order'    : return rowItem.pageOrder;
         case 'listit-comment-tree-column-author'        : return rowItem.author;
         case 'listit-comment-tree-column-score'         : return rowItem.score;
         case 'listit-comment-tree-column-up'            : return rowItem.ups;
@@ -457,21 +461,12 @@ Listit.TreeView.prototype.getRowProperties = function(rowIdx, properties) {}
 Listit.TreeView.prototype.getCellProperties = function(rowIdx, column, properties) {
     switch (column.id)
     {
-        //case 'listit-comment-tree-column-local-date': 
-        //case 'listit-comment-tree-column-utc-date': 
-        //case 'listit-comment-tree-column-age': 
-        //case 'listit-comment-tree-column-posted-after': 
-        //case 'listit-comment-tree-column-depth': 
-        //case 'listit-comment-tree-column-replies': 
-        //case 'listit-comment-tree-column-score': 
         case 'listit-comment-tree-column-up': 
         case 'listit-comment-tree-column-down': 
         case 'listit-comment-tree-column-votes': 
         case 'listit-comment-tree-column-likes': 
-        //case 'listit-comment-tree-column-hot': 
         case 'listit-comment-tree-column-controversial': 
         case 'listit-comment-tree-column-best': 
-        //case 'listit-comment-tree-column-chars': 
         case 'listit-comment-tree-column-debug': 
             var atomService = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
             var prop = atomService.getAtom("fuzzed");
