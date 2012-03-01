@@ -387,6 +387,7 @@
                       <menuitem value="numChars"              label="&listit.comment.characters;"/>
                       <menuitem value="numWords"              label="&listit.comment.words;"/>
                       <menuitem value="numReplies"            label="&listit.comment.replies;"/>
+                      <menuitem value="pageOrder"             label="&listit.comment.pageOrder;"/>
                       <menuitem value="dateCreatedLocalValue" label="&listit.comment.localDate;"/>
                       <menuitem value="dateCreatedValue"      label="&listit.comment.utcDate;"/>
                       <menuitem value="postedAfter"           label="&listit.comment.postedAfter;"/>
