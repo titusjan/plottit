@@ -8,7 +8,7 @@
     <em:unpack>true</em:unpack>
     <em:name>Listit</em:name>
     <em:description>Displays a Reddit discussion in a table and allows it to be sorted as a list</em:description>
-    <em:version>0.4</em:version>
+    <em:version>0.5</em:version>
     <em:creator>Titusjan</em:creator>
     <!--<em:homepageURL>https://developer.mozilla.org/en/XUL_School</em:homepageURL>-->
     <em:type>2</em:type>
