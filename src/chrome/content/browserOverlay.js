@@ -864,12 +864,14 @@ Listit.getHslConversionFunction = function (varId) {
         }
     }
 
+    var SAT_MAX = 0.8; // Maximum saturation to keep look and feel classy :-)
+
     var HUE_ORANGE_RED =  16 / 360;
     var HUE_BLUE       = 240 / 360;
     var HUE_GREEN      = 120 / 360;
     var HUE_MAGENTA    = 300 / 360;
 
-    var SAT_RAINBOW       = 0.75;      // Saturation used for rainbow color scales.
+    var SAT_RAINBOW       = SAT_MAX;      // Saturation used for rainbow color scales.
     var HUE_RAINBOW_START = 0.59861;   // Darkish blue
     var HUE_RAINBOW_RANGE = 11/12;     // Part of the complete hue-circle used in rainbow color scales.
     
@@ -882,8 +884,12 @@ Listit.getHslConversionFunction = function (varId) {
     var HUE_LINEAR = HUE_MAGENTA;
     var HUE_UPS    = HUE_ORANGE_RED;
     var HUE_DOWNS  = HUE_BLUE;
-    var SAT_DOWNS  = 0.8; // Down vote color is not completely saturated
-   
+    
+    var SAT_LOG     = SAT_MAX;
+    var SAT_LINEAR  = SAT_MAX;
+    var SAT_UPS     = SAT_MAX;
+    var SAT_DOWNS   = 0.8 * SAT_MAX;  // Downvote blue color on reddit is less saturated
+
     switch (varId) 
     {
         case 'none': return function(comment) { 
@@ -894,7 +900,7 @@ Listit.getHslConversionFunction = function (varId) {
             return [mapFn(comment.depth) % 1, SAT_RAINBOW, 1];
         }; 
         case 'score': return function(comment) { 
-            var mapFnPos = getMapV(0, 3, 0, 1);         // truncate at 10^3
+            var mapFnPos = getMapV(0, 3, 0, SAT_UPS);         // truncate at 10^3
             var mapFnNeg = getMapV(0, 3, 0, SAT_DOWNS); // truncate at 10^3 
             if (comment.score == 0) {
                 return [0, 0, 1];
@@ -905,7 +911,7 @@ Listit.getHslConversionFunction = function (varId) {
             }
         };
         case 'ups': return function(comment) { 
-            var mapFn = getMapV(0, 3, 0, 1);  // truncate at 10^3
+            var mapFn = getMapV(0, 3, 0, SAT_UPS);  // truncate at 10^3
             return [HUE_UPS, mapFn(Listit.log10(comment.ups)), 1];
         };
         case 'downs': return function(comment) { 
@@ -913,12 +919,12 @@ Listit.getHslConversionFunction = function (varId) {
             return [HUE_DOWNS, mapFn(Listit.log10(comment.downs)), 1];
         };
         case 'votes': return function(comment) { 
-            var mapFn = getMapV(0, 3, 0, 1);  // truncate at 2*10^3
+            var mapFn = getMapV(0, 3, 0, SAT_LOG);  // truncate at 2*10^3
             return [HUE_LOG, mapFn(Listit.log10(comment.votes/2)), 1];
         };
         case 'likesPerc': return function(comment) { 
             var mapFnNeg = getMapV( 0,  50, 0, SAT_DOWNS);
-            var mapFnPos = getMapV(50, 100, 0, 1);
+            var mapFnPos = getMapV(50, 100, 0, SAT_UPS);
             if (comment.likesPerc <= 50) {
                 return [HUE_DOWNS, mapFnNeg(comment.likesPerc), 1];
             } else {
@@ -926,12 +932,12 @@ Listit.getHslConversionFunction = function (varId) {
             }
         };
         case 'controversial': return function(comment) { 
-            var mapFn = getMapV(0, 10, 0, 1);  // 
+            var mapFn = getMapV(0, 10, 0, SAT_LINEAR);  // 
             return [HUE_LINEAR, mapFn(comment.controversial), 1];
         };
         case 'bestPerc': return function(comment) { 
             var mapFnNeg = getMapV( 0,  50, 0, SAT_DOWNS);
-            var mapFnPos = getMapV(50, 100, 0, 1);
+            var mapFnPos = getMapV(50, 100, 0, SAT_UPS);
             if (comment.bestPerc <= 50) {
                 return [HUE_DOWNS, mapFnNeg(comment.bestPerc), 1];
             } else {
@@ -939,11 +945,11 @@ Listit.getHslConversionFunction = function (varId) {
             }            
         };        
         case 'numChars': return function(comment) { 
-            var mapFn = getMapV(0, 1000, 0, 1); 
+            var mapFn = getMapV(0, 1000, 0, SAT_LINEAR); 
             return [HUE_LINEAR, mapFn(comment.numChars), 1];
         };
         case 'numWords': return function(comment) { 
-            var mapFn = getMapV(0, 200, 0, 1);  // 
+            var mapFn = getMapV(0, 200, 0, SAT_LINEAR);  // 
             return [HUE_LINEAR, mapFn(comment.numWords), 1];
         };
         case 'numReplies': return function(comment) { 
@@ -951,7 +957,7 @@ Listit.getHslConversionFunction = function (varId) {
             return [mapFn(comment.numReplies) % 1, SAT_RAINBOW, 1];
         };
         case 'postedAfter': return function(comment) { 
-            var mapFn = getMapV(0, 1000, 0, 1); 
+            var mapFn = getMapV(0, 1000, 0, SAT_LINEAR); 
             return [HUE_LINEAR, mapFn(comment.postedAfter / 24 / 3600 ), 1];
         };
         default:
