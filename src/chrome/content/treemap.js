@@ -322,7 +322,10 @@ Listit.TreeMap.Node = function (size, addCushion, id, hue, saturation) { // Cons
 // True if the node contains a parent node plus its children 
 Listit.TreeMap.Node.prototype.__defineGetter__("isGroup", function() { 
     // Return true iff id starts with group prefix
-    return (this.id.substring(0, Listit.TreeMap.Node.GROUP_PREFIX.length) === Listit.TreeMap.Node.GROUP_PREFIX)
+    if (this.id)
+        return (this.id.substring(0, Listit.TreeMap.Node.GROUP_PREFIX.length) === Listit.TreeMap.Node.GROUP_PREFIX)
+    else
+        return false;
 });
 
 // The node.id minus group prefix (if present)
@@ -397,7 +400,22 @@ Listit.TreeMap.Node.prototype.repr = function () {
 Listit.TreeMap.Node.prototype.sortNodesBySizeDescending = function () {
 
     if (this.children.length == 0) return; 
-    this.children.sort( function(a, b) { return b.size - a.size } );
+
+    var sortFn;
+    if (this.isGroup) {
+        // If the node is a group it contains only two direct children, one with id that is
+        // a node, and one without that is a place holder for the children at deeper level.
+        // In this case the node should always come before the place holder. This make the
+        // sorting more predictable and intuitive. Since there are only two children the order
+        // wont have an effect on the quality of the layout.
+        var sortFnHasId = function(a, b) { return (a.id == null) < (b.id == null) }
+        var sortFnSize = function(a, b) { return b.size - a.size } 
+        sortFn = Listit.combineComparisonFunctions(sortFnHasId, sortFnSize);
+    } else {
+        sortFn = function(a, b) { return b.size - a.size } 
+    }
+    this.children.sort( sortFn );
+    
     for (let [idx, child] in Iterator(this.children) ) {
         child.sortNodesBySizeDescending();
     }

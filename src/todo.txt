@@ -1,18 +1,12 @@
 --- Version 1.0 ---
 
-Add page sequence column to tree (use this for second sorting variable)
-Add page order column
 Depth should start at 1
 
 Treemap: sorting parent before children
-Adjust Color scales in tree map.
 
 Removed eventhandlers in OnUnload
 
 Table: disable double click / tooltip
-
-Use internationalisation
-
 
 Rename to graphit/plottit.
 
@@ -34,6 +28,7 @@ Cleanup:
 
 --- Version 1.1 ---
 
+Tree map color per author
 Better tick marks posted-after/ integers / when autoscale is off.
 
 Load more comments.
