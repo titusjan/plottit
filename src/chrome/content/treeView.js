@@ -375,8 +375,8 @@ Listit.TreeView.prototype.getCellText = function(idx, column) {
         case 'listit-comment-tree-column-votes'         : return rowItem.votes;
         case 'listit-comment-tree-column-hot'           : return rowItem.hot.toFixed(3);
         case 'listit-comment-tree-column-controversial' : return rowItem.controversial.toFixed(2);
-        case 'listit-comment-tree-column-best'          : return rowItem.best.toFixed(1) + '%';
-        case 'listit-comment-tree-column-likes'         : return (rowItem.likes*100).toFixed(1) + '%';
+        case 'listit-comment-tree-column-best'          : return rowItem.bestPerc.toFixed(1) + '%';
+        case 'listit-comment-tree-column-likes'         : return rowItem.likesPerc.toFixed(1) + '%';
         case 'listit-comment-tree-column-replies'       : return rowItem.numReplies;
         case 'listit-comment-tree-column-depth'         : return rowItem.depth;
         case 'listit-comment-tree-column-chars'         : return rowItem.numChars;

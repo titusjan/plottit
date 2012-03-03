@@ -180,9 +180,12 @@ Listit.Comment.prototype.__defineGetter__("best", function() {
     var right = z*Math.sqrt(p*(1-p)/n + z*z/(4*n*n));
     var under = 1 + 1/n*z*z;
 
-    return 100 * (left - right) / under; // returns percentage
+    return (left - right) / under; // returns percentage
 });
 
+Listit.Comment.prototype.__defineGetter__("bestPerc", function() { 
+    return 100 * this.best ;  
+});
 
 
 Listit.Comment.prototype.__defineGetter__("numChars", function() { 

@@ -1,4 +1,4 @@
-// TODO: the current implementation is very tailored to Listit. Make more generic.
+// TODO: the current implementation is very tailored to Listit; make more generic.
 
 if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 

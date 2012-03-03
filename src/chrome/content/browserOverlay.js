@@ -25,8 +25,8 @@ try{
         document.getElementById('listit-comment-tree-column-local-date').getAttribute('format'),    // localDateFormat
         document.getElementById('listit-comment-tree-column-utc-date').getAttribute('format'),      // utcDateFormat
         document.getElementById('listit-treemap-size-menulist').value,      // treeMapSizeProperty
-        Listit.HSL_CONVERSION_FUNCTIONS[
-            document.getElementById('listit-treemap-color-menulist').value] // treeMapColorVariable
+        Listit.getHslConversionFunction(
+            document.getElementById('listit-treemap-color-menulist').value) // treeMapColorVariable
         );
 
     // Sets button tooltip text
@@ -848,30 +848,115 @@ Listit.setTreeMapSizeProperty = function(menuList) {
     }   
 }
 
-// Conversion functions that calculate a HSL triplet belonging to a comment.
-Listit.HUE_BLUE = 0.6666666667;
-Listit.HUE_ORANGE_RED = 0.044444444444444446; // is 16/360 degrees
-Listit.HSL_CONVERSION_FUNCTIONS = {
 
-    'none' : function(comment) { return [0, 0, 1] }, // Always grey
-    'depth': function(comment) { return [Listit.HUE_BLUE - (comment.depth/10) % 1, 1, 1] },   // maxdepth is 10
-    'numReplies': function(comment) { return [Listit.HUE_BLUE - (comment.numReplies/50) % 1, 1, 1] },   // maxdepth is 10
-    'score': function(comment) { 
-        
-        if (comment.score == 0) {
-            return [0, 0, 1];
-        } else if (comment.score >= 0) {
-            return [Listit.HUE_ORANGE_RED, Math.min(1, Listit.log10(comment.score) / 3), 1];
-        } else {
-            return [Listit.HUE_BLUE, Math.min(1, 0.79 * Listit.log10(-comment.score) / 3), 1];
+// create Conversion functions that calculate a HSL triplet belonging to a comment.
+Listit.getHslConversionFunction = function (varId) {
+
+    // Create function that maps v in [vMin, vMax] to y in [yMin, yMax]
+    function getMapV(vMin, vMax, yMin, yMax) {
+        return function(v) {
+            var vNorm = (v - vMin) / (vMax - vMin);  // vNorm lies between 0 and 1 if v lies between vMin and vMax
+            vNorm = Math.max(0, Math.min(1, vNorm)); // Force vNorm to be between 0 and 1
+            return vNorm * (yMax - yMin) + yMin;
         }
-    },  
+    }
+
+
+    var HUE_ORANGE_RED =  16 / 360;
+    var HUE_BLUE       = 240 / 360;
+    var HUE_GREEN      = 120 / 360;
+    var HUE_MAGENTA    = 300 / 360;
+
+    var SAT_RAINBOW       = 0.75;       // Saturation used for rainbow color scales.
+    var HUE_RAINBOW_START = HUE_BLUE;
+    var HUE_RAINBOW_RANGE = 11/12;     // Part of the complete hue-circle used in rainbow color scales.
+    
+    var HUE_LOG    = HUE_GREEN;
+    var HUE_LINEAR = HUE_MAGENTA;
+    var HUE_UPS    = HUE_ORANGE_RED;
+    var HUE_DOWNS  = HUE_BLUE;
+    var SAT_DOWNS  = 0.8; // Down vote color is not completely saturated
+    
+   
+    switch (varId) 
+    {
+        case 'none': return function(comment) { 
+            return [0, 0, 1]; // always grey
+        };
+        case 'depth': return function(comment) {
+            var mapFn = getMapV(0, 10, HUE_RAINBOW_START, HUE_RAINBOW_START - HUE_RAINBOW_RANGE);
+            return [mapFn(comment.depth) % 1, SAT_RAINBOW, 1];
+        }; 
+        case 'score': return function(comment) { 
+            var mapFnPos = getMapV(0, 3, 0, 1);         // truncate at 10^3
+            var mapFnNeg = getMapV(0, 3, 0, SAT_DOWNS); // truncate at 10^3 
+            if (comment.score == 0) {
+                return [0, 0, 1];
+            } else if (comment.score > 0) {
+                return [HUE_UPS, mapFnPos(Listit.log10(comment.score)), 1];
+            } else {
+                return [HUE_DOWNS, mapFnNeg(Listit.log10(-comment.score)), 1];
+            }
+        };
+        case 'ups': return function(comment) { 
+            var mapFn = getMapV(0, 3, 0, 1);  // truncate at 10^3
+            return [HUE_UPS, mapFn(Listit.log10(comment.ups)), 1];
+        };
+        case 'downs': return function(comment) { 
+            var mapFn = getMapV(0, 3, 0, SAT_DOWNS); // truncate at 10^3 
+            return [HUE_DOWNS, mapFn(Listit.log10(comment.downs)), 1];
+        };
+        case 'votes': return function(comment) { 
+            var mapFn = getMapV(0, 3, 0, 1);  // truncate at 2*10^3
+            return [HUE_LOG, mapFn(Listit.log10(comment.votes/2)), 1];
+        };
+        case 'likesPerc': return function(comment) { 
+            var mapFnNeg = getMapV( 0,  50, 0, SAT_DOWNS);
+            var mapFnPos = getMapV(50, 100, 0, 1);
+            if (comment.likesPerc <= 50) {
+                return [HUE_DOWNS, mapFnNeg(comment.likesPerc), 1];
+            } else {
+                return [HUE_UPS, mapFnPos(comment.likesPerc), 1];
+            }
+        };
+        case 'controversial': return function(comment) { 
+            var mapFn = getMapV(0, 10, 0, 1);  // 
+            return [HUE_LINEAR, mapFn(comment.controversial), 1];
+        };
+        case 'bestPerc': return function(comment) { 
+            var mapFnNeg = getMapV( 0,  50, 0, SAT_DOWNS);
+            var mapFnPos = getMapV(50, 100, 0, 1);
+            if (comment.bestPerc <= 50) {
+                return [HUE_DOWNS, mapFnNeg(comment.bestPerc), 1];
+            } else {
+                return [HUE_UPS, mapFnPos(comment.bestPerc), 1];
+            }            
+        };        
+        case 'numChars': return function(comment) { 
+            var mapFn = getMapV(0, 1000, 0, 1); 
+            return [HUE_LINEAR, mapFn(comment.numChars), 1];
+        };
+        case 'numWords': return function(comment) { 
+            var mapFn = getMapV(0, 200, 0, 1);  // 
+            return [HUE_LINEAR, mapFn(comment.numWords), 1];
+        };
+        case 'numReplies': return function(comment) { 
+            var mapFn = getMapV(0, 20, HUE_RAINBOW_START, HUE_RAINBOW_START - HUE_RAINBOW_RANGE);
+            return [mapFn(comment.numReplies) % 1, SAT_RAINBOW, 1];
+        };
+        case 'postedAfter': return function(comment) { 
+            var mapFn = getMapV(0, 1000, 0, 1); 
+            return [HUE_LINEAR, mapFn(comment.postedAfter / 24 / 3600 ), 1];
+        };
+        default:
+            Listit.assert(false, "Invalid varId: " + varId);
+    } // switch
 }
 
 Listit.setTreeMapColorProperty = function(menuList) {
     try {
         Listit.logger.trace("Listit.setTreeMapColorProperty: " + menuList.value);
-        Listit.state.fnHslOfComment = Listit.HSL_CONVERSION_FUNCTIONS[menuList.value];
+        Listit.state.fnHslOfComment = Listit.getHslConversionFunction(menuList.value);
         Listit.setTreeMapDiscussion(Listit.state.getCurrentBrowserDiscussion());
     } catch (ex) {
         Listit.logger.error('Exception in Listit.setTreeMapColorProperty;');

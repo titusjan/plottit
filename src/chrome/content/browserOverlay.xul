@@ -383,7 +383,7 @@
                       <menuitem value="likesPerc"             label="&listit.comment.likes;"/>
                       <menuitem value="controversial"         label="&listit.comment.controversial;"/>
                       <menuitem value="hot"                   label="&listit.comment.hot;"/>
-                      <menuitem value="best"                  label="&listit.comment.best;"/>
+                      <menuitem value="bestPerc"              label="&listit.comment.best;"/>
                       <menuitem value="numChars"              label="&listit.comment.characters;"/>
                       <menuitem value="numWords"              label="&listit.comment.words;"/>
                       <menuitem value="numReplies"            label="&listit.comment.replies;"/>
@@ -412,7 +412,7 @@
                       <menuitem value="likesPerc"             label="&listit.comment.likes;"/>
                       <menuitem value="controversial"         label="&listit.comment.controversial;"/>
                       <menuitem value="hot"                   label="&listit.comment.hot;"/>
-                      <menuitem value="best"                  label="&listit.comment.best;"/>
+                      <menuitem value="bestPerc"              label="&listit.comment.best;"/>
                       <menuitem value="numChars"              label="&listit.comment.characters;"/>
                       <menuitem value="numWords"              label="&listit.comment.words;"/>                      
                       <menuitem value="numReplies"            label="&listit.comment.replies;"/>
@@ -463,7 +463,7 @@
                       <menuitem value="hist_likesPerc"             label="&listit.comment.likes;"/>
                       <menuitem value="hist_controversial"         label="&listit.comment.controversial;"/>
                       <menuitem value="hist_hot"                   label="&listit.comment.hot;"/>
-                      <menuitem value="hist_best"                  label="&listit.comment.best;"/>
+                      <menuitem value="hist_bestPerc"              label="&listit.comment.best;"/>
                       <menuitem value="hist_numChars"              label="&listit.comment.characters;"/>
                       <menuitem value="hist_numWords"              label="&listit.comment.words;"/>
                       <menuitem value="hist_numReplies"            label="&listit.comment.replies;"/>
@@ -561,14 +561,18 @@
                       crop="end"
                       oncommand="Listit.setTreeMapColorProperty(this);">
                     <menupopup id="listit-bin-width-menupopup">
-                      <menuitem value="none"       label="&listit.color.none;"/>
-                      <menuitem value="depth"      label="&listit.comment.depth;"/>
-                      <menuitem value="numReplies" label="&listit.comment.replies;"/>
-                      <menuitem value="score"      label="&listit.comment.score;"/><!--
-                      <menuitem value="ups"        label="&listit.comment.up;"/>
-                      <menuitem value="downs"      label="&listit.comment.down;"/>
-                      <menuitem value="votes"      label="&listit.comment.votes;"/>
-                      <menuitem value="numChars"   label="&listit.comment.characters;"/>-->
+                      <menuitem value="depth"                 label="&listit.comment.depth;"/>
+                      <menuitem value="score"                 label="&listit.comment.score;"/>
+                      <menuitem value="ups"                   label="&listit.comment.up;"/>
+                      <menuitem value="downs"                 label="&listit.comment.down;"/>
+                      <menuitem value="votes"                 label="&listit.comment.votes;"/>
+                      <menuitem value="likesPerc"             label="&listit.comment.likes;"/>
+                      <menuitem value="controversial"         label="&listit.comment.controversial;"/>
+                      <menuitem value="bestPerc"              label="&listit.comment.best;"/>
+                      <menuitem value="numChars"              label="&listit.comment.characters;"/>
+                      <menuitem value="numWords"              label="&listit.comment.words;"/>
+                      <menuitem value="numReplies"            label="&listit.comment.replies;"/>
+                      <menuitem value="postedAfter"           label="&listit.comment.postedAfter;"/>                    
                     </menupopup>
                   </menulist>
                   

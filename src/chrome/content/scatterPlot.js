@@ -60,7 +60,7 @@ Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
     'controversial'    : { mode: null, panRange: [     0,  1000], zoomRange: [0.1,   2000], labelWidth: 25, tickFormatter: null },
     'likesPerc'        : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     200], labelWidth: 25, tickFormatter: null }, // TODO: fix
     'hot'              : { mode: null, panRange: [-10000, 10000], zoomRange: [ 0.5, 20000], labelWidth: 35, tickFormatter: null }, 
-    'best'             : { mode: null, panRange: [  -100,   100], zoomRange: [ 5,     200], labelWidth: 25, tickFormatter: null }, // TODO: fix
+    'bestPerc'         : { mode: null, panRange: [  -100,   100], zoomRange: [ 5,     200], labelWidth: 25, tickFormatter: null }, // TODO: fix
     'numChars'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null },
     'numWords'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null },
     'numReplies'       : { mode: null, panRange: [     0,  1000], zoomRange: [ 5,    1000], labelWidth: 25, tickFormatter: null },
