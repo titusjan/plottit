@@ -266,7 +266,7 @@ Listit.TreeView.prototype.setStructure = function(structure)  {
 }
 
 
-// Returns a function that sorts by column and directoin
+// Returns a function that sorts by column and direction
 Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) {
 
     Listit.assert(direction == "ascending" || direction == "descending", 
@@ -336,11 +336,15 @@ Listit.TreeView.prototype.getComparisonFunction = function(columnID, direction) 
             Listit.assert(false, "** getComparisonFunction Unknown id: '" + columnID + "' **");
     } // switch
 
-    if (direction == "ascending") {
-        return fn;
-    } else {
-        return Listit.swapArgs(fn);
+    // Sort by page order if fn(a, b) results yielss 0
+    var pageOrderFn = function(a, b) { return Listit.compareNumbers(a.pageOrder, b.pageOrder) };
+
+    if (direction == "descending") {
+        fn = Listit.swapArgs(fn);
+        pageOrderFn = Listit.swapArgs(pageOrderFn);
     }
+    
+    return Listit.combineComparisonFunctions(fn, pageOrderFn);
 }
 
 ////

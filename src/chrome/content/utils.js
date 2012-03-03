@@ -241,6 +241,19 @@ Listit.compareCaseInsensitiveStrings = function(a, b) {
     return Listit.compareStrings(a.toLowerCase(), b.toLowerCase());
 }
 
+// Create function that sorts by f2 if a and b are equal in terms of f1
+Listit.combineComparisonFunctions = function(f1, f2) {
+    
+    return function (a, b) {
+        var res = f1(a, b);
+        if (res != 0) {
+            return res;
+        } else {
+            return f2(a, b);
+        }
+    }
+}
+
 /////////
 // XUL //
 /////////
