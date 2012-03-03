@@ -772,13 +772,16 @@ Listit.onRenderTreeMapTimeOut = function() {
     try {
         Listit.logger.trace("Listit.drawTreeMapCushionedAfterTimeOut: " + Listit.globalTimeOutId);
         
-        var sliderH0   = document.getElementById("listit-treemap-scale-h0");
-        var sliderF    = document.getElementById("listit-treemap-scale-f");
-        var sliderIamb = document.getElementById("listit-treemap-scale-iamb");
+        var sliderH0   = document.getElementById("listit-treemap-scale-h0").value / 1000;
+        var sliderF    = document.getElementById("listit-treemap-scale-f").value / 1000;
+        var sliderIamb = document.getElementById("listit-treemap-scale-iamb").value / 1000;
+        //var sliderH0   = 1.2;
+        //var sliderF    = 2.5;
+        //var sliderIamb = 0.12;
         Listit.logger.debug("Listit.drawTreeMapCushionedAfterTimeOut, H0: " + 
-            sliderH0.value/1000 + ', F: ' + sliderF.value/1000 + ', Iamb: ' + sliderIamb.value/1000);
+            sliderH0 + ', F: ' + sliderF + ', Iamb: ' + sliderIamb);
         
-        Listit.treeMap.renderCushioned(sliderH0.value/1000, sliderF.value/1000, sliderIamb.value/1000);
+        Listit.treeMap.renderCushioned(sliderH0, sliderF, sliderIamb);
         Listit.globalTimeOutId = null;
     } catch (ex) {
         Listit.logger.error('Exception in Listit.setTreeMapDiscussion;');
@@ -861,22 +864,25 @@ Listit.getHslConversionFunction = function (varId) {
         }
     }
 
-
     var HUE_ORANGE_RED =  16 / 360;
     var HUE_BLUE       = 240 / 360;
     var HUE_GREEN      = 120 / 360;
     var HUE_MAGENTA    = 300 / 360;
 
-    var SAT_RAINBOW       = 0.75;       // Saturation used for rainbow color scales.
-    var HUE_RAINBOW_START = HUE_BLUE;
+    var SAT_RAINBOW       = 0.75;      // Saturation used for rainbow color scales.
+    var HUE_RAINBOW_START = 0.59861;   // Darkish blue
     var HUE_RAINBOW_RANGE = 11/12;     // Part of the complete hue-circle used in rainbow color scales.
+    
+    //// For tweaking colors
+    //HUE_RAINBOW_START = HUE_BLUE - document.getElementById("listit-treemap-scale-h0").value / 3000 * 30 / 360 ;
+    //SAT_RAINBOW       = document.getElementById("listit-treemap-scale-f").value / 4000 ;
+    //Listit.logger.debug('HUE_RAINBOW_START: ' + HUE_RAINBOW_START + ', SAT_RAINBOW: ' + SAT_RAINBOW);
     
     var HUE_LOG    = HUE_GREEN;
     var HUE_LINEAR = HUE_MAGENTA;
     var HUE_UPS    = HUE_ORANGE_RED;
     var HUE_DOWNS  = HUE_BLUE;
     var SAT_DOWNS  = 0.8; // Down vote color is not completely saturated
-    
    
     switch (varId) 
     {
