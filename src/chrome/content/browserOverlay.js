@@ -979,7 +979,7 @@ Listit.getHslConversionFunction = function (varId) {
             }
         };
         case 'controversial': return function(comment) { 
-            var mapFn = getMapV(0, 10, 0, SAT_LINEAR);  // 
+            var mapFn = getMapV(1, 10, 0, SAT_LINEAR);  // 
             return [HUE_LINEAR, mapFn(comment.controversial), 1];
         };
         case 'bestPerc': return function(comment) { 
@@ -1006,8 +1006,11 @@ Listit.getHslConversionFunction = function (varId) {
             return [HUE_LINEAR, mapFn(comment.numReplies), 1];
         };
         case 'postedAfter': return function(comment) { 
-            var mapFn = getMapV(0, 1000, 0, SAT_LINEAR); 
-            return [HUE_LINEAR, mapFn(comment.postedAfter / 24 / 3600 ), 1];
+            var mapFn = getMapV(0, 24*3600000, 1+HUE_BLUE, 1+HUE_BLUE - 8/12);
+            return [mapFn(comment.postedAfter ) % 1, SAT_RAINBOW, 1];
+            
+            //var mapFn = getMapV(0, 1000, 0, SAT_LINEAR); 
+            //return [HUE_LINEAR, mapFn(comment.postedAfter / 24 / 3600 ), 1];
         };
         default:
             Listit.assert(false, "Invalid varId: " + varId);
