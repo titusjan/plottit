@@ -408,7 +408,7 @@ Listit.TreeMap.Node.prototype.sortNodesBySizeDescending = function () {
         // In this case the node should always come before the place holder. This make the
         // sorting more predictable and intuitive. Since there are only two children the order
         // wont have an effect on the quality of the layout.
-        var sortFnHasId = function(a, b) { return (a.id == null) < (b.id == null) }
+        var sortFnHasId = function(a, b) { return (a.id == null) - (b.id == null) }
         var sortFnSize = function(a, b) { return b.size - a.size } 
         sortFn = Listit.combineComparisonFunctions(sortFnHasId, sortFnSize);
     } else {
