@@ -129,6 +129,10 @@ Listit.Comment.prototype.__defineSetter__("numWords", function(v) { this._numWor
 /////
 // Derived data
 
+Listit.Comment.prototype.__defineGetter__("level", function() { 
+    return this._depth - 1; // level is zero-based depth
+} );
+
 Listit.Comment.prototype.__defineGetter__("score", function() { 
     return this._ups - this._downs; 
 });
@@ -373,7 +377,7 @@ Listit.getListitDiscussionFromPage = function(redditJsonPage) {
     var children = redditPosts.data.children; // TODO: what is data.after/before?
 
     for (var i = 0; i < children.length; i++) {
-        var listitNode = redditT1NodeToComment(children[i], discussion, 0);
+        var listitNode = redditT1NodeToComment(children[i], discussion, 1);
         if (listitNode) 
             comments.push(listitNode);
     }

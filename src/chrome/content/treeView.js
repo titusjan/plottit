@@ -414,17 +414,17 @@ Listit.TreeView.prototype.isEditable = function(idx, column)  { return false; }
 
 Listit.TreeView.prototype.getParentIndex = function(idx) {
     
-    var thisDepth = this.getLevel(idx);
-    if (thisDepth == 0) return -1;
+    var thisLevel = this.getLevel(idx);
+    if (thisLevel == 0) return -1;
 
     // iterate backwards until we find the item with the lower depth
     for (var i = idx - 1; i >= 0; i--) {
-        if (this.visibleComments[i].depth < thisDepth) return i;
+        if ((this.visibleComments[i].level) < thisLevel) return i;
     }
 }
 
 Listit.TreeView.prototype.getLevel = function(idx) { 
-    return this.isFlat ? 0 : this.visibleComments[idx].depth; 
+    return this.isFlat ? 0 : this.visibleComments[idx].level; 
 }
 
 
