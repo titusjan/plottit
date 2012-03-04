@@ -943,7 +943,7 @@ Listit.getHslConversionFunction = function (varId) {
         case 'depth': return function(comment) {
             //var mapFn = getMapV(0, 10, HUE_RAINBOW_START, HUE_RAINBOW_START - HUE_RAINBOW_RANGE);
             //return [mapFn(comment.depth) % 1, SAT_RAINBOW, 1];
-            var mapFn = getMapV(0, 10, 0, SAT_LINEAR); 
+            var mapFn = getMapV(1, 10, 0, SAT_LINEAR); 
             return [HUE_LINEAR, mapFn(comment.depth), 1];
         }; 
         case 'score': return function(comment) { 
