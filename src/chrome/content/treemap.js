@@ -573,7 +573,7 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
 
     // Set the light vector
     var Isource = 1 - 2*Iamb;
-    var L = [-1, -1, 10];
+    var L = [1, -1, 10];
     var lengthL = Math.sqrt(L[0]*L[0] + L[1]*L[1] + L[2]*L[2]);
     var Lx = L[0] / lengthL;
     var Ly = L[1] / lengthL;

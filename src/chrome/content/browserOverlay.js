@@ -941,8 +941,10 @@ Listit.getHslConversionFunction = function (varId) {
             return [0, 0, 1]; // always grey
         };
         case 'depth': return function(comment) {
-            var mapFn = getMapV(0, 10, HUE_RAINBOW_START, HUE_RAINBOW_START - HUE_RAINBOW_RANGE);
-            return [mapFn(comment.depth) % 1, SAT_RAINBOW, 1];
+            //var mapFn = getMapV(0, 10, HUE_RAINBOW_START, HUE_RAINBOW_START - HUE_RAINBOW_RANGE);
+            //return [mapFn(comment.depth) % 1, SAT_RAINBOW, 1];
+            var mapFn = getMapV(0, 10, 0, SAT_LINEAR); 
+            return [HUE_LINEAR, mapFn(comment.depth), 1];
         }; 
         case 'score': return function(comment) { 
             var mapFnPos = getMapV(0, 3, 0, SAT_UPS);         // truncate at 10^3
@@ -998,8 +1000,10 @@ Listit.getHslConversionFunction = function (varId) {
             return [HUE_LINEAR, mapFn(comment.numWords), 1];
         };
         case 'numReplies': return function(comment) { 
-            var mapFn = getMapV(0, 20, HUE_RAINBOW_START, HUE_RAINBOW_START - HUE_RAINBOW_RANGE);
-            return [mapFn(comment.numReplies) % 1, SAT_RAINBOW, 1];
+            //var mapFn = getMapV(0, 20, HUE_RAINBOW_START, HUE_RAINBOW_START - HUE_RAINBOW_RANGE);
+            //return [mapFn(comment.numReplies) % 1, SAT_RAINBOW, 1];
+            var mapFn = getMapV(0, 10, 0, SAT_LINEAR); 
+            return [HUE_LINEAR, mapFn(comment.numReplies), 1];
         };
         case 'postedAfter': return function(comment) { 
             var mapFn = getMapV(0, 1000, 0, SAT_LINEAR); 
