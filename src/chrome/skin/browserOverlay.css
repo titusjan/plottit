@@ -16,11 +16,14 @@
 
 treecol.number {
     text-align: right;
+    max-width: 60px; 
+    min-width: 35px;    
 }
 
 /*
 ::-moz-tree-cell(fuzzed) {
-    background-color: cyan;
+    background-color: cyan;       
+
 }*/
 
 ::-moz-tree-cell-text(fuzzed) {

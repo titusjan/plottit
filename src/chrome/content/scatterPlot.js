@@ -65,7 +65,7 @@ Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
     'numWords'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null },
     'numReplies'       : { mode: null, panRange: [     0,  1000], zoomRange: [ 5,    1000], labelWidth: 25, tickFormatter: null },
     'postedAfter'      : { 
-        mode         : null, 
+        mode         : null, // Time period
         panRange     : [0            , 10000*3600*1000], 
         zoomRange    : [0.1*3600*1000, 10000*3600*1000], 
         tickFormatter: function (val, axis) 
@@ -269,6 +269,7 @@ Listit.ScatterPlot.prototype._removeHistPrefix = function (axisVar) {
 }
 
 Listit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuList) {
+
 try{
     Listit.logger.trace("Listit.ScatterPlot.setAxisVariable -- ");
     Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
@@ -297,7 +298,6 @@ try{
 }
 }
 
-
 Listit.ScatterPlot.prototype.setBinWidth = function (menuList) {
     try{
         this.binWidth = parseFloat(menuList.getAttribute('value'));
@@ -307,7 +307,7 @@ Listit.ScatterPlot.prototype.setBinWidth = function (menuList) {
             this.resetRange('y');
         }
     } catch (ex) {
-        Listit.logger.error('Exception in Listit.ScatterPlot.setAxisVariable;');
+        Listit.logger.error('Exception in Listit.ScatterPlot.setBinWidth;');
         Listit.logException(ex);
     }
 }

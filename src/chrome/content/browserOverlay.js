@@ -320,6 +320,34 @@ Listit.onDetailsTabSelect = function(event) {
     Listit.updateAllViews(Listit.state, Listit.state.getCurrentBrowserID());
 }
  
+Listit.setTreeColsSplittersResizeBehaviour = function(event) {
+    Listit.logger.trace("Listit.setTreeColsSplittersResizeBehaviour -- ");
+    
+    // Afwul hack to make set the resizebefore and resizeafter attributes of the tree splitters
+    // Currently executed onmouse down.
+    // All splitters left of the body column have resizebefore='closest' and resizeafter = 'flex'
+    // All splitters left of the body column have resizebefore='flex' and resizeafter = 'closest'
+    
+    var treeCols = event.target.parentNode;
+    var bodyColumn = document.getElementById('listit-comment-tree-column-body');
+    //Listit.fbLog('bodyColumn, screenX: ' + bodyColumn.boxObject.screenX);
+    
+    for(let [idx, childNode] in Iterator(treeCols.childNodes)) {
+        if (childNode.tagName == 'splitter') {
+            var splitter = childNode;
+            if (childNode.boxObject.screenX <= bodyColumn.boxObject.screenX) {
+                //Listit.fbLog(childNode.id + ' before ' + childNode.boxObject.screenX + isTargetStr);
+                splitter.setAttribute('resizebefore', 'closest');
+                splitter.setAttribute('resizeafter',  'flex');
+            } else {
+                //Listit.fbLog(childNode.id + ' after ' + childNode.boxObject.screenX + isTargetStr);
+                splitter.setAttribute('resizebefore', 'flex');
+                splitter.setAttribute('resizeafter',  'closest');
+            }
+        }
+    }
+    //Listit.fbLog(event.target.getAttribute('resizebefore') + ', ' + event.target.getAttribute('resizeafter'));
+}
 
 Listit.onClickTreeHeader = function(event) {
     Listit.logger.trace("Listit.onClickTreeHeader -- ");
@@ -483,6 +511,23 @@ Listit.getRootHtmlDocument = function(doc) {
     }
     return doc;
 }
+
+// Updates binWidth drop down box
+Listit.showHideBinWidths = function (histo, menuListId) {
+
+    return false; // not yet impelemented.
+    var binWidthMenuList = document.getElementById(menuListId);
+    
+    Listit.logger.debug("Update binWidth drop down box, axisVar: " + histo._removeHistPrefix(histo.xAxisVariable));
+    
+    var isTime = (Listit.ScatterPlot.VAR_AXIS_OPTIONS[histo._removeHistPrefix(histo.xAxisVariable)].mode == 'time');
+
+
+    Listit.logger.debug("Listit.ScatterPlot.showHideBinWidths -- isTime: " + isTime);
+
+}
+
+
 
 Listit.RE_ISJSON   = /\.json$/i      // String ends with '.json' 
 Listit.RE_ISLOCAL  = /^file:\/\//i   // String begins with 'file://'
@@ -1115,7 +1160,23 @@ Listit.myDebugRoutine = function () {
         Listit.fbLog(Listit.state.summaryString());
         Listit.fbLog(Application.prefs.get("extensions.listit.listitEnabled").value);
         
-        Listit.fbLog(window);
+        var treeCols = document.getElementById('listit-comment-treecols');
+        Listit.fbLog(treeCols);
+
+        for(let [idx, childNode] in Iterator(treeCols.childNodes)) {
+            var hidden = childNode.hidden;
+            if (!hidden) {
+                if (childNode.tagName == 'splitter') {
+                    var resizebefore = childNode.getAttribute('resizebefore');
+                    var resizeafter  = childNode.getAttribute('resizeafter');
+                    Listit.fbLog(childNode.id + ', resizebefore=' + resizebefore + ", resizeafter=" + resizeafter);
+                }
+                if (childNode.tagName == 'treecol') {
+                    Listit.fbLog(childNode.id + ', ' + childNode.boxObject.screenX);
+                }
+            }
+        }        
+        return;
         
         var treeMapFrame = document.getElementById('listit-treemap-frame');
         Listit.fbLog(treeMapFrame.contentWindow);
