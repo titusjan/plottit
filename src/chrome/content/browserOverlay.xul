@@ -143,7 +143,7 @@
               id="listit-comment-treecols" 
               pickertooltiptext="Select visible columns">
           
-            <treecol id="listit-comment-tree-column-id"
+            <treecol id="listit-comment-tree-column-id" class="chars10"
               width="60"  
               label="&listit.comment.id;"
               persist="width ordinal hidden"
@@ -151,7 +151,7 @@
               hidden="true"/>
             <splitter  id="listit-comment-tree-splitter-id"  class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
             
-            <treecol id="listit-comment-tree-column-page-order" class="number"
+            <treecol id="listit-comment-tree-column-page-order" class="number chars4"
               width="50"  
               label="&listit.comment.pageOrder;"
               persist="width ordinal hidden"
@@ -164,12 +164,10 @@
               label="&listit.comment.author;"
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
-              minwidth="40"
-              maxwidth="150"
               /> 
             <splitter id="listit-comment-tree-splitter-author" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
             
-            <treecol id="listit-comment-tree-column-local-date" class="number"
+            <treecol id="listit-comment-tree-column-local-date" class="number date"
               width="130"
               label="&listit.comment.localDate;   "
               persist="width ordinal hidden format"
@@ -179,7 +177,7 @@
               />
             <splitter id="sp-local-date" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
   
-            <treecol id="listit-comment-tree-column-utc-date" class="number"
+            <treecol id="listit-comment-tree-column-utc-date" class="number date"
               width="130"
               label="&listit.comment.utcDate;   "
               persist="width ordinal hidden format"
@@ -189,7 +187,7 @@
               />
             <splitter id="sp-utc-date" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
   
-            <treecol id="listit-comment-tree-column-age" class="number"
+            <treecol id="listit-comment-tree-column-age" class="number time-period"
               width="100"
               label="&listit.comment.age;   "
               persist="width ordinal hidden format"
@@ -198,7 +196,7 @@
               />
             <splitter id="listit-comment-tree-splitter-age" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
                                 
-            <treecol id="listit-comment-tree-column-posted-after" class="number"
+            <treecol id="listit-comment-tree-column-posted-after" class="number time-period"
               width="100"
               label="&listit.comment.postedAfter;   "
               persist="width ordinal hidden format"
@@ -207,7 +205,7 @@
               />
             <splitter id="sp-posted-after" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
             
-            <treecol id="listit-comment-tree-column-depth" class="number"
+            <treecol id="listit-comment-tree-column-depth" class="number chars4"
               width="50"  
               label="&listit.comment.depth;   "
               persist="width ordinal hidden"
@@ -215,7 +213,7 @@
               /> 
             <splitter id="listit-comment-tree-splitter-depth" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
   
-            <treecol id="listit-comment-tree-column-replies" class="number"
+            <treecol id="listit-comment-tree-column-replies" class="number chars4"
               width="50"
               label="&listit.comment.replies;   "
               persist="width ordinal hidden"
@@ -231,11 +229,10 @@
               persist="width ordinal hidden structure label"
               onclick="Listit.onClickCommentTreeHeader(event)"
               flex="1"
-              primary="true"
-              minwidth="100"           
+              primary="true"      
             />
             
-            <treecol id="listit-comment-tree-column-hot" class="number"
+            <treecol id="listit-comment-tree-column-hot" class="number chars10"
               width="50"
               label="&listit.comment.hot;   "
               persist="width ordinal hidden"
@@ -243,7 +240,7 @@
               /> 
             <splitter id="listit-comment-tree-splitter-hot" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>                
             
-            <treecol id="listit-comment-tree-column-score" class="number"
+            <treecol id="listit-comment-tree-column-score" class="number chars4"
               width="50"
               label="&listit.comment.score;   "
               persist="width ordinal hidden"
@@ -251,7 +248,7 @@
               />
             <splitter id="listit-comment-tree-splitter-score" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>	    
             
-            <treecol id="listit-comment-tree-column-up" class="number"
+            <treecol id="listit-comment-tree-column-up" class="number chars4"
               width="50"
               label="&listit.comment.up;   "
               persist="width ordinal hidden"
@@ -259,7 +256,7 @@
               />
             <splitter id="listit-comment-tree-splitter-up" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>	    
             
-            <treecol id="listit-comment-tree-column-down" class="number"
+            <treecol id="listit-comment-tree-column-down" class="number chars4"
               width="50"
               label="&listit.comment.down;   "
               persist="width ordinal hidden"
@@ -267,7 +264,7 @@
               />
             <splitter id="listit-comment-tree-splitter-down" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
             
-            <treecol id="listit-comment-tree-column-votes" class="number"
+            <treecol id="listit-comment-tree-column-votes" class="number chars4"
               width="50"
               label="&listit.comment.votes;   "
               persist="width ordinal hidden"
@@ -275,7 +272,7 @@
               /> 
             <splitter id="listit-comment-tree-splitter-votes" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
             
-            <treecol id="listit-comment-tree-column-likes" class="number"
+            <treecol id="listit-comment-tree-column-likes" class="number chars4"
               width="50"
               label="&listit.comment.likes;   "
               persist="width ordinal hidden"
@@ -283,7 +280,7 @@
               /> 
             <splitter id="listit-comment-tree-splitter-likes" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>   
             
-            <treecol id="listit-comment-tree-column-controversial" class="number"
+            <treecol id="listit-comment-tree-column-controversial" class="number chars4"
               width="50"
               label="&listit.comment.controversial;   "
               persist="width ordinal hidden"
@@ -291,7 +288,7 @@
               /> 
             <splitter id="listit-comment-tree-splitter-controversial" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>   
             
-            <treecol id="listit-comment-tree-column-best" class="number"
+            <treecol id="listit-comment-tree-column-best" class="number chars4"
               width="50"
               label="&listit.comment.best;   "
               persist="width ordinal hidden"
@@ -299,7 +296,7 @@
               /> 
             <splitter id="listit-comment-tree-splitter-best" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
   
-            <treecol id="listit-comment-tree-column-chars" class="number"
+            <treecol id="listit-comment-tree-column-chars" class="number chars4"
               width="50"  
               label="&listit.comment.characters;   "
               persist="width ordinal hidden"
@@ -307,7 +304,7 @@
               /> 
             <splitter id="listit-comment-tree-splitter-chars" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
   
-            <treecol id="listit-comment-tree-column-words" class="number"
+            <treecol id="listit-comment-tree-column-words" class="number chars4"
               width="50"  
               label="&listit.comment.words;   "
               persist="width ordinal hidden"

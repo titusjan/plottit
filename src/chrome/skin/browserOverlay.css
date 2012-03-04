@@ -14,10 +14,15 @@
 }
 
 
+#listit-comment-tree-column-body     { min-width: 200px; }
+#listit-comment-tree-column-author   { min-width: 40px; max-width: 150px;}
+treecol.chars4      { min-width: 35px; max-width:  60px;}
+treecol.chars10     { min-width: 35px; max-width:  70px;}
+treecol.date        { min-width: 35px; max-width: 130px;}
+treecol.time-period { min-width: 35px; max-width:  90px;}
+
 treecol.number {
     text-align: right;
-    max-width: 60px; 
-    min-width: 35px;    
 }
 
 /*
