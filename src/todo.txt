@@ -1,10 +1,6 @@
 --- Version 1.0 ---
 
-Depth should start at 1
 
-Treemap: sorting parent before children
-
-Removed eventhandlers in OnUnload
 
 Table: disable double click / tooltip
 
@@ -39,3 +35,9 @@ Steal focus on page load? Only when configured to do so!
 
 Error handling on Ajax time out
 
+
+
+-------
+
+about:memory?verbose
+ 

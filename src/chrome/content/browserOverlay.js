@@ -4,7 +4,6 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 // Initializes listit. Is called when the XUL window has loaded
 Listit.onLoad = function(event) {
 
-try{        
     Listit.initializeLoggers(true, "Debug");
     document.getElementById('listit-scatter-plot-iframe').contentWindow.Listit.logger = Listit.logger;
     document.getElementById('listit-scatter-plot-iframe').contentWindow.Listit.fbLog  = Listit.fbLog;
@@ -87,10 +86,6 @@ try{
     window.addEventListener('unload', Listit.onUnload, false); // capture is false (otherwise we get also subwindos unloads)
 
     Listit.logger.debug('Listit.onLoad -- end');
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.onLoad;');
-    Listit.logException(ex);
-}        
 };
 
 
@@ -159,7 +154,7 @@ Listit.selectAndExpandOrCollapseComment = function(selectedComment, expand, scro
 // Update tree, comment pane, plots selection.
 Listit.updateViewsForCurrentSelection = function(scrollRedditPage) {
     Listit.logger.trace("Listit.updateViewsForCurrentSelection -- ");
-try{    
+
     var curState = Listit.state.getCurrentBrowserState();
     var selectedComment = curState.selectedComment;
     var selectedCommentId = selectedComment ? selectedComment.id : null;
@@ -170,13 +165,7 @@ try{
     Listit.scatterPlot.highlight(selectedCommentId);
     Listit.treeMap.highlight(selectedCommentId, expand);
     Listit.selectCommentInRedditPage(selectedComment, curState.previousSelectedComment, scrollRedditPage);
-    
-    //Listit.fbLog('----------------------------------------------------');
-    //Listit.fbLog(' ');
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.updateViewsForCurrentSelection;');
-    Listit.logException(ex);
-}    
+
 }
 
 
@@ -536,7 +525,7 @@ Listit.RE_ISREDDIT = /www\.reddit\.com\/r\/.*\/comments\//
 Listit.onPageLoad = function(event) {
 
     Listit.logger.trace("Listit.onPageLoad");
-try {        
+
     var doc = event.originalTarget;
     var pageURL = doc.URL;
     var browser = gBrowser.getBrowserForDocument(doc);
@@ -620,11 +609,6 @@ try {
         Listit.updateAllViews(Listit.state, browserID); // Will hide pannels
         return;
     }
-    
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.onPageLoad;');
-    Listit.logException(ex);
-}    
 }    
 
 Listit.ajaxRequestJsonPage = function (pageURL, browser) {
@@ -801,37 +785,28 @@ Listit.updateAllViews = function(state, eventBrowserID) {
 }
 
 Listit.setListitVisible = function (visible) {
-    try {
-        var deck = document.getElementById('listit-messages-deck');
-        var splitter = document.getElementById('listit-content-splitter');
-        deck.hidden = !visible;
-        splitter.hidden = !visible;
-    } catch (ex) {
-        Listit.logger.error('Exception in Listit.setListitVisible;');
-        Listit.logException(ex);
-    }    
+
+    var deck = document.getElementById('listit-messages-deck');
+    var splitter = document.getElementById('listit-content-splitter');
+    deck.hidden = !visible;
+    splitter.hidden = !visible;
 }
 
 Listit.onRenderTreeMapTimeOut = function() {
 
-    try {
-        Listit.logger.trace("Listit.drawTreeMapCushionedAfterTimeOut: " + Listit.globalTimeOutId);
-        
-        var sliderH0   = document.getElementById("listit-treemap-scale-h0").value / 1000;
-        var sliderF    = document.getElementById("listit-treemap-scale-f").value / 1000;
-        var sliderIamb = document.getElementById("listit-treemap-scale-iamb").value / 1000;
-        //var sliderH0   = 1.2;
-        //var sliderF    = 2.5;
-        //var sliderIamb = 0.12;
-        Listit.logger.debug("Listit.drawTreeMapCushionedAfterTimeOut, H0: " + 
-            sliderH0 + ', F: ' + sliderF + ', Iamb: ' + sliderIamb);
-        
-        Listit.treeMap.renderCushioned(sliderH0, sliderF, sliderIamb);
-        Listit.globalTimeOutId = null;
-    } catch (ex) {
-        Listit.logger.error('Exception in Listit.setTreeMapDiscussion;');
-        Listit.logException(ex);
-    }   
+    Listit.logger.trace("Listit.drawTreeMapCushionedAfterTimeOut: " + Listit.globalTimeOutId);
+    
+    var sliderH0   = document.getElementById("listit-treemap-scale-h0").value / 1000;
+    var sliderF    = document.getElementById("listit-treemap-scale-f").value / 1000;
+    var sliderIamb = document.getElementById("listit-treemap-scale-iamb").value / 1000;
+    //var sliderH0   = 1.2;
+    //var sliderF    = 2.5;
+    //var sliderIamb = 0.12;
+    Listit.logger.debug("Listit.drawTreeMapCushionedAfterTimeOut, H0: " + 
+        sliderH0 + ', F: ' + sliderF + ', Iamb: ' + sliderIamb);
+    
+    Listit.treeMap.renderCushioned(sliderH0, sliderF, sliderIamb);
+    Listit.globalTimeOutId = null;
 }
 
 Listit.renderTreeMap = function(cushionDelay) {
@@ -854,46 +829,32 @@ Listit.renderTreeMap = function(cushionDelay) {
 
 
 Listit.onResizeTreeMap = function(event) {
+    Listit.logger.trace("Listit.onResizeTreeMap");
 
-    try {
-        Listit.logger.trace("Listit.onResizeTreeMap");
-        var treeMapFrame = document.getElementById('listit-treemap-frame');
-        Listit.treeMap.resize(0, 0,
-            treeMapFrame.contentWindow.innerWidth, 
-            treeMapFrame.contentWindow.innerHeight);        
-                
-        Listit.renderTreeMap();
-    } catch (ex) {
-        Listit.logger.error('Exception in Listit.onResizeTreeMap;');
-        Listit.logException(ex);
-    } 
+    var treeMapFrame = document.getElementById('listit-treemap-frame');
+    Listit.treeMap.resize(0, 0,
+        treeMapFrame.contentWindow.innerWidth, 
+        treeMapFrame.contentWindow.innerHeight);        
+            
+    Listit.renderTreeMap();
 }
 
 Listit.setTreeMapDiscussion = function(discussion) {
-    try {
-        Listit.logger.trace("Listit.setTreeMapDiscussion --");
-        
-        Listit.treeMap.setDataFromDiscussion(discussion,
-            Listit.state.treeMapSizeProperty,
-            Listit.state.fnHslOfComment);
+    Listit.logger.trace("Listit.setTreeMapDiscussion --");
+    
+    Listit.treeMap.setDataFromDiscussion(discussion,
+        Listit.state.treeMapSizeProperty,
+        Listit.state.fnHslOfComment);
 
-        Listit.renderTreeMap()
-    } catch (ex) {
-        Listit.logger.error('Exception in Listit.setTreeMapDiscussion;');
-        Listit.logException(ex);
-    }   
+    Listit.renderTreeMap()
 }
 
 
 Listit.setTreeMapSizeProperty = function(menuList) {
-    try {
-        Listit.logger.trace("Listit.setTreeMapSizeProperty: " + menuList.value);
-        Listit.state.treeMapSizeProperty = menuList.value;
-        Listit.setTreeMapDiscussion(Listit.state.getCurrentBrowserDiscussion());
-    } catch (ex) {
-        Listit.logger.error('Exception in Listit.setTreeMapSizeProperty;');
-        Listit.logException(ex);
-    }   
+    Listit.logger.trace("Listit.setTreeMapSizeProperty: " + menuList.value);
+
+    Listit.state.treeMapSizeProperty = menuList.value;
+    Listit.setTreeMapDiscussion(Listit.state.getCurrentBrowserDiscussion());
 }
 
 
@@ -1018,14 +979,10 @@ Listit.getHslConversionFunction = function (varId) {
 }
 
 Listit.setTreeMapColorProperty = function(menuList) {
-    try {
-        Listit.logger.trace("Listit.setTreeMapColorProperty: " + menuList.value);
-        Listit.state.fnHslOfComment = Listit.getHslConversionFunction(menuList.value);
-        Listit.setTreeMapDiscussion(Listit.state.getCurrentBrowserDiscussion());
-    } catch (ex) {
-        Listit.logger.error('Exception in Listit.setTreeMapColorProperty;');
-        Listit.logException(ex);
-    }   
+    Listit.logger.trace("Listit.setTreeMapColorProperty: " + menuList.value);
+
+    Listit.state.fnHslOfComment = Listit.getHslConversionFunction(menuList.value);
+    Listit.setTreeMapDiscussion(Listit.state.getCurrentBrowserDiscussion());
 }
     
 
@@ -1060,20 +1017,17 @@ Listit.ensureCurrentRowVisible = function () {
     }
 }
 */
+
 Listit.ensureCurrentRowVisible = function () {
     Listit.logger.trace("Listit.ensureCurrentRowVisible -- ");
     Listit.updateViewsForCurrentSelection(true); // TODO: replace ensureCurrentRowVisible calls by updateViewsForCurrentSelection
 }
 
 Listit.toggleListitActive = function () {
-    try{
-        Listit.logger.trace("Listit.toggleListitActive -- ");
-        this.setListitActive( ! Listit.state.listitEnabled);
-        Listit.updateAllViews(Listit.state, Listit.state.getCurrentBrowserID());
-    } catch (ex) {
-        Listit.logger.error('Exception in Listit.toggleListitActive;');
-        Listit.logException(ex);
-    }        
+    Listit.logger.trace("Listit.toggleListitActive -- ");
+
+    this.setListitActive( ! Listit.state.listitEnabled);
+    Listit.updateAllViews(Listit.state, Listit.state.getCurrentBrowserID());
 }
 
 Listit.setListitActive = function (listitEnabled) {

@@ -269,9 +269,8 @@ Listit.ScatterPlot.prototype._removeHistPrefix = function (axisVar) {
 }
 
 Listit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuList) {
-
-try{
     Listit.logger.trace("Listit.ScatterPlot.setAxisVariable -- ");
+    
     Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
     
     var axisVar = menuList.getAttribute('value');
@@ -292,23 +291,15 @@ try{
     this.resetRange(axisStr);
     this.flotWrapper.addAxisDivs(); // The width of the axis can change so recreate the zoom-divs
     this._updatePlotTitle();
-} catch (ex) {
-    Listit.logger.error('Exception in Listit.ScatterPlot.setAxisVariable;');
-    Listit.logException(ex);
-}
 }
 
 Listit.ScatterPlot.prototype.setBinWidth = function (menuList) {
-    try{
-        this.binWidth = parseFloat(menuList.getAttribute('value'));
-        
-        if (this.histogramMode) {
-            this.setDiscussion(this.discussion);
-            this.resetRange('y');
-        }
-    } catch (ex) {
-        Listit.logger.error('Exception in Listit.ScatterPlot.setBinWidth;');
-        Listit.logException(ex);
+
+    this.binWidth = parseFloat(menuList.getAttribute('value'));
+    
+    if (this.histogramMode) {
+        this.setDiscussion(this.discussion);
+        this.resetRange('y');
     }
 }
 
