@@ -20,7 +20,7 @@ Listit.getTreeBoxObject = function (treeID) {
 
 Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
 
-    this.typeStr = 'treeView';  // TODO in prototype ???
+    this.typeStr = 'treeView';  
     this.discussion = null;     
     this.allComments = [];      // Nested list (tree) of all comments (TODO: use discussion.comments?)
     this.visibleComments = [];  // List of comments currently in the table (may be necessary to scroll)

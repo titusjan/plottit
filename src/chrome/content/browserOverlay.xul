@@ -623,13 +623,3 @@
     </deck>
   </vbox>    <!-- appcontent -->
 </overlay>
-
-<!--
-
-TODO: 
- words, sequence_counter 
-
-Notes:
--   An element must have an ID if it uses persistent attribrutes!
--->
-

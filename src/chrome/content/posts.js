@@ -353,7 +353,7 @@ Listit.getListitDiscussionFromPage = function(redditJsonPage) {
         comment.downs = data.downs;
         comment.ups = data.ups;
         comment.isOpen = true;  // true if a node is expanded
-        comment.replies = []; // For convenience always make an empty replies list (TODO: optimize?)
+        comment.replies = []; // For convenience always make an empty replies list 
         
         words = data.body.match(/\S+/g) // count words
         comment.numWords = words ? words.length : 0;
@@ -374,7 +374,7 @@ Listit.getListitDiscussionFromPage = function(redditJsonPage) {
     
     var redditPosts = redditJsonPage[1];
     var comments = [];
-    var children = redditPosts.data.children; // TODO: what is data.after/before?
+    var children = redditPosts.data.children; 
 
     for (var i = 0; i < children.length; i++) {
         var listitNode = redditT1NodeToComment(children[i], discussion, 1);

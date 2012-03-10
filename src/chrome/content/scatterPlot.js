@@ -58,9 +58,9 @@ Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
     'downs'            : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null }, 
     'votes'            : { mode: null, panRange: [     0, 20000], zoomRange: [10,   20000], labelWidth: 25, tickFormatter: null }, 
     'controversial'    : { mode: null, panRange: [     0,  1000], zoomRange: [0.1,   2000], labelWidth: 25, tickFormatter: null },
-    'likesPerc'        : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     200], labelWidth: 25, tickFormatter: null }, // TODO: fix
+    'likesPerc'        : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     200], labelWidth: 25, tickFormatter: null }, 
     'hot'              : { mode: null, panRange: [-10000, 10000], zoomRange: [ 0.5, 20000], labelWidth: 35, tickFormatter: null }, 
-    'bestPerc'         : { mode: null, panRange: [  -100,   100], zoomRange: [ 5,     200], labelWidth: 25, tickFormatter: null }, // TODO: fix
+    'bestPerc'         : { mode: null, panRange: [  -100,   100], zoomRange: [ 5,     200], labelWidth: 25, tickFormatter: null }, 
     'numChars'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null },
     'numWords'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null },
     'numReplies'       : { mode: null, panRange: [     0,  1000], zoomRange: [ 5,    1000], labelWidth: 25, tickFormatter: null },

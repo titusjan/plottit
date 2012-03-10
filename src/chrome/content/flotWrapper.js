@@ -8,7 +8,7 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 */
 
 // Constructor
-// TODO: make all private methods start with underscore
+
 Listit.FlotWrapper = function (placeHolderDivId) 
 {
     this.plot = null; // Don't call jQuery.plot yet, the placeholder may not be visible
@@ -196,7 +196,7 @@ Listit.FlotWrapper.prototype.getCalculatedYRange = function () {
 
 
 Listit.FlotWrapper.prototype.getXRange = function () {
-    var axes = this.plot.getAxes();                     // TODO: just use getXAxes?
+    var axes = this.plot.getAxes();                    
     var xAxis = axes.xaxis;
     return [xAxis.options.min, xAxis.options.max];
 }

@@ -159,7 +159,7 @@ Listit.TreeMap.prototype.getNodeById = function (id) {
 
 Listit.TreeMap.prototype.selectNode = function (node) {
 
-    if (this.previousSelectedNode != this.selectedNode ) { // TODO: is this check necessary?
+    if (this.previousSelectedNode != this.selectedNode ) { 
         this.previousSelectedNode = this.selectedNode;
     }
     this.selectedNode = node;

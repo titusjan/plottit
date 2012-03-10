@@ -139,7 +139,7 @@ Listit.onTreeDoubleClick = function(event) {
 
 // Selects comment and possibly collapses/expands.
 // (set collapsed to null to it this unchanged).
-// Always makes the comment visible by expanding the path to it!. (TODO: parameter?)
+// Always makes the comment visible by expanding the path to it!.
 Listit.selectAndExpandOrCollapseComment = function(selectedComment, expand, scrollRedditPage) {
     Listit.logger.trace("Listit.selectAndExpandOrCollapseComment -- ");
 
@@ -200,7 +200,7 @@ Listit.onRowExpandOrCollapse = function(event) {
         Listit.updateViewsForCurrentSelection(false); 
     }
     
-    if (true) { // TODO: setting?
+    if (true) { // TODO: configuration option?
         Listit.expandOrCollapseRedditComment(event.comment, event.comment.isOpen);
     }
         
@@ -404,7 +404,7 @@ Listit.onClickCommentTreeHeader = function(event) {
     var curTreeView = Listit.state.getCurrentTreeView();
     curTreeView.setStructure(newStructure);
     
-    // Sort and set comments in score tree (TODO new function)
+    // Sort and set comments in score tree
     var commentTree = document.getElementById('listit-comment-tree');
     var sortResource = commentTree.getAttribute('sortResource');
     var sortDirection = commentTree.getAttribute('sortDirection');
@@ -1020,7 +1020,7 @@ Listit.ensureCurrentRowVisible = function () {
 
 Listit.ensureCurrentRowVisible = function () {
     Listit.logger.trace("Listit.ensureCurrentRowVisible -- ");
-    Listit.updateViewsForCurrentSelection(true); // TODO: replace ensureCurrentRowVisible calls by updateViewsForCurrentSelection
+    Listit.updateViewsForCurrentSelection(true);
 }
 
 Listit.toggleListitActive = function () {
