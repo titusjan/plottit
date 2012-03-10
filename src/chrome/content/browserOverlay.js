@@ -708,7 +708,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
                 Listit.showDescription('The current page is not a reddit discussion');
                 Listit.scatterPlot.display(false);
                 Listit.histogram.display(false);
-                curState.removeAllComments();
+                curState.removeDiscussion();
             }
             break;
         case Listit.PAGE_POSTPONED:
@@ -716,7 +716,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             Listit.showDescription('(Postponed) comments loading...');
             Listit.scatterPlot.display(false);
             Listit.histogram.display(false);
-            curState.removeAllComments();
+            curState.removeDiscussion();
             Listit.setListitVisible(true);
             
             // Page loading was postponed... until now.
@@ -731,7 +731,7 @@ Listit.updateAllViews = function(state, eventBrowserID) {
             Listit.showDescription('Loading comments...');
             Listit.scatterPlot.display(false);
             Listit.histogram.display(false);
-            curState.removeAllComments();
+            curState.removeDiscussion();
             break;
         case Listit.PAGE_READY:
             Listit.setListitVisible(true);

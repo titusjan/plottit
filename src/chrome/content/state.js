@@ -39,8 +39,8 @@ Listit.BrowserState.prototype.summaryString = function () {
         + ", selectedComment=" + (this.selectedComment ? this.selectedComment.id : this.selectedComment) ;
 };
 
-Listit.BrowserState.prototype.removeAllComments = function (status) {
-    this.treeView.removeAllComments();
+Listit.BrowserState.prototype.removeDiscussion = function () {
+    this.treeView.removeDiscussion();
     this.selectedComment = null;
 };
 

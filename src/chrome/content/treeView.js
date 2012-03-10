@@ -18,11 +18,15 @@ Listit.getTreeBoxObject = function (treeID) {
 // TreeView //
 //////////////
 
+// A view on a discussion for use in the tree/table. 
+// It's not a real view, it will sort the comments inside the discussion when the user clicks the
+// table colum headers. I don't want to make a copy of the comments only to prevent this 
+// side-effect.
+
 Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
 
     this.typeStr = 'treeView';  
     this.discussion = null;     
-    this.allComments = [];      // Nested list (tree) of all comments (TODO: use discussion.comments?)
     this.visibleComments = [];  // List of comments currently in the table (may be necessary to scroll)
     this.isFlat = false;        // If body column is a tree of flat
     
@@ -34,67 +38,48 @@ Listit.TreeView = function (localDateFormat, utcDateFormat) { // Constructor
     this.selection = null; 
 }
 
-
 ////
 // Methods that are not part of the nsITreeView interface
 ////
 
 Listit.TreeView.prototype.getComments = function() {
-    return this.allComments;
+    return this.discussion.comments;
 }
 
 Listit.TreeView.prototype.setDiscussionSorted = function(columnID, sortDirection, structure, discussion) {
-
-    Listit.logger.trace("setDiscussionSorted -- ")
+    Listit.logger.trace("setDiscussionSorted, structure: " + structure);
     
-    var comments;
-
-    if (discussion === undefined) { 
-        // Nothing changes
-        comments = this.allComments;
-    } else {
-        this.discussion = discussion;        
-        comments = discussion.comments;
-    }
-    
-    Listit.assert(comments instanceof Array, 'addComments: listitComments should be an Array');
-
-    //Listit.logger.debug("setDiscussionSorted, structure: " + structure);    
     this.setStructure(structure);
     var comparisonFunction = this.getComparisonFunction(columnID, sortDirection);
 
-    this.removeAllComments();
-    
+    if (discussion === undefined) { 
+        discussion = this.discussion; // retain old discussion
+    }
+    this.removeDiscussion();
+    this.discussion = discussion;        
+
     if (this.isFlat) {
-        this.allComments = comments;
-        this.visibleComments = this._flattenComments(this.allComments).sort(comparisonFunction);
+        this.visibleComments = this._flattenComments(this.discussion.comments).sort(comparisonFunction);
     } else {
-        this.allComments = Listit.sortComments(comments, comparisonFunction);
-        this.visibleComments = this._getOpenComments(this.allComments);
+        this.discussion.comments = Listit.sortComments(this.discussion.comments, comparisonFunction);
+        this.visibleComments = this._getOpenComments(this.discussion.comments);
     }
     this.treeBox.rowCountChanged(0, this.visibleComments.length);
+}
+
+
+Listit.TreeView.prototype.removeDiscussion = function() { // Must be fast because it's called for every page load!
+
+    if (this.rowCount != 0) {
+        if (this.treeBox) this.treeBox.rowCountChanged(0, -this.rowCount);
+        this.discussion = null;
+        this.visibleComments = [];
+    }
 }
 
 
 Listit.TreeView.prototype.countComments = function() {
-    return Listit.countComments(this.allComments);
-}
-
-Listit.TreeView.prototype._addComments = function(listitComments)  {
-    Listit.assert(listitComments instanceof Array, 'addComments: listitComments should be an Array');
-    this.allComments = listitComments;
-    this.visibleComments = this._getOpenComments(this.allComments);
-
-    this.treeBox.rowCountChanged(0, this.visibleComments.length);
-}
-
-Listit.TreeView.prototype.removeAllComments = function() { // Must be fast because it's called for every page load!
-
-    if (this.rowCount != 0) {
-        if (this.treeBox) this.treeBox.rowCountChanged(0, -this.rowCount);
-        this.allComments = [];
-        this.visibleComments = [];
-    }
+    return Listit.countComments(this.discussion.comments);
 }
 
 Listit.TreeView.prototype.getTreeDomElement = function() {
@@ -364,6 +349,7 @@ Listit.TreeView.prototype.setTree = function(treeBox)  {
 Listit.TreeView.prototype.getCellText = function(idx, column) {
 
     var rowItem = this.visibleComments[idx];
+    
     switch (column.id)
     {
         case 'listit-comment-tree-column-id'            : return rowItem.id;
