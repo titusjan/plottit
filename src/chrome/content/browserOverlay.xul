@@ -47,7 +47,7 @@
   <menupopup id="menu_ToolsPopup">
     <menu id="listit-tools-menu" label="Listit"
         accesskey="&listit.listitMenu.accesskey;"
-        insertafter="javascriptConsole,devToolsSeparator">
+        insertafter="devToolsSeparator">
       <menupopup>
         <menuitem id="listit-tools-debug-menu-item"
           label="&listit.debug.label;"
