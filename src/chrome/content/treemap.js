@@ -132,7 +132,6 @@ Listit.TreeMap.prototype.renderCushioned = function (h0, f, Iamb) {
 
 Listit.TreeMap.prototype.getNodeByXY = function (x, y, returnParentOfId) {
 
-    Listit.fbLog('getNodeByXY: ' + this.returnParentOnRepeatSelectMode);
     if (this.root) {
         var result = this.root.getNodeByXY(x, y, 
             this.returnParentOnRepeatSelectMode && returnParentOfId);
@@ -258,7 +257,6 @@ Listit.TreeMap.prototype.setDataFromDiscussion  = function (discussion, sizeProp
 // TODO: move out of this class
 Listit.TreeMap.prototype.getDataFromArray = function (data) {
 
-    //Listit.fbLog('setDataFromArray', data);
     if ( !(data instanceof Array) ) {
         // Create leaf node
         var node = new Listit.TreeMap.Node(data, true);
@@ -269,7 +267,6 @@ Listit.TreeMap.prototype.getDataFromArray = function (data) {
         for (let [idx, elem] in Iterator(data)) {
             node.addChild( this.getDataFromArray(elem) );
         }
-        //Listit.fbLog('  --return: setDataFromArray', node);
         return node;
     }
 };
@@ -439,8 +436,6 @@ Listit.TreeMap.Node.prototype.layoutInStrips = function (rectangle) {
 // Lays out the children[start, end] of the node
 Listit.TreeMap.Node.prototype._layoutStrip = function (x, y, width, height, start, end) {
 
-    //Listit.fbLog('Listit.TreeMap.Node._layoutStrip', x, y, width, height, start, end);
-
     var layoutSum = this.children.slice(start, end).
         reduce( function (prev, cur) { return prev+cur.size }, 0);
         
@@ -457,7 +452,6 @@ Listit.TreeMap.Node.prototype._layoutStrip = function (x, y, width, height, star
             child.rectangle = { x: x+accumSize, y: y, width: relSize*width, height: height };
             accumSize += relSize*width;
         }
-        //Listit.fbLog('Layout: ', child.size, child.rectangle);
     }
 }
 

@@ -120,7 +120,6 @@ Listit.State.prototype.addBrowser = function (browser) {
         this.browserStates[browserID] = new Listit.BrowserState(browser, 
             this._localDateFormat, this._utcDateFormat);
         browser.setAttribute("ListitBrowserID", browserID);
-        Listit.logger.debug("Listit.State.prototype.addBrowser: added browser " + browserID);
     }
     return browserID;
 };

@@ -176,13 +176,14 @@ Listit.FlotWrapper.prototype.setAxisOptions = function (axisStr, varOptions) {
     }
 }
 
+/*
 Listit.FlotWrapper.prototype.logRange = function () {
     Listit.logger.trace('Listit.FlotWrapper.logRange');
     var range = this.getYRange();
     Listit.logger.debug('def range: ' + range[0] + ' ' + range[1]);
     range = this.getCalculatedYRange();
     Listit.logger.debug('cal range: ' + range[0] + ' ' + range[1]);
-}
+}*/
 
 Listit.FlotWrapper.prototype.getCalculatedXRange = function () {
     var xAxis = this.plot.getXAxes()[0]; 

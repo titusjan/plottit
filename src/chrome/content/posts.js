@@ -308,7 +308,6 @@ Listit.getCommentDataAsList = function(comments, xVarID, yVarID) {
 Listit.redditT3NodeToDiscussion = function(redditNode) {
 
     if (redditNode.kind != 't3') { // e.g. kind = 'Listing'
-        //Listit.fbLog(redditNode);
         return null;
     } 
     var data = redditNode.data;
@@ -335,7 +334,6 @@ Listit.getListitDiscussionFromPage = function(redditJsonPage) {
     var redditT1NodeToComment = function(redditNode, discussion, depth) {
     
         if (redditNode.kind != 't1') { // e.g. kind = 'more'
-            //Listit.fbLog(redditNode);
             return null;
         } 
         

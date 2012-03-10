@@ -49,7 +49,7 @@ Listit.TreeView.prototype.getComments = function() {
 Listit.TreeView.prototype.setDiscussionSorted = function(columnID, sortDirection, structure, discussion) {
     Listit.logger.trace("setDiscussionSorted, structure: " + structure);
     
-    this.setStructure(structure);
+        this.setStructure(structure);
     var comparisonFunction = this.getComparisonFunction(columnID, sortDirection);
 
     if (discussion === undefined) { 
@@ -94,10 +94,7 @@ Listit.TreeView.prototype.expandPath = function(selectedComment) {
 
     if (selectedComment == null) { return null }
     
-    var path = this.discussion.getCommentPathById(selectedComment.id);
-    //Listit.fbLog('expand path: ' +  [ p.id for each (p in path ) ]);
-
-    for (let [idx, comment] in Iterator(path)) {
+    for (let [idx, comment] in Iterator(this.discussion.getCommentPathById(selectedComment.id))) {
         this.expandComment(comment, false);
     }
 }
@@ -117,8 +114,6 @@ Listit.TreeView.prototype.selectComment = function(selectedComment) {
 }
 
 Listit.TreeView.prototype.expandOrCollapseComment = function(selectedComment, expand, makeVisible) {
-    
-    //Listit.fbLog("Listit.TreeView.expandOrCollapseComment: selectedComment: " + selectedComment + ", expand: " + expand );
     
     if (selectedComment == null) return;
     if (expand == null) return;
@@ -152,12 +147,9 @@ Listit.TreeView.prototype.expandComment = function(comment, makeVisible) {
 Listit.TreeView.prototype.expandRowByIndex = function(idx) {
     Listit.logger.trace("Listit.TreeView.expandRowByIndex: " + idx );
 
-    Listit.fbLog("Listit.TreeView.expandRowByIndex: " + idx );
-    
     if (idx < 0) return;
     if (this.isContainer(idx) === false) return;
     if (this.visibleComments[idx].isOpen === true) { 
-        Listit.fbLog('container already open, skipping ....');
         return; // container already open, skip;
     }
     this.visibleComments[idx].isOpen = true;
@@ -186,13 +178,10 @@ Listit.TreeView.prototype.collapseComment = function(comment, makeVisible) {
 
 Listit.TreeView.prototype.collapseRowByIndex = function(idx) {
     Listit.logger.trace("Listit.TreeView.collapseRowByIndex: " + idx );
-
-    Listit.fbLog("Listit.TreeView.collapseRowByIndex: " + idx );
     
     if (idx < 0) return;
     if (this.isContainer(idx) === false) return;
     if (this.visibleComments[idx].isOpen === false) {
-        Listit.fbLog('container already closed, skipping ....');
         return; // container closed open, skip;
     }
     this.visibleComments[idx].isOpen = false;
@@ -415,9 +404,7 @@ Listit.TreeView.prototype.getLevel = function(idx) {
 
 
 Listit.TreeView.prototype.hasNextSibling = function(idx, after) {
-
-    // Seems not to be called ?
-    Listit.logger.debug("Listit.TreeView.hasNextSibling: " + idx + ", " + after);
+    Listit.logger.trace("Listit.TreeView.hasNextSibling: " + idx + ", " + after);     // Seems not to be called ?
     
     var thisLevel = this.getLevel(idx);
     for (var t = after + 1; t < this.visibleComments.length; t++) {

@@ -5,11 +5,11 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 Listit.onLoad = function(event) {
 
     Listit.initializeLoggers(true, "Debug");
+    Listit.logger.info(' ---------------- Listit loaded ----------------');
+    Listit.logger.trace('Listit.onLoad -- begin');
+
     document.getElementById('listit-scatter-plot-iframe').contentWindow.Listit.logger = Listit.logger;
     document.getElementById('listit-scatter-plot-iframe').contentWindow.Listit.fbLog  = Listit.fbLog;
-
-    Listit.logger.warn(' ---------------- Listit loaded ----------------');
-    Listit.logger.trace('Listit.onLoad -- begin');
 
     // Test if the extension is executed for the first time.
     if (Application.extensions)  
@@ -82,10 +82,9 @@ Listit.onLoad = function(event) {
     // Remove event that got us here in the first place
     window.removeEventListener('load', Listit.onLoad, true);
 
-    Listit.logger.debug(event.originalTarget);
-    window.addEventListener('unload', Listit.onUnload, false); // capture is false (otherwise we get also subwindos unloads)
+    window.addEventListener('unload', Listit.onUnload, false); // capture is false (otherwise we get also subwindows unloads)
 
-    Listit.logger.debug('Listit.onLoad -- end');
+    Listit.logger.trace('Listit.onLoad -- end');
 };
 
 
@@ -100,8 +99,7 @@ Listit.onFirstRun = function (extensions) {
 }  
 
 Listit.onUnload = function(event) {
-    Listit.logger.debug("Listit.onUnload -- "); 
-    //Listit.logger.debug(event.originalTarget.nodeName); 
+    Listit.logger.trace("Listit.onUnload -- "); 
 
     Listit.treeMap.destruct();
     window.removeEventListener('unload', Listit.onUnload, false);
@@ -122,7 +120,7 @@ Listit.onUnload = function(event) {
     var treeMapIframe = document.getElementById('listit-treemap-frame');
     treeMapIframe.removeEventListener("resize", Listit.onResizeTreeMap, false);
 
-    Listit.logger.debug("Listit.onUnload done "); 
+    Listit.logger.trace("Listit.onUnload done "); 
 }
 
 
@@ -191,10 +189,6 @@ Listit.onRowExpandOrCollapse = function(event) {
     Listit.logger.trace("Listit.onRowExpandOrCollapse -- ");
     
     var curState = Listit.state.getCurrentBrowserState();
-    Listit.fbLog("ON EXPAND OR COLLAPSE " + 
-        'expanded: ' + event.expanded + ', idx: ' + event.expandedOrCollapsedIndex +
-        ', comment: ' + event.comment);
-    Listit.fbLog('curState.selectedComment: ' + curState.selectedComment);
     if (event.comment ==  curState.selectedComment) {
         // Only update when the expanded node is actually selected.
         Listit.updateViewsForCurrentSelection(false); 
@@ -225,14 +219,13 @@ Listit.onScatterPlotClicked = function(event) {
 
 
 Listit.onTreeMapClicked = function(event) {
-    Listit.logger.debug("Listit.onTreeMapClicked -- ");
+    Listit.logger.trace("Listit.onTreeMapClicked -- ");
 
     // Test origin of the event; only update the treemap of Listit, not from e.g. a test page.
     if (event.originalTarget.id == 'tm-div-overlay') {
         var commentId = Listit.treeMap.selectedNodeBaseId;
         var discussion = Listit.state.getCurrentBrowserDiscussion();
         var selectedComment = discussion.getCommentById(commentId);
-        Listit.fbLog('onTreeMapClicked, selectedNodeId: ' + Listit.treeMap.selectedNodeId);
         
         Listit.selectAndExpandOrCollapseComment(selectedComment, !Listit.treeMap.selectedNodeIsGroup, true);
         document.getElementById('listit-comment-tree').focus(); // Set focus to comment tree;
@@ -275,18 +268,13 @@ Listit.onTabOpen = function(event) {
     
     var browser = gBrowser.getBrowserForTab(event.target);
     var browserID = Listit.state.addBrowser(browser);
-    Listit.logger.debug("Listit.onTabOpen: " + browserID + 
-        ", URL: " + browser.contentDocument.URL);
 }
 
 Listit.onTabClose = function(event) {
-    Listit.logger.debug("Listit.onTabClose -- ");
+    Listit.logger.trace("Listit.onTabClose -- ");
     
     var browser = gBrowser.getBrowserForTab(event.target);
     var browserID = Listit.state.removeBrowser(browser);
-    Listit.logger.debug("Listit.onTabClose: " + browserID + 
-        ", URL: " + browser.contentDocument.URL);
-    Listit.logger.debug(Listit.state.summaryString());
 }
 
 Listit.onTabSelect = function(event) {
@@ -294,8 +282,6 @@ Listit.onTabSelect = function(event) {
     
     var browser = gBrowser.getBrowserForTab(event.target);
     var browserID = Listit.state.setCurrentBrowser(browser);
-    Listit.logger.debug("Listit.onTabSelect: " + browserID + 
-        ", URL: " + browser.contentDocument.URL);
     
     var commentTree = document.getElementById('listit-comment-tree');
     commentTree.view = Listit.state.getCurrentTreeView();    
@@ -305,7 +291,6 @@ Listit.onTabSelect = function(event) {
 
 Listit.onDetailsTabSelect = function(event) {
     Listit.logger.trace("Listit.onDetailsTabSelect -- ");
-    Listit.fbLog("Listit.onDetailsTabSelect -- ");
     Listit.updateAllViews(Listit.state, Listit.state.getCurrentBrowserID());
 }
  
@@ -319,23 +304,19 @@ Listit.setTreeColsSplittersResizeBehaviour = function(event) {
     
     var treeCols = event.target.parentNode;
     var bodyColumn = document.getElementById('listit-comment-tree-column-body');
-    //Listit.fbLog('bodyColumn, screenX: ' + bodyColumn.boxObject.screenX);
     
     for(let [idx, childNode] in Iterator(treeCols.childNodes)) {
         if (childNode.tagName == 'splitter') {
             var splitter = childNode;
             if (childNode.boxObject.screenX <= bodyColumn.boxObject.screenX) {
-                //Listit.fbLog(childNode.id + ' before ' + childNode.boxObject.screenX + isTargetStr);
                 splitter.setAttribute('resizebefore', 'closest');
                 splitter.setAttribute('resizeafter',  'flex');
             } else {
-                //Listit.fbLog(childNode.id + ' after ' + childNode.boxObject.screenX + isTargetStr);
                 splitter.setAttribute('resizebefore', 'flex');
                 splitter.setAttribute('resizeafter',  'closest');
             }
         }
     }
-    //Listit.fbLog(event.target.getAttribute('resizebefore') + ', ' + event.target.getAttribute('resizeafter'));
 }
 
 Listit.onClickTreeHeader = function(event) {
@@ -348,18 +329,9 @@ Listit.onClickTreeHeader = function(event) {
     var oldSortResource = commentTree.getAttribute('sortResource');
     var oldColumn = document.getElementById(oldSortResource);
     var oldSortDirection = commentTree.getAttribute('sortDirection');
-    /*
-    var oldSortDirection = oldColumn.getAttribute('sortDirection');  // persist direction per column
-    if (oldSortDirection != 'ascending' && oldSortDirection != 'descending') {
-        // Should not occur, sortDirection attribute should be set in browserOverlay.xul
-        Listit.logger.warn("Sort direction is '" + oldSortDirection + "' for old column: " + column.id);
-        oldSortDirection = 'descending';
-    }*/
-    Listit.logger.debug('oldSortResource: ' + oldSortResource);    
-    Listit.logger.debug('oldSortDirection: ' + oldSortDirection);    
+   
     var newSortDirection;
     var newSortResource;
-    
     if (column.id == oldSortResource) {
         newSortResource = oldSortResource;
         newSortDirection = (oldSortDirection == 'ascending') ? 'descending' : 'ascending';
@@ -368,8 +340,6 @@ Listit.onClickTreeHeader = function(event) {
         newSortResource = column.id;
         oldColumn.setAttribute('sortDirection', 'natural');
     }
-    Listit.logger.debug('newSortResource: ' + newSortResource);    
-    Listit.logger.debug('newSortDirection: ' + newSortDirection);    
     
     var structure = document.getElementById('listit-comment-tree-column-body').getAttribute('structure');
     Listit.state.getCurrentTreeView().setDiscussionSorted(column.id, newSortDirection, structure);
@@ -391,9 +361,7 @@ Listit.onClickCommentTreeHeader = function(event) {
     
     var column = event.originalTarget;
     var oldStructure = column.getAttribute('structure');
-    var newStructure = (oldStructure == 'tree') ? 'flat' : 'tree';
-    Listit.logger.debug('oldStructure: ' + oldStructure);    
-    Listit.logger.debug('newStructure: ' + newStructure);    
+    var newStructure = (oldStructure == 'tree') ? 'flat' : 'tree';  
 
     column.setAttribute('structure', newStructure);
     var headerLabel = (newStructure == 'tree') ?
@@ -436,12 +404,10 @@ Listit.setTreeColumnDateFormat = function (event) {
     var key;
     switch (column.id) {
         case 'listit-comment-tree-column-local-date':
-            Listit.logger.debug("Setting listit-comment-tree-column-local-date column format to: " + format);
             key = ['localDateFormat'];
             Listit.state.setLocalDateFormat(format);
             break;
         case 'listit-comment-tree-column-utc-date':
-            Listit.logger.debug("Setting listit-comment-tree-column-utc-date column format to: " + format);
             key = ['utcDateFormat'];
             Listit.state.setUtcDateFormat(format);
             break;
@@ -510,10 +476,7 @@ Listit.showHideBinWidths = function (histo, menuListId) {
     Listit.logger.debug("Update binWidth drop down box, axisVar: " + histo._removeHistPrefix(histo.xAxisVariable));
     
     var isTime = (Listit.ScatterPlot.VAR_AXIS_OPTIONS[histo._removeHistPrefix(histo.xAxisVariable)].mode == 'time');
-
-
     Listit.logger.debug("Listit.ScatterPlot.showHideBinWidths -- isTime: " + isTime);
-
 }
 
 
@@ -546,7 +509,7 @@ Listit.onPageLoad = function(event) {
 
     if ( isRedditPage && !isJsonPage) {
         // A reddit html page, the json will be loaded with AJAX
-        Listit.logger.debug("Listit.onPageLoad (reddit discussion): URL: " + pageURL);
+        Listit.logger.info("Listit.onPageLoad (reddit discussion): URL: " + pageURL);
 
         // Append listit css style to reddit page (so we can highlight selected comment)
         var $ = doc.defaultView.wrappedJSObject.jQuery;
@@ -571,19 +534,15 @@ Listit.onPageLoad = function(event) {
             browserState.setStatus(Listit.PAGE_POSTPONED);
         }
         Listit.updateAllViews(Listit.state, browserID);
-        Listit.logger.debug("Listit.onPageLoad done");
+        Listit.logger.trace("Listit.onPageLoad done");
         return;
         
     } else if ( isJsonPage && (isRedditPage || isLocalPage)) {
         // A JSON page, either from reddit.com or local; process directly
-        Listit.logger.debug("Listit.onPageLoad (.JSON): URL: " + pageURL);
+        Listit.logger.info("Listit.onPageLoad (.JSON): URL: " + pageURL);
 
         var rootDoc = Listit.getRootHtmlDocument(doc);
         if (pageURL != rootDoc.URL) {
-            // Temporary, to see what happens
-            Listit.logger.debug("Listit.onPageLoad: page Url is not rootDoc URL: ");
-            Listit.logger.debug("Listit.onPageLoad: page    URL: " + pageURL);
-            Listit.logger.debug("Listit.onPageLoad: rootDoc URL: " + rootDoc.URL);
             Listit.updateAllViews(Listit.state, browserID);
             return;
         }
@@ -613,7 +572,7 @@ Listit.onPageLoad = function(event) {
 
 Listit.ajaxRequestJsonPage = function (pageURL, browser) {
 
-    Listit.logger.debug("Listit.ajaxRequestJsonPage: " + pageURL);
+    Listit.logger.trace("Listit.ajaxRequestJsonPage: " + pageURL);
     
     // Make AJAX request for corresponding JSON page.
     var jsonURL = Listit.addJsonToRedditUrl(pageURL);
@@ -641,7 +600,7 @@ Listit.ajaxRequestJsonPage = function (pageURL, browser) {
 
 
 Listit.processJsonPage = function (jsonContent, browser, url) {
-    Listit.logger.debug("Listit.processJsonPage -- ");
+    Listit.logger.trace("Listit.processJsonPage -- ");
 
     try {
         var browserID = browser.getAttribute("ListitBrowserID");
@@ -699,7 +658,6 @@ Listit.updateAllViews = function(state, eventBrowserID) {
     }
 
     var curState = Listit.state.getCurrentBrowserState();
-    //Listit.logger.debug("Page status: " + curState.pageStatus);
     switch (curState.pageStatus) {
         case Listit.PAGE_NOT_LISTIT:
             if (true) {
@@ -781,7 +739,6 @@ Listit.updateAllViews = function(state, eventBrowserID) {
         default:
             Listit.assert(false, "Invalid pageStatus: " + curState.pageStatus);
     } // switch
-    //Listit.logger.debug("Listit.updateAllViews: done ");
 }
 
 Listit.setListitVisible = function (visible) {
@@ -1031,7 +988,7 @@ Listit.toggleListitActive = function () {
 }
 
 Listit.setListitActive = function (listitEnabled) {
-    Listit.logger.debug("Listit.setListitActive: " + listitEnabled);
+    Listit.logger.info("Listit.setListitActive: " + listitEnabled);
 
     Listit.state.listitEnabled = listitEnabled;
     Application.prefs.get("extensions.listit.listitEnabled").value = Listit.state.listitEnabled; 

@@ -172,8 +172,7 @@ Listit.ScatterPlot.prototype.display = function (bDisplay) {
 
 
 Listit.ScatterPlot.prototype._getSeries = function(discussion) {
-
-    Listit.logger.debug("Listit.ScatterPlot._getSeries");
+    Listit.logger.trace("Listit.ScatterPlot._getSeries");
     
     var plotSerie = {
         data      : [],
@@ -276,9 +275,7 @@ Listit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuList) {
     var axisVar = menuList.getAttribute('value');
     if (axisStr == 'x') {
         this.xAxisVariable = axisVar;
-        
         this.histogramMode = this._axisVariableIsHistogram(axisVar);
-        Listit.logger.debug("Scatterplot histogram mode is " + this.histogramMode);
     } else {
         this.yAxisVariable = axisVar;
     }
