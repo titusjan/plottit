@@ -835,8 +835,10 @@ Listit.getHslConversionFunction = function (varId) {
     var HUE_MAGENTA    = 300 / 360;
 
     var SAT_RAINBOW       = SAT_MAX;      // Saturation used for rainbow color scales.
-    var HUE_RAINBOW_START = 0.59861;   // Darkish blue
-    var HUE_RAINBOW_RANGE = 11/12;     // Part of the complete hue-circle used in rainbow color scales.
+    //var HUE_RAINBOW_START = 0.59861;   // Darkish blue
+    //var HUE_RAINBOW_RANGE = 11/12;     // Part of the complete hue-circle used in rainbow color scales.
+    var HUE_RAINBOW_START = HUE_BLUE;   // Blue
+    var HUE_RAINBOW_RANGE = 4/6;     // Part of the complete hue-circle used in rainbow color scales.
     
     //// For tweaking colors
     //HUE_RAINBOW_START = HUE_BLUE - document.getElementById("listit-treemap-scale-h0").value / 3000 * 30 / 360 ;
@@ -859,10 +861,10 @@ Listit.getHslConversionFunction = function (varId) {
             return [0, 0, 1]; // always grey
         };
         case 'depth': return function(comment) {
-            //var mapFn = getMapV(0, 10, HUE_RAINBOW_START, HUE_RAINBOW_START - HUE_RAINBOW_RANGE);
-            //return [mapFn(comment.depth) % 1, SAT_RAINBOW, 1];
-            var mapFn = getMapV(1, 10, 0, SAT_LINEAR); 
-            return [HUE_LINEAR, mapFn(comment.depth), 1];
+            var mapFn = getMapV(0, 10, HUE_RAINBOW_START, HUE_RAINBOW_START - HUE_RAINBOW_RANGE);
+            return [mapFn(comment.depth) % 1, SAT_RAINBOW, 1];
+            //var mapFn = getMapV(1, 10, 0, SAT_LINEAR); 
+            //return [HUE_LINEAR, mapFn(comment.depth), 1];
         }; 
         case 'score': return function(comment) { 
             var mapFnPos = getMapV(0, 3, 0, SAT_UPS);         // truncate at 10^3
