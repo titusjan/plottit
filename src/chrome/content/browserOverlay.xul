@@ -122,7 +122,7 @@
   <vbox id="appcontent" >
     <splitter id="plottit-content-splitter" collapsed="false" hidden="true"/>
     
-    <deck id="plottit-messages-deck" selectedIndex="0" height="200" persist="height" hidden="true">
+    <deck id="plottit-messages-deck" selectedIndex="0" height="230" persist="height" hidden="true">
     
       <description id="plottit-messages-description" value="Plottit..."/>    
       
@@ -162,7 +162,7 @@
             <splitter  id="plottit-comment-tree-splitter-page-order" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
                       
             <treecol id="plottit-comment-tree-column-author"
-              width="140"
+              width="110"
               label="&plottit.comment.author;"
               persist="width ordinal hidden"
               onclick="Plottit.onClickTreeHeader(event)"
@@ -357,9 +357,9 @@
         <!-- tabs with plots and stuff -->
         
         <tabbox id="plottit-tabbox"
-              width="250" 
+              width="350" 
               persist="width selectedIndex"
-              minwidth="250"
+              minwidth="300"
               selectedIndex="1">
           <tabs id="plottit-details-tabs" onselect="Plottit.onDetailsTabSelect(event)">
             <tab label="&plottit.comment;"/>
