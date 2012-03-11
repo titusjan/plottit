@@ -45,7 +45,7 @@
     First reddit comment: Monday 2005-12-12 05:46:44 (UTC)
 -->
   <menupopup id="menu_ToolsPopup">
-    <menu id="listit-tools-menu" label="Listit"
+    <menu id="listit-tools-menu" label="Listit" hidden="true"
         accesskey="&listit.listitMenu.accesskey;"
         insertafter="devToolsSeparator">
       <menupopup>
@@ -137,7 +137,7 @@
               flags="dont-build-content" 
               disableKeyNavigation="true"
               sortDirection="ascending" 
-              sortResource="listit-comment-tree-column-id" 
+              sortResource="listit-comment-tree-column-page-order" 
               persist="sortDirection sortResource">
           <treecols 
               id="listit-comment-treecols" 
@@ -148,15 +148,17 @@
               label="&listit.comment.id;"
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
-              hidden="true"/>
-            <splitter  id="listit-comment-tree-splitter-id"  class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+              hidden="true"
+              />
+            <splitter  id="listit-comment-tree-splitter-id" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
             
             <treecol id="listit-comment-tree-column-page-order" class="number chars4"
               width="50"  
               label="&listit.comment.pageOrder;"
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
-              hidden="false"/>
+              hidden="false"
+              />
             <splitter  id="listit-comment-tree-splitter-page-order" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
                       
             <treecol id="listit-comment-tree-column-author"
@@ -164,6 +166,7 @@
               label="&listit.comment.author;"
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="false"
               /> 
             <splitter id="listit-comment-tree-splitter-author" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
             
@@ -174,6 +177,7 @@
               format="yyyy-mm-dd HH:MM:ss"
               onclick="Listit.onClickTreeHeader(event)"
               context="listit-date-format-menu"
+              hidden="false"
               />
             <splitter id="sp-local-date" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
   
@@ -184,24 +188,27 @@
               format="yyyy-mm-dd HH:MM:ss"
               onclick="Listit.onClickTreeHeader(event)"
               context="listit-date-format-menu"
+              hidden="true"
               />
             <splitter id="sp-utc-date" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
   
             <treecol id="listit-comment-tree-column-age" class="number time-period"
-              width="100"
+              width="90"
               label="&listit.comment.age;   "
               persist="width ordinal hidden format"
               format="HH:MM:ss"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="true"
               />
             <splitter id="listit-comment-tree-splitter-age" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
                                 
             <treecol id="listit-comment-tree-column-posted-after" class="number time-period"
-              width="100"
+              width="90"
               label="&listit.comment.postedAfter;   "
               persist="width ordinal hidden format"
               format="HH:MM:ss"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="false"
               />
             <splitter id="sp-posted-after" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
             
@@ -210,6 +217,7 @@
               label="&listit.comment.depth;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="true"
               /> 
             <splitter id="listit-comment-tree-splitter-depth" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
   
@@ -218,6 +226,7 @@
               label="&listit.comment.replies;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="true"
               />
             <splitter id="listit-comment-tree-splitter-replies" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
 
@@ -230,13 +239,15 @@
               onclick="Listit.onClickCommentTreeHeader(event)"
               flex="1"
               primary="true"      
-            />
+              hidden="false"
+              />
             
             <treecol id="listit-comment-tree-column-hot" class="number chars10"
               width="50"
               label="&listit.comment.hot;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="true"
               /> 
             <splitter id="listit-comment-tree-splitter-hot" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>                
             
@@ -245,6 +256,7 @@
               label="&listit.comment.score;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="false"
               />
             <splitter id="listit-comment-tree-splitter-score" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>	    
             
@@ -253,6 +265,7 @@
               label="&listit.comment.up;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="true"
               />
             <splitter id="listit-comment-tree-splitter-up" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>	    
             
@@ -261,6 +274,7 @@
               label="&listit.comment.down;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="true"
               />
             <splitter id="listit-comment-tree-splitter-down" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
             
@@ -269,6 +283,7 @@
               label="&listit.comment.votes;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="true"
               /> 
             <splitter id="listit-comment-tree-splitter-votes" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
             
@@ -277,6 +292,7 @@
               label="&listit.comment.likes;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="true"
               /> 
             <splitter id="listit-comment-tree-splitter-likes" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>   
             
@@ -285,6 +301,7 @@
               label="&listit.comment.controversial;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="true"
               /> 
             <splitter id="listit-comment-tree-splitter-controversial" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>   
             
@@ -293,6 +310,7 @@
               label="&listit.comment.best;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="true"
               /> 
             <splitter id="listit-comment-tree-splitter-best" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
   
@@ -301,6 +319,7 @@
               label="&listit.comment.characters;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="true"
               /> 
             <splitter id="listit-comment-tree-splitter-chars" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
   
@@ -309,6 +328,7 @@
               label="&listit.comment.words;   "
               persist="width ordinal hidden"
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="false"
               /> 
             <splitter id="listit-comment-tree-splitter-words" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
             <!--
@@ -319,6 +339,7 @@
               hidden="true"
               persist="width ordinal hidden" 
               onclick="Listit.onClickTreeHeader(event)"
+              hidden="true"
               /> 
             <splitter id="sp-xxx" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
             -->
@@ -369,7 +390,7 @@
                   <label value="X" class="details-label"/>
                   <menulist id="listit-scatter-x-axis-menulist" class="axis-var"
                       label="X-Axis" 
-                      value="score"
+                      value="postedAfter"
                       persist="value"
                       flex="1"
                       crop="end"                       
@@ -449,7 +470,7 @@
                   <label value="X" class="details-label"/>
                   <menulist id="listit-histogram-x-axis-menulist" class="axis-var"
                       label="X-Axis" 
-                      value="score"
+                      value="hist_postedAfter"
                       persist="value"
                       flex="1"
                       crop="end"                       
@@ -477,7 +498,7 @@
                   <!-- Bin Width -->
                   <menulist id="listit-bin-width-menulist" class="axis-var"
                       label="Bin width" 
-                      value="10" 
+                      value="1800000" 
                       persist="value"
                       flex="1"
                       crop="end"                       
@@ -537,7 +558,7 @@
                   <label value="&listit.size;" class="details-label"/>
                   <menulist id="listit-treemap-size-menulist" class="axis-var"
                       label="listit.size." 
-                      value="numChars" 
+                      value="numWords" 
                       persist="value"
                       flex="1"
                       crop="end"                      
@@ -556,7 +577,7 @@
                   <label value="Color" class="details-label"/>
                   <menulist id="listit-treemap-color-menulist" class="axis-var"
                       label="&listit.color;" 
-                      value="none" 
+                      value="score" 
                       persist="value"
                       flex="1"      
                       crop="end"
@@ -585,7 +606,8 @@
                     label="&listit.treemap.cushions;"
                     crop="end"
                     flex="1"
-                    persist="checked" />
+                    persist="checked"
+                    checked="true"  />
                     
                 </hbox>
                 
