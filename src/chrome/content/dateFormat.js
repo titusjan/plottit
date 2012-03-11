@@ -12,9 +12,9 @@
  * The mask defaults to dateFormat.masks.default.
  */
 
-if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
+if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
 
-Listit.dateFormat = function () {
+Plottit.dateFormat = function () {
 	var	token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
 		timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
 		timezoneClip = /[^-+\dA-Z]/g,
@@ -27,7 +27,7 @@ Listit.dateFormat = function () {
 
 	// Regexes and supporting functions are cached through closure
 	return function (date, mask, utc) {
-		var dF = Listit.dateFormat;
+		var dF = Plottit.dateFormat;
 
 		// You can't provide utc if you skip other args (use the "UTC:" mask prefix)
 		if (arguments.length == 1 && Object.prototype.toString.call(date) == "[object String]" && !/\d/.test(date)) {
@@ -94,7 +94,7 @@ Listit.dateFormat = function () {
 }();
 
 // Some common format strings
-Listit.dateFormat.masks = {
+Plottit.dateFormat.masks = {
 	"default":      "ddd mmm dd yyyy HH:MM:ss",
 	shortDate:      "m/d/yy",
 	mediumDate:     "mmm d, yyyy",
@@ -110,7 +110,7 @@ Listit.dateFormat.masks = {
 };
 
 // Internationalization strings
-Listit.dateFormat.i18n = {
+Plottit.dateFormat.i18n = {
 	dayNames: [
 		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
 		"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"

@@ -1,21 +1,21 @@
 
-#listit-messages-description {
+#plottit-messages-description {
     padding: 5px;
     background-color: white;
     font:normal x-small verdana, arial, helvetica, sans-serif;
     font-size:larger;
 }
 
-/*  Reduce margin between listit-comment-tree and listit-tabbox 
+/*  Reduce margin between plottit-comment-tree and plottit-tabbox 
     because there is already a splitter inbetween them */
 
-#listit-comment-tree {
+#plottit-comment-tree {
    margin-right: 0px;
 }
 
 
-#listit-comment-tree-column-body     { min-width: 200px; }
-#listit-comment-tree-column-author   { min-width: 40px; max-width: 150px;}
+#plottit-comment-tree-column-body     { min-width: 200px; }
+#plottit-comment-tree-column-author   { min-width: 40px; max-width: 150px;}
 treecol.chars4      { min-width: 35px; max-width:  60px;}
 treecol.chars10     { min-width: 35px; max-width:  70px;}
 treecol.date        { min-width: 35px; max-width: 130px;}
@@ -37,12 +37,12 @@ treecol.number {
 }
 
 
-#listit-tabbox {
+#plottit-tabbox {
    margin-left: 0px;
 }
 
 /* More room for the comment and plot contents */
-#listit-tabpanels {
+#plottit-tabpanels {
     padding: 20px 5px 5px 5px;
 }
 

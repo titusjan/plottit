@@ -1,59 +1,59 @@
-if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
+if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
 
 
 
 
 // A formatter for a time period
-Listit.TimePeriod = function (microSeconds) { // Constructor
+Plottit.TimePeriod = function (microSeconds) { // Constructor
 
     var sec = microSeconds / 1000;
     
-    var divYears = sec / Listit.TimePeriod.SECONDS_PER_YEAR;
-    var modYears = sec % Listit.TimePeriod.SECONDS_PER_YEAR;
-    this.years = Listit.roundToZero(divYears);
+    var divYears = sec / Plottit.TimePeriod.SECONDS_PER_YEAR;
+    var modYears = sec % Plottit.TimePeriod.SECONDS_PER_YEAR;
+    this.years = Plottit.roundToZero(divYears);
 
-    var divMonths = modYears / Listit.TimePeriod.SECONDS_PER_MONTH;
-    var modMonths = modYears % Listit.TimePeriod.SECONDS_PER_MONTH;
-    this.months = Listit.roundToZero(divMonths);
+    var divMonths = modYears / Plottit.TimePeriod.SECONDS_PER_MONTH;
+    var modMonths = modYears % Plottit.TimePeriod.SECONDS_PER_MONTH;
+    this.months = Plottit.roundToZero(divMonths);
     
-    var divDays = modMonths / Listit.TimePeriod.SECONDS_PER_DAY;
-    var modDays = modMonths % Listit.TimePeriod.SECONDS_PER_DAY;
-    this.days = Listit.roundToZero(divDays);
+    var divDays = modMonths / Plottit.TimePeriod.SECONDS_PER_DAY;
+    var modDays = modMonths % Plottit.TimePeriod.SECONDS_PER_DAY;
+    this.days = Plottit.roundToZero(divDays);
     
-    var divHours = modDays / Listit.TimePeriod.SECONDS_PER_HOUR;
-    var modHours = modDays % Listit.TimePeriod.SECONDS_PER_HOUR;
-    this.hours = Listit.roundToZero(divHours);
+    var divHours = modDays / Plottit.TimePeriod.SECONDS_PER_HOUR;
+    var modHours = modDays % Plottit.TimePeriod.SECONDS_PER_HOUR;
+    this.hours = Plottit.roundToZero(divHours);
     
-    var divMinutes = modHours / Listit.TimePeriod.SECONDS_PER_MINUTE;
-    var modMinutes = modHours % Listit.TimePeriod.SECONDS_PER_MINUTE;
-    this.minutes = Listit.roundToZero(divMinutes);
-    this.seconds = Listit.roundToZero(modMinutes);
+    var divMinutes = modHours / Plottit.TimePeriod.SECONDS_PER_MINUTE;
+    var modMinutes = modHours % Plottit.TimePeriod.SECONDS_PER_MINUTE;
+    this.minutes = Plottit.roundToZero(divMinutes);
+    this.seconds = Plottit.roundToZero(modMinutes);
 }
 
 
-Listit.TimePeriod.SECONDS_PER_MINUTE = 60;
-Listit.TimePeriod.MINUTES_PER_HOUR   = 60;
-Listit.TimePeriod.HOURS_PER_DAY      = 24;
-Listit.TimePeriod.DAYS_PER_YEAR      = 365.25;
-Listit.TimePeriod.MONTHS_PER_YEAR    = 12;
+Plottit.TimePeriod.SECONDS_PER_MINUTE = 60;
+Plottit.TimePeriod.MINUTES_PER_HOUR   = 60;
+Plottit.TimePeriod.HOURS_PER_DAY      = 24;
+Plottit.TimePeriod.DAYS_PER_YEAR      = 365.25;
+Plottit.TimePeriod.MONTHS_PER_YEAR    = 12;
 
-Listit.TimePeriod.DAYS_PER_MONTH     = Listit.TimePeriod.DAYS_PER_YEAR / Listit.TimePeriod.MONTHS_PER_YEAR;
-Listit.TimePeriod.SECONDS_PER_HOUR   = Listit.TimePeriod.SECONDS_PER_MINUTE * Listit.TimePeriod.MINUTES_PER_HOUR;
-Listit.TimePeriod.SECONDS_PER_DAY    = Listit.TimePeriod.SECONDS_PER_HOUR * Listit.TimePeriod.HOURS_PER_DAY;
-Listit.TimePeriod.SECONDS_PER_MONTH  = Listit.TimePeriod.SECONDS_PER_DAY * Listit.TimePeriod.DAYS_PER_MONTH;
-Listit.TimePeriod.SECONDS_PER_YEAR   = Listit.TimePeriod.SECONDS_PER_MONTH * Listit.TimePeriod.MONTHS_PER_YEAR;
+Plottit.TimePeriod.DAYS_PER_MONTH     = Plottit.TimePeriod.DAYS_PER_YEAR / Plottit.TimePeriod.MONTHS_PER_YEAR;
+Plottit.TimePeriod.SECONDS_PER_HOUR   = Plottit.TimePeriod.SECONDS_PER_MINUTE * Plottit.TimePeriod.MINUTES_PER_HOUR;
+Plottit.TimePeriod.SECONDS_PER_DAY    = Plottit.TimePeriod.SECONDS_PER_HOUR * Plottit.TimePeriod.HOURS_PER_DAY;
+Plottit.TimePeriod.SECONDS_PER_MONTH  = Plottit.TimePeriod.SECONDS_PER_DAY * Plottit.TimePeriod.DAYS_PER_MONTH;
+Plottit.TimePeriod.SECONDS_PER_YEAR   = Plottit.TimePeriod.SECONDS_PER_MONTH * Plottit.TimePeriod.MONTHS_PER_YEAR;
 
-Listit.TimePeriod.prototype.toString = function () {
+Plottit.TimePeriod.prototype.toString = function () {
     return this.toStringMedium2();
     
 }
 
-Listit.TimePeriod.prototype.pad0 = function(n) {
+Plottit.TimePeriod.prototype.pad0 = function(n) {
     return n<10 ? '0'+n : n;
 }
 
 
-Listit.TimePeriod.prototype.toStringShort2 = function () {
+Plottit.TimePeriod.prototype.toStringShort2 = function () {
 
     if (this.years) 
         return this.years + "Y:" + this.months + "M" ;
@@ -69,7 +69,7 @@ Listit.TimePeriod.prototype.toStringShort2 = function () {
         return this.seconds + "s";
 };
 
-Listit.TimePeriod.prototype.toStringMedium2 = function () {
+Plottit.TimePeriod.prototype.toStringMedium2 = function () {
 
     if (this.years) 
         return this.years + " yr " + this.months + " mon" ;
@@ -85,7 +85,7 @@ Listit.TimePeriod.prototype.toStringMedium2 = function () {
         return this.seconds + " sec";
 };
 
-Listit.TimePeriod.prototype.toStringLong2 = function () {
+Plottit.TimePeriod.prototype.toStringLong2 = function () {
 
     if (this.years) 
         return this.years + " years " + this.pad0(this.months) + " months" ;
@@ -101,7 +101,7 @@ Listit.TimePeriod.prototype.toStringLong2 = function () {
         return this.seconds + " seconds";
 };
 
-Listit.TimePeriod.prototype.toStringLong1 = function () {
+Plottit.TimePeriod.prototype.toStringLong1 = function () {
 
     if (this.years) 
         return this.years + " years" ;
@@ -118,26 +118,26 @@ Listit.TimePeriod.prototype.toStringLong1 = function () {
 };
 
 
-Listit.TimePeriod.prototype.getYears = function () {
+Plottit.TimePeriod.prototype.getYears = function () {
     return this.years;
 };
 
-Listit.TimePeriod.prototype.getMonths = function () {
+Plottit.TimePeriod.prototype.getMonths = function () {
     return this.months;
 };
 
-Listit.TimePeriod.prototype.getDays = function () {
+Plottit.TimePeriod.prototype.getDays = function () {
     return this.days; // Day of the month
 };
 
-Listit.TimePeriod.prototype.getHours = function () {
+Plottit.TimePeriod.prototype.getHours = function () {
     return this.hours;
 };
 
-Listit.TimePeriod.prototype.getMinutes = function () {
+Plottit.TimePeriod.prototype.getMinutes = function () {
     return this.minutes;
 };
 
-Listit.TimePeriod.prototype.getSeconds = function () {
+Plottit.TimePeriod.prototype.getSeconds = function () {
     return this.seconds;
 };

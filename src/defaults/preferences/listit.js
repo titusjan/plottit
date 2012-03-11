@@ -1,1 +1,1 @@
-pref("extensions.listit.listitEnabled", true);  
+pref("extensions.plottit.plottitEnabled", true);  

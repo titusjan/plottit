@@ -1,4 +1,4 @@
-if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
+if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
 
 /* 
 Bug:
@@ -25,7 +25,7 @@ Open:
 // Private methods start with and underscore.
 
 // Constructor
-Listit.ScatterPlot = function (plotFrameId, axesAutoscale, 
+Plottit.ScatterPlot = function (plotFrameId, axesAutoscale, 
         xAxisVariable, yAxisVariable, binWidth) 
 {
     this.plotFrameId = plotFrameId;
@@ -43,13 +43,13 @@ Listit.ScatterPlot = function (plotFrameId, axesAutoscale,
 }
 
 
-Listit.ScatterPlot.prototype.toString = function () {
-    return "Listit.ScatterPlot";
+Plottit.ScatterPlot.prototype.toString = function () {
+    return "Plottit.ScatterPlot";
 };
 
 
 // Global dictionary with plot settings per variable
-Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
+Plottit.ScatterPlot.VAR_AXIS_OPTIONS = {
     'binCount'         : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null }, 
     'pageOrder'        : { mode: null, panRange: [     0, 10000], zoomRange: [10,   10000], labelWidth: 25, tickFormatter: null },
     'depth'            : { mode: null, panRange: [     0,   100], zoomRange: [ 5,     100], labelWidth: 25, tickFormatter: null }, 
@@ -69,7 +69,7 @@ Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
         panRange     : [0            , 10000*3600*1000], 
         zoomRange    : [0.1*3600*1000, 10000*3600*1000], 
         tickFormatter: function (val, axis) 
-            { return new Listit.TimePeriod(val).toStringShort2() },
+            { return new Plottit.TimePeriod(val).toStringShort2() },
         },
     'dateCreatedValue' : { 
         mode         : "time", 
@@ -86,9 +86,9 @@ Listit.ScatterPlot.VAR_AXIS_OPTIONS = {
 // To be called the first time the plot is drawn.
 // Cannot be called in the constructor because the placeholder div may not be visible yet
 // and the flotWrapper.plot may therefore be undefined.
-Listit.ScatterPlot.prototype._initPlot = function () {
+Plottit.ScatterPlot.prototype._initPlot = function () {
         
-    Listit.logger.trace("Listit.scatterPlot.initPlot -- ");        
+    Plottit.logger.trace("Plottit.scatterPlot.initPlot -- ");        
     var initialPlotOptions = { 
         selection : { mode: "xy" },
         xaxis: { 
@@ -153,8 +153,8 @@ Listit.ScatterPlot.prototype._initPlot = function () {
 
 
 // Shows or hides the graph-div and messages-div inside the plotFrame on the HTML page.
-Listit.ScatterPlot.prototype.display = function (bDisplay) {
-    Listit.logger.trace("Listit.scatterPlot.display -- ");
+Plottit.ScatterPlot.prototype.display = function (bDisplay) {
+    Plottit.logger.trace("Plottit.scatterPlot.display -- ");
     
     var plotFrameDoc = this.plotFrame.contentDocument;
     if (bDisplay) {
@@ -171,8 +171,8 @@ Listit.ScatterPlot.prototype.display = function (bDisplay) {
 }
 
 
-Listit.ScatterPlot.prototype._getSeries = function(discussion) {
-    Listit.logger.trace("Listit.ScatterPlot._getSeries");
+Plottit.ScatterPlot.prototype._getSeries = function(discussion) {
+    Plottit.logger.trace("Plottit.ScatterPlot._getSeries");
     
     var plotSerie = {
         data      : [],
@@ -182,20 +182,20 @@ Listit.ScatterPlot.prototype._getSeries = function(discussion) {
     if (this.histogramMode) {
         plotSerie.bars = { show: true, barWidth: this.binWidth, fill: true, 
             fillColor: 'rgba(255, 69, 0, 0.3)' }; // orangered 0.3 opacity
-        var data = Listit.getCommentDataAsList(discussion.comments, 
+        var data = Plottit.getCommentDataAsList(discussion.comments, 
             this.xAxisVariable.substring(5)); // remove 'hist_' from xAxisVariable
-        plotSerie.data = Listit.createHistogram(data, this.binWidth);
+        plotSerie.data = Plottit.createHistogram(data, this.binWidth);
     } else {
         plotSerie.points = { show: true };
-        plotSerie.data = Listit.getCommentDataAsList(discussion.comments, 
+        plotSerie.data = Plottit.getCommentDataAsList(discussion.comments, 
             this.xAxisVariable, this.yAxisVariable);
     }
     return [ plotSerie ];
 }
 
 
-Listit.ScatterPlot.prototype.setDiscussion = function (discussion) {
-    Listit.logger.trace("Listit.ScatterPlot.setDiscussion -- ");
+Plottit.ScatterPlot.prototype.setDiscussion = function (discussion) {
+    Plottit.logger.trace("Plottit.ScatterPlot.setDiscussion -- ");
 
     var isFirstTime = (this.flotWrapper.plot === null);
     if (isFirstTime) {
@@ -207,21 +207,21 @@ Listit.ScatterPlot.prototype.setDiscussion = function (discussion) {
     var plotSeries = this._getSeries(discussion);
     var ids = null;
     if (!this.histogramMode) {
-        ids = Listit.getCommentDataAsList(discussion.comments, 'id');
+        ids = Plottit.getCommentDataAsList(discussion.comments, 'id');
     }
     this.flotWrapper.setData(plotSeries, ids);
     this.flotWrapper.setAxesAutoscale(this.axesAutoscale || isFirstTime);
 }
 
-Listit.ScatterPlot.prototype.highlight = function (selectedCommentId)
+Plottit.ScatterPlot.prototype.highlight = function (selectedCommentId)
 {
     this.flotWrapper.highlight(selectedCommentId)
 }
 
-Listit.ScatterPlot.prototype.toggleAxesAutoScale = function (checkbox) {
-    Listit.logger.trace("Listit.ScatterPlot.setDiscussion -- ");
+Plottit.ScatterPlot.prototype.toggleAxesAutoScale = function (checkbox) {
+    Plottit.logger.trace("Plottit.ScatterPlot.setDiscussion -- ");
     
-    this.axesAutoscale = Listit.getCheckboxValue(checkbox);
+    this.axesAutoscale = Plottit.getCheckboxValue(checkbox);
     if (!this.axesAutoscale) {
         checkbox.setAttribute('checked', 'false'); // set to false for persistence
     }
@@ -230,34 +230,34 @@ Listit.ScatterPlot.prototype.toggleAxesAutoScale = function (checkbox) {
 }
  
 
-Listit.ScatterPlot.prototype.resetRange = function (axisStr) {
+Plottit.ScatterPlot.prototype.resetRange = function (axisStr) {
 
     this.flotWrapper.resetRange(axisStr);
     this.flotWrapper.drawPlot(true);
 }
 
 
-Listit.ScatterPlot.prototype._updateAxisOptions = function (axisStr) {
+Plottit.ScatterPlot.prototype._updateAxisOptions = function (axisStr) {
 
-    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
+    Plottit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
     
     var axisVar = (axisStr == 'x') ? this.xAxisVariable : this.yAxisVariable;
     axisVar = this._removeHistPrefix(axisVar);
-    var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, axisVar);
+    var varOptions = Plottit.safeGet(Plottit.ScatterPlot.VAR_AXIS_OPTIONS, axisVar);
     
     // Hack to set the y options for histogram to binCount. TODO: make cleaner solution
     if (axisStr == 'y' && this.histogramMode) { 
-        var varOptions = Listit.safeGet(Listit.ScatterPlot.VAR_AXIS_OPTIONS, 'binCount');
+        var varOptions = Plottit.safeGet(Plottit.ScatterPlot.VAR_AXIS_OPTIONS, 'binCount');
     }
     this.flotWrapper.setAxisOptions(axisStr, varOptions);
 }
 
 
-Listit.ScatterPlot.prototype._axisVariableIsHistogram = function (axisVar) {
+Plottit.ScatterPlot.prototype._axisVariableIsHistogram = function (axisVar) {
     return (axisVar.substring(0, 4) == 'hist');
 }
 
-Listit.ScatterPlot.prototype._removeHistPrefix = function (axisVar) {
+Plottit.ScatterPlot.prototype._removeHistPrefix = function (axisVar) {
 
     // Remove 'hist_' from axisVar if present
     if (this._axisVariableIsHistogram(axisVar)) {
@@ -267,10 +267,10 @@ Listit.ScatterPlot.prototype._removeHistPrefix = function (axisVar) {
     }
 }
 
-Listit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuList) {
-    Listit.logger.trace("Listit.ScatterPlot.setAxisVariable -- ");
+Plottit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuList) {
+    Plottit.logger.trace("Plottit.ScatterPlot.setAxisVariable -- ");
     
-    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
+    Plottit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
     
     var axisVar = menuList.getAttribute('value');
     if (axisStr == 'x') {
@@ -290,7 +290,7 @@ Listit.ScatterPlot.prototype.setAxisVariable = function (axisStr, menuList) {
     this._updatePlotTitle();
 }
 
-Listit.ScatterPlot.prototype.setBinWidth = function (menuList) {
+Plottit.ScatterPlot.prototype.setBinWidth = function (menuList) {
 
     this.binWidth = parseFloat(menuList.getAttribute('value'));
     
@@ -301,29 +301,29 @@ Listit.ScatterPlot.prototype.setBinWidth = function (menuList) {
 }
 
 
-Listit.ScatterPlot.prototype._updatePlotTitle = function () {
+Plottit.ScatterPlot.prototype._updatePlotTitle = function () {
 
     function getBundleString (stringBundle, stringId) {
         try {
             return stringBundle.getString(stringId);
         } catch (ex) { // defensive programming in action
-            Listit.logger.error('No string in bundle: ' + stringId);
+            Plottit.logger.error('No string in bundle: ' + stringId);
             return stringId;
         }
     }
 
-    var bundle = document.getElementById('listit-string-bundle');
+    var bundle = document.getElementById('plottit-string-bundle');
     if (this.histogramMode) {
         this.flotWrapper.setPlotTitle(
-            getBundleString(bundle, 'listit.comment.id2label.' + this._removeHistPrefix(this.xAxisVariable)) + 
+            getBundleString(bundle, 'plottit.comment.id2label.' + this._removeHistPrefix(this.xAxisVariable)) + 
             ' histogram');
         return;
     } else {
         this.flotWrapper.setPlotTitle(
             getBundleString(bundle, 
-                'listit.comment.id2label.' + this._removeHistPrefix(this.yAxisVariable)) +
+                'plottit.comment.id2label.' + this._removeHistPrefix(this.yAxisVariable)) +
             ' versus ' +
             getBundleString(bundle, 
-                'listit.comment.id2label.' + this._removeHistPrefix(this.xAxisVariable)) );
+                'plottit.comment.id2label.' + this._removeHistPrefix(this.xAxisVariable)) );
     }
 }

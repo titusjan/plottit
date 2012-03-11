@@ -1,42 +1,42 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
-<?xml-stylesheet type="text/css" href="chrome://listit/skin/browserOverlay.css" ?>
-<?xml-stylesheet type="text/css" href="chrome://listit/skin/toolbar.css" ?>
+<?xml-stylesheet type="text/css" href="chrome://plottit/skin/browserOverlay.css" ?>
+<?xml-stylesheet type="text/css" href="chrome://plottit/skin/toolbar.css" ?>
 
 <!DOCTYPE overlay SYSTEM
-  "chrome://listit/locale/browserOverlay.dtd">
+  "chrome://plottit/locale/browserOverlay.dtd">
 
-<overlay id="listit-browser-overlay"
+<overlay id="plottit-browser-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script type="application/x-javascript" src="chrome://listit/content/browserOverlay.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/dateFormat.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/posts.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/scatterPlot.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/state.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/treemap.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/treeView.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/timePeriod.js" />
-  <script type="application/x-javascript" src="chrome://listit/content/utils.js" />
+  <script type="application/x-javascript" src="chrome://plottit/content/browserOverlay.js" />
+  <script type="application/x-javascript" src="chrome://plottit/content/dateFormat.js" />
+  <script type="application/x-javascript" src="chrome://plottit/content/posts.js" />
+  <script type="application/x-javascript" src="chrome://plottit/content/scatterPlot.js" />
+  <script type="application/x-javascript" src="chrome://plottit/content/state.js" />
+  <script type="application/x-javascript" src="chrome://plottit/content/treemap.js" />
+  <script type="application/x-javascript" src="chrome://plottit/content/treeView.js" />
+  <script type="application/x-javascript" src="chrome://plottit/content/timePeriod.js" />
+  <script type="application/x-javascript" src="chrome://plottit/content/utils.js" />
     
   <stringbundleset id="stringbundleset">
-    <stringbundle id="listit-string-bundle"
-      src="chrome://listit/locale/browserOverlay.properties" />
+    <stringbundle id="plottit-string-bundle"
+      src="chrome://plottit/locale/browserOverlay.properties" />
   </stringbundleset>
 
   <toolbarpalette id="BrowserToolbarPalette">
-    <toolbarbutton id="listit-toggle-active-button"
+    <toolbarbutton id="plottit-toggle-active-button"
       class="toolbarbutton-1 chromeclass-toolbar-additional" 
-      label="Listit"
-      tooltiptext="Enable/Disable Listit"
-      command="listit-command-toggle-listit-active"/>
+      label="Plottit"
+      tooltiptext="Enable/Disable Plottit"
+      command="plottit-command-toggle-plottit-active"/>
   </toolbarpalette>
   
   <commandset> <!-- For some reason setting an id to the command set results in no reactions -->
-    <command id="listit-command-debug" oncommand="Listit.myDebugRoutine();"/>
-    <command id="listit-command-toggle-listit-active" oncommand="Listit.toggleListitActive();"/>
-    <!--<command id="listit-command-set-date-format" oncommand="Listit.setTreeColumnDateFormat(event);"/>-->
+    <command id="plottit-command-debug" oncommand="Plottit.myDebugRoutine();"/>
+    <command id="plottit-command-toggle-plottit-active" oncommand="Plottit.togglePlottitActive();"/>
+    <!--<command id="plottit-command-set-date-format" oncommand="Plottit.setTreeColumnDateFormat(event);"/>-->
   </commandset>
 
 <!-- 
@@ -45,27 +45,27 @@
     First reddit comment: Monday 2005-12-12 05:46:44 (UTC)
 -->
   <menupopup id="menu_ToolsPopup">
-    <menu id="listit-tools-menu" label="Listit" hidden="true"
-        accesskey="&listit.listitMenu.accesskey;"
+    <menu id="plottit-tools-menu" label="Plottit" hidden="true"
+        accesskey="&plottit.plottitMenu.accesskey;"
         insertafter="devToolsSeparator">
       <menupopup>
-        <menuitem id="listit-tools-debug-menu-item"
-          label="&listit.debug.label;"
-          accesskey="&listit.debugMenuItem.accesskey;"
-          command="listit-command-debug"/>
+        <menuitem id="plottit-tools-debug-menu-item"
+          label="&plottit.debug.label;"
+          accesskey="&plottit.debugMenuItem.accesskey;"
+          command="plottit-command-debug"/>
       </menupopup>
     </menu>
   </menupopup>
 
   <popupset>
-    <menupopup id="listit-date-format-menu" onpopupshowing="Listit.onDateFormatPopupShowing(this);">
+    <menupopup id="plottit-date-format-menu" onpopupshowing="Plottit.onDateFormatPopupShowing(this);">
     
       <menuitem label="2005-04-29 22:04:53" 
         value="yyyy-mm-dd HH:MM:ss"
         autocheck="true"
         type="radio"
-        name="listit-date-format-items"        
-        onclick="Listit.setTreeColumnDateFormat(event);"/>
+        name="plottit-date-format-items"        
+        onclick="Plottit.setTreeColumnDateFormat(event);"/>
         
       <menuseparator/>
       
@@ -73,29 +73,29 @@
         value="d mmm yyyy"
         autocheck="true"
         type="radio"
-        name="listit-date-format-items"        
-        onclick="Listit.setTreeColumnDateFormat(event);"/>
+        name="plottit-date-format-items"        
+        onclick="Plottit.setTreeColumnDateFormat(event);"/>
 
       <menuitem label="Fri 29 Apr 2005" 
         value="ddd d mmm yyyy"
         autocheck="true"
         type="radio"
-        name="listit-date-format-items"        
-        onclick="Listit.setTreeColumnDateFormat(event);"/>
+        name="plottit-date-format-items"        
+        onclick="Plottit.setTreeColumnDateFormat(event);"/>
 
       <menuitem label="29/04/05" 
         value="dd/mm/yy"
         autocheck="true"
         type="radio"
-        name="listit-date-format-items"
-        onclick="Listit.setTreeColumnDateFormat(event);"/>
+        name="plottit-date-format-items"
+        onclick="Plottit.setTreeColumnDateFormat(event);"/>
         
       <menuitem label="04/29/05" 
         value="mm/dd/yy"
         autocheck="true"
         type="radio"
-        name="listit-date-format-items"        
-        onclick="Listit.setTreeColumnDateFormat(event);"/>
+        name="plottit-date-format-items"        
+        onclick="Plottit.setTreeColumnDateFormat(event);"/>
         
       <menuseparator/>
      
@@ -103,33 +103,33 @@
         value="H:MM:ss"
         autocheck="true"
         type="radio"
-        name="listit-date-format-items"        
-        onclick="Listit.setTreeColumnDateFormat(event);"/>
+        name="plottit-date-format-items"        
+        onclick="Plottit.setTreeColumnDateFormat(event);"/>
 
       <menuitem label="10:04:53 AM" 
         value="h:MM:ss TT"
         autocheck="true"
         type="radio"
-        name="listit-date-format-items"        
-        onclick="Listit.setTreeColumnDateFormat(event);"/>
+        name="plottit-date-format-items"        
+        onclick="Plottit.setTreeColumnDateFormat(event);"/>
 
     </menupopup>
   </popupset>
 
   
-  <!--<button label="Debug" command="listit-command-sort-column"/> -->
+  <!--<button label="Debug" command="plottit-command-sort-column"/> -->
 
   <vbox id="appcontent" >
-    <splitter id="listit-content-splitter" collapsed="false" hidden="true"/>
+    <splitter id="plottit-content-splitter" collapsed="false" hidden="true"/>
     
-    <deck id="listit-messages-deck" selectedIndex="0" height="200" persist="height" hidden="true">
+    <deck id="plottit-messages-deck" selectedIndex="0" height="200" persist="height" hidden="true">
     
-      <description id="listit-messages-description" value="Listit..."/>    
+      <description id="plottit-messages-description" value="Plottit..."/>    
       
-      <hbox id="listit-content-pannel">
+      <hbox id="plottit-content-pannel">
   
         <!-- The discussion tree -->
-        <tree id="listit-comment-tree" 
+        <tree id="plottit-comment-tree" 
               hidecolumnpicker="false" 
               enableColumnDrag="true" 
               flex="1" 
@@ -137,211 +137,211 @@
               flags="dont-build-content" 
               disableKeyNavigation="true"
               sortDirection="ascending" 
-              sortResource="listit-comment-tree-column-page-order" 
+              sortResource="plottit-comment-tree-column-page-order" 
               persist="sortDirection sortResource">
           <treecols 
-              id="listit-comment-treecols" 
+              id="plottit-comment-treecols" 
               pickertooltiptext="Select visible columns">
           
-            <treecol id="listit-comment-tree-column-id" class="chars10"
+            <treecol id="plottit-comment-tree-column-id" class="chars10"
               width="60"  
-              label="&listit.comment.id;"
+              label="&plottit.comment.id;"
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="true"
               />
-            <splitter  id="listit-comment-tree-splitter-id" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter  id="plottit-comment-tree-splitter-id" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
             
-            <treecol id="listit-comment-tree-column-page-order" class="number chars4"
+            <treecol id="plottit-comment-tree-column-page-order" class="number chars4"
               width="50"  
-              label="&listit.comment.pageOrder;"
+              label="&plottit.comment.pageOrder;"
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="false"
               />
-            <splitter  id="listit-comment-tree-splitter-page-order" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter  id="plottit-comment-tree-splitter-page-order" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
                       
-            <treecol id="listit-comment-tree-column-author"
+            <treecol id="plottit-comment-tree-column-author"
               width="140"
-              label="&listit.comment.author;"
+              label="&plottit.comment.author;"
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="false"
               /> 
-            <splitter id="listit-comment-tree-splitter-author" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="plottit-comment-tree-splitter-author" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
             
-            <treecol id="listit-comment-tree-column-local-date" class="number date"
+            <treecol id="plottit-comment-tree-column-local-date" class="number date"
               width="130"
-              label="&listit.comment.localDate;   "
+              label="&plottit.comment.localDate;   "
               persist="width ordinal hidden format"
               format="yyyy-mm-dd HH:MM:ss"
-              onclick="Listit.onClickTreeHeader(event)"
-              context="listit-date-format-menu"
+              onclick="Plottit.onClickTreeHeader(event)"
+              context="plottit-date-format-menu"
               hidden="false"
               />
-            <splitter id="sp-local-date" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="sp-local-date" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
   
-            <treecol id="listit-comment-tree-column-utc-date" class="number date"
+            <treecol id="plottit-comment-tree-column-utc-date" class="number date"
               width="130"
-              label="&listit.comment.utcDate;   "
+              label="&plottit.comment.utcDate;   "
               persist="width ordinal hidden format"
               format="yyyy-mm-dd HH:MM:ss"
-              onclick="Listit.onClickTreeHeader(event)"
-              context="listit-date-format-menu"
+              onclick="Plottit.onClickTreeHeader(event)"
+              context="plottit-date-format-menu"
               hidden="true"
               />
-            <splitter id="sp-utc-date" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="sp-utc-date" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
   
-            <treecol id="listit-comment-tree-column-age" class="number time-period"
+            <treecol id="plottit-comment-tree-column-age" class="number time-period"
               width="90"
-              label="&listit.comment.age;   "
+              label="&plottit.comment.age;   "
               persist="width ordinal hidden format"
               format="HH:MM:ss"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="true"
               />
-            <splitter id="listit-comment-tree-splitter-age" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="plottit-comment-tree-splitter-age" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
                                 
-            <treecol id="listit-comment-tree-column-posted-after" class="number time-period"
+            <treecol id="plottit-comment-tree-column-posted-after" class="number time-period"
               width="90"
-              label="&listit.comment.postedAfter;   "
+              label="&plottit.comment.postedAfter;   "
               persist="width ordinal hidden format"
               format="HH:MM:ss"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="false"
               />
-            <splitter id="sp-posted-after" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="sp-posted-after" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
             
-            <treecol id="listit-comment-tree-column-depth" class="number chars4"
+            <treecol id="plottit-comment-tree-column-depth" class="number chars4"
               width="50"  
-              label="&listit.comment.depth;   "
+              label="&plottit.comment.depth;   "
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="true"
               /> 
-            <splitter id="listit-comment-tree-splitter-depth" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="plottit-comment-tree-splitter-depth" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
   
-            <treecol id="listit-comment-tree-column-replies" class="number chars4"
+            <treecol id="plottit-comment-tree-column-replies" class="number chars4"
               width="50"
-              label="&listit.comment.replies;   "
+              label="&plottit.comment.replies;   "
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="true"
               />
-            <splitter id="listit-comment-tree-splitter-replies" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="plottit-comment-tree-splitter-replies" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
 
              <!-- comment -->
-            <treecol id="listit-comment-tree-column-body"  
+            <treecol id="plottit-comment-tree-column-body"  
               width="500"
               label="Comments"
               structure="tree"
               persist="width ordinal hidden structure label"
-              onclick="Listit.onClickCommentTreeHeader(event)"
+              onclick="Plottit.onClickCommentTreeHeader(event)"
               flex="1"
               primary="true"      
               hidden="false"
               />
             
-            <treecol id="listit-comment-tree-column-hot" class="number chars10"
+            <treecol id="plottit-comment-tree-column-hot" class="number chars10"
               width="50"
-              label="&listit.comment.hot;   "
+              label="&plottit.comment.hot;   "
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="true"
               /> 
-            <splitter id="listit-comment-tree-splitter-hot" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>                
+            <splitter id="plottit-comment-tree-splitter-hot" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>                
             
-            <treecol id="listit-comment-tree-column-score" class="number chars4"
+            <treecol id="plottit-comment-tree-column-score" class="number chars4"
               width="50"
-              label="&listit.comment.score;   "
+              label="&plottit.comment.score;   "
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="false"
               />
-            <splitter id="listit-comment-tree-splitter-score" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>	    
+            <splitter id="plottit-comment-tree-splitter-score" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>	    
             
-            <treecol id="listit-comment-tree-column-up" class="number chars4"
+            <treecol id="plottit-comment-tree-column-up" class="number chars4"
               width="50"
-              label="&listit.comment.up;   "
+              label="&plottit.comment.up;   "
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="true"
               />
-            <splitter id="listit-comment-tree-splitter-up" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>	    
+            <splitter id="plottit-comment-tree-splitter-up" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>	    
             
-            <treecol id="listit-comment-tree-column-down" class="number chars4"
+            <treecol id="plottit-comment-tree-column-down" class="number chars4"
               width="50"
-              label="&listit.comment.down;   "
+              label="&plottit.comment.down;   "
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="true"
               />
-            <splitter id="listit-comment-tree-splitter-down" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="plottit-comment-tree-splitter-down" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
             
-            <treecol id="listit-comment-tree-column-votes" class="number chars4"
+            <treecol id="plottit-comment-tree-column-votes" class="number chars4"
               width="50"
-              label="&listit.comment.votes;   "
+              label="&plottit.comment.votes;   "
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="true"
               /> 
-            <splitter id="listit-comment-tree-splitter-votes" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="plottit-comment-tree-splitter-votes" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
             
-            <treecol id="listit-comment-tree-column-likes" class="number chars4"
+            <treecol id="plottit-comment-tree-column-likes" class="number chars4"
               width="50"
-              label="&listit.comment.likes;   "
+              label="&plottit.comment.likes;   "
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="true"
               /> 
-            <splitter id="listit-comment-tree-splitter-likes" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>   
+            <splitter id="plottit-comment-tree-splitter-likes" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>   
             
-            <treecol id="listit-comment-tree-column-controversial" class="number chars4"
+            <treecol id="plottit-comment-tree-column-controversial" class="number chars4"
               width="50"
-              label="&listit.comment.controversial;   "
+              label="&plottit.comment.controversial;   "
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="true"
               /> 
-            <splitter id="listit-comment-tree-splitter-controversial" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>   
+            <splitter id="plottit-comment-tree-splitter-controversial" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>   
             
-            <treecol id="listit-comment-tree-column-best" class="number chars4"
+            <treecol id="plottit-comment-tree-column-best" class="number chars4"
               width="50"
-              label="&listit.comment.best;   "
+              label="&plottit.comment.best;   "
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="true"
               /> 
-            <splitter id="listit-comment-tree-splitter-best" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="plottit-comment-tree-splitter-best" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
   
-            <treecol id="listit-comment-tree-column-chars" class="number chars4"
+            <treecol id="plottit-comment-tree-column-chars" class="number chars4"
               width="50"  
-              label="&listit.comment.characters;   "
+              label="&plottit.comment.characters;   "
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="true"
               /> 
-            <splitter id="listit-comment-tree-splitter-chars" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="plottit-comment-tree-splitter-chars" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
   
-            <treecol id="listit-comment-tree-column-words" class="number chars4"
+            <treecol id="plottit-comment-tree-column-words" class="number chars4"
               width="50"  
-              label="&listit.comment.words;   "
+              label="&plottit.comment.words;   "
               persist="width ordinal hidden"
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="false"
               /> 
-            <splitter id="listit-comment-tree-splitter-words" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="plottit-comment-tree-splitter-words" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
             <!--
-            <splitter id="sp-xxx" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
-            <treecol id="listit-comment-tree-column-debug" class="number"
+            <splitter id="sp-xxx" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <treecol id="plottit-comment-tree-column-debug" class="number"
               width="50"
               label="Debug"
               hidden="true"
               persist="width ordinal hidden" 
-              onclick="Listit.onClickTreeHeader(event)"
+              onclick="Plottit.onClickTreeHeader(event)"
               hidden="true"
               /> 
-            <splitter id="sp-xxx" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Listit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="sp-xxx" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
             -->
           </treecols>
   
@@ -352,99 +352,99 @@
         </tree>
   
 
-        <splitter id="listit-pannel-splitter" collapse="after" resizeafter="closest"/>
+        <splitter id="plottit-pannel-splitter" collapse="after" resizeafter="closest"/>
   
         <!-- tabs with plots and stuff -->
         
-        <tabbox id="listit-tabbox"
+        <tabbox id="plottit-tabbox"
               width="250" 
               persist="width selectedIndex"
               minwidth="250"
               selectedIndex="1">
-          <tabs id="listit-details-tabs" onselect="Listit.onDetailsTabSelect(event)">
-            <tab label="&listit.comment;"/>
-            <tab label="&listit.plot;"/>
-            <tab label="&listit.histogram;"/>
-            <tab label="&listit.treemap;"/>            
+          <tabs id="plottit-details-tabs" onselect="Plottit.onDetailsTabSelect(event)">
+            <tab label="&plottit.comment;"/>
+            <tab label="&plottit.plot;"/>
+            <tab label="&plottit.histogram;"/>
+            <tab label="&plottit.treemap;"/>            
           </tabs>
-          <tabpanels id="listit-tabpanels" flex="1">
+          <tabpanels id="plottit-tabpanels" flex="1">
           
             <!-- Post details -->
-            <tabpanel id="listit-comment-tab">
-              <iframe id="listit-comment-html-iframe" 
+            <tabpanel id="plottit-comment-tab">
+              <iframe id="plottit-comment-html-iframe" 
                 flex="1"
-                src="chrome://listit/content/detailsframe.html"/>
+                src="chrome://plottit/content/detailsframe.html"/>
             </tabpanel>
             
             <!-- Scatter plot -->
-            <tabpanel id="listit-plot-tab">
+            <tabpanel id="plottit-plot-tab">
 
               <vbox flex="1">
-                <iframe id="listit-scatter-plot-iframe" 
+                <iframe id="plottit-scatter-plot-iframe" 
                   flex="1"
-                  src="chrome://listit/content/plotframe.html"/>
+                  src="chrome://plottit/content/plotframe.html"/>
         
                 <hbox align="baseline">
                
                   <!-- Scatter plot X-Axis -->
                   <label value="X" class="details-label"/>
-                  <menulist id="listit-scatter-x-axis-menulist" class="axis-var"
+                  <menulist id="plottit-scatter-x-axis-menulist" class="axis-var"
                       label="X-Axis" 
                       value="postedAfter"
                       persist="value"
                       flex="1"
                       crop="end"                       
-                      oncommand="Listit.scatterPlot.setAxisVariable('x', this);">                  
-                    <menupopup id="listit-scatter-x-axis-menupopup">
-                      <menuitem value="depth"                 label="&listit.comment.depth;"/>
-                      <menuitem value="score"                 label="&listit.comment.score;"/>
-                      <menuitem value="ups"                   label="&listit.comment.up;"/>
-                      <menuitem value="downs"                 label="&listit.comment.down;"/>
-                      <menuitem value="votes"                 label="&listit.comment.votes;"/>
-                      <menuitem value="likesPerc"             label="&listit.comment.likes;"/>
-                      <menuitem value="controversial"         label="&listit.comment.controversial;"/>
-                      <menuitem value="hot"                   label="&listit.comment.hot;"/>
-                      <menuitem value="bestPerc"              label="&listit.comment.best;"/>
-                      <menuitem value="numChars"              label="&listit.comment.characters;"/>
-                      <menuitem value="numWords"              label="&listit.comment.words;"/>
-                      <menuitem value="numReplies"            label="&listit.comment.replies;"/>
-                      <menuitem value="pageOrder"             label="&listit.comment.pageOrder;"/>
-                      <menuitem value="dateCreatedLocalValue" label="&listit.comment.localDate;"/>
-                      <menuitem value="dateCreatedValue"      label="&listit.comment.utcDate;"/>
-                      <menuitem value="postedAfter"           label="&listit.comment.postedAfter;"/>
+                      oncommand="Plottit.scatterPlot.setAxisVariable('x', this);">                  
+                    <menupopup id="plottit-scatter-x-axis-menupopup">
+                      <menuitem value="depth"                 label="&plottit.comment.depth;"/>
+                      <menuitem value="score"                 label="&plottit.comment.score;"/>
+                      <menuitem value="ups"                   label="&plottit.comment.up;"/>
+                      <menuitem value="downs"                 label="&plottit.comment.down;"/>
+                      <menuitem value="votes"                 label="&plottit.comment.votes;"/>
+                      <menuitem value="likesPerc"             label="&plottit.comment.likes;"/>
+                      <menuitem value="controversial"         label="&plottit.comment.controversial;"/>
+                      <menuitem value="hot"                   label="&plottit.comment.hot;"/>
+                      <menuitem value="bestPerc"              label="&plottit.comment.best;"/>
+                      <menuitem value="numChars"              label="&plottit.comment.characters;"/>
+                      <menuitem value="numWords"              label="&plottit.comment.words;"/>
+                      <menuitem value="numReplies"            label="&plottit.comment.replies;"/>
+                      <menuitem value="pageOrder"             label="&plottit.comment.pageOrder;"/>
+                      <menuitem value="dateCreatedLocalValue" label="&plottit.comment.localDate;"/>
+                      <menuitem value="dateCreatedValue"      label="&plottit.comment.utcDate;"/>
+                      <menuitem value="postedAfter"           label="&plottit.comment.postedAfter;"/>
                     </menupopup>
                   </menulist>
                   
                   <!-- Scatter plot Y-Axis -->
                   <label value="Y" class="details-label"/>
-                  <menulist id="listit-scatter-y-axis-menulist" class="axis-var"     
+                  <menulist id="plottit-scatter-y-axis-menulist" class="axis-var"     
                       label="Y-Axis" 
                       value="score"
                       persist="value"
                       flex="1"
                       crop="end"                       
-                      oncommand="Listit.scatterPlot.setAxisVariable('y', this);">                  
-                    <menupopup id="listit-scatter-y-axis-menupopup">
-                      <menuitem value="depth"                 label="&listit.comment.depth;"/>
-                      <menuitem value="score"                 label="&listit.comment.score;"/>
-                      <menuitem value="ups"                   label="&listit.comment.up;"/>
-                      <menuitem value="downs"                 label="&listit.comment.down;"/>
-                      <menuitem value="votes"                 label="&listit.comment.votes;"/>
-                      <menuitem value="likesPerc"             label="&listit.comment.likes;"/>
-                      <menuitem value="controversial"         label="&listit.comment.controversial;"/>
-                      <menuitem value="hot"                   label="&listit.comment.hot;"/>
-                      <menuitem value="bestPerc"              label="&listit.comment.best;"/>
-                      <menuitem value="numChars"              label="&listit.comment.characters;"/>
-                      <menuitem value="numWords"              label="&listit.comment.words;"/>                      
-                      <menuitem value="numReplies"            label="&listit.comment.replies;"/>
+                      oncommand="Plottit.scatterPlot.setAxisVariable('y', this);">                  
+                    <menupopup id="plottit-scatter-y-axis-menupopup">
+                      <menuitem value="depth"                 label="&plottit.comment.depth;"/>
+                      <menuitem value="score"                 label="&plottit.comment.score;"/>
+                      <menuitem value="ups"                   label="&plottit.comment.up;"/>
+                      <menuitem value="downs"                 label="&plottit.comment.down;"/>
+                      <menuitem value="votes"                 label="&plottit.comment.votes;"/>
+                      <menuitem value="likesPerc"             label="&plottit.comment.likes;"/>
+                      <menuitem value="controversial"         label="&plottit.comment.controversial;"/>
+                      <menuitem value="hot"                   label="&plottit.comment.hot;"/>
+                      <menuitem value="bestPerc"              label="&plottit.comment.best;"/>
+                      <menuitem value="numChars"              label="&plottit.comment.characters;"/>
+                      <menuitem value="numWords"              label="&plottit.comment.words;"/>                      
+                      <menuitem value="numReplies"            label="&plottit.comment.replies;"/>
                     </menupopup>
                   </menulist>
         
                   <!-- Autoscale checkbox -->
                   <checkbox 
-                    id="listit-scatter-axes-autoscale"
-                    oncommand="Listit.scatterPlot.toggleAxesAutoScale(this)"
-                    label="&listit.autoscale;" 
+                    id="plottit-scatter-axes-autoscale"
+                    oncommand="Plottit.scatterPlot.toggleAxesAutoScale(this)"
+                    label="&plottit.autoscale;" 
                     crop="end"
                     persist="checked"
                     checked="true" />
@@ -457,53 +457,53 @@
             
             
             <!-- Histogram -->
-            <tabpanel id="listit-histogram-tab">
+            <tabpanel id="plottit-histogram-tab">
 
               <vbox flex="1">
-                <iframe id="listit-histogram-iframe" 
+                <iframe id="plottit-histogram-iframe" 
                   flex="1"
-                  src="chrome://listit/content/plotframe.html"/>
+                  src="chrome://plottit/content/plotframe.html"/>
         
                 <hbox align="baseline">
                
                   <!-- Histogram X-Axis -->
                   <label value="X" class="details-label"/>
-                  <menulist id="listit-histogram-x-axis-menulist" class="axis-var"
+                  <menulist id="plottit-histogram-x-axis-menulist" class="axis-var"
                       label="X-Axis" 
                       value="hist_postedAfter"
                       persist="value"
                       flex="1"
                       crop="end"                       
-                      oncommand="Listit.histogram.setAxisVariable('x', this); 
-                        Listit.showHideBinWidths(Listit.histogram, 'listit-bin-width-menulist');">                  
-                    <menupopup id="listit-histogram-x-axis-menupopup">
-                      <menuitem value="hist_depth"                 label="&listit.comment.depth;"/>
-                      <menuitem value="hist_score"                 label="&listit.comment.score;"/>
-                      <menuitem value="hist_ups"                   label="&listit.comment.up;"/>
-                      <menuitem value="hist_downs"                 label="&listit.comment.down;"/>
-                      <menuitem value="hist_votes"                 label="&listit.comment.votes;"/>
-                      <menuitem value="hist_likesPerc"             label="&listit.comment.likes;"/>
-                      <menuitem value="hist_controversial"         label="&listit.comment.controversial;"/>
-                      <menuitem value="hist_hot"                   label="&listit.comment.hot;"/>
-                      <menuitem value="hist_bestPerc"              label="&listit.comment.best;"/>
-                      <menuitem value="hist_numChars"              label="&listit.comment.characters;"/>
-                      <menuitem value="hist_numWords"              label="&listit.comment.words;"/>
-                      <menuitem value="hist_numReplies"            label="&listit.comment.replies;"/>
-                      <menuitem value="hist_dateCreatedLocalValue" label="&listit.comment.localDate;"/>
-                      <menuitem value="hist_dateCreatedValue"      label="&listit.comment.utcDate;"/>
-                      <menuitem value="hist_postedAfter"           label="&listit.comment.postedAfter;"/>
+                      oncommand="Plottit.histogram.setAxisVariable('x', this); 
+                        Plottit.showHideBinWidths(Plottit.histogram, 'plottit-bin-width-menulist');">                  
+                    <menupopup id="plottit-histogram-x-axis-menupopup">
+                      <menuitem value="hist_depth"                 label="&plottit.comment.depth;"/>
+                      <menuitem value="hist_score"                 label="&plottit.comment.score;"/>
+                      <menuitem value="hist_ups"                   label="&plottit.comment.up;"/>
+                      <menuitem value="hist_downs"                 label="&plottit.comment.down;"/>
+                      <menuitem value="hist_votes"                 label="&plottit.comment.votes;"/>
+                      <menuitem value="hist_likesPerc"             label="&plottit.comment.likes;"/>
+                      <menuitem value="hist_controversial"         label="&plottit.comment.controversial;"/>
+                      <menuitem value="hist_hot"                   label="&plottit.comment.hot;"/>
+                      <menuitem value="hist_bestPerc"              label="&plottit.comment.best;"/>
+                      <menuitem value="hist_numChars"              label="&plottit.comment.characters;"/>
+                      <menuitem value="hist_numWords"              label="&plottit.comment.words;"/>
+                      <menuitem value="hist_numReplies"            label="&plottit.comment.replies;"/>
+                      <menuitem value="hist_dateCreatedLocalValue" label="&plottit.comment.localDate;"/>
+                      <menuitem value="hist_dateCreatedValue"      label="&plottit.comment.utcDate;"/>
+                      <menuitem value="hist_postedAfter"           label="&plottit.comment.postedAfter;"/>
                     </menupopup>
                   </menulist>
         
                   <!-- Bin Width -->
-                  <menulist id="listit-bin-width-menulist" class="axis-var"
+                  <menulist id="plottit-bin-width-menulist" class="axis-var"
                       label="Bin width" 
                       value="1800000" 
                       persist="value"
                       flex="1"
                       crop="end"                       
-                      oncommand="Listit.histogram.setBinWidth(this);">
-                    <menupopup id="listit-bin-width-menupopup">
+                      oncommand="Plottit.histogram.setBinWidth(this);">
+                    <menupopup id="plottit-bin-width-menupopup">
                       <menuitem value="0.1" label="0.1"/>
                       <menuitem value="0.2" label="0.2"/>
                       <menuitem value="0.5" label="0.5"/> 
@@ -515,25 +515,25 @@
                       <menuitem value="50"  label="50"/> 
                       <menuitem value="100" label="100"/>
                       <menuseparator/>
-                      <menuitem value="60000"     label="1 &listit.time.minute;"/>
-                      <menuitem value="300000"    label="5 &listit.time.minutes;"/>
-                      <menuitem value="600000"    label="10 &listit.time.minutes;"/>
-                      <menuitem value="900000"    label="15 &listit.time.minutes;"/>
-                      <menuitem value="1800000"   label="30 &listit.time.minutes;"/>
-                      <menuitem value="3600000"   label="1 &listit.time.hour;"/>
-                      <menuitem value="10800000"  label="3 &listit.time.hours;"/>
-                      <menuitem value="21600000"  label="6 &listit.time.hours;"/>
-                      <menuitem value="43200000"  label="12 &listit.time.hours;"/>
-                      <menuitem value="86400000"  label="1 &listit.time.day;"/>
-                      <menuitem value="604800000" label="7 &listit.time.days;"/>
+                      <menuitem value="60000"     label="1 &plottit.time.minute;"/>
+                      <menuitem value="300000"    label="5 &plottit.time.minutes;"/>
+                      <menuitem value="600000"    label="10 &plottit.time.minutes;"/>
+                      <menuitem value="900000"    label="15 &plottit.time.minutes;"/>
+                      <menuitem value="1800000"   label="30 &plottit.time.minutes;"/>
+                      <menuitem value="3600000"   label="1 &plottit.time.hour;"/>
+                      <menuitem value="10800000"  label="3 &plottit.time.hours;"/>
+                      <menuitem value="21600000"  label="6 &plottit.time.hours;"/>
+                      <menuitem value="43200000"  label="12 &plottit.time.hours;"/>
+                      <menuitem value="86400000"  label="1 &plottit.time.day;"/>
+                      <menuitem value="604800000" label="7 &plottit.time.days;"/>
                     </menupopup>
                   </menulist>
                   
                   <!-- Autoscale checkbox -->
                   <checkbox 
-                    id="listit-histogram-axes-autoscale"
-                    oncommand="Listit.histogram.toggleAxesAutoScale(this)"
-                    label="&listit.autoscale;"
+                    id="plottit-histogram-axes-autoscale"
+                    oncommand="Plottit.histogram.toggleAxesAutoScale(this)"
+                    label="&plottit.autoscale;"
                     flex="1"
                     crop="end"
                     persist="checked"
@@ -545,65 +545,65 @@
             </tabpanel>
             
             <!-- TreeMap -->
-            <tabpanel id="listit-treemap-tab">
+            <tabpanel id="plottit-treemap-tab">
             
               <vbox flex="1">
                 
-                <iframe id="listit-treemap-frame" 
+                <iframe id="plottit-treemap-frame" 
                   flex="1"
-                  src="chrome://listit/content/treemapframe.html"/>
+                  src="chrome://plottit/content/treemapframe.html"/>
         
                 <hbox align="baseline">
                   
-                  <label value="&listit.size;" class="details-label"/>
-                  <menulist id="listit-treemap-size-menulist" class="axis-var"
-                      label="listit.size." 
+                  <label value="&plottit.size;" class="details-label"/>
+                  <menulist id="plottit-treemap-size-menulist" class="axis-var"
+                      label="plottit.size." 
                       value="numWords" 
                       persist="value"
                       flex="1"
                       crop="end"                      
-                      oncommand="Listit.setTreeMapSizeProperty(this);">
-                    <menupopup id="listit-bin-width-menupopup">
-                      <menuitem value="score"    label="&listit.comment.score;"/>
-                      <menuitem value="ups"      label="&listit.comment.up;"/>
-                      <menuitem value="downs"    label="&listit.comment.down;"/>
-                      <menuitem value="votes"    label="&listit.comment.votes;"/>
-                      <menuitem value="numChars" label="&listit.comment.characters;"/>
-                      <menuitem value="numWords" label="&listit.comment.words;"/>
-                      <menuitem value="one"      label="&listit.size.equal;"/>
+                      oncommand="Plottit.setTreeMapSizeProperty(this);">
+                    <menupopup id="plottit-bin-width-menupopup">
+                      <menuitem value="score"    label="&plottit.comment.score;"/>
+                      <menuitem value="ups"      label="&plottit.comment.up;"/>
+                      <menuitem value="downs"    label="&plottit.comment.down;"/>
+                      <menuitem value="votes"    label="&plottit.comment.votes;"/>
+                      <menuitem value="numChars" label="&plottit.comment.characters;"/>
+                      <menuitem value="numWords" label="&plottit.comment.words;"/>
+                      <menuitem value="one"      label="&plottit.size.equal;"/>
                     </menupopup>
                   </menulist>
 
                   <label value="Color" class="details-label"/>
-                  <menulist id="listit-treemap-color-menulist" class="axis-var"
-                      label="&listit.color;" 
+                  <menulist id="plottit-treemap-color-menulist" class="axis-var"
+                      label="&plottit.color;" 
                       value="score" 
                       persist="value"
                       flex="1"      
                       crop="end"
-                      oncommand="Listit.setTreeMapColorProperty(this);">
-                    <menupopup id="listit-bin-width-menupopup">
-                      <menuitem value="depth"         label="&listit.comment.depth;"/>
-                      <menuitem value="score"         label="&listit.comment.score;"/>
-                      <menuitem value="ups"           label="&listit.comment.up;"/>
-                      <menuitem value="downs"         label="&listit.comment.down;"/>
-                      <menuitem value="votes"         label="&listit.comment.votes;"/>
-                      <menuitem value="likesPerc"     label="&listit.comment.likes;"/>
-                      <menuitem value="controversial" label="&listit.comment.controversial;"/>
-                      <menuitem value="bestPerc"      label="&listit.comment.best;"/>
-                      <menuitem value="numChars"      label="&listit.comment.characters;"/>
-                      <menuitem value="numWords"      label="&listit.comment.words;"/>
-                      <menuitem value="numReplies"    label="&listit.comment.replies;"/>
-                      <menuitem value="postedAfter"   label="&listit.comment.postedAfter;"/>
-                      <menuitem value="none"          label="&listit.color.none;"/>
+                      oncommand="Plottit.setTreeMapColorProperty(this);">
+                    <menupopup id="plottit-bin-width-menupopup">
+                      <menuitem value="depth"         label="&plottit.comment.depth;"/>
+                      <menuitem value="score"         label="&plottit.comment.score;"/>
+                      <menuitem value="ups"           label="&plottit.comment.up;"/>
+                      <menuitem value="downs"         label="&plottit.comment.down;"/>
+                      <menuitem value="votes"         label="&plottit.comment.votes;"/>
+                      <menuitem value="likesPerc"     label="&plottit.comment.likes;"/>
+                      <menuitem value="controversial" label="&plottit.comment.controversial;"/>
+                      <menuitem value="bestPerc"      label="&plottit.comment.best;"/>
+                      <menuitem value="numChars"      label="&plottit.comment.characters;"/>
+                      <menuitem value="numWords"      label="&plottit.comment.words;"/>
+                      <menuitem value="numReplies"    label="&plottit.comment.replies;"/>
+                      <menuitem value="postedAfter"   label="&plottit.comment.postedAfter;"/>
+                      <menuitem value="none"          label="&plottit.color.none;"/>
                     </menupopup>
                   </menulist>
                   
                   <!-- Cushions checkbox -->
                   <checkbox 
-                    id="listit-treemap-cushions-checkbox"
-                    oncommand="Listit.renderTreeMap(0);"
-                    label="&listit.treemap.cushions;"
+                    id="plottit-treemap-cushions-checkbox"
+                    oncommand="Plottit.renderTreeMap(0);"
+                    label="&plottit.treemap.cushions;"
                     crop="end"
                     flex="1"
                     persist="checked"
@@ -614,25 +614,25 @@
                 <!-- debug sliders for tweaking treemap parameters -->
                 <hbox align="baseline" hidden="true">
                     <label value="h0" class="details-label"/>
-                    <scale id="listit-treemap-scale-h0" class="treemap"
+                    <scale id="plottit-treemap-scale-h0" class="treemap"
                       min="0" max="3000" value="1200" increment="50" 
                       movetoclick="1"
                       flex="1"
-                      onchange="Listit.renderTreeMap(0);"/>
+                      onchange="Plottit.renderTreeMap(0);"/>
                       
                     <label value="q" class="details-label"/>
-                    <scale id="listit-treemap-scale-f" class="treemap"
+                    <scale id="plottit-treemap-scale-f" class="treemap"
                       min="0" max="4000" value="2500" increment="100" 
                       movetoclick="1"
                       flex="1"
-                      onchange="Listit.renderTreeMap(0);"/>
+                      onchange="Plottit.renderTreeMap(0);"/>
                       
                     <label value="Iamb" class="details-label"/>
-                    <scale id="listit-treemap-scale-iamb" class="treemap"
+                    <scale id="plottit-treemap-scale-iamb" class="treemap"
                       min="0" max="500" value="100" increment="10" 
                       movetoclick="1"
                       flex="1"                      
-                      onchange="Listit.renderTreeMap(0);"/>
+                      onchange="Plottit.renderTreeMap(0);"/>
                 </hbox>
                   
               </vbox>
@@ -641,7 +641,7 @@
           </tabpanels>
         </tabbox>   
         
-      </hbox> <!-- listit-content-pannel -->
+      </hbox> <!-- plottit-content-pannel -->
     </deck>
   </vbox>    <!-- appcontent -->
 </overlay>

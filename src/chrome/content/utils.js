@@ -1,18 +1,18 @@
-if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
+if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
 
-Listit.assert = function(expression, message) {
+Plottit.assert = function(expression, message) {
 
     if (!expression) {
-        Listit.logger.error(message);
+        Plottit.logger.error(message);
         throw new Error(message);
     }
 }
 
 // Returns obj[propName], returns null if object does not exist
-Listit.safeGet = function(obj, propName) {
+Plottit.safeGet = function(obj, propName) {
 
     if (obj === null) {
-        Listit.logger.warn(obj.toString() + ' object does not have property: ' + propName);
+        Plottit.logger.warn(obj.toString() + ' object does not have property: ' + propName);
         return null;
     } else { 
         return obj[propName];
@@ -20,7 +20,7 @@ Listit.safeGet = function(obj, propName) {
 }
 
 // Returns obj[propName] if the property exists, otherwise returns defaultValue
-Listit.getProp = function(obj, propName, defaultValue) {
+Plottit.getProp = function(obj, propName, defaultValue) {
 
     if (obj[propName] !== undefined) {
         return obj[propName];
@@ -32,31 +32,31 @@ Listit.getProp = function(obj, propName, defaultValue) {
 // Returns false if the 'checked' attribute is false or no present
 // the 'checked' attribute must be set to false if persistence is requered,
 // if it is just unchecked XUL won't remember this :-(
-Listit.getCheckboxValue = function(checkbox) {
+Plottit.getCheckboxValue = function(checkbox) {
 
     if (checkbox.hasAttribute('checked')) {
-        return Listit.stringToBoolean(checkbox.getAttribute('checked'))
+        return Plottit.stringToBoolean(checkbox.getAttribute('checked'))
     } else {
         return false;
     }
 }
 
 // Converts 'true' or 'false' to boolean value
-Listit.stringToBoolean = function(boolStr) {
+Plottit.stringToBoolean = function(boolStr) {
 
-    Listit.assert(boolStr == 'true' || boolStr == 'false', 
+    Plottit.assert(boolStr == 'true' || boolStr == 'false', 
         "Expected 'true' or 'false', got'" + boolStr + "'");
     return (boolStr == 'true');
 }
 
 // Converts boolean value to 'true' or 'false'
-Listit.booleanToString = function(boolStr) {
+Plottit.booleanToString = function(boolStr) {
 
     return boolStr ? 'true' : 'false';
 }
 
 	
-Listit.XSSDecode = function(s) {
+Plottit.XSSDecode = function(s) {
 
     if (!s) return "";
     
@@ -72,12 +72,12 @@ Listit.XSSDecode = function(s) {
 
 /* not used
 // Loads jQuery into chrome.
-// Use with: doc.defaultView.Listit_jQuery = Listit.loadjQuery(doc.defaultView);
+// Use with: doc.defaultView.Plottit_jQuery = Plottit.loadjQuery(doc.defaultView);
 // From: http://forums.mozillazine.org/viewtopic.php?f=19&t=2105087
-Listit.loadjQuery = function(wnd) {
+Plottit.loadjQuery = function(wnd) {
     var loader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
         .getService(Components.interfaces.mozIJSSubScriptLoader);
-    loader.loadSubScript("chrome://listit/content/jquery-1.6.2.min.js", wnd);
+    loader.loadSubScript("chrome://plottit/content/jquery-1.6.2.min.js", wnd);
     var jQuery = wnd.wrappedJSObject.jQuery.noConflict(true);
     // Load jQuery plugins here...
     //loader.loadSubScript("chrome://clhelper/content/jquery/jquery.hoverIntent.js", jQuery);
@@ -91,12 +91,12 @@ Listit.loadjQuery = function(wnd) {
 //////////////
 
 /* Not used. Obsolete by dateFormat.js
-Listit._pad0 = function(n) {
+Plottit._pad0 = function(n) {
     return n<10 ? '0'+n : n;
 }
 
-Listit.ISODateString = function(d) {
-    var pad = Listit._pad0;
+Plottit.ISODateString = function(d) {
+    var pad = Plottit._pad0;
     return d.getUTCFullYear() + '-'
         + pad(d.getUTCMonth() +1 ) + '-'
         + pad(d.getUTCDate()) + 'T'
@@ -105,8 +105,8 @@ Listit.ISODateString = function(d) {
         + pad(d.getUTCSeconds()) + 'Z'
 }
 
-Listit.UtcDateString = function(d) {
-    var pad = Listit._pad0;
+Plottit.UtcDateString = function(d) {
+    var pad = Plottit._pad0;
     return d.getUTCFullYear() + '-'
         + pad(d.getUTCMonth() +1 ) + '-'
         + pad(d.getUTCDate()) + ' '
@@ -115,8 +115,8 @@ Listit.UtcDateString = function(d) {
         + pad(d.getUTCSeconds())
 }
 
-Listit.LocalDateString = function(d) {
-    var pad = Listit._pad0;
+Plottit.LocalDateString = function(d) {
+    var pad = Plottit._pad0;
     return d.getFullYear() + '-'
         + pad(d.getMonth() +1 ) + '-'
         + pad(d.getDate()) + ' '
@@ -135,7 +135,7 @@ Listit.LocalDateString = function(d) {
 // See: https://developer.mozilla.org/en/New_in_JavaScript_1.7
 // Also: https://developer.mozilla.org/en/JavaScript/Guide/Iterators_and_Generators
 
-Listit.range = function(begin, end) {
+Plottit.range = function(begin, end) {
     for (let i = begin; i < end; ++i) {
         yield i;
     }
@@ -145,7 +145,7 @@ Listit.range = function(begin, end) {
 // Math //
 //////////
 
-Listit.log10 = function (x) {
+Plottit.log10 = function (x) {
     return Math.LOG10E * Math.log(x);
 }
 
@@ -157,7 +157,7 @@ Listit.log10 = function (x) {
 // bins (k=0) starts at this offset. The bins are thus defined as the intervals: 
 //   [binWidth*k+offset, binWidth*(k+1)+offset) where k is a certain integer. 
 //
-Listit.createHistogram = function (data, binWidth, offset) {
+Plottit.createHistogram = function (data, binWidth, offset) {
 
     if (!offset) offset = 0;
     
@@ -189,7 +189,7 @@ Listit.createHistogram = function (data, binWidth, offset) {
 // Sorting //
 /////////////
 
-Listit.roundToZero = function(x) {
+Plottit.roundToZero = function(x) {
     if (x>0) {
         return Math.floor(x);
     } else {
@@ -198,12 +198,12 @@ Listit.roundToZero = function(x) {
 }
 
 
-Listit.swapArgs = function(fun) {
+Plottit.swapArgs = function(fun) {
     return function(a, b) { return fun(b,a); }
 }
 
 
-Listit.compare = function(a, b) {
+Plottit.compare = function(a, b) {
     if (a == b) 
         return 0;
     if (a < b) 
@@ -212,15 +212,15 @@ Listit.compare = function(a, b) {
         return 1;
 }
 
-Listit.compareNumbers = function(a, b) {
+Plottit.compareNumbers = function(a, b) {
     return a-b;
 }
 
-Listit.compareDates = function(a, b) {
+Plottit.compareDates = function(a, b) {
     return a.valueOf() - b.valueOf();
 }
 
-Listit.compareStrings = function(a, b) {
+Plottit.compareStrings = function(a, b) {
     if (a == b) 
         return 0;
     if (a < b) 
@@ -229,20 +229,20 @@ Listit.compareStrings = function(a, b) {
         return 1;
 }
 
-Listit.compareIDs = function(a, b) {
+Plottit.compareIDs = function(a, b) {
     var lengthComparison = a.length - b.length;
     if (lengthComparison == 0) 
-        return Listit.compareStrings(a, b);
+        return Plottit.compareStrings(a, b);
     else
         return lengthComparison;
 }
 
-Listit.compareCaseInsensitiveStrings = function(a, b) {
-    return Listit.compareStrings(a.toLowerCase(), b.toLowerCase());
+Plottit.compareCaseInsensitiveStrings = function(a, b) {
+    return Plottit.compareStrings(a.toLowerCase(), b.toLowerCase());
 }
 
 // Create function that sorts by f2 if a and b are equal in terms of f1
-Listit.combineComparisonFunctions = function(f1, f2) {
+Plottit.combineComparisonFunctions = function(f1, f2) {
     
     return function (a, b) {
         var res = f1(a, b);
@@ -258,7 +258,7 @@ Listit.combineComparisonFunctions = function(f1, f2) {
 // XUL //
 /////////
 
-Listit.installToolbarButton = function(toolbarId, id, afterId, beforePermanent) 
+Plottit.installToolbarButton = function(toolbarId, id, afterId, beforePermanent) 
 {  
     // from: https://developer.mozilla.org/en/Code_snippets/Toolbar#Adding_button_by_default
     if (!document.getElementById(id)) {  
@@ -280,7 +280,7 @@ Listit.installToolbarButton = function(toolbarId, id, afterId, beforePermanent)
     }  
 } 
 
-Listit.installToolbarButtonAtEnd = function(toolbarId, id) 
+Plottit.installToolbarButtonAtEnd = function(toolbarId, id) 
 {  
     if (!document.getElementById(id)) {  
         var toolbar = document.getElementById(toolbarId);  
@@ -300,49 +300,49 @@ Listit.installToolbarButtonAtEnd = function(toolbarId, id)
 
 /*
 Utils.js defines two logging mechanisms:
-    Listit.logger: The log4moz logger object which can be imported only in XUL
-    Listit.fbLog: The firebug log function which is useful for inspecting data
+    Plottit.logger: The log4moz logger object which can be imported only in XUL
+    Plottit.fbLog: The firebug log function which is useful for inspecting data
     
-Use Listit.initializeLoggers to intialize them. The bXul parameter should be true 
+Use Plottit.initializeLoggers to intialize them. The bXul parameter should be true 
 when called from a firefox extension, false when called from a stand alone html page.
 
 When a html page is displayed in a iFrame in the FF extension, for instance in 
 plotframe.html, initializeLoggers should be called in the page but the loggers can be 
-redefined later in Listit.onLoad.
+redefined later in Plottit.onLoad.
 */
 
 // Setup log4moz and firebug console logging.
 // Also works when utils.js is imported on stand alone html page.
-Listit.initializeLoggers = function (bXul, level) {
+Plottit.initializeLoggers = function (bXul, level) {
 
     if (bXul) {
         // When intializing loggers in a firefox extension
         if (level == null) level = 'All';
         
         if ('undefined' == typeof(Log4Moz)) {
-            Components.utils.import("resource://listit/log4moz.js");
-            Listit._configureRootLogger();
-            Listit.logger = Log4Moz.repository.getLogger('Listit');
-            Listit.logger.level = Log4Moz.Level[level];
+            Components.utils.import("resource://plottit/log4moz.js");
+            Plottit._configureRootLogger();
+            Plottit.logger = Log4Moz.repository.getLogger('Plottit');
+            Plottit.logger.level = Log4Moz.Level[level];
         }
         
         if ('undefined' == typeof(Firebug)) {
-            Listit.fbLog = function(msg) { Listit.logger.info('fbLog: ' + msg); } 
+            Plottit.fbLog = function(msg) { Plottit.logger.info('fbLog: ' + msg); } 
         } else {
-            Listit.fbLog = function(msg) { Firebug.Console.log(msg) } ;
+            Plottit.fbLog = function(msg) { Firebug.Console.log(msg) } ;
         }
         
     } else {
         // When called from a stand-alone html page
     
         if ('undefined' == typeof(console)) {
-            Listit.fbLog = function(msg) { } // Do nothing.
+            Plottit.fbLog = function(msg) { } // Do nothing.
         } else {
-            Listit.fbLog = console.log;
+            Plottit.fbLog = console.log;
         }
         
         // Mockup logger with the same routines
-        Listit.fbConsoleLogger = function (level) { // Constructor
+        Plottit.fbConsoleLogger = function (level) { // Constructor
 
             var levels = {
                 Fatal : 70,
@@ -356,20 +356,20 @@ Listit.initializeLoggers = function (bXul, level) {
             }
             var noOp = function () { } // do nothing
             
-            this.fatal  = (levels[level] <= levels['Fatal'])  ? Listit.fbLog : noOp;
-            this.error  = (levels[level] <= levels['Error'])  ? Listit.fbLog : noOp;
-            this.warn   = (levels[level] <= levels['Warn'])   ? Listit.fbLog : noOp;
-            this.info   = (levels[level] <= levels['Info'])   ? Listit.fbLog : noOp;
-            this.config = (levels[level] <= levels['Config']) ? Listit.fbLog : noOp;
-            this.debug  = (levels[level] <= levels['Debug'])  ? Listit.fbLog : noOp;
-            this.trace  = (levels[level] <= levels['Trace'])  ? Listit.fbLog : noOp;
+            this.fatal  = (levels[level] <= levels['Fatal'])  ? Plottit.fbLog : noOp;
+            this.error  = (levels[level] <= levels['Error'])  ? Plottit.fbLog : noOp;
+            this.warn   = (levels[level] <= levels['Warn'])   ? Plottit.fbLog : noOp;
+            this.info   = (levels[level] <= levels['Info'])   ? Plottit.fbLog : noOp;
+            this.config = (levels[level] <= levels['Config']) ? Plottit.fbLog : noOp;
+            this.debug  = (levels[level] <= levels['Debug'])  ? Plottit.fbLog : noOp;
+            this.trace  = (levels[level] <= levels['Trace'])  ? Plottit.fbLog : noOp;
         }
-        Listit.logger = new Listit.fbConsoleLogger(level);   
+        Plottit.logger = new Plottit.fbConsoleLogger(level);   
     }
 }    
 
 
-Listit._configureRootLogger = function () {
+Plottit._configureRootLogger = function () {
     
     let root = Log4Moz.repository.rootLogger;
     
@@ -380,7 +380,7 @@ Listit._configureRootLogger = function () {
     root.level = Log4Moz.Level["All"];
 
     let formatter = new Log4Moz.BasicFormatter();
-    //let formatter = new Listit.LogFormatter();
+    //let formatter = new Plottit.LogFormatter();
     let capp = new Log4Moz.ConsoleAppender(formatter); // to the JS Error Console
     capp.level = Log4Moz.Level["Info"];
     root.addAppender(capp);
@@ -390,23 +390,23 @@ Listit._configureRootLogger = function () {
     root.addAppender(dapp);
 }
 
-Listit.logException = function(ex) {
-    Listit.logger.error('EXCEPTION IN ' + ex.fileName + ' line ' + ex.lineNumber + ' : ' + ex.message);
-    Listit.fbLog(ex);
+Plottit.logException = function(ex) {
+    Plottit.logger.error('EXCEPTION IN ' + ex.fileName + ' line ' + ex.lineNumber + ' : ' + ex.message);
+    Plottit.fbLog(ex);
 }
 
 /*
 /////////////////////////
-// Listit.LogFormatter //
+// Plottit.LogFormatter //
 /////////////////////////
 
-Listit.LogFormatter = function (dateFormat) { // Constructor
+Plottit.LogFormatter = function (dateFormat) { // Constructor
     this.dateFormat = dateFormat;
 }
 
-Listit.LogFormatter.prototype.__proto__ = Log4Moz.Formatter.prototype;
+Plottit.LogFormatter.prototype.__proto__ = Log4Moz.Formatter.prototype;
 
-Listit.LogFormatter.prototype.format = function (message) {
+Plottit.LogFormatter.prototype.format = function (message) {
     return "YYYYYYY" + message.time + "\t" + message.loggerName + "\t" + message.levelDesc 
            + "\t" + message.message + "\n";
 }

@@ -1,5 +1,5 @@
 
-if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
+if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
 
 
 /*
@@ -9,7 +9,7 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 // Constructor
 
-Listit.FlotWrapper = function (placeHolderDivId) 
+Plottit.FlotWrapper = function (placeHolderDivId) 
 {
     this.plot = null; // Don't call jQuery.plot yet, the placeholder may not be visible
     this.placeHolderDivId = placeHolderDivId;
@@ -37,15 +37,15 @@ Listit.FlotWrapper = function (placeHolderDivId)
 }
 
 
-Listit.FlotWrapper.prototype.toString = function () {
-    return "<Listit.FlotWrapper>";
+Plottit.FlotWrapper.prototype.toString = function () {
+    return "<Plottit.FlotWrapper>";
 };
 
-Listit.FlotWrapper.prototype.assertAxisStringIsValid = function (axisStr) {
-    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr); 
+Plottit.FlotWrapper.prototype.assertAxisStringIsValid = function (axisStr) {
+    Plottit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr); 
 }
 
-Listit.FlotWrapper.prototype.getAxisByName = function (axisStr) {
+Plottit.FlotWrapper.prototype.getAxisByName = function (axisStr) {
     this.assertAxisStringIsValid(axisStr);
     var axes = this.plot.getAxes();
     var axis = (axisStr == 'x' ? axes.xaxis : axes.yaxis);
@@ -54,7 +54,7 @@ Listit.FlotWrapper.prototype.getAxisByName = function (axisStr) {
 
 
 // Make sure to call this only when the place holder is visible!
-Listit.FlotWrapper.prototype.createPlot = function (plotOptions) {
+Plottit.FlotWrapper.prototype.createPlot = function (plotOptions) {
     this.plot = $.plot($('#'+this.placeHolderDivId), [], plotOptions);
 
     // Pass on the plot options set so far
@@ -62,7 +62,7 @@ Listit.FlotWrapper.prototype.createPlot = function (plotOptions) {
     this._updateFlotAxisOptions('y');
 }
 
-Listit.FlotWrapper.prototype.setData = function (plotSeries, commentIdList) {
+Plottit.FlotWrapper.prototype.setData = function (plotSeries, commentIdList) {
     this.plot.setData(plotSeries);
     
     this.highlightedIndex = null;
@@ -79,7 +79,7 @@ Listit.FlotWrapper.prototype.setData = function (plotSeries, commentIdList) {
 }
 
 
-Listit.FlotWrapper.prototype.highlight = function (selectedCommentId)
+Plottit.FlotWrapper.prototype.highlight = function (selectedCommentId)
 {
     this.highlightedIndex = this.indexOfId[selectedCommentId];
     this.highlightedId = selectedCommentId;
@@ -87,7 +87,7 @@ Listit.FlotWrapper.prototype.highlight = function (selectedCommentId)
 }
 
 
-Listit.FlotWrapper.prototype.removeHighlight = function ()
+Plottit.FlotWrapper.prototype.removeHighlight = function ()
 {
     if (this.plot) {
         this.plot.unhighlight();
@@ -95,7 +95,7 @@ Listit.FlotWrapper.prototype.removeHighlight = function ()
 }
 
 
-Listit.FlotWrapper.prototype.drawHighlight = function ()
+Plottit.FlotWrapper.prototype.drawHighlight = function ()
 {
     if (this.plot) {
         this.plot.unhighlight();
@@ -105,8 +105,8 @@ Listit.FlotWrapper.prototype.drawHighlight = function ()
     }
 }
 
-Listit.FlotWrapper.prototype.onPlotClicked = function (item) {
-    Listit.logger.trace('Listit.FlotWrapper.dispatchListitPlotClicked');
+Plottit.FlotWrapper.prototype.onPlotClicked = function (item) {
+    Plottit.logger.trace('Plottit.FlotWrapper.dispatchPlottitPlotClicked');
     
     if (!item) return;
     
@@ -115,21 +115,21 @@ Listit.FlotWrapper.prototype.onPlotClicked = function (item) {
     
     // Trigger event to so that XUL code can handle it
     var event = document.createEvent("Events");  
-    event.initEvent("ListitPlotClickedEvent", true, false);  
+    event.initEvent("PlottitPlotClickedEvent", true, false);  
     var placeHolder = document.getElementById(this.placeHolderDivId);
     placeHolder.dispatchEvent(event);  
 }
 
 
-Listit.FlotWrapper.prototype.setPlotTitle = function (title) {
+Plottit.FlotWrapper.prototype.setPlotTitle = function (title) {
     $('#header-div').text(title);
 }
 
-Listit.FlotWrapper.prototype.drawPlot = function (rescale) {
-    Listit.logger.trace('Listit.FlotWrapper.drawPlot');
+Plottit.FlotWrapper.prototype.drawPlot = function (rescale) {
+    Plottit.logger.trace('Plottit.FlotWrapper.drawPlot');
 
     if (rescale) {
-        Listit.logger.trace('setupGridCalled --');
+        Plottit.logger.trace('setupGridCalled --');
         this.plot.setupGrid(); // Recalculate (and draw) and set axis scaling, ticks, legend etc.
     }
     this.plot.draw();      // Redraw the canvas (tick values)
@@ -138,34 +138,34 @@ Listit.FlotWrapper.prototype.drawPlot = function (rescale) {
 }
 
 // Update the flot axis options from the axisOptionCache
-Listit.FlotWrapper.prototype._updateFlotAxisOptions = function (axisStr) {
-    Listit.logger.trace('Listit.FlotWrapper._updateFlotAxisOptions --');
-    Listit.assert(this.plot, "In _updateFlotAxisPanOptions: this.plot not initialized");
+Plottit.FlotWrapper.prototype._updateFlotAxisOptions = function (axisStr) {
+    Plottit.logger.trace('Plottit.FlotWrapper._updateFlotAxisOptions --');
+    Plottit.assert(this.plot, "In _updateFlotAxisPanOptions: this.plot not initialized");
     this._updateFlotAxisPanOptions(axisStr);
     this._updateFlotAxisZoomOptions(axisStr);
 }
 
 // Update the flot axis pan options from the axisOptionCache
-Listit.FlotWrapper.prototype._updateFlotAxisPanOptions = function (axisStr) {
+Plottit.FlotWrapper.prototype._updateFlotAxisPanOptions = function (axisStr) {
     var axis = this.getAxisByName(axisStr);
     axis.options.panRange = this._axisOptionCache[axisStr].panRange;
 }
 
 // Update the flot axis zoom options from the axisOptionCache
-Listit.FlotWrapper.prototype._updateFlotAxisZoomOptions = function (axisStr) {
+Plottit.FlotWrapper.prototype._updateFlotAxisZoomOptions = function (axisStr) {
     var axis = this.getAxisByName(axisStr);
     axis.options.zoomRange = this._axisOptionCache[axisStr].zoomRange;
 }
 
 // Merges sourceOptions into the targetOptions dictionary
-Listit.FlotWrapper.prototype._mergeOptions = function (sourceOptions, targetOptions) {
+Plottit.FlotWrapper.prototype._mergeOptions = function (sourceOptions, targetOptions) {
     
     targetOptions = $.extend(true, {}, targetOptions, sourceOptions);   
     return targetOptions;
 }
 
-Listit.FlotWrapper.prototype.setAxisOptions = function (axisStr, varOptions) {
-    Listit.logger.trace('Listit.FlotWrapper.setAxisOptions -- ');
+Plottit.FlotWrapper.prototype.setAxisOptions = function (axisStr, varOptions) {
+    Plottit.logger.trace('Plottit.FlotWrapper.setAxisOptions -- ');
     this.assertAxisStringIsValid(axisStr);
     this._axisOptionCache[axisStr].panRange = varOptions.panRange;
     this._axisOptionCache[axisStr].zoomRange = varOptions.zoomRange;
@@ -177,53 +177,53 @@ Listit.FlotWrapper.prototype.setAxisOptions = function (axisStr, varOptions) {
 }
 
 /*
-Listit.FlotWrapper.prototype.logRange = function () {
-    Listit.logger.trace('Listit.FlotWrapper.logRange');
+Plottit.FlotWrapper.prototype.logRange = function () {
+    Plottit.logger.trace('Plottit.FlotWrapper.logRange');
     var range = this.getYRange();
-    Listit.logger.debug('def range: ' + range[0] + ' ' + range[1]);
+    Plottit.logger.debug('def range: ' + range[0] + ' ' + range[1]);
     range = this.getCalculatedYRange();
-    Listit.logger.debug('cal range: ' + range[0] + ' ' + range[1]);
+    Plottit.logger.debug('cal range: ' + range[0] + ' ' + range[1]);
 }*/
 
-Listit.FlotWrapper.prototype.getCalculatedXRange = function () {
+Plottit.FlotWrapper.prototype.getCalculatedXRange = function () {
     var xAxis = this.plot.getXAxes()[0]; 
     return [xAxis.min, xAxis.max];
 }
 
-Listit.FlotWrapper.prototype.getCalculatedYRange = function () {
+Plottit.FlotWrapper.prototype.getCalculatedYRange = function () {
     var yAxis = this.plot.getYAxes()[0]; 
     return [yAxis.min, yAxis.max];
 }
 
 
-Listit.FlotWrapper.prototype.getXRange = function () {
+Plottit.FlotWrapper.prototype.getXRange = function () {
     var axes = this.plot.getAxes();                    
     var xAxis = axes.xaxis;
     return [xAxis.options.min, xAxis.options.max];
 }
 
-Listit.FlotWrapper.prototype.getYRange = function () {
+Plottit.FlotWrapper.prototype.getYRange = function () {
     var axes = this.plot.getAxes();
     var yAxis = axes.yaxis;
     return [yAxis.options.min, yAxis.options.max];
 }
 
-Listit.FlotWrapper.prototype.setXRange = function (minX, maxX) {
+Plottit.FlotWrapper.prototype.setXRange = function (minX, maxX) {
     var axes = this.plot.getAxes();
     var xAxis = axes.xaxis;
     xAxis.options.min = minX;
     xAxis.options.max = maxX;
 }
 
-Listit.FlotWrapper.prototype.setYRange = function (minY, maxY) {
+Plottit.FlotWrapper.prototype.setYRange = function (minY, maxY) {
     var axes = this.plot.getAxes();
     var yAxis = axes.yaxis;
     yAxis.options.min = minY;
     yAxis.options.max = maxY;
 }
 
-Listit.FlotWrapper.prototype.setRanges = function (ranges) {
-    Listit.logger.trace("FlotWrapper.setRanges -- ranges");
+Plottit.FlotWrapper.prototype.setRanges = function (ranges) {
+    Plottit.logger.trace("FlotWrapper.setRanges -- ranges");
 
     //var msg = "(" +
     //    ranges.xaxis.from + ", " + ranges.yaxis.from + "),  (" +
@@ -241,9 +241,9 @@ Listit.FlotWrapper.prototype.setRanges = function (ranges) {
     this.setYRange(clampedRanges.yaxis.from, clampedRanges.yaxis.to);
 }
 
-Listit.FlotWrapper.prototype.resetRange = function (axisStr) {
+Plottit.FlotWrapper.prototype.resetRange = function (axisStr) {
 
-    Listit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
+    Plottit.assert(axisStr == 'x' || axisStr == 'y', "Invalid axisStr: " + axisStr);
     if (axisStr == 'x') {
         this.setXRange(null, null);
     } else {
@@ -253,8 +253,8 @@ Listit.FlotWrapper.prototype.resetRange = function (axisStr) {
 
 
 // TODO: refactor to updateAxesScale? (make autoscale flotWrapper member)
-Listit.FlotWrapper.prototype.setAxesAutoscale = function (autoScale) {
-    Listit.logger.trace("FlotWrapper.setAxesAutoscale: " + autoScale.toString());
+Plottit.FlotWrapper.prototype.setAxesAutoscale = function (autoScale) {
+    Plottit.logger.trace("FlotWrapper.setAxesAutoscale: " + autoScale.toString());
 
     if (autoScale) {
         this.setXRange(null, null);
@@ -268,7 +268,7 @@ Listit.FlotWrapper.prototype.setAxesAutoscale = function (autoScale) {
     this.drawPlot(autoScale);
 }
 
-Listit.FlotWrapper.prototype.addAxisDivs = function () {
+Plottit.FlotWrapper.prototype.addAxisDivs = function () {
 
     var flotWrapper = this;
     var plot = this.plot;
@@ -330,8 +330,8 @@ Listit.FlotWrapper.prototype.addAxisDivs = function () {
 
 
 // Needed when the selection plug-in is used.
-Listit.FlotWrapper.prototype.onPlotSelect = function (event, ranges) {
-    Listit.logger.trace("onPlotSelect --");
+Plottit.FlotWrapper.prototype.onPlotSelect = function (event, ranges) {
+    Plottit.logger.trace("onPlotSelect --");
     this.setRanges(ranges);
     this.plot.clearSelection(true);
     this.drawPlot(true); // rescale

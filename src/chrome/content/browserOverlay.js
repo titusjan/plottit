@@ -1,133 +1,133 @@
 
-if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
+if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
 
-// Initializes listit. Is called when the XUL window has loaded
-Listit.onLoad = function(event) {
+// Initializes plottit. Is called when the XUL window has loaded
+Plottit.onLoad = function(event) {
 
-    Listit.initializeLoggers(true, "Debug");
-    Listit.logger.info(' ---------------- Listit loaded ----------------');
-    Listit.logger.trace('Listit.onLoad -- begin');
+    Plottit.initializeLoggers(true, "Debug");
+    Plottit.logger.info(' ---------------- Plottit loaded ----------------');
+    Plottit.logger.trace('Plottit.onLoad -- begin');
 
-    document.getElementById('listit-scatter-plot-iframe').contentWindow.Listit.logger = Listit.logger;
-    document.getElementById('listit-scatter-plot-iframe').contentWindow.Listit.fbLog  = Listit.fbLog;
+    document.getElementById('plottit-scatter-plot-iframe').contentWindow.Plottit.logger = Plottit.logger;
+    document.getElementById('plottit-scatter-plot-iframe').contentWindow.Plottit.fbLog  = Plottit.fbLog;
 
     // Test if the extension is executed for the first time.
     if (Application.extensions)  
-        Listit.onFirstRun(Application.extensions);     // Firefox 3
+        Plottit.onFirstRun(Application.extensions);     // Firefox 3
     else  
-        Application.getExtensions(Listit.onFirstRun);  // Firefox >= 4
+        Application.getExtensions(Plottit.onFirstRun);  // Firefox >= 4
 
     
     // Initialize state object
-    Listit.state = new Listit.State(
-        Application.prefs.get("extensions.listit.listitEnabled").value,     // listitEnabled
-        document.getElementById('listit-comment-tree-column-local-date').getAttribute('format'),    // localDateFormat
-        document.getElementById('listit-comment-tree-column-utc-date').getAttribute('format'),      // utcDateFormat
-        document.getElementById('listit-treemap-size-menulist').value,      // treeMapSizeProperty
-        Listit.getHslConversionFunction(
-            document.getElementById('listit-treemap-color-menulist').value) // treeMapColorVariable
+    Plottit.state = new Plottit.State(
+        Application.prefs.get("extensions.plottit.plottitEnabled").value,     // plottitEnabled
+        document.getElementById('plottit-comment-tree-column-local-date').getAttribute('format'),    // localDateFormat
+        document.getElementById('plottit-comment-tree-column-utc-date').getAttribute('format'),      // utcDateFormat
+        document.getElementById('plottit-treemap-size-menulist').value,      // treeMapSizeProperty
+        Plottit.getHslConversionFunction(
+            document.getElementById('plottit-treemap-color-menulist').value) // treeMapColorVariable
         );
 
     // Sets button tooltip text
-    Listit.setListitActive(Application.prefs.get("extensions.listit.listitEnabled").value);
+    Plottit.setPlottitActive(Application.prefs.get("extensions.plottit.plottitEnabled").value);
         
     // Add existing tabs to the state because there won't be a tabOpen
     // event raised for them
     for (var idx = 0; idx < gBrowser.browsers.length; idx++) {
         var browser = gBrowser.getBrowserAtIndex(idx);
-        var browserID = Listit.state.addBrowser(browser);
-        Listit.state.setCurrentBrowser(browser); // we need to have a current browser
+        var browserID = Plottit.state.addBrowser(browser);
+        Plottit.state.setCurrentBrowser(browser); // we need to have a current browser
     }
 
-    Listit.scatterPlot = new Listit.ScatterPlot('listit-scatter-plot-iframe', 
-        Listit.getCheckboxValue(document.getElementById('listit-scatter-axes-autoscale')), 
-        document.getElementById('listit-scatter-x-axis-menulist').getAttribute('value'), 
-        document.getElementById('listit-scatter-y-axis-menulist').getAttribute('value'), 
-        parseFloat(document.getElementById('listit-bin-width-menulist').value),
+    Plottit.scatterPlot = new Plottit.ScatterPlot('plottit-scatter-plot-iframe', 
+        Plottit.getCheckboxValue(document.getElementById('plottit-scatter-axes-autoscale')), 
+        document.getElementById('plottit-scatter-x-axis-menulist').getAttribute('value'), 
+        document.getElementById('plottit-scatter-y-axis-menulist').getAttribute('value'), 
+        parseFloat(document.getElementById('plottit-bin-width-menulist').value),
         0);
 
-    Listit.histogram = new Listit.ScatterPlot('listit-histogram-iframe', 
-        Listit.getCheckboxValue(document.getElementById('listit-histogram-axes-autoscale')), 
-        document.getElementById('listit-histogram-x-axis-menulist').getAttribute('value'), 
+    Plottit.histogram = new Plottit.ScatterPlot('plottit-histogram-iframe', 
+        Plottit.getCheckboxValue(document.getElementById('plottit-histogram-axes-autoscale')), 
+        document.getElementById('plottit-histogram-x-axis-menulist').getAttribute('value'), 
         '',
-        parseFloat(document.getElementById('listit-bin-width-menulist').value));
+        parseFloat(document.getElementById('plottit-bin-width-menulist').value));
         
     
-    var treeMapIframe = document.getElementById('listit-treemap-frame');
+    var treeMapIframe = document.getElementById('plottit-treemap-frame');
     //var tmDiv = treeMapIframe.contentWindow.wrappedJSObject.getElementById('tm-div');
     var tmDiv = treeMapIframe.contentWindow.document.getElementById('tm-div');
-    Listit.treeMap = new Listit.TreeMap(tmDiv, 3, !Listit.commentTreeStructureIsFlat()); // mode depends on if comment tree is flat
-    Listit.onResizeTreeMap(); // resize to fill the complete iframe
+    Plottit.treeMap = new Plottit.TreeMap(tmDiv, 3, !Plottit.commentTreeStructureIsFlat()); // mode depends on if comment tree is flat
+    Plottit.onResizeTreeMap(); // resize to fill the complete iframe
     
-    var commentTree = document.getElementById('listit-comment-tree');
-    commentTree.view = Listit.state.getCurrentTreeView();
+    var commentTree = document.getElementById('plottit-comment-tree');
+    commentTree.view = Plottit.state.getCurrentTreeView();
     
     // Add event handlers 
-    treeMapIframe.addEventListener("resize", Listit.onResizeTreeMap, false);
+    treeMapIframe.addEventListener("resize", Plottit.onResizeTreeMap, false);
     
-    commentTree.addEventListener("select", Listit.onRowSelect, false);
-    commentTree.addEventListener("ListitTreeViewExpandCollapseEvent", Listit.onRowExpandOrCollapse, false);
+    commentTree.addEventListener("select", Plottit.onRowSelect, false);
+    commentTree.addEventListener("PlottitTreeViewExpandCollapseEvent", Plottit.onRowExpandOrCollapse, false);
         
     var container = gBrowser.tabContainer;
-    container.addEventListener("TabOpen", Listit.onTabOpen, false);
-    container.addEventListener("TabClose", Listit.onTabClose, false);
-    container.addEventListener("TabSelect", Listit.onTabSelect, false);
+    container.addEventListener("TabOpen", Plottit.onTabOpen, false);
+    container.addEventListener("TabClose", Plottit.onTabClose, false);
+    container.addEventListener("TabSelect", Plottit.onTabSelect, false);
 
-    gBrowser.addEventListener('DOMContentLoaded', Listit.onPageLoad, false); 
+    gBrowser.addEventListener('DOMContentLoaded', Plottit.onPageLoad, false); 
     
     // See: https://developer.mozilla.org/en/Code_snippets/Interaction_between_privileged_and_non-privileged_pages
-    window.addEventListener('ListitPlotClickedEvent', Listit.onScatterPlotClicked, false, true); 
-    window.addEventListener('ListitTreeMapClickedEvent', Listit.onTreeMapClicked, false, true); 
+    window.addEventListener('PlottitPlotClickedEvent', Plottit.onScatterPlotClicked, false, true); 
+    window.addEventListener('PlottitTreeMapClickedEvent', Plottit.onTreeMapClicked, false, true); 
 
     // Remove event that got us here in the first place
-    window.removeEventListener('load', Listit.onLoad, true);
+    window.removeEventListener('load', Plottit.onLoad, true);
 
-    window.addEventListener('unload', Listit.onUnload, false); // capture is false (otherwise we get also subwindows unloads)
+    window.addEventListener('unload', Plottit.onUnload, false); // capture is false (otherwise we get also subwindows unloads)
 
-    Listit.logger.trace('Listit.onLoad -- end');
+    Plottit.logger.trace('Plottit.onLoad -- end');
 };
 
 
-Listit.onFirstRun = function (extensions) {
-    let extension = extensions.get('listit@titusjan.com');  
+Plottit.onFirstRun = function (extensions) {
+    let extension = extensions.get('plottit@titusjan.com');  
     if (extension.firstRun) {  
-        Listit.logger.info("Listit runs for the first time");
-        Listit.installToolbarButtonAtEnd('nav-bar', 'listit-toggle-active-button');
+        Plottit.logger.info("Plottit runs for the first time");
+        Plottit.installToolbarButtonAtEnd('nav-bar', 'plottit-toggle-active-button');
     } else {
-        Listit.logger.debug("Listit runs for the nth time");
+        Plottit.logger.debug("Plottit runs for the nth time");
     }
 }  
 
-Listit.onUnload = function(event) {
-    Listit.logger.trace("Listit.onUnload -- "); 
+Plottit.onUnload = function(event) {
+    Plottit.logger.trace("Plottit.onUnload -- "); 
 
-    Listit.treeMap.destruct();
-    window.removeEventListener('unload', Listit.onUnload, false);
+    Plottit.treeMap.destruct();
+    window.removeEventListener('unload', Plottit.onUnload, false);
     
-    window.removeEventListener('ListitTreeMapClickedEvent', Listit.onTreeMapClicked, false, true);     
-    window.removeEventListener('ListitPlotClickedEvent', Listit.onScatterPlotClicked, false, true); 
-    gBrowser.removeEventListener('DOMContentLoaded', Listit.onPageLoad, false); 
+    window.removeEventListener('PlottitTreeMapClickedEvent', Plottit.onTreeMapClicked, false, true);     
+    window.removeEventListener('PlottitPlotClickedEvent', Plottit.onScatterPlotClicked, false, true); 
+    gBrowser.removeEventListener('DOMContentLoaded', Plottit.onPageLoad, false); 
 
     var container = gBrowser.tabContainer;
-    container.removeEventListener("TabSelect", Listit.onTabSelect, false);
-    container.removeEventListener("TabClose", Listit.onTabClose, false);
-    container.removeEventListener("TabOpen", Listit.onTabOpen, false);
+    container.removeEventListener("TabSelect", Plottit.onTabSelect, false);
+    container.removeEventListener("TabClose", Plottit.onTabClose, false);
+    container.removeEventListener("TabOpen", Plottit.onTabOpen, false);
 
-    var commentTree = document.getElementById('listit-comment-tree');
-    commentTree.removeEventListener("ListitTreeViewExpandCollapseEvent", Listit.onRowExpandOrCollapse, false);
-    commentTree.removeEventListener("select", Listit.onRowSelect, false);
+    var commentTree = document.getElementById('plottit-comment-tree');
+    commentTree.removeEventListener("PlottitTreeViewExpandCollapseEvent", Plottit.onRowExpandOrCollapse, false);
+    commentTree.removeEventListener("select", Plottit.onRowSelect, false);
 
-    var treeMapIframe = document.getElementById('listit-treemap-frame');
-    treeMapIframe.removeEventListener("resize", Listit.onResizeTreeMap, false);
+    var treeMapIframe = document.getElementById('plottit-treemap-frame');
+    treeMapIframe.removeEventListener("resize", Plottit.onResizeTreeMap, false);
 
-    Listit.logger.trace("Listit.onUnload done "); 
+    Plottit.logger.trace("Plottit.onUnload done "); 
 }
 
 
  
 /* doesn't work
-Listit.onTreeDoubleClick = function(event) {
-    Listit.logger.trace("Listit.onRowDoubleClick -- ");
+Plottit.onTreeDoubleClick = function(event) {
+    Plottit.logger.trace("Plottit.onRowDoubleClick -- ");
     // onTreeDoubleClick and onRowselect can both occur when a new row is double-clicked.
     // Disable expand collapse. Reserving event for future use.
     event.preventDefault();
@@ -138,42 +138,42 @@ Listit.onTreeDoubleClick = function(event) {
 // Selects comment and possibly collapses/expands.
 // (set collapsed to null to it this unchanged).
 // Always makes the comment visible by expanding the path to it!.
-Listit.selectAndExpandOrCollapseComment = function(selectedComment, expand, scrollRedditPage) {
-    Listit.logger.trace("Listit.selectAndExpandOrCollapseComment -- ");
+Plottit.selectAndExpandOrCollapseComment = function(selectedComment, expand, scrollRedditPage) {
+    Plottit.logger.trace("Plottit.selectAndExpandOrCollapseComment -- ");
 
-    var curState = Listit.state.getCurrentBrowserState();
+    var curState = Plottit.state.getCurrentBrowserState();
     var makeVisible = true; // ALWAYS MAKE COMMENT VISIBLE BY EXPANDING PATH TO IT
     curState.treeView.expandOrCollapseComment(selectedComment, expand, makeVisible); // Must be before selection
     curState.selectedComment = selectedComment;
     
-    Listit.updateViewsForCurrentSelection(scrollRedditPage);
+    Plottit.updateViewsForCurrentSelection(scrollRedditPage);
 }
 
 // Update tree, comment pane, plots selection.
-Listit.updateViewsForCurrentSelection = function(scrollRedditPage) {
-    Listit.logger.trace("Listit.updateViewsForCurrentSelection -- ");
+Plottit.updateViewsForCurrentSelection = function(scrollRedditPage) {
+    Plottit.logger.trace("Plottit.updateViewsForCurrentSelection -- ");
 
-    var curState = Listit.state.getCurrentBrowserState();
+    var curState = Plottit.state.getCurrentBrowserState();
     var selectedComment = curState.selectedComment;
     var selectedCommentId = selectedComment ? selectedComment.id : null;
-    var expand =  Listit.commentTreeStructureIsFlat() || (selectedComment ? (selectedComment.isOpen) : null);
+    var expand =  Plottit.commentTreeStructureIsFlat() || (selectedComment ? (selectedComment.isOpen) : null);
     
     curState.treeView.selectComment(selectedComment);
-    Listit.setDetailsFrameHtml(selectedComment ? selectedComment.bodyHtml : '');
-    Listit.scatterPlot.highlight(selectedCommentId);
-    Listit.treeMap.highlight(selectedCommentId, expand);
-    Listit.selectCommentInRedditPage(selectedComment, curState.previousSelectedComment, scrollRedditPage);
+    Plottit.setDetailsFrameHtml(selectedComment ? selectedComment.bodyHtml : '');
+    Plottit.scatterPlot.highlight(selectedCommentId);
+    Plottit.treeMap.highlight(selectedCommentId, expand);
+    Plottit.selectCommentInRedditPage(selectedComment, curState.previousSelectedComment, scrollRedditPage);
 
 }
 
 
 
-Listit.onRowSelect = function(event) {
-    Listit.logger.trace("Listit.onRowSelect -- ");
+Plottit.onRowSelect = function(event) {
+    Plottit.logger.trace("Plottit.onRowSelect -- ");
     
     // Get current selected row (TODO: use treeview.selection object?)
-    var curState = Listit.state.getCurrentBrowserState();
-    var selectedIndex = document.getElementById('listit-comment-tree').currentIndex;  // Can be -1 when none selected
+    var curState = Plottit.state.getCurrentBrowserState();
+    var selectedIndex = document.getElementById('plottit-comment-tree').currentIndex;  // Can be -1 when none selected
     var selectedComment = curState.treeView.visibleComments[selectedIndex]; // Can be undefined if idx = -1
     
     if (selectedComment == curState.selectedComment) {
@@ -181,60 +181,60 @@ Listit.onRowSelect = function(event) {
     }
     
     if (selectedComment) {  // selectedComment can be false, e.g. when you click on the headers
-        Listit.selectAndExpandOrCollapseComment(selectedComment, null, true); 
+        Plottit.selectAndExpandOrCollapseComment(selectedComment, null, true); 
     }
 }
 
-Listit.onRowExpandOrCollapse = function(event) {
-    Listit.logger.trace("Listit.onRowExpandOrCollapse -- ");
+Plottit.onRowExpandOrCollapse = function(event) {
+    Plottit.logger.trace("Plottit.onRowExpandOrCollapse -- ");
     
-    var curState = Listit.state.getCurrentBrowserState();
+    var curState = Plottit.state.getCurrentBrowserState();
     if (event.comment ==  curState.selectedComment) {
         // Only update when the expanded node is actually selected.
-        Listit.updateViewsForCurrentSelection(false); 
+        Plottit.updateViewsForCurrentSelection(false); 
     }
     
     if (true) { // TODO: configuration option?
-        Listit.expandOrCollapseRedditComment(event.comment, event.comment.isOpen);
+        Plottit.expandOrCollapseRedditComment(event.comment, event.comment.isOpen);
     }
         
 }
 
 
-Listit.onCommentTreeBlur = function(event) {
-    Listit.logger.trace("Listit.onCommentTreeBlur -- ");
-    Listit.selectAndExpandOrCollapseComment(null, null, true);
+Plottit.onCommentTreeBlur = function(event) {
+    Plottit.logger.trace("Plottit.onCommentTreeBlur -- ");
+    Plottit.selectAndExpandOrCollapseComment(null, null, true);
 }
 
 
-Listit.onScatterPlotClicked = function(event) {
-    Listit.logger.trace("Listit.onScatterPlotClicked -- ");
+Plottit.onScatterPlotClicked = function(event) {
+    Plottit.logger.trace("Plottit.onScatterPlotClicked -- ");
     
-    var commentId = Listit.scatterPlot.flotWrapper.highlightedId;
-    var discussion = Listit.state.getCurrentBrowserDiscussion();
+    var commentId = Plottit.scatterPlot.flotWrapper.highlightedId;
+    var discussion = Plottit.state.getCurrentBrowserDiscussion();
     var selectedComment = discussion.getCommentById(commentId);
-    Listit.selectAndExpandOrCollapseComment(selectedComment, null, true);
-    document.getElementById('listit-comment-tree').focus(); // Set focus to comment tree;
+    Plottit.selectAndExpandOrCollapseComment(selectedComment, null, true);
+    document.getElementById('plottit-comment-tree').focus(); // Set focus to comment tree;
 }
 
 
-Listit.onTreeMapClicked = function(event) {
-    Listit.logger.trace("Listit.onTreeMapClicked -- ");
+Plottit.onTreeMapClicked = function(event) {
+    Plottit.logger.trace("Plottit.onTreeMapClicked -- ");
 
-    // Test origin of the event; only update the treemap of Listit, not from e.g. a test page.
+    // Test origin of the event; only update the treemap of Plottit, not from e.g. a test page.
     if (event.originalTarget.id == 'tm-div-overlay') {
-        var commentId = Listit.treeMap.selectedNodeBaseId;
-        var discussion = Listit.state.getCurrentBrowserDiscussion();
+        var commentId = Plottit.treeMap.selectedNodeBaseId;
+        var discussion = Plottit.state.getCurrentBrowserDiscussion();
         var selectedComment = discussion.getCommentById(commentId);
         
-        Listit.selectAndExpandOrCollapseComment(selectedComment, !Listit.treeMap.selectedNodeIsGroup, true);
-        document.getElementById('listit-comment-tree').focus(); // Set focus to comment tree;
+        Plottit.selectAndExpandOrCollapseComment(selectedComment, !Plottit.treeMap.selectedNodeIsGroup, true);
+        document.getElementById('plottit-comment-tree').focus(); // Set focus to comment tree;
     }
 }
 
 
-Listit.onRedditPageClicked = function(event) {
-    Listit.logger.trace("Listit.onRedditPageClicked -- ");
+Plottit.onRedditPageClicked = function(event) {
+    Plottit.logger.trace("Plottit.onRedditPageClicked -- ");
     
     var $ = content.wrappedJSObject.jQuery;
     if ($) { // e.g. no jQuery when page is only a .json file
@@ -256,46 +256,46 @@ Listit.onRedditPageClicked = function(event) {
             var display = thing.find('.noncollapsed:first').css('display');
             expand = (display == 'block');
         }
-        var discussion = Listit.state.getCurrentBrowserDiscussion();
+        var discussion = Plottit.state.getCurrentBrowserDiscussion();
         var selectedComment = discussion.getCommentById(commentId);
-        Listit.selectAndExpandOrCollapseComment(selectedComment, expand, false);        
+        Plottit.selectAndExpandOrCollapseComment(selectedComment, expand, false);        
     }
 }
 
 
-Listit.onTabOpen = function(event) {
-    Listit.logger.trace("Listit.onTabOpen -- ");
+Plottit.onTabOpen = function(event) {
+    Plottit.logger.trace("Plottit.onTabOpen -- ");
     
     var browser = gBrowser.getBrowserForTab(event.target);
-    var browserID = Listit.state.addBrowser(browser);
+    var browserID = Plottit.state.addBrowser(browser);
 }
 
-Listit.onTabClose = function(event) {
-    Listit.logger.trace("Listit.onTabClose -- ");
+Plottit.onTabClose = function(event) {
+    Plottit.logger.trace("Plottit.onTabClose -- ");
     
     var browser = gBrowser.getBrowserForTab(event.target);
-    var browserID = Listit.state.removeBrowser(browser);
+    var browserID = Plottit.state.removeBrowser(browser);
 }
 
-Listit.onTabSelect = function(event) {
-    Listit.logger.trace("Listit.onTabSelect -- ");
+Plottit.onTabSelect = function(event) {
+    Plottit.logger.trace("Plottit.onTabSelect -- ");
     
     var browser = gBrowser.getBrowserForTab(event.target);
-    var browserID = Listit.state.setCurrentBrowser(browser);
+    var browserID = Plottit.state.setCurrentBrowser(browser);
     
-    var commentTree = document.getElementById('listit-comment-tree');
-    commentTree.view = Listit.state.getCurrentTreeView();    
+    var commentTree = document.getElementById('plottit-comment-tree');
+    commentTree.view = Plottit.state.getCurrentTreeView();    
     
-    Listit.updateAllViews(Listit.state, browserID);
+    Plottit.updateAllViews(Plottit.state, browserID);
 }
 
-Listit.onDetailsTabSelect = function(event) {
-    Listit.logger.trace("Listit.onDetailsTabSelect -- ");
-    Listit.updateAllViews(Listit.state, Listit.state.getCurrentBrowserID());
+Plottit.onDetailsTabSelect = function(event) {
+    Plottit.logger.trace("Plottit.onDetailsTabSelect -- ");
+    Plottit.updateAllViews(Plottit.state, Plottit.state.getCurrentBrowserID());
 }
  
-Listit.setTreeColsSplittersResizeBehaviour = function(event) {
-    Listit.logger.trace("Listit.setTreeColsSplittersResizeBehaviour -- ");
+Plottit.setTreeColsSplittersResizeBehaviour = function(event) {
+    Plottit.logger.trace("Plottit.setTreeColsSplittersResizeBehaviour -- ");
     
     // Afwul hack to make set the resizebefore and resizeafter attributes of the tree splitters
     // Currently executed onmouse down.
@@ -303,7 +303,7 @@ Listit.setTreeColsSplittersResizeBehaviour = function(event) {
     // All splitters left of the body column have resizebefore='flex' and resizeafter = 'closest'
     
     var treeCols = event.target.parentNode;
-    var bodyColumn = document.getElementById('listit-comment-tree-column-body');
+    var bodyColumn = document.getElementById('plottit-comment-tree-column-body');
     
     for(let [idx, childNode] in Iterator(treeCols.childNodes)) {
         if (childNode.tagName == 'splitter') {
@@ -319,13 +319,13 @@ Listit.setTreeColsSplittersResizeBehaviour = function(event) {
     }
 }
 
-Listit.onClickTreeHeader = function(event) {
-    Listit.logger.trace("Listit.onClickTreeHeader -- ");
+Plottit.onClickTreeHeader = function(event) {
+    Plottit.logger.trace("Plottit.onClickTreeHeader -- ");
 
     if (event.button != 0) return; // Only left mouse button
     
     var column = event.originalTarget;
-    var commentTree = document.getElementById('listit-comment-tree');
+    var commentTree = document.getElementById('plottit-comment-tree');
     var oldSortResource = commentTree.getAttribute('sortResource');
     var oldColumn = document.getElementById(oldSortResource);
     var oldSortDirection = commentTree.getAttribute('sortDirection');
@@ -341,21 +341,21 @@ Listit.onClickTreeHeader = function(event) {
         oldColumn.setAttribute('sortDirection', 'natural');
     }
     
-    var structure = document.getElementById('listit-comment-tree-column-body').getAttribute('structure');
-    Listit.state.getCurrentTreeView().setDiscussionSorted(column.id, newSortDirection, structure);
-    Listit.ensureCurrentRowVisible();
+    var structure = document.getElementById('plottit-comment-tree-column-body').getAttribute('structure');
+    Plottit.state.getCurrentTreeView().setDiscussionSorted(column.id, newSortDirection, structure);
+    Plottit.ensureCurrentRowVisible();
     
     // Set after actual sorting for easier dection of error in during sort
     commentTree.setAttribute('sortDirection', newSortDirection);
     commentTree.setAttribute('sortResource', newSortResource);
     column.setAttribute('sortDirection', newSortDirection);
-    Listit.logger.trace("Listit.onClickTreeHeader done ");
+    Plottit.logger.trace("Plottit.onClickTreeHeader done ");
 }
 
 
 
-Listit.onClickCommentTreeHeader = function(event) {
-    Listit.logger.trace("Listit.onClickCommentTreeHeader -- ");
+Plottit.onClickCommentTreeHeader = function(event) {
+    Plottit.logger.trace("Plottit.onClickCommentTreeHeader -- ");
     
     if (event.button != 0) return; // Only left mouse button
     
@@ -365,70 +365,70 @@ Listit.onClickCommentTreeHeader = function(event) {
 
     column.setAttribute('structure', newStructure);
     var headerLabel = (newStructure == 'tree') ?
-        document.getElementById('listit-string-bundle').getString('listit.comments.asTree') :
-        document.getElementById('listit-string-bundle').getString('listit.comments.asList');
+        document.getElementById('plottit-string-bundle').getString('plottit.comments.asTree') :
+        document.getElementById('plottit-string-bundle').getString('plottit.comments.asList');
     column.setAttribute('label', headerLabel);
     
-    var curTreeView = Listit.state.getCurrentTreeView();
+    var curTreeView = Plottit.state.getCurrentTreeView();
     curTreeView.setStructure(newStructure);
     
     // Sort and set comments in score tree
-    var commentTree = document.getElementById('listit-comment-tree');
+    var commentTree = document.getElementById('plottit-comment-tree');
     var sortResource = commentTree.getAttribute('sortResource');
     var sortDirection = commentTree.getAttribute('sortDirection');
     
     // Set treemap mode so that only parent is returned on repeat select in tree mode
-    Listit.treeMap.returnParentOnRepeatSelectMode = (newStructure == 'tree');
+    Plottit.treeMap.returnParentOnRepeatSelectMode = (newStructure == 'tree');
 
     curTreeView.setDiscussionSorted(sortResource, sortDirection, newStructure);
-    Listit.ensureCurrentRowVisible();
+    Plottit.ensureCurrentRowVisible();
     
-    Listit.logger.trace("Listit.onClickCommentTreeHeader done ");
+    Plottit.logger.trace("Plottit.onClickCommentTreeHeader done ");
 }
 
 
-Listit.commentTreeStructureIsFlat = function() {
-    var structure = document.getElementById('listit-comment-tree-column-body').getAttribute('structure');
-    Listit.assert(structure == 'flat' || structure == 'tree', 
+Plottit.commentTreeStructureIsFlat = function() {
+    var structure = document.getElementById('plottit-comment-tree-column-body').getAttribute('structure');
+    Plottit.assert(structure == 'flat' || structure == 'tree', 
         "Invalid tree structure: " + structure);
     return structure == 'flat';
 }
 
 
-Listit.setTreeColumnDateFormat = function (event) {
-    Listit.logger.trace("Listit.setTreeColumnDateFormat -- ");
+Plottit.setTreeColumnDateFormat = function (event) {
+    Plottit.logger.trace("Plottit.setTreeColumnDateFormat -- ");
   
     var format = event.target.value;
     var column = document.popupNode; 
 
     var key;
     switch (column.id) {
-        case 'listit-comment-tree-column-local-date':
+        case 'plottit-comment-tree-column-local-date':
             key = ['localDateFormat'];
-            Listit.state.setLocalDateFormat(format);
+            Plottit.state.setLocalDateFormat(format);
             break;
-        case 'listit-comment-tree-column-utc-date':
+        case 'plottit-comment-tree-column-utc-date':
             key = ['utcDateFormat'];
-            Listit.state.setUtcDateFormat(format);
+            Plottit.state.setUtcDateFormat(format);
             break;
         default:
-            Listit.assert(false, "Invalid column ID: " + column.id);
+            Plottit.assert(false, "Invalid column ID: " + column.id);
     } // switch
     
     // Set attribute for persistence
     column.setAttribute('format', format);
     
     // Force repainting of the column;
-    var treeBoxColumns = Listit.getTreeBoxObject('listit-comment-tree').columns;
+    var treeBoxColumns = Plottit.getTreeBoxObject('plottit-comment-tree').columns;
     var nsiTreeColumn = treeBoxColumns.getNamedColumn(column.id);
-    Listit.getTreeBoxObject('listit-comment-tree').invalidateColumn(nsiTreeColumn);        
+    Plottit.getTreeBoxObject('plottit-comment-tree').invalidateColumn(nsiTreeColumn);        
     
-    Listit.logger.trace("Listit.setTreeColumnDateFormat done ");    
+    Plottit.logger.trace("Plottit.setTreeColumnDateFormat done ");    
 }
 
 // Sets the check mark depending on which column is the context of the date-format popup
-Listit.onDateFormatPopupShowing = function(menu) {
-    Listit.logger.trace("Listit.onDateFormatPopupShowing -- ");   
+Plottit.onDateFormatPopupShowing = function(menu) {
+    Plottit.logger.trace("Plottit.onDateFormatPopupShowing -- ");   
 
     var column = document.popupNode;
     var format = column.getAttribute('format');
@@ -454,7 +454,7 @@ Listit.onDateFormatPopupShowing = function(menu) {
 
 // Finds the root document from a HTMLDocument
 // Returns null if the document is not a HTMLDocument
-Listit.getRootHtmlDocument = function(doc) { 
+Plottit.getRootHtmlDocument = function(doc) { 
 
     if (!(doc instanceof HTMLDocument)) return null;
 
@@ -468,130 +468,130 @@ Listit.getRootHtmlDocument = function(doc) {
 }
 
 // Updates binWidth drop down box
-Listit.showHideBinWidths = function (histo, menuListId) {
+Plottit.showHideBinWidths = function (histo, menuListId) {
 
     return false; // not yet impelemented.
     var binWidthMenuList = document.getElementById(menuListId);
     
-    Listit.logger.debug("Update binWidth drop down box, axisVar: " + histo._removeHistPrefix(histo.xAxisVariable));
+    Plottit.logger.debug("Update binWidth drop down box, axisVar: " + histo._removeHistPrefix(histo.xAxisVariable));
     
-    var isTime = (Listit.ScatterPlot.VAR_AXIS_OPTIONS[histo._removeHistPrefix(histo.xAxisVariable)].mode == 'time');
-    Listit.logger.debug("Listit.ScatterPlot.showHideBinWidths -- isTime: " + isTime);
+    var isTime = (Plottit.ScatterPlot.VAR_AXIS_OPTIONS[histo._removeHistPrefix(histo.xAxisVariable)].mode == 'time');
+    Plottit.logger.debug("Plottit.ScatterPlot.showHideBinWidths -- isTime: " + isTime);
 }
 
 
 
-Listit.RE_ISJSON   = /\.json$/i      // String ends with '.json' 
-Listit.RE_ISLOCAL  = /^file:\/\//i   // String begins with 'file://'
-Listit.RE_ISREDDIT = /www\.reddit\.com\/r\/.*\/comments\// 
+Plottit.RE_ISJSON   = /\.json$/i      // String ends with '.json' 
+Plottit.RE_ISLOCAL  = /^file:\/\//i   // String begins with 'file://'
+Plottit.RE_ISREDDIT = /www\.reddit\.com\/r\/.*\/comments\// 
 
-Listit.onPageLoad = function(event) {
+Plottit.onPageLoad = function(event) {
 
-    Listit.logger.trace("Listit.onPageLoad");
+    Plottit.logger.trace("Plottit.onPageLoad");
 
     var doc = event.originalTarget;
     var pageURL = doc.URL;
     var browser = gBrowser.getBrowserForDocument(doc);
     if (browser == null) {
         // Happens when document is not the root; with iFrames (e.g.: www.redditmedia.com/ads)
-        Listit.logger.debug("Listit.onPageLoad: no browser for URL: " + pageURL);
+        Plottit.logger.debug("Plottit.onPageLoad: no browser for URL: " + pageURL);
         return;
     }
 
-    var browserID = browser.getAttribute("ListitBrowserID");
-    var browserState = Listit.state.browserStates[browserID];
-    browserState.setStatus(Listit.PAGE_NOT_LISTIT);
+    var browserID = browser.getAttribute("PlottitBrowserID");
+    var browserState = Plottit.state.browserStates[browserID];
+    browserState.setStatus(Plottit.PAGE_NOT_PLOTTIT);
     
     var host = pageURL.split('?')[0];
-    var isRedditPage = Listit.RE_ISREDDIT.test(host);
-    var isJsonPage   = Listit.RE_ISJSON.test(host);
-    var isLocalPage  = Listit.RE_ISLOCAL.test(host) 
+    var isRedditPage = Plottit.RE_ISREDDIT.test(host);
+    var isJsonPage   = Plottit.RE_ISJSON.test(host);
+    var isLocalPage  = Plottit.RE_ISLOCAL.test(host) 
 
     if ( isRedditPage && !isJsonPage) {
         // A reddit html page, the json will be loaded with AJAX
-        Listit.logger.info("Listit.onPageLoad (reddit discussion): URL: " + pageURL);
+        Plottit.logger.info("Plottit.onPageLoad (reddit discussion): URL: " + pageURL);
 
-        // Append listit css style to reddit page (so we can highlight selected comment)
+        // Append plottit css style to reddit page (so we can highlight selected comment)
         var $ = doc.defaultView.wrappedJSObject.jQuery;
-        var styleElem = $(Listit.SELECTED_ROW_STYLE);
+        var styleElem = $(Plottit.SELECTED_ROW_STYLE);
         $('head').append(styleElem);
         
         // When the document is clicked we call ...
         var documentWindow = doc.defaultView.wrappedJSObject.window
-        documentWindow.addEventListener('click', Listit.onRedditPageClicked, false, true); 
+        documentWindow.addEventListener('click', Plottit.onRedditPageClicked, false, true); 
        
         // Clean up onclick event handler
         event.originalTarget.defaultView.addEventListener("unload", 
             function(event) { 
-                documentWindow.addEventListener('click', Listit.onRedditPageClicked, false, true); 
+                documentWindow.addEventListener('click', Plottit.onRedditPageClicked, false, true); 
             }, 
             true); 
         
-        if (Listit.state.listitEnabled) {
-            browserState.setStatus(Listit.PAGE_LOADING);
-            Listit.ajaxRequestJsonPage(pageURL, browser);
+        if (Plottit.state.plottitEnabled) {
+            browserState.setStatus(Plottit.PAGE_LOADING);
+            Plottit.ajaxRequestJsonPage(pageURL, browser);
         } else {
-            browserState.setStatus(Listit.PAGE_POSTPONED);
+            browserState.setStatus(Plottit.PAGE_POSTPONED);
         }
-        Listit.updateAllViews(Listit.state, browserID);
-        Listit.logger.trace("Listit.onPageLoad done");
+        Plottit.updateAllViews(Plottit.state, browserID);
+        Plottit.logger.trace("Plottit.onPageLoad done");
         return;
         
     } else if ( isJsonPage && (isRedditPage || isLocalPage)) {
         // A JSON page, either from reddit.com or local; process directly
-        Listit.logger.info("Listit.onPageLoad (.JSON): URL: " + pageURL);
+        Plottit.logger.info("Plottit.onPageLoad (.JSON): URL: " + pageURL);
 
-        var rootDoc = Listit.getRootHtmlDocument(doc);
+        var rootDoc = Plottit.getRootHtmlDocument(doc);
         if (pageURL != rootDoc.URL) {
-            Listit.updateAllViews(Listit.state, browserID);
+            Plottit.updateAllViews(Plottit.state, browserID);
             return;
         }
         delete doc; // to prevent mistakes
         
-        var body = Listit.safeGet(rootDoc, 'body');
-        var textContent = Listit.safeGet(body, 'textContent');
+        var body = Plottit.safeGet(rootDoc, 'body');
+        var textContent = Plottit.safeGet(body, 'textContent');
     
         if (!textContent) {
-            Listit.logger.debug("No body.textContent found, URL: " + rootDoc.URL);
-            Listit.updateAllViews(Listit.state, browserID);
+            Plottit.logger.debug("No body.textContent found, URL: " + rootDoc.URL);
+            Plottit.updateAllViews(Plottit.state, browserID);
             return;
         } 
         
-        Listit.processJsonPage(textContent, browser, rootDoc.URL);
-        browserState.setStatus(Listit.PAGE_READY);
-        Listit.updateAllViews(Listit.state, browserID);
+        Plottit.processJsonPage(textContent, browser, rootDoc.URL);
+        browserState.setStatus(Plottit.PAGE_READY);
+        Plottit.updateAllViews(Plottit.state, browserID);
         return;
         
     } else {
-        // All other cases; page to be ignored by Listit 
-        Listit.logger.debug("Page ignored by Listit (ignored), URL: " + pageURL);    
-        Listit.updateAllViews(Listit.state, browserID); // Will hide pannels
+        // All other cases; page to be ignored by Plottit 
+        Plottit.logger.debug("Page ignored by Plottit (ignored), URL: " + pageURL);    
+        Plottit.updateAllViews(Plottit.state, browserID); // Will hide pannels
         return;
     }
 }    
 
-Listit.ajaxRequestJsonPage = function (pageURL, browser) {
+Plottit.ajaxRequestJsonPage = function (pageURL, browser) {
 
-    Listit.logger.trace("Listit.ajaxRequestJsonPage: " + pageURL);
+    Plottit.logger.trace("Plottit.ajaxRequestJsonPage: " + pageURL);
     
     // Make AJAX request for corresponding JSON page.
-    var jsonURL = Listit.addJsonToRedditUrl(pageURL);
+    var jsonURL = Plottit.addJsonToRedditUrl(pageURL);
     var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
                   .createInstance(Components.interfaces.nsIXMLHttpRequest);
                   
     request.onload = function(aEvent) {
         try {    
-            Listit.logger.debug("XMLHttpRequest.onload, URL: " + jsonURL);
-            Listit.processJsonPage(aEvent.target.responseText, browser, jsonURL);    
+            Plottit.logger.debug("XMLHttpRequest.onload, URL: " + jsonURL);
+            Plottit.processJsonPage(aEvent.target.responseText, browser, jsonURL);    
         } catch (ex) {
-            Listit.logger.error('Exception in Listit. XMLHttpRequest.onload;');
-            Listit.logException(ex);
+            Plottit.logger.error('Exception in Plottit. XMLHttpRequest.onload;');
+            Plottit.logException(ex);
         }
     };
     
     request.onerror = function(aEvent) {
-        Listit.logger.error("XMLHttpRequest.onerror, URL: " + jsonURL)
-        Listit.logger.error("Error status: " + aEvent.target.status);
+        Plottit.logger.error("XMLHttpRequest.onerror, URL: " + jsonURL)
+        Plottit.logger.error("Error status: " + aEvent.target.status);
     };
 
     request.open("GET", jsonURL, true);
@@ -599,27 +599,27 @@ Listit.ajaxRequestJsonPage = function (pageURL, browser) {
 }
 
 
-Listit.processJsonPage = function (jsonContent, browser, url) {
-    Listit.logger.trace("Listit.processJsonPage -- ");
+Plottit.processJsonPage = function (jsonContent, browser, url) {
+    Plottit.logger.trace("Plottit.processJsonPage -- ");
 
     try {
-        var browserID = browser.getAttribute("ListitBrowserID");
+        var browserID = browser.getAttribute("PlottitBrowserID");
         var page = JSON.parse(jsonContent); // Parse content
-        Listit.logger.debug('Successfully parsed JSON page for: ' + url);
-        var discussion = Listit.getListitDiscussionFromPage(page);
-        Listit.state.setBrowserDiscussion(browserID, discussion);
+        Plottit.logger.debug('Successfully parsed JSON page for: ' + url);
+        var discussion = Plottit.getPlottitDiscussionFromPage(page);
+        Plottit.state.setBrowserDiscussion(browserID, discussion);
         
-        var browserState = Listit.state.browserStates[browserID];
-        browserState.setStatus(Listit.PAGE_READY);
-        Listit.updateAllViews(Listit.state, browserID);
+        var browserState = Plottit.state.browserStates[browserID];
+        browserState.setStatus(Plottit.PAGE_READY);
+        Plottit.updateAllViews(Plottit.state, browserID);
        
     } catch (ex) {
-        Listit.logger.error('Failed processing JSON: ' + url.toString());
-        Listit.logException(ex);
+        Plottit.logger.error('Failed processing JSON: ' + url.toString());
+        Plottit.logException(ex);
     }
 }
 
-Listit.addJsonToRedditUrl = function(url) {
+Plottit.addJsonToRedditUrl = function(url) {
 
     var pos = url.indexOf('?');
     if (pos < 0) {
@@ -637,186 +637,186 @@ Listit.addJsonToRedditUrl = function(url) {
 ///////////
 
 
-Listit.setDetailsFrameHtml = function(html) {
-    var detailsFrame = document.getElementById('listit-comment-html-iframe');
+Plottit.setDetailsFrameHtml = function(html) {
+    var detailsFrame = document.getElementById('plottit-comment-html-iframe');
     detailsFrame.contentDocument.body.innerHTML = html;
 }
 
 // Updates all views using the application state
-Listit.updateAllViews = function(state, eventBrowserID) {
-    Listit.logger.trace("Listit.updateAllViews -- ");
+Plottit.updateAllViews = function(state, eventBrowserID) {
+    Plottit.logger.trace("Plottit.updateAllViews -- ");
     
-    if ( !Listit.state.listitEnabled) {
-        Listit.setListitVisible(false);
+    if ( !Plottit.state.plottitEnabled) {
+        Plottit.setPlottitVisible(false);
         return;
     }
 
     // Only update if the events applies to the current browser
-    if (eventBrowserID != Listit.state.getCurrentBrowserID()) {
-        Listit.logger.debug('Browser not the current browser (ignored): ' + eventBrowserID);
+    if (eventBrowserID != Plottit.state.getCurrentBrowserID()) {
+        Plottit.logger.debug('Browser not the current browser (ignored): ' + eventBrowserID);
         return;
     }
 
-    var curState = Listit.state.getCurrentBrowserState();
+    var curState = Plottit.state.getCurrentBrowserState();
     switch (curState.pageStatus) {
-        case Listit.PAGE_NOT_LISTIT:
+        case Plottit.PAGE_NOT_PLOTTIT:
             if (true) {
-                Listit.setListitVisible(false);
+                Plottit.setPlottitVisible(false);
             } else { // Debugging
-                Listit.showDescription('The current page is not a reddit discussion');
-                Listit.scatterPlot.display(false);
-                Listit.histogram.display(false);
+                Plottit.showDescription('The current page is not a reddit discussion');
+                Plottit.scatterPlot.display(false);
+                Plottit.histogram.display(false);
                 curState.removeDiscussion();
             }
             break;
-        case Listit.PAGE_POSTPONED:
-            Listit.setListitVisible(true);
-            Listit.showDescription('(Postponed) comments loading...');
-            Listit.scatterPlot.display(false);
-            Listit.histogram.display(false);
+        case Plottit.PAGE_POSTPONED:
+            Plottit.setPlottitVisible(true);
+            Plottit.showDescription('(Postponed) comments loading...');
+            Plottit.scatterPlot.display(false);
+            Plottit.histogram.display(false);
             curState.removeDiscussion();
-            Listit.setListitVisible(true);
+            Plottit.setPlottitVisible(true);
             
             // Page loading was postponed... until now.
             // Load the comments via ajax.
-            var browserState = Listit.state.getCurrentBrowserState()
-            browserState.setStatus(Listit.PAGE_LOADING);
+            var browserState = Plottit.state.getCurrentBrowserState()
+            browserState.setStatus(Plottit.PAGE_LOADING);
             var browser = browserState.browser;
-            Listit.ajaxRequestJsonPage(browser.currentURI.asciiSpec, browser);
+            Plottit.ajaxRequestJsonPage(browser.currentURI.asciiSpec, browser);
             break;
-        case Listit.PAGE_LOADING:
-            Listit.setListitVisible(true);
-            Listit.showDescription('Loading comments...');
-            Listit.scatterPlot.display(false);
-            Listit.histogram.display(false);
+        case Plottit.PAGE_LOADING:
+            Plottit.setPlottitVisible(true);
+            Plottit.showDescription('Loading comments...');
+            Plottit.scatterPlot.display(false);
+            Plottit.histogram.display(false);
             curState.removeDiscussion();
             break;
-        case Listit.PAGE_READY:
-            Listit.setListitVisible(true);
-            Listit.hideDescription();
-            var discussion = Listit.state.getBrowserDiscussion(eventBrowserID);
-            Listit.scatterPlot.display(true);
-            Listit.histogram.display(true);
+        case Plottit.PAGE_READY:
+            Plottit.setPlottitVisible(true);
+            Plottit.hideDescription();
+            var discussion = Plottit.state.getBrowserDiscussion(eventBrowserID);
+            Plottit.scatterPlot.display(true);
+            Plottit.histogram.display(true);
             
             // Sort and set comments in comment tree
-            var commentTree = document.getElementById('listit-comment-tree');
+            var commentTree = document.getElementById('plottit-comment-tree');
             var sortResource = commentTree.getAttribute('sortResource');
             var sortDirection = commentTree.getAttribute('sortDirection');
-            var structure = document.getElementById('listit-comment-tree-column-body').getAttribute('structure');
+            var structure = document.getElementById('plottit-comment-tree-column-body').getAttribute('structure');
             
             var column = document.getElementById(sortResource);
             column.setAttribute('sortDirection', sortDirection);
             
             curState.treeView.setDiscussionSorted(column.id, sortDirection, structure, discussion);
-            Listit.ensureCurrentRowVisible();
+            Plottit.ensureCurrentRowVisible();
             
             // Update the visible details pane
-            var tabPanels = document.getElementById('listit-tabpanels');
+            var tabPanels = document.getElementById('plottit-tabpanels');
             var selectedPanelId = tabPanels.selectedPanel.id;
 
             switch (selectedPanelId) // only update the visible tab
             {
-                case 'listit-comment-tab': 
+                case 'plottit-comment-tab': 
                     var selectedComment = curState.selectedComment;
-                    Listit.setDetailsFrameHtml(selectedComment ? selectedComment.bodyHtml : '');
+                    Plottit.setDetailsFrameHtml(selectedComment ? selectedComment.bodyHtml : '');
                     break;
-                case 'listit-plot-tab': 
-                    Listit.scatterPlot.setDiscussion(discussion);
+                case 'plottit-plot-tab': 
+                    Plottit.scatterPlot.setDiscussion(discussion);
                     break;
-                case 'listit-histogram-tab': 
-                    Listit.histogram.setDiscussion(discussion);
+                case 'plottit-histogram-tab': 
+                    Plottit.histogram.setDiscussion(discussion);
                     break;
-                case 'listit-treemap-tab': 
-                    Listit.setTreeMapDiscussion(discussion);
+                case 'plottit-treemap-tab': 
+                    Plottit.setTreeMapDiscussion(discussion);
                     break;
                 default:
-                    Listit.assert(false, 'Invalid panelId: ' + selectedPanelId);
+                    Plottit.assert(false, 'Invalid panelId: ' + selectedPanelId);
             } // switch
             
             this.updateViewsForCurrentSelection(true);
             
             break;
         default:
-            Listit.assert(false, "Invalid pageStatus: " + curState.pageStatus);
+            Plottit.assert(false, "Invalid pageStatus: " + curState.pageStatus);
     } // switch
 }
 
-Listit.setListitVisible = function (visible) {
+Plottit.setPlottitVisible = function (visible) {
 
-    var deck = document.getElementById('listit-messages-deck');
-    var splitter = document.getElementById('listit-content-splitter');
+    var deck = document.getElementById('plottit-messages-deck');
+    var splitter = document.getElementById('plottit-content-splitter');
     deck.hidden = !visible;
     splitter.hidden = !visible;
 }
 
-Listit.onRenderTreeMapTimeOut = function() {
+Plottit.onRenderTreeMapTimeOut = function() {
 
-    Listit.logger.trace("Listit.drawTreeMapCushionedAfterTimeOut: " + Listit.globalTimeOutId);
+    Plottit.logger.trace("Plottit.drawTreeMapCushionedAfterTimeOut: " + Plottit.globalTimeOutId);
     
-    var sliderH0   = document.getElementById("listit-treemap-scale-h0").value / 1000;
-    var sliderF    = document.getElementById("listit-treemap-scale-f").value / 1000;
-    var sliderIamb = document.getElementById("listit-treemap-scale-iamb").value / 1000;
+    var sliderH0   = document.getElementById("plottit-treemap-scale-h0").value / 1000;
+    var sliderF    = document.getElementById("plottit-treemap-scale-f").value / 1000;
+    var sliderIamb = document.getElementById("plottit-treemap-scale-iamb").value / 1000;
     //var sliderH0   = 1.2;
     //var sliderF    = 2.5;
     //var sliderIamb = 0.12;
-    Listit.logger.debug("Listit.drawTreeMapCushionedAfterTimeOut, H0: " + 
+    Plottit.logger.debug("Plottit.drawTreeMapCushionedAfterTimeOut, H0: " + 
         sliderH0 + ', F: ' + sliderF + ', Iamb: ' + sliderIamb);
     
-    Listit.treeMap.renderCushioned(sliderH0, sliderF, sliderIamb);
-    Listit.globalTimeOutId = null;
+    Plottit.treeMap.renderCushioned(sliderH0, sliderF, sliderIamb);
+    Plottit.globalTimeOutId = null;
 }
 
-Listit.renderTreeMap = function(cushionDelay) {
+Plottit.renderTreeMap = function(cushionDelay) {
 
-    var isCushioned = Listit.getCheckboxValue(document.getElementById('listit-treemap-cushions-checkbox'));
+    var isCushioned = Plottit.getCheckboxValue(document.getElementById('plottit-treemap-cushions-checkbox'));
     if (cushionDelay == null)  cushionDelay = 250;
     if ( ! ((cushionDelay === 0) && isCushioned) ) { // skip flat rendering if there is no cushion delay
-        Listit.treeMap.renderFlat();
+        Plottit.treeMap.renderFlat();
     }
     
     if (isCushioned) {
-        if (Listit.globalTimeOutId) {
-            window.clearTimeout(Listit.globalTimeOutId); // Cancel previous time out;
+        if (Plottit.globalTimeOutId) {
+            window.clearTimeout(Plottit.globalTimeOutId); // Cancel previous time out;
         }
-        Listit.globalTimeOutId = window.setTimeout( 
-            function () { Listit.onRenderTreeMapTimeOut() }, // use function expression for validator
+        Plottit.globalTimeOutId = window.setTimeout( 
+            function () { Plottit.onRenderTreeMapTimeOut() }, // use function expression for validator
             cushionDelay);
     }
 }
 
 
-Listit.onResizeTreeMap = function(event) {
-    Listit.logger.trace("Listit.onResizeTreeMap");
+Plottit.onResizeTreeMap = function(event) {
+    Plottit.logger.trace("Plottit.onResizeTreeMap");
 
-    var treeMapFrame = document.getElementById('listit-treemap-frame');
-    Listit.treeMap.resize(0, 0,
+    var treeMapFrame = document.getElementById('plottit-treemap-frame');
+    Plottit.treeMap.resize(0, 0,
         treeMapFrame.contentWindow.innerWidth, 
         treeMapFrame.contentWindow.innerHeight);        
             
-    Listit.renderTreeMap();
+    Plottit.renderTreeMap();
 }
 
-Listit.setTreeMapDiscussion = function(discussion) {
-    Listit.logger.trace("Listit.setTreeMapDiscussion --");
+Plottit.setTreeMapDiscussion = function(discussion) {
+    Plottit.logger.trace("Plottit.setTreeMapDiscussion --");
     
-    Listit.treeMap.setDataFromDiscussion(discussion,
-        Listit.state.treeMapSizeProperty,
-        Listit.state.fnHslOfComment);
+    Plottit.treeMap.setDataFromDiscussion(discussion,
+        Plottit.state.treeMapSizeProperty,
+        Plottit.state.fnHslOfComment);
 
-    Listit.renderTreeMap()
+    Plottit.renderTreeMap()
 }
 
 
-Listit.setTreeMapSizeProperty = function(menuList) {
-    Listit.logger.trace("Listit.setTreeMapSizeProperty: " + menuList.value);
+Plottit.setTreeMapSizeProperty = function(menuList) {
+    Plottit.logger.trace("Plottit.setTreeMapSizeProperty: " + menuList.value);
 
-    Listit.state.treeMapSizeProperty = menuList.value;
-    Listit.setTreeMapDiscussion(Listit.state.getCurrentBrowserDiscussion());
+    Plottit.state.treeMapSizeProperty = menuList.value;
+    Plottit.setTreeMapDiscussion(Plottit.state.getCurrentBrowserDiscussion());
 }
 
 
 // create Conversion functions that calculate a HSL triplet belonging to a comment.
-Listit.getHslConversionFunction = function (varId) {
+Plottit.getHslConversionFunction = function (varId) {
 
     // Create function that maps v in [vMin, vMax] to y in [yMin, yMax]
     function getMapV(vMin, vMax, yMin, yMax) {
@@ -841,9 +841,9 @@ Listit.getHslConversionFunction = function (varId) {
     var HUE_RAINBOW_RANGE = 4/6;     // Part of the complete hue-circle used in rainbow color scales.
     
     //// For tweaking colors
-    //HUE_RAINBOW_START = HUE_BLUE - document.getElementById("listit-treemap-scale-h0").value / 3000 * 30 / 360 ;
-    //SAT_RAINBOW       = document.getElementById("listit-treemap-scale-f").value / 4000 ;
-    //Listit.logger.debug('HUE_RAINBOW_START: ' + HUE_RAINBOW_START + ', SAT_RAINBOW: ' + SAT_RAINBOW);
+    //HUE_RAINBOW_START = HUE_BLUE - document.getElementById("plottit-treemap-scale-h0").value / 3000 * 30 / 360 ;
+    //SAT_RAINBOW       = document.getElementById("plottit-treemap-scale-f").value / 4000 ;
+    //Plottit.logger.debug('HUE_RAINBOW_START: ' + HUE_RAINBOW_START + ', SAT_RAINBOW: ' + SAT_RAINBOW);
     
     var HUE_LOG    = HUE_GREEN;
     var HUE_LINEAR = HUE_MAGENTA;
@@ -872,22 +872,22 @@ Listit.getHslConversionFunction = function (varId) {
             if (comment.score == 0) {
                 return [0, 0, 1];
             } else if (comment.score > 0) {
-                return [HUE_UPS, mapFnPos(Listit.log10(comment.score)), 1];
+                return [HUE_UPS, mapFnPos(Plottit.log10(comment.score)), 1];
             } else {
-                return [HUE_DOWNS, mapFnNeg(Listit.log10(-comment.score)), 1];
+                return [HUE_DOWNS, mapFnNeg(Plottit.log10(-comment.score)), 1];
             }
         };
         case 'ups': return function(comment) { 
             var mapFn = getMapV(0, 3, 0, SAT_UPS);  // truncate at 10^3
-            return [HUE_UPS, mapFn(Listit.log10(comment.ups)), 1];
+            return [HUE_UPS, mapFn(Plottit.log10(comment.ups)), 1];
         };
         case 'downs': return function(comment) { 
             var mapFn = getMapV(0, 3, 0, SAT_DOWNS); // truncate at 10^3 
-            return [HUE_DOWNS, mapFn(Listit.log10(comment.downs)), 1];
+            return [HUE_DOWNS, mapFn(Plottit.log10(comment.downs)), 1];
         };
         case 'votes': return function(comment) { 
             var mapFn = getMapV(0, 3, 0, SAT_LOG);  // truncate at 2*10^3
-            return [HUE_LOG, mapFn(Listit.log10(comment.votes/2)), 1];
+            return [HUE_LOG, mapFn(Plottit.log10(comment.votes/2)), 1];
         };
         case 'likesPerc': return function(comment) { 
             var mapFnNeg = getMapV( 0,  50, 0, SAT_DOWNS);
@@ -933,37 +933,37 @@ Listit.getHslConversionFunction = function (varId) {
             //return [HUE_LINEAR, mapFn(comment.postedAfter / 24 / 3600 ), 1];
         };
         default:
-            Listit.assert(false, "Invalid varId: " + varId);
+            Plottit.assert(false, "Invalid varId: " + varId);
     } // switch
 }
 
-Listit.setTreeMapColorProperty = function(menuList) {
-    Listit.logger.trace("Listit.setTreeMapColorProperty: " + menuList.value);
+Plottit.setTreeMapColorProperty = function(menuList) {
+    Plottit.logger.trace("Plottit.setTreeMapColorProperty: " + menuList.value);
 
-    Listit.state.fnHslOfComment = Listit.getHslConversionFunction(menuList.value);
-    Listit.setTreeMapDiscussion(Listit.state.getCurrentBrowserDiscussion());
+    Plottit.state.fnHslOfComment = Plottit.getHslConversionFunction(menuList.value);
+    Plottit.setTreeMapDiscussion(Plottit.state.getCurrentBrowserDiscussion());
 }
     
 
-Listit.showDescription = function(msg) {
-    var deck = document.getElementById('listit-messages-deck');
+Plottit.showDescription = function(msg) {
+    var deck = document.getElementById('plottit-messages-deck');
     deck.selectedIndex = 0;
-    var description = document.getElementById('listit-messages-description');
+    var description = document.getElementById('plottit-messages-description');
     description.value = msg;
 }
 
-Listit.hideDescription = function() {
-    var deck = document.getElementById('listit-messages-deck');
+Plottit.hideDescription = function() {
+    var deck = document.getElementById('plottit-messages-deck');
     deck.selectedIndex = 1;
-    var description = document.getElementById('listit-messages-description');
-    description.value = "Listit...";    
+    var description = document.getElementById('plottit-messages-description');
+    description.value = "Plottit...";    
 }
 
 /*
-Listit.ensureCurrentRowVisible = function () {
-    Listit.logger.trace("Listit.ensureCurrentRowVisible -- ");
+Plottit.ensureCurrentRowVisible = function () {
+    Plottit.logger.trace("Plottit.ensureCurrentRowVisible -- ");
 
-    var curState = Listit.state.getCurrentBrowserState();
+    var curState = Plottit.state.getCurrentBrowserState();
     if (curState.selectedComment != null) {
         var selectedIndex = curState.treeView.indexOfVisibleComment(curState.selectedComment)
         if (curState.selectedComment.isOpen) {
@@ -972,56 +972,56 @@ Listit.ensureCurrentRowVisible = function () {
             curState.treeView.collapseRowByIndex(selectedIndex);
         }
         curState.treeView.selection.select(selectedIndex);
-        Listit.getTreeBoxObject('listit-comment-tree').ensureRowIsVisible(selectedIndex);
+        Plottit.getTreeBoxObject('plottit-comment-tree').ensureRowIsVisible(selectedIndex);
     }
 }
 */
 
-Listit.ensureCurrentRowVisible = function () {
-    Listit.logger.trace("Listit.ensureCurrentRowVisible -- ");
-    Listit.updateViewsForCurrentSelection(true);
+Plottit.ensureCurrentRowVisible = function () {
+    Plottit.logger.trace("Plottit.ensureCurrentRowVisible -- ");
+    Plottit.updateViewsForCurrentSelection(true);
 }
 
-Listit.toggleListitActive = function () {
-    Listit.logger.trace("Listit.toggleListitActive -- ");
+Plottit.togglePlottitActive = function () {
+    Plottit.logger.trace("Plottit.togglePlottitActive -- ");
 
-    this.setListitActive( ! Listit.state.listitEnabled);
-    Listit.updateAllViews(Listit.state, Listit.state.getCurrentBrowserID());
+    this.setPlottitActive( ! Plottit.state.plottitEnabled);
+    Plottit.updateAllViews(Plottit.state, Plottit.state.getCurrentBrowserID());
 }
 
-Listit.setListitActive = function (listitEnabled) {
-    Listit.logger.info("Listit.setListitActive: " + listitEnabled);
+Plottit.setPlottitActive = function (plottitEnabled) {
+    Plottit.logger.info("Plottit.setPlottitActive: " + plottitEnabled);
 
-    Listit.state.listitEnabled = listitEnabled;
-    Application.prefs.get("extensions.listit.listitEnabled").value = Listit.state.listitEnabled; 
+    Plottit.state.plottitEnabled = plottitEnabled;
+    Application.prefs.get("extensions.plottit.plottitEnabled").value = Plottit.state.plottitEnabled; 
     
-    var toolbarButton = document.getElementById('listit-toggle-active-button');
+    var toolbarButton = document.getElementById('plottit-toggle-active-button');
     if (toolbarButton) {
-        toolbarButton.setAttribute('tooltiptext', listitEnabled ? 
-            document.getElementById('listit-string-bundle').getString('listit.disableProgram') :
-            document.getElementById('listit-string-bundle').getString('listit.enableProgram'));
+        toolbarButton.setAttribute('tooltiptext', plottitEnabled ? 
+            document.getElementById('plottit-string-bundle').getString('plottit.disableProgram') :
+            document.getElementById('plottit-string-bundle').getString('plottit.enableProgram'));
     }
 }
 
 
 
 // Style that will be added to reddit page to highlight selected comments.
-Listit.SELECTED_ROW_STYLE = "<style type='text/css'>"
-    + "div.listit-selected {background-color:#EFF7FF; outline:1px dashed #5F99CF}"
+Plottit.SELECTED_ROW_STYLE = "<style type='text/css'>"
+    + "div.plottit-selected {background-color:#EFF7FF; outline:1px dashed #5F99CF}"
     + "</style>";
     
 
-Listit.selectCommentInRedditPage = function (selectedComment, prevSelectedComment, scrollToComment) {
+Plottit.selectCommentInRedditPage = function (selectedComment, prevSelectedComment, scrollToComment) {
     var $ = content.wrappedJSObject.jQuery;
     if ($) { // e.g. no jQuery when page is only a .json file
         var selectedCommentId = selectedComment ? selectedComment.id : null;
         if (prevSelectedComment !== null) {
             $('div.id-t1_' + prevSelectedComment.id + ' div.entry')
-                .filter(':first').removeClass('listit-selected');
+                .filter(':first').removeClass('plottit-selected');
         }
         var offset = $('div.id-t1_' + selectedCommentId)
                         .filter(':visible').find('div.entry:first')
-                        .addClass('listit-selected')
+                        .addClass('plottit-selected')
                         .offset();
         if (scrollToComment && offset) {
             $('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
@@ -1030,8 +1030,8 @@ Listit.selectCommentInRedditPage = function (selectedComment, prevSelectedCommen
 }
 
 
-Listit.expandOrCollapseRedditComment = function(comment, expand) {
-    Listit.logger.trace("Listit.expandOrCollapseRedditComment -- ");
+Plottit.expandOrCollapseRedditComment = function(comment, expand) {
+    Plottit.logger.trace("Plottit.expandOrCollapseRedditComment -- ");
     
     var $ = content.wrappedJSObject.jQuery;
     if ($) { // e.g. no jQuery when page is only a .json file
@@ -1060,28 +1060,28 @@ From: https://developer.mozilla.org/en/XUL_School/Adding_Events_and_Commands
     associated to them.
 */
 
-// Call Listit.onLoad to intialize 
-window.addEventListener('load', Listit.onLoad, true);
+// Call Plottit.onLoad to intialize 
+window.addEventListener('load', Plottit.onLoad, true);
 
 
 ///////////////////////////////////
 //          DEBUGGING            //
 ///////////////////////////////////
 
-Listit.myDebugRoutine = function () {
+Plottit.myDebugRoutine = function () {
 
     
-    let stringBundle = document.getElementById('listit-string-bundle');
-    let message = stringBundle.getString('listit.greeting');
+    let stringBundle = document.getElementById('plottit-string-bundle');
+    let message = stringBundle.getString('plottit.greeting');
     
     try {
-        Listit.logger.debug('Listit.debug');
-        Listit.fbLog('Listit.debug');
-        Listit.fbLog(Listit.state.summaryString());
-        Listit.fbLog(Application.prefs.get("extensions.listit.listitEnabled").value);
+        Plottit.logger.debug('Plottit.debug');
+        Plottit.fbLog('Plottit.debug');
+        Plottit.fbLog(Plottit.state.summaryString());
+        Plottit.fbLog(Application.prefs.get("extensions.plottit.plottitEnabled").value);
         
-        var treeCols = document.getElementById('listit-comment-treecols');
-        Listit.fbLog(treeCols);
+        var treeCols = document.getElementById('plottit-comment-treecols');
+        Plottit.fbLog(treeCols);
 
         for(let [idx, childNode] in Iterator(treeCols.childNodes)) {
             var hidden = childNode.hidden;
@@ -1089,42 +1089,42 @@ Listit.myDebugRoutine = function () {
                 if (childNode.tagName == 'splitter') {
                     var resizebefore = childNode.getAttribute('resizebefore');
                     var resizeafter  = childNode.getAttribute('resizeafter');
-                    Listit.fbLog(childNode.id + ', resizebefore=' + resizebefore + ", resizeafter=" + resizeafter);
+                    Plottit.fbLog(childNode.id + ', resizebefore=' + resizebefore + ", resizeafter=" + resizeafter);
                 }
                 if (childNode.tagName == 'treecol') {
-                    Listit.fbLog(childNode.id + ', ' + childNode.boxObject.screenX);
+                    Plottit.fbLog(childNode.id + ', ' + childNode.boxObject.screenX);
                 }
             }
         }        
         return;
         
-        var treeMapFrame = document.getElementById('listit-treemap-frame');
-        Listit.fbLog(treeMapFrame.contentWindow);
-        Listit.fbLog(treeMapFrame.contentDocument);        
-        Listit.fbLog(treeMapFrame.contentWindow.treeMap);
+        var treeMapFrame = document.getElementById('plottit-treemap-frame');
+        Plottit.fbLog(treeMapFrame.contentWindow);
+        Plottit.fbLog(treeMapFrame.contentDocument);        
+        Plottit.fbLog(treeMapFrame.contentWindow.treeMap);
         
         
         treeMapFrame.contentWindow.wrappedJSObject.myDebug();
         
-        //Listit.fbLog(Listit.state.getCurrentTreeView());
-        //Listit.fbLog(Listit.state.getCurrentTreeView().treebox);
+        //Plottit.fbLog(Plottit.state.getCurrentTreeView());
+        //Plottit.fbLog(Plottit.state.getCurrentTreeView().treebox);
 
-        //Listit.fbLog(new Log4Moz.BasicFormatter());
-        //Listit.fbLog(new Listit.LogFormatter());
+        //Plottit.fbLog(new Log4Moz.BasicFormatter());
+        //Plottit.fbLog(new Plottit.LogFormatter());
         
         /*
-        Listit.logger.info(Listit.state.summaryString() );
-        Listit.fbLog(Listit.state.summaryString() );
+        Plottit.logger.info(Plottit.state.summaryString() );
+        Plottit.fbLog(Plottit.state.summaryString() );
         
-        var details = document.getElementById('listit-comment-html-iframe');
-        Listit.fbLog(details);
-        Listit.logger.debug(details.textContent);
+        var details = document.getElementById('plottit-comment-html-iframe');
+        Plottit.fbLog(details);
+        Plottit.logger.debug(details.textContent);
         details.contentDocument.body.innerHTML = "Pepijn Kenter <i>rules</i>"
         */
     } catch (ex) {
-        Listit.logger.error('Exception in Listit.debug;');
-        Listit.logException(ex);
-        //Listit.logException(ex);
-        //Listit.fbLog(ex);
+        Plottit.logger.error('Exception in Plottit.debug;');
+        Plottit.logException(ex);
+        //Plottit.logException(ex);
+        //Plottit.fbLog(ex);
     }
 }

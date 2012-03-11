@@ -1,6 +1,6 @@
-// TODO: the current implementation is very tailored to Listit; make more generic.
+// TODO: the current implementation is very tailored to Plottit; make more generic.
 
-if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
+if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
 
 
 
@@ -10,7 +10,7 @@ if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
 
 // If returnParentOnRepeatSelectMode == true, the parent node will be returned if 
 // the node was already seleced.
-Listit.TreeMap = function (placeHolderDiv, padding, returnParentOnRepeatSelectMode) { // Constructor
+Plottit.TreeMap = function (placeHolderDiv, padding, returnParentOnRepeatSelectMode) { // Constructor
 
     this._assert(placeHolderDiv, 'Placeholder undefined');
     this.placeHolder = placeHolderDiv;
@@ -19,7 +19,7 @@ Listit.TreeMap = function (placeHolderDiv, padding, returnParentOnRepeatSelectMo
     this._canvasOverlay = this._createCanvas(this.placeHolder.id + '-overlay', 'overlay-canvas');
     
     var thisTreeMap = this;
-    this.onClickOverlay = function (event) { Listit.TreeMap.onClickOverlay(event, thisTreeMap); };
+    this.onClickOverlay = function (event) { Plottit.TreeMap.onClickOverlay(event, thisTreeMap); };
     this._canvasOverlay.addEventListener('click', this.onClickOverlay, false);
     
     this.root = null;
@@ -30,47 +30,47 @@ Listit.TreeMap = function (placeHolderDiv, padding, returnParentOnRepeatSelectMo
     
 }
 
-Listit.TreeMap.prototype.destruct = function () {
-    Listit.logger.trace('Listit.TreeMap.destruct --');
+Plottit.TreeMap.prototype.destruct = function () {
+    Plottit.logger.trace('Plottit.TreeMap.destruct --');
     this._canvasOverlay.removeEventListener('click', this.onClickOverlay, false);
 }
 
-Listit.TreeMap.prototype.__defineGetter__("x", function() { return this._canvasBackground.style.left });
-Listit.TreeMap.prototype.__defineGetter__("y", function() { return this._canvasBackground.style.top  });
-Listit.TreeMap.prototype.__defineGetter__("width",  function() { return this._canvasBackground.width  });
-Listit.TreeMap.prototype.__defineGetter__("height", function() { return this._canvasBackground.height });
+Plottit.TreeMap.prototype.__defineGetter__("x", function() { return this._canvasBackground.style.left });
+Plottit.TreeMap.prototype.__defineGetter__("y", function() { return this._canvasBackground.style.top  });
+Plottit.TreeMap.prototype.__defineGetter__("width",  function() { return this._canvasBackground.width  });
+Plottit.TreeMap.prototype.__defineGetter__("height", function() { return this._canvasBackground.height });
 
-Listit.TreeMap.prototype.__defineGetter__("selectedNodeIsGroup", function() { 
+Plottit.TreeMap.prototype.__defineGetter__("selectedNodeIsGroup", function() { 
     return this.selectedNode ? this.selectedNode.isGroup : null;
 });
 
-Listit.TreeMap.prototype.__defineGetter__("selectedNodeBaseId", function() { 
+Plottit.TreeMap.prototype.__defineGetter__("selectedNodeBaseId", function() { 
     return this.selectedNode ? this.selectedNode.baseId : null;
 });
 
-Listit.TreeMap.prototype.__defineGetter__("selectedNodeId", function() { 
+Plottit.TreeMap.prototype.__defineGetter__("selectedNodeId", function() { 
     return this.selectedNode ? this.selectedNode.id : null;
 });
 
-Listit.TreeMap.prototype.__defineGetter__("previousSelectedNodeId", function() { 
+Plottit.TreeMap.prototype.__defineGetter__("previousSelectedNodeId", function() { 
     return this.previousSelectedNode ? this.previousSelectedNode.id : null;
 });
 
 
 
 
-Listit.TreeMap.prototype.toString = function () {
-    return "Listit.TreeMap";
+Plottit.TreeMap.prototype.toString = function () {
+    return "Plottit.TreeMap";
 };
 
 
 // Helper function
-Listit.TreeMap.prototype._assert = function(expression, message) {
+Plottit.TreeMap.prototype._assert = function(expression, message) {
     if (!expression) throw new Error(message);
 }
 
 
-Listit.TreeMap.prototype._createCanvas = function(id, cls) {
+Plottit.TreeMap.prototype._createCanvas = function(id, cls) {
 
     var canvas = this.placeHolder.ownerDocument.createElement('canvas');
     canvas.id = id;
@@ -85,7 +85,7 @@ Listit.TreeMap.prototype._createCanvas = function(id, cls) {
     return canvas;
 }
 
-Listit.TreeMap.prototype._resizeCanvas = function(canvas, x, y, width, height) {
+Plottit.TreeMap.prototype._resizeCanvas = function(canvas, x, y, width, height) {
     canvas.style.left = x;
     canvas.style.top  = y;
     canvas.width      = width;
@@ -93,7 +93,7 @@ Listit.TreeMap.prototype._resizeCanvas = function(canvas, x, y, width, height) {
 }
 
 
-Listit.TreeMap.prototype.resize = function (x, y, width, height) {
+Plottit.TreeMap.prototype.resize = function (x, y, width, height) {
 
     this._resizeCanvas(this._canvasBackground, x, y, width, height);
     this._resizeCanvas(this._canvasOverlay, x, y, width, height);
@@ -101,7 +101,7 @@ Listit.TreeMap.prototype.resize = function (x, y, width, height) {
 }
         
 
-Listit.TreeMap.prototype.layoutSquarified = function () {
+Plottit.TreeMap.prototype.layoutSquarified = function () {
     if (this.root) {
         var rootRect = {x: this.padding, y: this.padding, 
             width: this._canvasBackground.width - 2*this.padding, 
@@ -110,7 +110,7 @@ Listit.TreeMap.prototype.layoutSquarified = function () {
     }
 }
 
-Listit.TreeMap.prototype.renderFlat = function () {
+Plottit.TreeMap.prototype.renderFlat = function () {
     var context = this._canvasBackground.getContext('2d');
     context.clearRect(0, 0, this.width, this.height);
     if (this.root) {
@@ -119,7 +119,7 @@ Listit.TreeMap.prototype.renderFlat = function () {
     }
 }
 
-Listit.TreeMap.prototype.renderCushioned = function (h0, f, Iamb) {
+Plottit.TreeMap.prototype.renderCushioned = function (h0, f, Iamb) {
     var context = this._canvasBackground.getContext('2d');
     context.clearRect(0, 0, this.width, this.height);
     if (this.root) {
@@ -130,7 +130,7 @@ Listit.TreeMap.prototype.renderCushioned = function (h0, f, Iamb) {
 
 
 
-Listit.TreeMap.prototype.getNodeByXY = function (x, y, returnParentOfId) {
+Plottit.TreeMap.prototype.getNodeByXY = function (x, y, returnParentOfId) {
 
     if (this.root) {
         var result = this.root.getNodeByXY(x, y, 
@@ -146,7 +146,7 @@ Listit.TreeMap.prototype.getNodeByXY = function (x, y, returnParentOfId) {
 }
 
 
-Listit.TreeMap.prototype.getNodeById = function (id) {
+Plottit.TreeMap.prototype.getNodeById = function (id) {
 
     if (this.root) {
         return this.root.getNodeById(id)
@@ -156,7 +156,7 @@ Listit.TreeMap.prototype.getNodeById = function (id) {
 }
 
 
-Listit.TreeMap.prototype.selectNode = function (node) {
+Plottit.TreeMap.prototype.selectNode = function (node) {
 
     if (this.previousSelectedNode != this.selectedNode ) { 
         this.previousSelectedNode = this.selectedNode;
@@ -165,17 +165,17 @@ Listit.TreeMap.prototype.selectNode = function (node) {
 }
 
 
-Listit.TreeMap.prototype.highlight = function (nodeId, expand) {
+Plottit.TreeMap.prototype.highlight = function (nodeId, expand) {
     
     if (!expand) { 
-        nodeId = Listit.TreeMap.Node.GROUP_PREFIX + nodeId 
+        nodeId = Plottit.TreeMap.Node.GROUP_PREFIX + nodeId 
     };
     this.selectNode(this.getNodeById(nodeId));
     this.highlightSelectedNode();
 }
 
 
-Listit.TreeMap.prototype.highlightSelectedNode = function () {
+Plottit.TreeMap.prototype.highlightSelectedNode = function () {
 
     var context = this._canvasOverlay.getContext('2d');
     context.clearRect(0, 0, this.width, this.height); // clear complete overlay canvas
@@ -196,7 +196,7 @@ Listit.TreeMap.prototype.highlightSelectedNode = function () {
 }
 
 
-Listit.TreeMap.prototype.setData = function (data) {
+Plottit.TreeMap.prototype.setData = function (data) {
     
     selectedNodeId = this.selectedNodeId;                 // persist
     previousSelectedNodeId = this.previousSelectedNodeId; // persist
@@ -211,10 +211,10 @@ Listit.TreeMap.prototype.setData = function (data) {
 
 
 // TODO: move out of this class
-Listit.TreeMap.prototype.setDataFromDiscussion  = function (discussion, sizeProperty, fnHslOfComment) {
+Plottit.TreeMap.prototype.setDataFromDiscussion  = function (discussion, sizeProperty, fnHslOfComment) {
 
-    this._assert(discussion instanceof Listit.Discussion, 
-        'setDataFromDiscussion: data should be a Listit.Discussion');
+    this._assert(discussion instanceof Plottit.Discussion, 
+        'setDataFromDiscussion: data should be a Plottit.Discussion');
     this._assert(sizeProperty, 'sizeProperty is not defined!');    
     this._assert(fnHslOfComment instanceof Function, 'fnHslOfComment should be a function');
     
@@ -225,14 +225,14 @@ Listit.TreeMap.prototype.setDataFromDiscussion  = function (discussion, sizeProp
         var hsl = fnHslOfComment(comment);
     
         if ( comment.numReplies == 0 ) {
-            var node = new Listit.TreeMap.Node( size, true, comment.id, hsl[0], hsl[1] );
+            var node = new Plottit.TreeMap.Node( size, true, comment.id, hsl[0], hsl[1] );
             return node;
         } else {
     
-            var node = new Listit.TreeMap.Node(0, true, Listit.TreeMap.Node.GROUP_PREFIX + comment.id);
-            node.addChild( new Listit.TreeMap.Node(size, false, comment.id, hsl[0], hsl[1]) ); 
+            var node = new Plottit.TreeMap.Node(0, true, Plottit.TreeMap.Node.GROUP_PREFIX + comment.id);
+            node.addChild( new Plottit.TreeMap.Node(size, false, comment.id, hsl[0], hsl[1]) ); 
             
-            var childrenNode = new Listit.TreeMap.Node(0, false); 
+            var childrenNode = new Plottit.TreeMap.Node(0, false); 
             for (let [idx, reply] in Iterator(comment.replies)) {
                 childrenNode.addChild( _auxCreateNodeFromComment(reply, sizeProperty, fnHslOfComment) );
             }
@@ -243,7 +243,7 @@ Listit.TreeMap.prototype.setDataFromDiscussion  = function (discussion, sizeProp
 
 
     // Create root node
-    var node = new Listit.TreeMap.Node(0, false);
+    var node = new Plottit.TreeMap.Node(0, false);
     
     for (let [idx, comments] in Iterator(discussion.comments)) {
         node.addChild( _auxCreateNodeFromComment(comments, sizeProperty, fnHslOfComment) );
@@ -255,15 +255,15 @@ Listit.TreeMap.prototype.setDataFromDiscussion  = function (discussion, sizeProp
 
 
 // TODO: move out of this class
-Listit.TreeMap.prototype.getDataFromArray = function (data) {
+Plottit.TreeMap.prototype.getDataFromArray = function (data) {
 
     if ( !(data instanceof Array) ) {
         // Create leaf node
-        var node = new Listit.TreeMap.Node(data, true);
+        var node = new Plottit.TreeMap.Node(data, true);
         return node;
     } else {
         // Create branche node
-        var node = new Listit.TreeMap.Node(0, true);
+        var node = new Plottit.TreeMap.Node(0, true);
         for (let [idx, elem] in Iterator(data)) {
             node.addChild( this.getDataFromArray(elem) );
         }
@@ -274,20 +274,20 @@ Listit.TreeMap.prototype.getDataFromArray = function (data) {
 
 
 // TODO: move out of this class?
-Listit.TreeMap.prototype.setDataFromArray = function (arr) {
+Plottit.TreeMap.prototype.setDataFromArray = function (arr) {
 
     return this.setData(this.getDataFromArray(arr));
 }
 
 // Event handlers
-Listit.TreeMap.onClickOverlay = function(clickEvent, treeMap) {
+Plottit.TreeMap.onClickOverlay = function(clickEvent, treeMap) {
 
     var node = treeMap.getNodeByXY(clickEvent.layerX, clickEvent.layerY, treeMap.previousSelectedNodeId);
     treeMap.selectNode(node);
         
     // Trigger event to so that XUL code can handle it
     var tmEvent = document.createEvent("Events");  
-    tmEvent.initEvent("ListitTreeMapClickedEvent", true, false);  
+    tmEvent.initEvent("PlottitTreeMapClickedEvent", true, false);  
     clickEvent.target.dispatchEvent(tmEvent);
 }
  
@@ -305,7 +305,7 @@ Listit.TreeMap.onClickOverlay = function(clickEvent, treeMap) {
 
 
 
-Listit.TreeMap.Node = function (size, addCushion, id, hue, saturation) { // Constructor
+Plottit.TreeMap.Node = function (size, addCushion, id, hue, saturation) { // Constructor
     
     this.size = size;   // Relative size. For a branch node this should be the sum of its childrens sizes
     this.id              = id; 
@@ -317,71 +317,71 @@ Listit.TreeMap.Node = function (size, addCushion, id, hue, saturation) { // Cons
 }
 
 // True if the node contains a parent node plus its children 
-Listit.TreeMap.Node.prototype.__defineGetter__("isGroup", function() { 
+Plottit.TreeMap.Node.prototype.__defineGetter__("isGroup", function() { 
     // Return true iff id starts with group prefix
     if (this.id)
-        return (this.id.substring(0, Listit.TreeMap.Node.GROUP_PREFIX.length) === Listit.TreeMap.Node.GROUP_PREFIX)
+        return (this.id.substring(0, Plottit.TreeMap.Node.GROUP_PREFIX.length) === Plottit.TreeMap.Node.GROUP_PREFIX)
     else
         return false;
 });
 
 // The node.id minus group prefix (if present)
-Listit.TreeMap.Node.prototype.__defineGetter__("baseId", function() { 
+Plottit.TreeMap.Node.prototype.__defineGetter__("baseId", function() { 
     if (this.isGroup) {
-        return this.id.substring(Listit.TreeMap.Node.GROUP_PREFIX.length)
+        return this.id.substring(Plottit.TreeMap.Node.GROUP_PREFIX.length)
     } else {
         return this.id;
     }
 });
 
-Listit.TreeMap.Node.prototype.toString = function () {
-    return "Listit.TreeMap.Node";
+Plottit.TreeMap.Node.prototype.toString = function () {
+    return "Plottit.TreeMap.Node";
 };
 
-Listit.TreeMap.Node.prototype._assert = function(expression, message) { // helper function
+Plottit.TreeMap.Node.prototype._assert = function(expression, message) { // helper function
     if (!expression) throw new Error(message);
 }
 
 // Make sure that an empty list is returned if there are no children defined.
 // This is so that we don't have to create empty lists objects for the leaf nodes.
-Listit.TreeMap.Node.prototype.__defineGetter__("children", function() { 
+Plottit.TreeMap.Node.prototype.__defineGetter__("children", function() { 
     if (this._children == null) {
         return [];
     } else {
         return this._children;
     }
 } );
-Listit.TreeMap.Node.prototype.__defineSetter__("children", function(v) { this._children = v } );
+Plottit.TreeMap.Node.prototype.__defineSetter__("children", function(v) { this._children = v } );
 
 
 // saturation is 0.5 by default
-Listit.TreeMap.Node.prototype.__defineGetter__("saturation", function() { 
+Plottit.TreeMap.Node.prototype.__defineGetter__("saturation", function() { 
     return (this._saturation == null) ? 0.5 : this._saturation; 
 } );
-Listit.TreeMap.Node.prototype.__defineSetter__("saturation", function(v) { this._saturation = v } );
+Plottit.TreeMap.Node.prototype.__defineSetter__("saturation", function(v) { this._saturation = v } );
 
 
 // hue is 0.5 by default
-Listit.TreeMap.Node.prototype.__defineGetter__("hue", function() { 
+Plottit.TreeMap.Node.prototype.__defineGetter__("hue", function() { 
     return (this._hue == null) ? 0.5 : this._hue; 
 } );
-Listit.TreeMap.Node.prototype.__defineSetter__("hue", function(v) { this._hue = v } );
+Plottit.TreeMap.Node.prototype.__defineSetter__("hue", function(v) { this._hue = v } );
 
 
-Listit.TreeMap.Node.prototype.addChild = function (child) {
+Plottit.TreeMap.Node.prototype.addChild = function (child) {
     if (this._children == null) this._children = [];
     this._children.push(child);
     this.size += child.size;  // The parent node size must be the sum of the childrens sizes
     return child;
 }
 
-Listit.TreeMap.Node.prototype.isLeafNode = function () {
+Plottit.TreeMap.Node.prototype.isLeafNode = function () {
     return this.children.length == 0;
 }
 
 
 // Shows return string containing internal representation
-Listit.TreeMap.Node.prototype.repr = function () {
+Plottit.TreeMap.Node.prototype.repr = function () {
     if (this.isLeafNode() ) {
         return this.size.toString();
     } else {
@@ -394,7 +394,7 @@ Listit.TreeMap.Node.prototype.repr = function () {
 }
 
 
-Listit.TreeMap.Node.prototype.sortNodesBySizeDescending = function () {
+Plottit.TreeMap.Node.prototype.sortNodesBySizeDescending = function () {
 
     if (this.children.length == 0) return; 
 
@@ -407,7 +407,7 @@ Listit.TreeMap.Node.prototype.sortNodesBySizeDescending = function () {
         // wont have an effect on the quality of the layout.
         var sortFnHasId = function(a, b) { return (a.id == null) - (b.id == null) }
         var sortFnSize = function(a, b) { return b.size - a.size } 
-        sortFn = Listit.combineComparisonFunctions(sortFnHasId, sortFnSize);
+        sortFn = Plottit.combineComparisonFunctions(sortFnHasId, sortFnSize);
     } else {
         sortFn = function(a, b) { return b.size - a.size } 
     }
@@ -419,7 +419,7 @@ Listit.TreeMap.Node.prototype.sortNodesBySizeDescending = function () {
 }
 
 
-Listit.TreeMap.Node.prototype.layoutInStrips = function (rectangle) {
+Plottit.TreeMap.Node.prototype.layoutInStrips = function (rectangle) {
     
     if (rectangle) this.rectangle = rectangle;
     
@@ -434,7 +434,7 @@ Listit.TreeMap.Node.prototype.layoutInStrips = function (rectangle) {
 
 
 // Lays out the children[start, end] of the node
-Listit.TreeMap.Node.prototype._layoutStrip = function (x, y, width, height, start, end) {
+Plottit.TreeMap.Node.prototype._layoutStrip = function (x, y, width, height, start, end) {
 
     var layoutSum = this.children.slice(start, end).
         reduce( function (prev, cur) { return prev+cur.size }, 0);
@@ -459,7 +459,7 @@ Listit.TreeMap.Node.prototype._layoutStrip = function (x, y, width, height, star
 // Layout a tree in so called squarified manner. See "Squarified Treemaps" by
 // by Mark Bruls, Kees Huizing, and Jarke J. van Wijk.
 // www.win.tue.nl/~vanwijk/stm.pdf
-Listit.TreeMap.Node.prototype.layoutSquarified = function (rectangle) {
+Plottit.TreeMap.Node.prototype.layoutSquarified = function (rectangle) {
     
     // first call needs to set a rectangle, for the children this is done in _squarify
     if (rectangle) this.rectangle = rectangle;  
@@ -476,7 +476,7 @@ Listit.TreeMap.Node.prototype.layoutSquarified = function (rectangle) {
 
 
 // Lays out the children of the node using the squarify algorithm.
-Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
+Plottit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
 
     this.rectangle = { x: x, y: y, width: width, height: height };
     
@@ -496,7 +496,7 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
         for (var tryEnd = start+1; tryEnd <= this.children.length; tryEnd++) {
             
             var tryRow = areas.slice(start, tryEnd);
-            var currentAspectRatio = Listit.TreeMap.Node.worstAspectRatio(tryRow, shortestSide);
+            var currentAspectRatio = Plottit.TreeMap.Node.worstAspectRatio(tryRow, shortestSide);
                 
             if (currentAspectRatio < bestSoFar) {
                 bestSoFar = currentAspectRatio;
@@ -532,7 +532,7 @@ Listit.TreeMap.Node.prototype._squarify = function (x, y, width, height) {
 }  
 
 
-Listit.TreeMap.Node.prototype.renderFlat = function (context) {
+Plottit.TreeMap.Node.prototype.renderFlat = function (context) {
 
     if (this.size <= 0) return;
     
@@ -557,7 +557,7 @@ Listit.TreeMap.Node.prototype.renderFlat = function (context) {
 // Renders cushioned tree maps. See "Cushion Treemaps: Visualization of Hierarchical Information"
 // by Jarke J. van Wijk and Huub van de Wetering. 
 // www.win.tue.nl/~vanwijk/ctm.pdf
-Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) {
+Plottit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) {
 
     // Create pixel map/
     var rootRect = this.rectangle;
@@ -591,8 +591,8 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
             //var h = h0 * Math.pow(f, depth); // The sugestion from the article
         
             // Adds a new cushion for this level
-            [sx1, sx2] = Listit.TreeMap.Node._addRidge( rect.x, rect.width+rect.x,  h, sx1, sx2);
-            [sy1, sy2] = Listit.TreeMap.Node._addRidge( rect.y, rect.height+rect.y, h, sy1, sy2);
+            [sx1, sx2] = Plottit.TreeMap.Node._addRidge( rect.x, rect.width+rect.x,  h, sx1, sx2);
+            [sy1, sy2] = Plottit.TreeMap.Node._addRidge( rect.y, rect.height+rect.y, h, sy1, sy2);
         }
         
         if (node.isLeafNode() ) {
@@ -615,7 +615,7 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
                     var Ispec = Isource * cosAngle
                     var Intensity = Iamb + Math.max(Ispec, 0);
 
-                    var rgb = Listit.hslToRgb(node.hue, node.saturation, Intensity);
+                    var rgb = Plottit.hslToRgb(node.hue, node.saturation, Intensity);
     
                     pixels[i  ] = rgb[0]; // R channel
                     pixels[i+1] = rgb[1]; // G channel
@@ -641,7 +641,7 @@ Listit.TreeMap.Node.prototype.renderCushioned = function (context, h0, f, Iamb) 
 }
 
 
-Listit.TreeMap.Node.prototype.getNodeByXY = function (x, y, returnParentOfId) {
+Plottit.TreeMap.Node.prototype.getNodeByXY = function (x, y, returnParentOfId) {
 
     function inRectangle(x, y, rect) {
         return (x > rect.x) && (x < rect.x + rect.width) && 
@@ -674,7 +674,7 @@ Listit.TreeMap.Node.prototype.getNodeByXY = function (x, y, returnParentOfId) {
 
 
 
-Listit.TreeMap.Node.prototype.getNodeById = function (id) {
+Plottit.TreeMap.Node.prototype.getNodeById = function (id) {
 
     if (this.id === id) return this;
 
@@ -690,19 +690,19 @@ Listit.TreeMap.Node.prototype.getNodeById = function (id) {
 ///////
 // Static functions and constants
 
-Listit.TreeMap.Node.GROUP_PREFIX = '__group_' // Constant that is prepended to id when the node is a group
+Plottit.TreeMap.Node.GROUP_PREFIX = '__group_' // Constant that is prepended to id when the node is a group
 
 
 // Determines the worst aspect ratio given a list of areas of rectangles
 // that share a common width (but have different heigths).
-Listit.TreeMap.Node.normalizeData = function (areas, targetSum) {
+Plottit.TreeMap.Node.normalizeData = function (areas, targetSum) {
     var sum = areas.reduce(function (prev, cur) { return prev+cur }, 0);
     return [ area  / sum * targetSum  for each (area in areas ) ];
 }
 
 // Determines the worst aspect ratio given a list of areas of rectangles
 // that share a common width (but have different heigths).
-Listit.TreeMap.Node.worstAspectRatio = function (areas, width) {
+Plottit.TreeMap.Node.worstAspectRatio = function (areas, width) {
 
     var sum = areas.reduce(function (prev, cur) { return prev+cur }, 0);
     var max = 0;
@@ -716,7 +716,7 @@ Listit.TreeMap.Node.worstAspectRatio = function (areas, width) {
 
 
 // Add cushion
-Listit.TreeMap.Node._addRidge = function (v1, v2, h, s1, s2) {
+Plottit.TreeMap.Node._addRidge = function (v1, v2, h, s1, s2) {
 
     return [s1 + 4*h*(v2+v1)/(v2-v1), s2 - 4*h/(v2-v1)];
 }
@@ -739,7 +739,7 @@ Listit.TreeMap.Node._addRidge = function (v1, v2, h, s1, s2) {
  * @param   Number  b       The blue color size
  * @return  Array           The HSL representation
  */
-Listit.rgbToHsl = function (r, g, b){
+Plottit.rgbToHsl = function (r, g, b){
     r /= 255, g /= 255, b /= 255;
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
     var h, s, l = (max + min) / 2;
@@ -760,7 +760,7 @@ Listit.rgbToHsl = function (r, g, b){
     return [h, s, l];
 }
 
-Listit.hue2rgb = function (p, q, t){
+Plottit.hue2rgb = function (p, q, t){
     if(t < 0) t += 1;
     if(t > 1) t -= 1;
     if(t < 1/6) return p + (q - p) * 6 * t;
@@ -780,7 +780,7 @@ Listit.hue2rgb = function (p, q, t){
  * @param   Number  l       The lightness
  * @return  Array           The RGB representation
  */
-Listit.hslToRgb = function (h, s, l){
+Plottit.hslToRgb = function (h, s, l){
     var r, g, b;
 
     if(s == 0){
@@ -788,9 +788,9 @@ Listit.hslToRgb = function (h, s, l){
     }else{
         var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
         var p = 2 * l - q;
-        r = Listit.hue2rgb(p, q, h + 1/3);
-        g = Listit.hue2rgb(p, q, h);
-        b = Listit.hue2rgb(p, q, h - 1/3);
+        r = Plottit.hue2rgb(p, q, h + 1/3);
+        g = Plottit.hue2rgb(p, q, h);
+        b = Plottit.hue2rgb(p, q, h - 1/3);
     }
     return [r * 255, g * 255, b * 255];
 }

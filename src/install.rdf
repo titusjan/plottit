@@ -4,9 +4,9 @@
   xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-    <em:id>listit@titusjan.com</em:id>
+    <em:id>plottit@titusjan.com</em:id>
     <em:unpack>true</em:unpack>
-    <em:name>Listit</em:name>
+    <em:name>Plottit</em:name>
     <em:description>Displays a Reddit discussion in a table and allows it to be sorted as a list</em:description>
     <em:version>0.6</em:version>
     <em:creator>Titusjan</em:creator>

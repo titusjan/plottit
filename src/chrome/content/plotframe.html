@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="listit.css" />
+    <link rel="stylesheet" type="text/css" href="plottit.css" />
     <script language="javascript" type="application/javascript;version=1.7" src="utils.js"></script>
     <script language="javascript" type="application/javascript;version=1.7" src="flotWrapper.js"></script>
     <script language="javascript" type="text/javascript" src="jquery-1.6.2.min.js"></script>
@@ -16,10 +16,10 @@
     // Intializing on page load
     $( function () {
         
-        // Setup loggers from stand alone html page (will be overridden in Listit.onLoad)
-        Listit.initializeLoggers(false, 'Debug'); 
+        // Setup loggers from stand alone html page (will be overridden in Plottit.onLoad)
+        Plottit.initializeLoggers(false, 'Debug'); 
         
-        flotWrapper = new Listit.FlotWrapper('scatter-plot-div');
+        flotWrapper = new Plottit.FlotWrapper('scatter-plot-div');
         
         $("#scatter-plot-div")
             //.bind("plotselected", function (event, ranges) {
@@ -84,7 +84,7 @@
     
     
     function doTest (button) { // Debugging function
-        window.Listit.fbLog('plotFrame.doTest --', 'narf');
+        window.Plottit.fbLog('plotFrame.doTest --', 'narf');
 
         // Fill plot with debug data
         function getData(x1, x2) {

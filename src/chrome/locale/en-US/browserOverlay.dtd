@@ -1,54 +1,54 @@
-<!ENTITY listit.debug.label                "Debug">
-<!ENTITY listit.listitMenu.accesskey       "l">
-<!ENTITY listit.debugMenuItem.accesskey    "D">
+<!ENTITY plottit.debug.label                "Debug">
+<!ENTITY plottit.plottitMenu.accesskey       "l">
+<!ENTITY plottit.debugMenuItem.accesskey    "D">
 
 
-<!ENTITY listit.comment.id            "ID">
-<!ENTITY listit.comment.pageOrder     "Page order">
-<!ENTITY listit.comment.author        "Author">
-<!ENTITY listit.comment.depth         "Depth">
-<!ENTITY listit.comment.score         "Score">
-<!ENTITY listit.comment.up            "Up">
-<!ENTITY listit.comment.down          "Down">
-<!ENTITY listit.comment.votes         "Votes">
-<!ENTITY listit.comment.likes         "Likes">
-<!ENTITY listit.comment.controversial "Controversial">
-<!ENTITY listit.comment.hot           "Hot">
-<!ENTITY listit.comment.best          "Best">
-<!ENTITY listit.comment.characters    "Characters">
-<!ENTITY listit.comment.words         "Words">
-<!ENTITY listit.comment.replies       "Replies">
-<!ENTITY listit.comment.localDate     "Date">
-<!ENTITY listit.comment.utcDate       "UTC date">
-<!ENTITY listit.comment.age           "Age">
-<!ENTITY listit.comment.postedAfter   "Posted after">
+<!ENTITY plottit.comment.id            "ID">
+<!ENTITY plottit.comment.pageOrder     "Page order">
+<!ENTITY plottit.comment.author        "Author">
+<!ENTITY plottit.comment.depth         "Depth">
+<!ENTITY plottit.comment.score         "Score">
+<!ENTITY plottit.comment.up            "Up">
+<!ENTITY plottit.comment.down          "Down">
+<!ENTITY plottit.comment.votes         "Votes">
+<!ENTITY plottit.comment.likes         "Likes">
+<!ENTITY plottit.comment.controversial "Controversial">
+<!ENTITY plottit.comment.hot           "Hot">
+<!ENTITY plottit.comment.best          "Best">
+<!ENTITY plottit.comment.characters    "Characters">
+<!ENTITY plottit.comment.words         "Words">
+<!ENTITY plottit.comment.replies       "Replies">
+<!ENTITY plottit.comment.localDate     "Date">
+<!ENTITY plottit.comment.utcDate       "UTC date">
+<!ENTITY plottit.comment.age           "Age">
+<!ENTITY plottit.comment.postedAfter   "Posted after">
 
-<!ENTITY listit.comment          "Comment">
-<!ENTITY listit.plot             "Plot">
-<!ENTITY listit.histogram        "Histogram">
-<!ENTITY listit.autoscale        "Autoscale">
-<!ENTITY listit.size             "Size">
-<!ENTITY listit.size.equal       "Equal size">
-<!ENTITY listit.color            "Color">
-<!ENTITY listit.color.none       "None">
-<!ENTITY listit.treemap          "Treemap">
-<!ENTITY listit.treemap.cushions "Cushions">
+<!ENTITY plottit.comment          "Comment">
+<!ENTITY plottit.plot             "Plot">
+<!ENTITY plottit.histogram        "Histogram">
+<!ENTITY plottit.autoscale        "Autoscale">
+<!ENTITY plottit.size             "Size">
+<!ENTITY plottit.size.equal       "Equal size">
+<!ENTITY plottit.color            "Color">
+<!ENTITY plottit.color.none       "None">
+<!ENTITY plottit.treemap          "Treemap">
+<!ENTITY plottit.treemap.cushions "Cushions">
 
-<!ENTITY listit.time.second      "second">
-<!ENTITY listit.time.seconds     "seconds">
-<!ENTITY listit.time.minute      "minute">
-<!ENTITY listit.time.minutes     "minutes">
-<!ENTITY listit.time.day         "day">
-<!ENTITY listit.time.days        "days">
-<!ENTITY listit.time.hour        "hour">
-<!ENTITY listit.time.hours       "hours">
-<!ENTITY listit.time.day         "day">
-<!ENTITY listit.time.days        "days">
-<!ENTITY listit.time.week        "week">
-<!ENTITY listit.time.weeks       "weeks">
-<!ENTITY listit.time.month       "month">
-<!ENTITY listit.time.months      "months">
-<!ENTITY listit.time.year        "year">
-<!ENTITY listit.time.years       "years">
+<!ENTITY plottit.time.second      "second">
+<!ENTITY plottit.time.seconds     "seconds">
+<!ENTITY plottit.time.minute      "minute">
+<!ENTITY plottit.time.minutes     "minutes">
+<!ENTITY plottit.time.day         "day">
+<!ENTITY plottit.time.days        "days">
+<!ENTITY plottit.time.hour        "hour">
+<!ENTITY plottit.time.hours       "hours">
+<!ENTITY plottit.time.day         "day">
+<!ENTITY plottit.time.days        "days">
+<!ENTITY plottit.time.week        "week">
+<!ENTITY plottit.time.weeks       "weeks">
+<!ENTITY plottit.time.month       "month">
+<!ENTITY plottit.time.months      "months">
+<!ENTITY plottit.time.year        "year">
+<!ENTITY plottit.time.years       "years">
 
 

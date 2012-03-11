@@ -1,10 +1,10 @@
-if ('undefined' == typeof(Listit)) { var Listit = {}; } // Listit name space
+if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
 
 
-Listit.PAGE_NOT_LISTIT  = 0; // Not a page listit can process
-Listit.PAGE_POSTPONED   = 1; // Comments loading postponed
-Listit.PAGE_LOADING     = 2; // Loading JSON comments via AJAX
-Listit.PAGE_READY       = 3; // Comments loaded
+Plottit.PAGE_NOT_PLOTTIT  = 0; // Not a page plottit can process
+Plottit.PAGE_POSTPONED   = 1; // Comments loading postponed
+Plottit.PAGE_LOADING     = 2; // Loading JSON comments via AJAX
+Plottit.PAGE_READY       = 3; // Comments loaded
 
 //////////////////
 // BrowserState //
@@ -12,43 +12,43 @@ Listit.PAGE_READY       = 3; // Comments loaded
 
 
 // The state per browser (in the global browser object);
-Listit.BrowserState = function (browser, localDateFormat, utcDateFormat) { // Constructor
+Plottit.BrowserState = function (browser, localDateFormat, utcDateFormat) { // Constructor
 
     this.browser = browser; // Keep track of the browser to which this state belongs
-    this.pageStatus = Listit.PAGE_NOT_LISTIT;
-    this.treeView =  new Listit.TreeView(localDateFormat, utcDateFormat);
+    this.pageStatus = Plottit.PAGE_NOT_PLOTTIT;
+    this.treeView =  new Plottit.TreeView(localDateFormat, utcDateFormat);
     this._selectedComment = null; // The comment that is selected in the table
     this._previousSelectedComment = null;
 }
 
-Listit.BrowserState.prototype.__defineGetter__("selectedComment", function() { return this._selectedComment} );
-Listit.BrowserState.prototype.__defineSetter__("selectedComment", function(v) { 
+Plottit.BrowserState.prototype.__defineGetter__("selectedComment", function() { return this._selectedComment} );
+Plottit.BrowserState.prototype.__defineSetter__("selectedComment", function(v) { 
     this._previousSelectedComment = this._selectedComment;
     this._selectedComment = v;
 } );
-Listit.BrowserState.prototype.__defineGetter__("previousSelectedComment", function() { return this._previousSelectedComment} );
+Plottit.BrowserState.prototype.__defineGetter__("previousSelectedComment", function() { return this._previousSelectedComment} );
 
 
-Listit.BrowserState.prototype.toString = function () {
-    return "Listit.BrowserState";
+Plottit.BrowserState.prototype.toString = function () {
+    return "Plottit.BrowserState";
 };
 
-Listit.BrowserState.prototype.summaryString = function () {
-    return "Listit.BrowserState: status=" + this.pageStatus 
+Plottit.BrowserState.prototype.summaryString = function () {
+    return "Plottit.BrowserState: status=" + this.pageStatus 
         + ", comments=" + this.treeView.getComments().length 
         + ", selectedComment=" + (this.selectedComment ? this.selectedComment.id : this.selectedComment) ;
 };
 
-Listit.BrowserState.prototype.removeDiscussion = function () {
+Plottit.BrowserState.prototype.removeDiscussion = function () {
     this.treeView.removeDiscussion();
     this.selectedComment = null;
 };
 
-Listit.BrowserState.prototype.getStatus = function (status) {
+Plottit.BrowserState.prototype.getStatus = function (status) {
     return this.pageStatus;
 };
 
-Listit.BrowserState.prototype.setStatus = function (status) {
+Plottit.BrowserState.prototype.setStatus = function (status) {
     this.pageStatus = status;
 };
 
@@ -58,16 +58,16 @@ Listit.BrowserState.prototype.setStatus = function (status) {
 // State //
 ///////////
 
-// The application state of Listit (there will be one per XUL window).
-Listit.State = function (  // Constructor
-        listitEnabled, 
+// The application state of Plottit (there will be one per XUL window).
+Plottit.State = function (  // Constructor
+        plottitEnabled, 
         localDateFormat, 
         utcDateFormat, 
         treeMapSizeProperty,
         fnHslOfComment) 
 { 
 
-    this.listitEnabled = listitEnabled;
+    this.plottitEnabled = plottitEnabled;
     this.currentBrowserID = null;
     this.nextBrowserID = 0;
     this.browserStates = {}
@@ -80,88 +80,88 @@ Listit.State = function (  // Constructor
 
 }
 
-Listit.State.prototype.toString = function () {
-    return "Listit.State";
+Plottit.State.prototype.toString = function () {
+    return "Plottit.State";
 };
 
 
-Listit.State.prototype.summaryString = function () {
-    return 'Enabled: ' + this.listitEnabled + ', ' + 
+Plottit.State.prototype.summaryString = function () {
+    return 'Enabled: ' + this.plottitEnabled + ', ' + 
         [ 'Tab ' + k + ': ' + (v.treeView.countComments()) for 
             each ([k,v] in Iterator(this.browserStates))];
 };
 
 
-Listit.State.prototype.getCurrentBrowserID = function () {
+Plottit.State.prototype.getCurrentBrowserID = function () {
     return this.currentBrowserID;
 }
 
-Listit.State.prototype.setCurrentBrowser = function (browser) {
-    Listit.logger.trace("Listit.State.setCurrentBrowser -- ");
+Plottit.State.prototype.setCurrentBrowser = function (browser) {
+    Plottit.logger.trace("Plottit.State.setCurrentBrowser -- ");
     
-    var browserID = browser.getAttribute("ListitBrowserID");
-    Listit.assert(browserID, "Browser has no ListitBrowserID");
+    var browserID = browser.getAttribute("PlottitBrowserID");
+    Plottit.assert(browserID, "Browser has no PlottitBrowserID");
     this.currentBrowserID = browserID;
     return browserID;
 };
 
-Listit.State.prototype.addBrowser = function (browser) {
-    Listit.logger.trace("Listit.State.addBrowser -- ");
+Plottit.State.prototype.addBrowser = function (browser) {
+    Plottit.logger.trace("Plottit.State.addBrowser -- ");
     
     var browserID;
-    if (browser.hasAttribute("ListitBrowserID")) { // Test just in case
-        browserID = browser.getAttribute("ListitBrowserID");
-        var msg = "Browser already has ListitBrowserID attribute: " + browserID;
-        Listit.logger.error(msg);
+    if (browser.hasAttribute("PlottitBrowserID")) { // Test just in case
+        browserID = browser.getAttribute("PlottitBrowserID");
+        var msg = "Browser already has PlottitBrowserID attribute: " + browserID;
+        Plottit.logger.error(msg);
         throw new Error(msg);
     } else {
         browserID = this.nextBrowserID.toString();
-        Listit.state.nextBrowserID += 1;
-        this.browserStates[browserID] = new Listit.BrowserState(browser, 
+        Plottit.state.nextBrowserID += 1;
+        this.browserStates[browserID] = new Plottit.BrowserState(browser, 
             this._localDateFormat, this._utcDateFormat);
-        browser.setAttribute("ListitBrowserID", browserID);
+        browser.setAttribute("PlottitBrowserID", browserID);
     }
     return browserID;
 };
 
-Listit.State.prototype.removeBrowser = function (browser) {
-    Listit.logger.trace("Listit.State.removeBrowser -- ");
+Plottit.State.prototype.removeBrowser = function (browser) {
+    Plottit.logger.trace("Plottit.State.removeBrowser -- ");
     
-    var browserID = browser.getAttribute("ListitBrowserID");
-    Listit.assert(browserID, "Browser has no ListitBrowserID");
+    var browserID = browser.getAttribute("PlottitBrowserID");
+    Plottit.assert(browserID, "Browser has no PlottitBrowserID");
     delete this.browserStates[browserID];
     return browserID;
 };
 
-Listit.State.prototype.setBrowserDiscussion = function (browserID, discussion) {
-    Listit.logger.trace("Listit.State.setBrowserDiscussion -- ");
-    Listit.assert(browserID, "setBrowserDiscussion: Browser has no ListitBrowserID");
+Plottit.State.prototype.setBrowserDiscussion = function (browserID, discussion) {
+    Plottit.logger.trace("Plottit.State.setBrowserDiscussion -- ");
+    Plottit.assert(browserID, "setBrowserDiscussion: Browser has no PlottitBrowserID");
     this.browserStates[browserID].discussion = discussion;
 }
 
-Listit.State.prototype.getBrowserDiscussion = function (browserID) {
+Plottit.State.prototype.getBrowserDiscussion = function (browserID) {
     return this.browserStates[browserID].discussion;
 }
 
 
-Listit.State.prototype.getCurrentBrowserState = function () {
+Plottit.State.prototype.getCurrentBrowserState = function () {
     return this.browserStates[this.currentBrowserID];
 }
 
-Listit.State.prototype.getCurrentTreeView = function () {
+Plottit.State.prototype.getCurrentTreeView = function () {
     return this.browserStates[this.currentBrowserID].treeView;
 }
 
 
-Listit.State.prototype.getCurrentBrowserDiscussion = function () {
+Plottit.State.prototype.getCurrentBrowserDiscussion = function () {
     return this.browserStates[this.currentBrowserID].discussion;
 }
 
-Listit.State.prototype.getUtcDateFormat = function () {
+Plottit.State.prototype.getUtcDateFormat = function () {
     return this._utcDateFormat;
 }
 
-Listit.State.prototype.setUtcDateFormat = function (format) {
+Plottit.State.prototype.setUtcDateFormat = function (format) {
     this._utcDateFormat = format;
  
     // Update all treeViews
@@ -171,11 +171,11 @@ Listit.State.prototype.setUtcDateFormat = function (format) {
     }
 }
 
-Listit.State.prototype.getLocalDateFormat = function () {
+Plottit.State.prototype.getLocalDateFormat = function () {
     return this._localDateFormat;
 }
 
-Listit.State.prototype.setLocalDateFormat = function (format) {
+Plottit.State.prototype.setLocalDateFormat = function (format) {
     this._localDateFormat = format;
  
     // Update all treeViews
@@ -186,7 +186,7 @@ Listit.State.prototype.setLocalDateFormat = function (format) {
 }
 
 /*
-Listit.State.prototype.getCurrentBrowserComments = function () {
+Plottit.State.prototype.getCurrentBrowserComments = function () {
     return this.browserStates[this.currentBrowserID].discussion.comments;
 }
 */
