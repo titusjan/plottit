@@ -1,21 +1,6 @@
+// Licensed under the MIT license. See license.txt for details
+
 if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
-
-/* 
-Bug:
-
-Open: 
-    1) file:///Users/titusjan/Programming/firefox/test_json/reddit_germany_just_sold_200_tanks_to_saudi.json
-    2) file:///Users/titusjan/Programming/firefox/test_json/nailed_it.json (or other tab)
-    
-    (reset firefox)
-    set autoscale first to true, then to false:
-    switch tab and switch back
-    resize plot frame
-    
-    This is because resizing always recalculates new grids (which makes sense).
-    However, apparently setting different data back changes the tick calculation)
-    
-*/
 
 //////////////////
 // ScatterPlot //

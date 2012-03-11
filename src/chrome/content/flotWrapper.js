@@ -1,3 +1,4 @@
+// Licensed under the MIT license. See license.txt for details
 
 if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
 

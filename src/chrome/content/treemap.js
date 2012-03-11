@@ -1,12 +1,13 @@
-// TODO: the current implementation is very tailored to Plottit; make more generic.
+// Licensed under the MIT license. See license.txt for details
 
 if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
-
 
 
 /////////////
 // TreeMap //
 /////////////
+
+// TODO: the current implementation is very tailored to Plottit; make more generic.
 
 // If returnParentOnRepeatSelectMode == true, the parent node will be returned if 
 // the node was already seleced.

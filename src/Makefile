@@ -43,6 +43,9 @@ install_rdf := install.rdf
 # The chrome.manifest file.
 chrome_manifest := chrome.manifest
 
+# The license file.
+license := license.txt
+
 # The modules (JSM) dir.
 modules_dir := modules
 
@@ -75,6 +78,7 @@ include modules/Makefile.in
 # Makefiles.
 xpi_built := $(build_dir)/$(install_rdf) \
              $(build_dir)/$(chrome_manifest) \
+             $(build_dir)/$(license) \
              $(chrome_jar_file) \
              $(addprefix $(build_dir)/,$(modules_sources)) \
              $(build_dir)/$(preferences_dir)/$(extension_name).js
