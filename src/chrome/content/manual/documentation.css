@@ -12,7 +12,7 @@ body {
 
 article {
     margin: 10px;
-    width: 80ex;
+    width: 55em;
     background-color:  white;
 }
 
@@ -42,3 +42,11 @@ h1, h2, h3 {
 
 a { text-decoration:none; color: #369; }
 a:hover { text-decoration:underline }
+
+img.screenshot {
+    border: 1px solid black;
+}
+
+figcaption {
+    font-style: italic;
+}

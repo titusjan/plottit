@@ -29,17 +29,30 @@
         When the Reddit discussion is loaded completely, Plottit request the Reddit server for a machine readable version of the discussion. This is then used to populate the table and draw the graphs. Note that because the Reddit page and the data in the Plottit pane are not loaded simultaniouly, small differences may occur.
         <p>
         
-        The Plottit pane can be resized by dragging the separator. It can be hidden by toggling the enable/disable button <img src="enableButton.png" alt="Disable Plottit"> in the Firefox navigation toolbar. When Plottit is disabled it will not send requests to the server so you don't have to worry about wasting bandwidth.
+        The Plottit pane can be resized by dragging the separator. It can be hidden by toggling the <img src="enableButton.png"  title="enables/disables Plottit" alt="enable/disable"> button in the Firefox navigation toolbar. When Plottit is disabled it will not send requests to the server so you don't have to worry about wasting bandwidth.
         
         <section id="comments-table">
             <h2>Comments table</h2>
         
-            The Comments table contains a row for each comment on the Reddit page. A comment has certain properties, such as the author and the score, which are listed in the tables columns. There are many of these properties, they are explained in detail later in this section. Most of them are hidden by default, you can configure which columns are visible by clicking the <img alt="select table column" src="selectTableColumns.png"> button in the top right corner of the table. You can reorder the columns by dragging/dropping them and resize them using the table header separators. 
+            The Comments table contains a row for each comment on the Reddit page. A comment has certain properties, such as the author and the score, which are listed in the tables columns. There are many of these properties, they are explained in detail later in this section. Most of them are hidden by default, you can configure which columns are visible by clicking the <img src="selectTableColumns.png" title="selects visible columns" alt="select table column" > button in the top right corner of the table. You can reorder the columns by dragging/dropping them and resize them using the table header separators. 
             <p>
             You can sort the table for every column by clicking its header; clicking the same header again reverses the order. The only exception is the <em>Comment</em> column. When you click on this header, the comments column switches between a tree structure and a flat list. In tree-mode, a comment is only sorted by comparing it with its siblings, so that the structure of the discussion remains intact (this is also how the Reddit page itself is sorted). In flat-mode however, the rows are sorted over the complete discussion.
             <p>
-            <p>
+            When you select a row in the table, the corresponding comment in the Reddit page will be highlighted. If necessary the Reddit page will scroll to the comment to make it visible. Conversely, when you click on a comment in the Reddit page, the corresponding row will be selected in the comments table
             
+            <figure>
+                <img class="screenshot" src="tableAndPage.png" title="Screen shot" alt="Screen shoft of comments table and Reddit paget">
+                <figcaption>The comments table in tree mode showing a selected row and its corresponding  highlighted comment in the Reddit page.</figcaption>
+            </figure>
+            
+            <p>
+            When the table is in tree-mode, you can collapse and expand the comments by clicking the icon before the comment text. Depending on your operating system this will be +/- symbol or a triangle. The Reddit page is also synchronized in this aspect.
+            <p>
+            When the table has the keyboard focus, the up and down arrows select the next and previous comment, and the left and right arrow collapse and expand a comment. This allows you to easily navigate the discussion using only the keyboard.
+            <p>
+        
+                        
+            <p>
             The machine readable JSON file that Plottit uses to populate the table, only contains the number of upvotes and downvotes, all other score-related columns, such as the total number of votes and hotness score, are calculated by Plottit from the number of up and down votes. Luckily Reddit is open source so that it is documented how this can be done. However, reddit deliberately modifi
 
             <section>
