@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="description" content="User manual for the Plottit Firefox extension.">
+    <meta name="keywords" content="Plottit,Reddit">
+
+    <link rel="stylesheet" type="text/css" href="documentation.css" >
+    <title>Plottit user manual</title>
+</head>
+
+<body>
+<article>
+
+    <section id="tlrd">
+        <h1>TL;DR</h1>
+        
+        At the end of this document you can find some <a href="#examples">ideas and examples</a> on how to use Plottit.
+
+    </section>
+    
+    <section id="user-interface">
+        <h1>Plottit User Interface</h1>
+        
+        The Plottit pane will appear at the bottom of the window whenever you visit a Reddit discussion. It contains the comments-table on the left, and one of the following items on the right: a frame with the selected comment text, a scatter plot, a histogram or a treemap.
+        <p>
+        
+        When the Reddit discussion is loaded completely, Plottit request the Reddit server for a machine readable version of the discussion. This is then used to populate the table and draw the graphs. Note that because the Reddit page and the data in the Plottit pane are not loaded simultaniouly, small differences may occur.
+        <p>
+        
+        The Plottit pane can be resized by dragging the separator. It can be hidden by toggling the enable/disable button <img src="enableButton.png" alt="Disable Plottit"> in the Firefox navigation toolbar. When Plottit is disabled it will not send requests to the server so you don't have to worry about wasting bandwidth.
+        
+        <section id="comments-table">
+            <h2>Comments table</h2>
+        
+            The Comments table contains a row for each comment on the Reddit page. A comment has certain properties, such as the author and the score, which are listed in the tables columns. There are many of these properties, they are explained in detail later in this section. Most of them are hidden by default, you can configure which columns are visible by clicking the <img alt="select table column" src="selectTableColumns.png"> button in the top right corner of the table. You can reorder the columns by dragging/dropping them and resize them using the table header separators. 
+            <p>
+            You can sort the table for every column by clicking its header; clicking the same header again reverses the order. The only exception is the <em>Comment</em> column. When you click on this header, the comments column switches between a tree structure and a flat list. In tree-mode, a comment is only sorted by comparing it with its siblings, so that the structure of the discussion remains intact (this is also how the Reddit page itself is sorted). In flat-mode however, the rows are sorted over the complete discussion.
+            <p>
+            <p>
+            
+            The machine readable JSON file that Plottit uses to populate the table, only contains the number of upvotes and downvotes, all other score-related columns, such as the total number of votes and hotness score, are calculated by Plottit from the number of up and down votes. Luckily Reddit is open source so that it is documented how this can be done. However, reddit deliberately modifi
+
+            <section>
+                <h3>Page Order</h3>
+                
+                yackity smackity
+            </section>
+            <section>
+                <h3>ID</h3>
+                yackity smackity
+
+            </section>
+            <section>
+                <h3>Posted After</h3>
+                yackity smackity
+            </section>
+        </section>
+        
+        <section>
+            <h2>Comments text</h2>
+        </section>
+        
+        <section>
+            <h2>Scatter Plot</h2>
+        </section>
+        
+        <section>
+            <h2>Histogram</h2>
+        </section>
+        
+        <section>
+            <h2>Treemap</h2>
+        </section>
+    </section>
+    
+    <section id="examples">
+        <h1>Example useage</h1>
+    </section>
+    
+    
+</article>
+</body>
+</html>

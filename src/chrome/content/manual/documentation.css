@@ -1,0 +1,44 @@
+
+html, body, div {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    font:small verdana, arial, helvetica, sans-serif;
+
+    background-color: white ;
+}
+
+article {
+    margin: 10px;
+    width: 80ex;
+    background-color:  white;
+}
+
+/* See W3C sample style sheet (http://www.w3.org/TR/REC-CSS2/sample.html) */
+h1 {font-size: 2em; margin: .67em 0;}
+h2 {font-size: 1.5em; margin: .83em 0;}
+h3 {font-size: 1.17em; margin: 1em 0;}
+h4 {font-size: 1em; margin: 1.33em 0;}
+h5 {font-size: .83em; line-height: 1.17em; margin: 1.67em 0;}
+h6 {font-size: .67em; margin: 2.33em 0;}
+h1, h2, h3, h4, h5, h6 {font-weight: bolder;}
+
+h1 { 
+    color: red;
+}
+h2 { 
+    color: green;
+}
+h3 { 
+    color: blue;
+}
+
+
+h1, h2, h3 { 
+    color:#369;
+}
+
+a { text-decoration:none; color: #369; }
+a:hover { text-decoration:underline }
