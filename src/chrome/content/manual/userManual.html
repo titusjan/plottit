@@ -23,18 +23,18 @@
     <section id="user-interface">
         <h1>Plottit User Interface</h1>
         
-        The Plottit pane will appear at the bottom of the window whenever you visit a Reddit discussion. It contains the comments-table on the left, and one of the following items on the right: a frame with the selected comment text, a scatter plot, a histogram or a treemap.
+        The Plottit pane will appear at the bottom of the window whenever you visit a Reddit discussion. It contains the <a href="#comments-table">Comments table</a> on the left, and one of the following items on the right: a frame with the selected <a href="#comment-text">comment text</a>, a <a href="#scatter-plot">scatter plot</a>, a <a href="#histogram">histogram</a> or a <a href="#treemap">treemap</a>.
         <p>
         
-        When the Reddit discussion is loaded completely, Plottit request the Reddit server for a machine readable version of the discussion. This is then used to populate the table and draw the graphs. Note that because the Reddit page and the data in the Plottit pane are not loaded simultaniouly, small differences may occur.
+        When the Reddit discussion is loaded completely, Plottit requests the Reddit server for a machine readable version of the discussion. This is then used to populate the table and draw the graphs. Note that because the Reddit page and the data in the Plottit pane are not loaded simultaniouly, small differences may occur.
         <p>
         
-        The Plottit pane can be resized by dragging the separator. It can be hidden by toggling the <img src="enableButton.png"  title="enables/disables Plottit" alt="enable/disable"> button in the Firefox navigation toolbar. When Plottit is disabled it will not send requests to the server so you don't have to worry about wasting bandwidth.
+        The Plottit pane can be resized by dragging the separator. It can be hidden by toggling the <img src="enableButton.png"  title="enables/disables Plottit" alt="enable/disable"> button in the Firefox navigation toolbar. When Plottit is disabled it will not send requests to the server so you don't have to worry about wasted bandwidth.
         
         <section id="comments-table">
-            <h2>Comments table</h2>
+            <h2>Comments Table</h2>
         
-            The Comments table contains a row for each comment on the Reddit page. A comment has certain properties, such as the author and the score, which are listed in the tables columns. There are many of these properties, they are explained in detail later in this section. Most of them are hidden by default, you can configure which columns are visible by clicking the <img src="selectTableColumns.png" title="selects visible columns" alt="select table column" > button in the top right corner of the table. You can reorder the columns by dragging/dropping them and resize them using the table header separators. 
+            The Comments table contains a row for each comment on the Reddit page. A comment has certain properties, such as the author and the score, which are listed in the tables columns. There are many of these properties, they are <a href="#table-collumns">explained in detail</a> later in this section. Most of them are hidden by default, you can configure which columns are visible by clicking the <img src="selectTableColumns.png" title="selects visible columns" alt="select table column" > button in the top right corner of the table. You can reorder the columns by dragging/dropping them and resize them using the table header separators. 
             <p>
             You can sort the table for every column by clicking its header; clicking the same header again reverses the order. The only exception is the <em>Comment</em> column. When you click on this header, the comments column switches between a tree structure and a flat list. In tree-mode, a comment is only sorted by comparing it with its siblings, so that the structure of the discussion remains intact (this is also how the Reddit page itself is sorted). In flat-mode however, the rows are sorted over the complete discussion.
             <p>
@@ -45,51 +45,174 @@
                 <figcaption>The comments table in tree mode showing a selected row and its corresponding  highlighted comment in the Reddit page.</figcaption>
             </figure>
             
+            When the table is in tree-mode, you can collapse and expand the comments by clicking the icon before the comment text. Depending on your operating system this will be +/- symbol or a triangle. The Reddit page is also synchronized when a comment is expanded or collapsed.
             <p>
-            When the table is in tree-mode, you can collapse and expand the comments by clicking the icon before the comment text. Depending on your operating system this will be +/- symbol or a triangle. The Reddit page is also synchronized in this aspect.
-            <p>
+            
             When the table has the keyboard focus, the up and down arrows select the next and previous comment, and the left and right arrow collapse and expand a comment. This allows you to easily navigate the discussion using only the keyboard.
             <p>
-        
+            
+            Some of the columns, for example the <em>Up</em> and <em>Down</em> votes, are rendered in an <em>italic</em> font. This is to indicate that this value is fuzzed by the Reddit server to combat spam, and therefore does not represent the actual value; it has been deliberately modified. The Examples chapter contains a section that examines <a href="#fuzzing">fuzzing in more detail</a> but, in short, the more votes a comment has received, the more this number is distorted. This is also true for the properties that are derived from the number of up and down votes, such as the <em>Likes</em> and <em>Best</em> percentages. Only the <em>Score</em> and <em>Hot</em> values are not affected because Reddit fuzzes the votes in such a way that these numbers remain the same.
+            <p>            
                         
-            <p>
-            The machine readable JSON file that Plottit uses to populate the table, only contains the number of upvotes and downvotes, all other score-related columns, such as the total number of votes and hotness score, are calculated by Plottit from the number of up and down votes. Luckily Reddit is open source so that it is documented how this can be done. However, reddit deliberately modifi
-
-            <section>
-                <h3>Page Order</h3>
+            <span id="table-collumns">The rest of this section explains all the available columns.</span>. The <a href="#comment-text">next section</a> will discuss the comment text pane and the visualizations.
+                       
+            <section id="col-id">
+                <h3>ID Column</h3>
+                The comments identifier. Each Reddit comment contains a unique ID that is used, for example, in a URL that links to that specific comment. 
+            </section>
+            
+            <section id="col-page-order">
+                <h3>Page Order Column</h3>
+                This number represents the position of the post in the current Reddit page. The Reddit page can be sorted independently of Plottit by selecting the sort order from the menu at the top of the discussion (see the screen shot below). This allows you to sort the page by: date (old/new), score (top), controversial and best. 
+                <p>
                 
-                yackity smackity
+                When you sort the Comments table by these columns there may be small differences between the Reddit page and the table order caused by vote fuzzing (controversial, best). Also, when sorting by score, Plottit cannot derive the page order if two comments have the same score. Therefore it is convenient to have the original page order stored as a separate column.
+                    
+                <figure>
+                    <img class="screenshot" src="sortRedditPage.png" title="Sorting a Reddit Page" alt="Screen shoft Reddit page sort menu">
+                    <figcaption>The Sort menu on the Reddit page</figcaption>
+                </figure>
             </section>
-            <section>
-                <h3>ID</h3>
-                yackity smackity
+    
+            <section id="col-author">
+                <h3>Author Column</h3>
+                The Redditor who wrote the comment.
+            </section>
+            
+            <section id="col-date">
+                <h3>Date Column</h3>
+                The date and time when the comment was posted. This is the local date using the time zone that is set on your computer.
+                <p>
+                You can select the format in which this date and/or time is displayed by right-clicking the column header.
+                
+            </section>
+            
+            <section id="utc-date">
+                <h3>UTC Date Column</h3>
+                The UTC date and time when the comment was posted. <a href="http://en.wikipedia.org/wiki/Coordinated_Universal_Time"> UTC (Coordinated Universal Time)</a>  is a time that is independent of your local time zone. UTC is practically the same as GMT, which was its predecessor.
+                <p>
+                You can select the format in which this date and/or time is displayed by right-clicking the column header.
+            </section>
+            
+            <section id="col-age">
+                <h3>Age Column</h3>
+                
+                The age of the comment. This is the difference between time the comment was posted and when the page was loaded. It therefore changes each time you reload the page.
+            </section>
+            
+            <section id="col-posted-after">
+                <h3>Posted After Column</h3>
+                The time difference between the start of the disussion and the time that the comment was posted to this discussion.    
+            </section>
+            
+            <section id="col-depth">
+                <h3>Depth Column</h3>
+                The depth of the comment in the tree. A top level comment has a depth of 1, its direct children have depth 2, it's grand children 3, et cetera. 
+            </section>
+            
+            <section id="col-replies">
+                <h3>Replies Column</h3>
+                
+                The number of direct replies to a comment.
+            </section>
+            
+            <section id="col-comment-text">
+                <h3>Comment Column</h3>
+                The comment text. By clicking on the header you can toggle between displaying the discussion as a tree or as a flat list.
+            </section>
+            
+            <section id="col-ups">
+                <h3>Ups Column</h3>
+                The number of up-votes the comment received.
+                <p>
+                <strong>Note: </strong>this number is <a href="fuzzing">fuzzed</a> by Reddit and is therefore less accurate for comments that have a lot of votes.
+            </section>
+            
+            <section id="col-downs">
+                <h3>Downs Column</h3>
+                The number of down-votes the comment received.
+                <p>
+                <strong>Note: </strong>this number is <a href="fuzzing">fuzzed</a> by Reddit and is therefore less accurate for comments that have a lot of votes.
+            </section>
+            
+            <section id="col-votes">
+                <h3>Votes Column</h3>
+                The total number of votes the comment received. In other words: the number of up-votes plus the number of down-votes.
+                <p>
+                <strong>Note: </strong>this number is <a href="fuzzing">fuzzed</a> by Reddit and is therefore less accurate for comments that have a lot of votes.
+            </section>
+            
+            <section id="col-score">
+                <h3>Score Column</h3>
+                The comments score. That is: the number of up-votes minus the number of down-votes.
+                <p>
+                <strong>Note: </strong>this number not affected by Reddits <a href="fuzzing">vote fuzzing</a>.
+            </section>
+            
+            <section id="col-likes">
+                <h3>Likes Column</h3>
+                The percentage of voters that like the comment. This is defined as: <i>100 * ups / (ups+downs)</i>. In other words, it is the percentage of votes that are upvotes.
+                <p>
+                <strong>Note: </strong>this number is <a href="fuzzing">fuzzed</a> by Reddit and is therefore less accurate for comments that have a lot of votes.
+            </section>
 
+            <section id="col-best">
+                <h3>Hot Column</h3>
+                The hotness of the comment.
+                <p>
+                <strong>Note: </strong>this number not affected by Reddits <a href="fuzzing">vote fuzzing</a> because it is directly calculated from the <a href="col-score">score</a>.
             </section>
-            <section>
-                <h3>Posted After</h3>
-                yackity smackity
+            
+            <section id="col-controversial">
+                <h3>Controversial Column</h3>
+                A measure of the controversy of the comment.
             </section>
+            
+            <section id="col-hot">
+                <h3>Hot Column</h3>
+                The hotness of the comment.
+            </section>
+            
+            <section id="col-words">
+                <h3>Words Column</h3>
+                The number of words in the comment.
+            </section>
+            
+            <section id="col-chars">
+                <h3>Characters Column</h3>
+                The number of characters in the comment.
+            </section>
+            
         </section>
         
-        <section>
-            <h2>Comments text</h2>
+        
+        
+        
+        
+        <section id="comment-text">
+            <h2>Comment Text</h2>
         </section>
         
-        <section>
+        <section id="scatter-plot">
             <h2>Scatter Plot</h2>
         </section>
         
-        <section>
+        <section id="histogram">
             <h2>Histogram</h2>
         </section>
         
-        <section>
+        <section id="treemap">
             <h2>Treemap</h2>
         </section>
     </section>
     
     <section id="examples">
         <h1>Example useage</h1>
+        
+        <section id="fuzzing">
+            <h2>Examining how votes are fuzzed by Reddit.</h2>
+        </section>
+        
     </section>
     
     
