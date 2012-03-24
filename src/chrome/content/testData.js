@@ -1,7 +1,5 @@
 
 
-if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Lisit name space
-
 // Get posts in redit json format
 Plottit.getTestRedditJSONPage = function() 
 {

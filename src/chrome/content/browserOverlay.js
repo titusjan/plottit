@@ -1,6 +1,5 @@
 // Licensed under the MIT license. See license.txt for details
 
-if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
 
 // Initializes plottit. Is called when the XUL window has loaded
 Plottit.onLoad = function(event) {
@@ -549,7 +548,7 @@ Plottit.onPageLoad = function(event) {
             Plottit.updateAllViews(Plottit.state, browserID);
             return;
         }
-        delete doc; // to prevent mistakes
+        doc = null; // to prevent mistakes
         
         var body = Plottit.safeGet(rootDoc, 'body');
         var textContent = Plottit.safeGet(body, 'textContent');
@@ -1095,6 +1094,8 @@ Plottit.myDebugRoutine = function () {
     
     let stringBundle = document.getElementById('plottit-string-bundle');
     let message = stringBundle.getString('plottit.greeting');
+    
+    //bla = 5;
     
     try {
         Plottit.logger.error('Plottit.error');

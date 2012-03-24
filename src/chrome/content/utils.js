@@ -1,7 +1,5 @@
 // TODO: the current implementation is very tailored to Plottit; make more generic.
 
-if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
-
 Plottit.assert = function(expression, message) {
 
     if (!expression) {

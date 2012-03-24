@@ -1,8 +1,5 @@
 // Licensed under the MIT license. See license.txt for details
 
-if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
-
-
 /*
 / Wrapper around flot plot with some useful routines.
 / Used in plotframe.html where jQuery is also included.

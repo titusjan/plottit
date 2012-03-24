@@ -1,8 +1,5 @@
 // Licensed under the MIT license. See license.txt for details
 
-if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
-
-
 Plottit.PAGE_NOT_PLOTTIT  = 0; // Not a page plottit can process
 Plottit.PAGE_POSTPONED   = 1; // Comments loading postponed
 Plottit.PAGE_LOADING     = 2; // Loading JSON comments via AJAX

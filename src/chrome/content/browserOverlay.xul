@@ -10,6 +10,7 @@
 <overlay id="plottit-browser-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+  <script type="application/x-javascript" src="chrome://plottit/content/nameSpace.js" />
   <script type="application/x-javascript" src="chrome://plottit/content/browserOverlay.js" />
   <script type="application/x-javascript" src="chrome://plottit/content/dateFormat.js" />
   <script type="application/x-javascript" src="chrome://plottit/content/posts.js" />
