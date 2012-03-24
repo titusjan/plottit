@@ -179,7 +179,7 @@
               context="plottit-date-format-menu"
               hidden="false"
               />
-            <splitter id="sp-local-date" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="plottit-splitter-local-date" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
   
             <treecol id="plottit-comment-tree-column-utc-date" class="number date"
               width="130"
@@ -190,7 +190,7 @@
               context="plottit-date-format-menu"
               hidden="true"
               />
-            <splitter id="sp-utc-date" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="plottit-splitter-utc-date" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
   
             <treecol id="plottit-comment-tree-column-age" class="number time-period"
               width="90"
@@ -210,7 +210,7 @@
               onclick="Plottit.onClickTreeHeader(event)"
               hidden="false"
               />
-            <splitter id="sp-posted-after" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
+            <splitter id="plottit-splitter-posted-after" class="tree-splitter" resizebefore="closest" resizeafter="flex" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
             
             <treecol id="plottit-comment-tree-column-depth" class="number chars4"
               width="50"  
@@ -331,18 +331,7 @@
               hidden="false"
               /> 
             <splitter id="plottit-comment-tree-splitter-words" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
-            <!--
-            <splitter id="sp-xxx" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
-            <treecol id="plottit-comment-tree-column-debug" class="number"
-              width="50"
-              label="Debug"
-              hidden="true"
-              persist="width ordinal hidden" 
-              onclick="Plottit.onClickTreeHeader(event)"
-              hidden="true"
-              /> 
-            <splitter id="sp-xxx" class="tree-splitter" resizebefore="flex" resizeafter="closest" onmousedown="Plottit.setTreeColsSplittersResizeBehaviour(event)"/>
-            -->
+
           </treecols>
   
           <treechildren>

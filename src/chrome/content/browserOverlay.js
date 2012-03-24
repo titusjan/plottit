@@ -1100,38 +1100,11 @@ Plottit.myDebugRoutine = function () {
         Plottit.fbLog(Plottit.state.summaryString());
         Plottit.fbLog(Application.prefs.get("extensions.plottit.plottitEnabled").value);
         
-        var treeCols = document.getElementById('plottit-comment-treecols');
-        Plottit.fbLog(treeCols);
-
-        for(let [idx, childNode] in Iterator(treeCols.childNodes)) {
-            var hidden = childNode.hidden;
-            if (!hidden) {
-                if (childNode.tagName == 'splitter') {
-                    var resizebefore = childNode.getAttribute('resizebefore');
-                    var resizeafter  = childNode.getAttribute('resizeafter');
-                    Plottit.fbLog(childNode.id + ', resizebefore=' + resizebefore + ", resizeafter=" + resizeafter);
-                }
-                if (childNode.tagName == 'treecol') {
-                    Plottit.fbLog(childNode.id + ', ' + childNode.boxObject.screenX);
-                }
-            }
-        }        
-        return;
-        
-        var treeMapFrame = document.getElementById('plottit-treemap-frame');
-        Plottit.fbLog(treeMapFrame.contentWindow);
-        Plottit.fbLog(treeMapFrame.contentDocument);        
-        Plottit.fbLog(treeMapFrame.contentWindow.treeMap);
-        
-        
-        treeMapFrame.contentWindow.wrappedJSObject.myDebug();
-        
+        Plottit.fbLog(window);
 
         
     } catch (ex) {
         Plottit.logger.error('Exception in Plottit.debug;');
         Plottit.logException(ex);
-        //Plottit.logException(ex);
-        //Plottit.fbLog(ex);
     }
 }

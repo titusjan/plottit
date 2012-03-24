@@ -321,11 +321,11 @@ Plottit.initializeLoggers = function (bXul, level) {
         // When intializing loggers in a firefox extension
         if (level == null) level = 'All';
         
-        if ('undefined' == typeof(Log4Moz)) {
-            Components.utils.import("resource://plottit/log4moz.js");
+        if ('undefined' == typeof(Plottit.Log4Moz)) {
+            Components.utils.import("resource://plottit/log4moz.js", Plottit);
             Plottit._configureRootLogger();
-            Plottit.logger = Log4Moz.repository.getLogger('Plottit');
-            Plottit.logger.level = Log4Moz.Level[level];
+            Plottit.logger = Plottit.Log4Moz.repository.getLogger('Plottit');
+            Plottit.logger.level = Plottit.Log4Moz.Level[level];
         }
         
         if ('undefined' == typeof(Firebug)) {
@@ -373,22 +373,22 @@ Plottit.initializeLoggers = function (bXul, level) {
 
 Plottit._configureRootLogger = function () {
     
-    let root = Log4Moz.repository.rootLogger;
+    let root = Plottit.Log4Moz.repository.rootLogger;
     
     if (root.isConfigured) return; // Shared root logger has been configured once already
     root.isConfigured = true;
 
     // Loggers are hierarchical, lowering this log level will affect all output
-    root.level = Log4Moz.Level["All"];
+    root.level = Plottit.Log4Moz.Level["All"];
 
-    let formatter = new Log4Moz.BasicFormatter();
+    let formatter = new Plottit.Log4Moz.BasicFormatter();
     //let formatter = new Plottit.LogFormatter();
-    let capp = new Log4Moz.ConsoleAppender(formatter); // to the JS Error Console
-    capp.level = Log4Moz.Level["Info"];
+    let capp = new Plottit.Log4Moz.ConsoleAppender(formatter); // to the JS Error Console
+    capp.level = Plottit.Log4Moz.Level["Info"];
     root.addAppender(capp);
     
-    let dapp = new Log4Moz.DumpAppender(formatter); // To stdout
-    dapp.level = Log4Moz.Level["Debug"];
+    let dapp = new Plottit.Log4Moz.DumpAppender(formatter); // To stdout
+    dapp.level = Plottit.Log4Moz.Level["Debug"];
     root.addAppender(dapp);
 }
 
@@ -406,7 +406,7 @@ Plottit.LogFormatter = function (dateFormat) { // Constructor
     this.dateFormat = dateFormat;
 }
 
-Plottit.LogFormatter.prototype.__proto__ = Log4Moz.Formatter.prototype;
+Plottit.LogFormatter.prototype.__proto__ = Plottit.Log4Moz.Formatter.prototype;
 
 Plottit.LogFormatter.prototype.format = function (message) {
     return "YYYYYYY" + message.time + "\t" + message.loggerName + "\t" + message.levelDesc 
