@@ -457,8 +457,6 @@ Plottit.onDateFormatPopupShowing = function(menu) {
 // Returns null if the document is not a HTMLDocument
 Plottit.getRootHtmlDocument = function(doc) { 
 
-    if (!(doc instanceof HTMLDocument)) return null;
-
     if (doc.defaultView.frameElement) { 
         // Frame within a tab was loaded, find the root document:
         while (doc.defaultView.frameElement) {
@@ -487,10 +485,11 @@ Plottit.RE_ISLOCAL  = /^file:\/\//i   // String begins with 'file://'
 Plottit.RE_ISREDDIT = /www\.reddit\.com\/r\/.*\/comments\// 
 
 Plottit.onPageLoad = function(event) {
-
     Plottit.logger.trace("Plottit.onPageLoad");
 
     var doc = event.originalTarget;
+    if (!(doc instanceof HTMLDocument)) return;
+    
     var pageURL = doc.URL;
     var browser = gBrowser.getBrowserForDocument(doc);
     if (browser == null) {
