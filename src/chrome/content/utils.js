@@ -315,7 +315,8 @@ redefined later in Plottit.onLoad.
 
 // Setup log4moz and firebug console logging.
 // Also works when utils.js is imported on stand alone html page.
-Plottit.initializeLoggers = function (bXul, level) {
+// If debugMode is truee, fbLog will not output messages.
+Plottit.initializeLoggers = function (bXul, level, debugMode) {
 
     if (bXul) {
         // When intializing loggers in a firefox extension
@@ -325,19 +326,27 @@ Plottit.initializeLoggers = function (bXul, level) {
             Components.utils.import("resource://plottit/log4moz.js", Plottit);
             Plottit._configureRootLogger();
             Plottit.logger = Plottit.Log4Moz.repository.getLogger('Plottit');
-            Plottit.logger.level = Plottit.Log4Moz.Level[level];
+            
+            var lvl = Plottit.Log4Moz.Level[level];
+            if (lvl == null) lvl = 50; // Warn
+            Plottit.logger.level = lvl;
         }
         
-        if ('undefined' == typeof(Firebug)) {
-            Plottit.fbLog = function(msg) { Plottit.logger.info('fbLog: ' + msg); } 
+        if (debugMode) {
+            if ('undefined' == typeof(Firebug)) {
+                Plottit.fbLog = function(msg) { Plottit.logger.info('fbLog: ' + msg); } 
+            } else {
+                Plottit.fbLog = function(msg) { Firebug.Console.log(msg) } ;
+            }
         } else {
-            Plottit.fbLog = function(msg) { Firebug.Console.log(msg) } ;
+            Plottit.fbLog = function(msg) { } // Do nothing.
         }
+        
         
     } else {
         // When called from a stand-alone html page
     
-        if ('undefined' == typeof(console)) {
+        if (('undefined' == typeof(console)) || !debugMode) {
             Plottit.fbLog = function(msg) { } // Do nothing.
         } else {
             Plottit.fbLog = console.log;
@@ -383,12 +392,13 @@ Plottit._configureRootLogger = function () {
 
     let formatter = new Plottit.Log4Moz.BasicFormatter();
     //let formatter = new Plottit.LogFormatter();
-    let capp = new Plottit.Log4Moz.ConsoleAppender(formatter); // to the JS Error Console
-    capp.level = Plottit.Log4Moz.Level["Info"];
-    root.addAppender(capp);
+    
+    //let capp = new Plottit.Log4Moz.ConsoleAppender(formatter); // to the JS Error Console
+    //capp.level = Plottit.Log4Moz.Level["Debug"];
+    //root.addAppender(capp);
     
     let dapp = new Plottit.Log4Moz.DumpAppender(formatter); // To stdout
-    dapp.level = Plottit.Log4Moz.Level["Debug"];
+    dapp.level = Plottit.Log4Moz.Level["Trace"];
     root.addAppender(dapp);
 }
 

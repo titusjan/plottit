@@ -5,7 +5,10 @@ if ('undefined' == typeof(Plottit)) { var Plottit = {}; } // Plottit name space
 // Initializes plottit. Is called when the XUL window has loaded
 Plottit.onLoad = function(event) {
 
-    Plottit.initializeLoggers(true, "Debug");
+    Plottit.initializeLoggers(true, 
+        Application.prefs.get("extensions.plottit.logLevel").value,  
+        Application.prefs.get("extensions.plottit.debugMode").value);
+        
     Plottit.logger.info(' ---------------- Plottit loaded ----------------');
     Plottit.logger.trace('Plottit.onLoad -- begin');
 
@@ -1094,12 +1097,19 @@ Plottit.myDebugRoutine = function () {
     let message = stringBundle.getString('plottit.greeting');
     
     try {
+        Plottit.logger.error('Plottit.error');
+        Plottit.logger.warn('Plottit.warning');
+        Plottit.logger.info('Plottit.info');
         Plottit.logger.debug('Plottit.debug');
+        Plottit.logger.trace('Plottit.trace');
+
         Plottit.fbLog('Plottit.debug');
         Plottit.fbLog(Plottit.state.summaryString());
         Plottit.fbLog(Application.prefs.get("extensions.plottit.plottitEnabled").value);
         
         Plottit.fbLog(window);
+        
+        Plottit.logger.error('LogLevel: ' + Plottit.logger.level);
 
         
     } catch (ex) {

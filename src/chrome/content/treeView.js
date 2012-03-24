@@ -81,7 +81,11 @@ Plottit.TreeView.prototype.removeDiscussion = function() { // Must be fast becau
 
 
 Plottit.TreeView.prototype.countComments = function() {
-    return Plottit.countComments(this.discussion.comments);
+    if (this.discussion) {
+        return Plottit.countComments(this.discussion.comments);
+    } else {
+        return 0;
+    }
 }
 
 Plottit.TreeView.prototype.getTreeDomElement = function() {
