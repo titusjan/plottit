@@ -1,26 +1,9 @@
---- Version 1.0 ---
+--- Bugs ----
 
+When table is invissible because plottit is disabled, clicking on the 
+reddit page gives an error.
 
-
-Table: disable double click / tooltip
-
-Rename to graphit/plottit.
-
-Performance best practices:
-    - Use modules for jQuery?
-    - on plot hover?
-    - Use profiler
-    
-Make release.
-    - Remove todos / code review
-    - Hide/remove Debug column
-    - Test windows / linux
-    - No Jar files?
-    
-
-
-Cleanup:
-    remove attributes from state that are present in user pages.
+Browseroverlay.dtd: author missing
 
 --- Version 1.1 ---
 
@@ -29,13 +12,17 @@ Better tick marks posted-after/ integers / when autoscale is off.
 
 Load more comments.
 Main page. User page.
-Better handling of adjusting table column widths
 
 Steal focus on page load? Only when configured to do so!
 
 Error handling on Ajax time out
 
 
+Make file
+    - No Jar files?
+
+Source cleanup:
+    remove attributes from state that are present in user pages.
 
 -------
 

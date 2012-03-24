@@ -299,9 +299,9 @@ Plottit.setTreeColsSplittersResizeBehaviour = function(event) {
     Plottit.logger.trace("Plottit.setTreeColsSplittersResizeBehaviour -- ");
     
     // Afwul hack to make set the resizebefore and resizeafter attributes of the tree splitters
-    // Currently executed onmouse down.
     // All splitters left of the body column have resizebefore='closest' and resizeafter = 'flex'
     // All splitters left of the body column have resizebefore='flex' and resizeafter = 'closest'
+    // Currently executed onmouse down.
     
     var treeCols = event.target.parentNode;
     var bodyColumn = document.getElementById('plottit-comment-tree-column-body');
@@ -639,8 +639,27 @@ Plottit.addJsonToRedditUrl = function(url) {
 
 
 Plottit.setDetailsFrameHtml = function(html) {
+    Plottit.logger.trace('setDetailsFrameHtml: ' + html);
+
     var detailsFrame = document.getElementById('plottit-comment-html-iframe');
-    detailsFrame.contentDocument.body.innerHTML = html;
+    var docBody = detailsFrame.contentDocument.body;
+
+    // First delete the contents of the details frame html body.
+    while (docBody.firstChild) {
+        docBody.removeChild(docBody.firstChild);
+    }
+    
+    var scriptableUnescapeHTML = Components.classes["@mozilla.org/feed-unescapehtml;1"]
+                                 .getService(Components.interfaces.nsIScriptableUnescapeHTML);
+    try { 
+        var fragment = scriptableUnescapeHTML.parseFragment(html, false, null, docBody); 
+        docBody.appendChild(fragment);
+    } catch (ex) {
+        docBody.appendChild(detailsFrame.contentDocument.
+            createTextNode('Unable to parse comment HTML'));
+        Plottit.logger.error('Failed parsing comment Html: ' + html);
+        Plottit.logException(ex);
+    }
 }
 
 // Updates all views using the application state
@@ -1107,21 +1126,8 @@ Plottit.myDebugRoutine = function () {
         
         treeMapFrame.contentWindow.wrappedJSObject.myDebug();
         
-        //Plottit.fbLog(Plottit.state.getCurrentTreeView());
-        //Plottit.fbLog(Plottit.state.getCurrentTreeView().treebox);
 
-        //Plottit.fbLog(new Log4Moz.BasicFormatter());
-        //Plottit.fbLog(new Plottit.LogFormatter());
         
-        /*
-        Plottit.logger.info(Plottit.state.summaryString() );
-        Plottit.fbLog(Plottit.state.summaryString() );
-        
-        var details = document.getElementById('plottit-comment-html-iframe');
-        Plottit.fbLog(details);
-        Plottit.logger.debug(details.textContent);
-        details.contentDocument.body.innerHTML = "Pepijn Kenter <i>rules</i>"
-        */
     } catch (ex) {
         Plottit.logger.error('Exception in Plottit.debug;');
         Plottit.logException(ex);
