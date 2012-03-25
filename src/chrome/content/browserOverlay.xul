@@ -349,7 +349,6 @@
         <tabbox id="plottit-tabbox"
               width="350" 
               persist="width selectedIndex"
-              minwidth="300"
               selectedIndex="1">
           <tabs id="plottit-details-tabs" onselect="Plottit.onDetailsTabSelect(event)">
             <tab label="&plottit.comment;"/>

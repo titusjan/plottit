@@ -13,6 +13,9 @@
    margin-right: 0px;
 }
 
+#plottit-tabbox {
+    min-width: 325px;
+}
 
 #plottit-comment-tree-column-body     { min-width: 200px; }
 #plottit-comment-tree-column-author   { min-width: 40px; max-width: 150px;}
