@@ -545,7 +545,7 @@
                 ps = s.datapoints.pointsize;
                 points = s.datapoints.points;
 
-                insertSteps = s.lines.show && s.lines.steps;
+                var insertSteps = s.lines.show && s.lines.steps;
                 s.xaxis.used = s.yaxis.used = true;
                 
                 for (j = k = 0; j < data.length; ++j, k += ps) {
@@ -1004,7 +1004,7 @@
                 setRange(axis);
             });
 
-            allocatedAxes = $.grep(axes, function (axis) { return axis.reserveSpace; });
+            var allocatedAxes = $.grep(axes, function (axis) { return axis.reserveSpace; });
 
             plotOffset.left = plotOffset.right = plotOffset.top = plotOffset.bottom = 0;
             if (options.grid.show) {
@@ -1247,6 +1247,7 @@
                     var t = axis.tickSize[0] * timeUnitSize[axis.tickSize[1]];
                     var span = axis.max - axis.min;
                     var suffix = (opts.twelveHourClock) ? " %p" : "";
+                    var fmt;
                     
                     if (t < timeUnitSize.minute)
                         fmt = "%h:%M:%S" + suffix;
