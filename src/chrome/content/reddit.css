@@ -72,7 +72,7 @@ label.disabled { color:gray; }
 .nopadding { padding:0px }
 .fancybutton {
  padding:5px 10px;
- background:-webkit-gradient(linear, 0% 0%, 0% 100%, from( hsl(210, 54%, 89%)), to( hsl(210, 54%, 79%)));
+/* background:-webkit-gradient(linear, 0% 0%, 0% 100%, from( hsl(210, 54%, 89%)), to( hsl(210, 54%, 79%))); PTK: warning in FF*/
  background:-moz-linear-gradient(top, hsl(210, 54%, 89%), hsl(210, 54%, 79%));
  background-color:#ADC9E6;
  border:1px solid #5E96CF;
@@ -80,7 +80,7 @@ label.disabled { color:gray; }
  -moz-border-radius:7px;
  border-radius:7px;
  -webkit-background-clip:padding-box;
- -moz-background-clip:padding-box;
+/* -moz-background-clip:padding-box; PTK: warning in FF*/
  color:#2E6399;
  text-shadow:0px 1px 0px hsla(0, 0%, 100%, .7);
  -webkit-box-shadow:inset 0px 1px 0px hsla(0, 0%, 100%, .8);
@@ -90,12 +90,12 @@ label.disabled { color:gray; }
  font-weight:bold;
 }
 .fancybutton:hover {
- background:-webkit-gradient(linear, 0% 0%, 0% 100%, from( hsl(210, 54%, 93%)), to( hsl(210, 54%, 89%)));
+/* background:-webkit-gradient(linear, 0% 0%, 0% 100%, from( hsl(210, 54%, 93%)), to( hsl(210, 54%, 89%))); PTK: warning in FF*/
  background:-moz-linear-gradient(top, hsl(210, 54%, 93%), hsl(210, 54%, 89%));
  background-color:#D4E3F2;
 }
 .fancybutton:focus, .fancybutton:active {
- background:-webkit-gradient(linear, 0% 0%, 0% 100%, to( hsl(210, 54%, 89%)), from( hsl(210, 54%, 79%)));
+/* background:-webkit-gradient(linear, 0% 0%, 0% 100%, to( hsl(210, 54%, 89%)), from( hsl(210, 54%, 79%))); PTK: warning in FF*/
  background:-moz-linear-gradient(top, hsl(210, 54%, 79%), hsl(210, 54%, 89%));
  background-color:#D4E3F2;
  -webkit-box-shadow:inset 0px -1px 0px hsla(0,0%,100%,.7);
@@ -104,7 +104,7 @@ label.disabled { color:gray; }
 }
 .fancybutton.disabled, 
 .fancybutton.disabled:active {
- background:-webkit-gradient(linear, 0% 0%, 0% 100%, from( hsl(210, 24%, 93%)), to( hsl(210, 24%, 89%)));
+/* background:-webkit-gradient(linear, 0% 0%, 0% 100%, from( hsl(210, 24%, 93%)), to( hsl(210, 24%, 89%))); PTK: warning in FF*/
  background:-moz-linear-gradient(top, hsl(210, 24%, 93%), hsl(210, 24%, 89%));
  background-color:#D4E3F2;
  border-color:#999;
@@ -159,7 +159,7 @@ ul.flat-vert {text-align:left;}
 #modmail img {position:relative; top: 4px; margin-top: -6px; }
 #modmail.nohavemail {
  opacity:.7;
- filter:alpha(opacity=70); 
+/* filter:alpha(opacity=70);  PTK: warning in FF*/
 }
 .user {color:gray;}
 .pagename {
@@ -1325,7 +1325,7 @@ label + #moresearchinfo {
  width:100%;
  background-color:gray;
  opacity:.7;
- filter:alpha(opacity=70); 
+ /* filter:alpha(opacity=70);  PTK: warning in FF*/
  z-index:1000;
 }
 .popup {
@@ -1433,7 +1433,7 @@ label + #moresearchinfo {
  text-decoration:line-through;
 }
 .error-log a:focus {
- -moz-outline-style:none;
+/* -moz-outline-style:none;  PTK: warning in FF*/
 }
 .error-log .edit-area {
  border:solid black 1px;
@@ -1673,7 +1673,7 @@ label + #moresearchinfo {
  display:inline-block;
 }
 .button .blog1 .score {
- float:center;
+/* float:center;  PTK: warning in FF*/
  margin-top:2px;
  margin-right:5px; 
 }
@@ -1743,7 +1743,7 @@ label + #moresearchinfo {
 .instructions pre { margin:5px;  margin-right: 10px; }
 .instructions iframe { margin:5px 10px 5px 0px; }
 .instructions input, .instructions select { margin:0 .5em }
-.instructions a:focus { -moz-outline-style:none; }
+/* .instructions a:focus { -moz-outline-style:none; }  PTK: warning in FF*/
 .instructions strong { font-weight:bold; }
 .instructions .buttons { margin-left:1em; max-width: 50em; }
 .instructions .buttons li { margin-top:1em; 
@@ -1860,7 +1860,7 @@ label + #moresearchinfo {
  padding:1px 4px 0px;
  overflow:hidden;
  outline:none;
- -moz-outline:none;
+/* -moz-outline:none;  PTK: warning in FF*/
 }
 .toolbar .likes .score.likes {display:inline-block;}
 .toolbar .dislikes .score.dislikes {display:inline-block;}
@@ -2087,7 +2087,7 @@ form input[type=radio] {margin:2px .5em 0 0; }
 .banned-user {
  overflow:hidden;
  opacity:.7;
- filter:alpha(opacity=70); 
+/* filter:alpha(opacity=70);   PTK: warning in FF*/
 }
 .banned-user .title {
  text-decoration:line-through;
@@ -2143,7 +2143,7 @@ ul#image-preview-list .preview {
 }
 ul#image-preview-list .preview img {
  max-width:100px; 
- padding:auto;
+/* padding:auto;  PTK: warning in FF*/
 }
 ul#image-preview-list .description {
  vertical-align:top;
@@ -2367,11 +2367,11 @@ ul#image-preview-list .description pre {
 #sr-list-cover {
  position:absolute;
  background:gray none no-repeat scroll center center;
- background-color:url(/static/throbber.gif); 
+/* background-color:url(/static/throbber.gif);   PTK: warning in FF*/
  height:100%;
  width:100%;
  opacity:.7;
- filter:alpha(opacity=70); 
+/* filter:alpha(opacity=70);  PTK: warning in FF*/
  z-index:1000;
  display:none;
 }
@@ -2999,7 +2999,7 @@ table.lined-table {
  border-radius:6px;
 }
 .ui-datepicker-header {
- background:-webkit-gradient(linear, 0% 0%, 0% 100%, from( hsl(210, 54%, 89%)), to( hsl(210, 54%, 79%)));
+/* background:-webkit-gradient(linear, 0% 0%, 0% 100%, from( hsl(210, 54%, 89%)), to( hsl(210, 54%, 79%)));  PTK: warning in FF*/
  background:-moz-linear-gradient(top, hsl(210, 54%, 89%), hsl(210, 54%, 79%));
  background-color:#ADC9E6;
  border: 1px solid #5E96CF;
@@ -3036,7 +3036,7 @@ table.lined-table {
  padding:0px 5px;
 }
 .ui-datepicker-year {
- margin-left: none !important; //Undoes linefield span
+/* margin-left: none !important; //Undoes linefield span  PTK: warning in FF*/
 }
 .ui-datepicker-inline .ui-datepicker-title {text-align:center; padding: 5px; margin: 0em 2em;}
 .ui-datepicker-inline table {
@@ -3083,7 +3083,7 @@ table.lined-table {
 .ui-datepicker-inline .ui-datepicker-calendar td a.ui-state-active
  {
  color: white;;
- background:-webkit-gradient(linear, 0% 0%, 0% 100%, from( hsl(210, 54%, 65%)), to( hsl(210, 54%, 45%)));
+/* background:-webkit-gradient(linear, 0% 0%, 0% 100%, from( hsl(210, 54%, 65%)), to( hsl(210, 54%, 45%)));  PTK: warning in FF*/
  background:-moz-linear-gradient(top, hsl(210, 54%, 65%), hsl(210, 54%, 45%));
  background-color:#4F8AC9;
  -webkit-box-shadow:inset 0px 2px 3px hsla(0,0%,0%,.6);
@@ -3100,7 +3100,7 @@ table.lined-table {
  text-shadow:0px -1px 0px hsla(0,0%,0%,.6);
 }
 .ui-datepicker-inline .ui-datepicker-calendar td a.ui-state-active {
- background:-webkit-gradient(linear, 0% 0%, 0% 100%, from( hsl(0, 54%, 75%)), to( hsl(0, 54%, 55%)));
+/* background:-webkit-gradient(linear, 0% 0%, 0% 100%, from( hsl(0, 54%, 75%)), to( hsl(0, 54%, 55%))); */
  background:-moz-linear-gradient(top, hsl(0,54%,75%), hsl(0,54%,55%));
  background-color:#E19D9D;
 }
@@ -3326,7 +3326,7 @@ dd { margin-left:20px;  }
  margin-left:5px;
 }
 .sidecontentbox {
- font-size:normal;
+/* font-size:normal; */
 }
 .sidecontentbox .content {
  margin:0;
