@@ -352,7 +352,7 @@ Plottit.getPlottitDiscussionFromPage = function(redditJsonPage) {
         comment.isOpen = true;  // true if a node is expanded
         comment.replies = []; // For convenience always make an empty replies list 
         
-        words = data.body.match(/\S+/g) // count words
+        var words = data.body.match(/\S+/g) // count words
         comment.numWords = words ? words.length : 0;
     
         if (data.replies) {  // Recursively add children

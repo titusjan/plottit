@@ -197,8 +197,8 @@ Plottit.TreeMap.prototype.highlightSelectedNode = function () {
 
 Plottit.TreeMap.prototype.setData = function (data) {
     
-    selectedNodeId = this.selectedNodeId;                 // persist
-    previousSelectedNodeId = this.previousSelectedNodeId; // persist
+    var selectedNodeId = this.selectedNodeId;                 // persist
+    var previousSelectedNodeId = this.previousSelectedNodeId; // persist
     this.root = data;
     this.selectedNode = this.getNodeById(selectedNodeId);
     this.previousSelectedNode = this.getNodeById(previousSelectedNodeId);

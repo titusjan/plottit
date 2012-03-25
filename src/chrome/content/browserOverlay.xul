@@ -234,7 +234,7 @@
              <!-- comment -->
             <treecol id="plottit-comment-tree-column-body"  
               width="500"
-              label="Comments"
+              label="Comments tree"
               structure="tree"
               persist="width ordinal hidden structure label"
               onclick="Plottit.onClickCommentTreeHeader(event)"
