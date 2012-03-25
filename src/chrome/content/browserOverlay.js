@@ -240,7 +240,7 @@ Plottit.onRedditPageClicked = function(event) {
     Plottit.logger.trace("Plottit.onRedditPageClicked -- ");
     
     var $ = content.wrappedJSObject.jQuery;
-    if ($) { // e.g. no jQuery when page is only a .json file
+    if ($ && Plottit.state.plottitEnabled) { // e.g. no jQuery when page is only a .json file
 
         var target = $(event.target);
         var thing = target.parents('.thing:first');
