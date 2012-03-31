@@ -850,6 +850,7 @@ Plottit.getHslConversionFunction = function (varId) {
 
     var SAT_MAX = 0.8; // Maximum saturation to keep look and feel classy :-)
 
+    var HUE_RED        =   0 / 360;
     var HUE_ORANGE_RED =  16 / 360;
     var HUE_BLUE       = 240 / 360;
     var HUE_GREEN      = 120 / 360;
@@ -866,7 +867,7 @@ Plottit.getHslConversionFunction = function (varId) {
     //SAT_RAINBOW       = document.getElementById("plottit-treemap-scale-f").value / 4000 ;
     //Plottit.logger.debug('HUE_RAINBOW_START: ' + HUE_RAINBOW_START + ', SAT_RAINBOW: ' + SAT_RAINBOW);
     
-    var HUE_LOG    = HUE_GREEN;
+    var HUE_LOG    = HUE_RED;
     var HUE_LINEAR = HUE_MAGENTA;
     var HUE_UPS    = HUE_ORANGE_RED;
     var HUE_DOWNS  = HUE_BLUE;
@@ -946,12 +947,17 @@ Plottit.getHslConversionFunction = function (varId) {
             var mapFn = getMapV(0, 10, 0, SAT_LINEAR); 
             return [HUE_LINEAR, mapFn(comment.numReplies), 1];
         };
+        case 'age': return function(comment) { 
+            // Map age in hours logarithmically over 3 decades. 
+            // 1 hour = 10^0, half year = 10^3.64
+            var mapFn = getMapV(0, 3.64, 1+HUE_BLUE, 1+HUE_BLUE - 8/12); 
+            return [mapFn(Plottit.log10(comment.age / 3600000)) % 1, SAT_RAINBOW, 1];     
+        };
         case 'postedAfter': return function(comment) { 
-            var mapFn = getMapV(0, 24*3600000, 1+HUE_BLUE, 1+HUE_BLUE - 8/12);
-            return [mapFn(comment.postedAfter ) % 1, SAT_RAINBOW, 1];
-            
-            //var mapFn = getMapV(0, 1000, 0, SAT_LINEAR); 
-            //return [HUE_LINEAR, mapFn(comment.postedAfter / 24 / 3600 ), 1];
+            // Map age in hours logarithmically over 3 decades. 
+            // 1 hour = 10^0, half year = 10^3.64
+            var mapFn = getMapV(0, 3.64, 1+HUE_BLUE, 1+HUE_BLUE - 8/12); 
+            return [mapFn(Plottit.log10(comment.postedAfter / 3600000)) % 1, SAT_RAINBOW, 1];      
         };
         default:
             Plottit.assert(false, "Invalid varId: " + varId);
