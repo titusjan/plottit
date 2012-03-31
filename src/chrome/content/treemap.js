@@ -134,6 +134,7 @@ Plottit.TreeMap.prototype.getNodeByXY = function (x, y, returnParentOfId) {
     if (this.root) {
         var result = this.root.getNodeByXY(x, y, 
             this.returnParentOnRepeatSelectMode && returnParentOfId);
+        if (!result) return null;
         if (returnParentOfId && (result.id == returnParentOfId) ) {
             return null;
         } else {
@@ -282,6 +283,9 @@ Plottit.TreeMap.prototype.setDataFromArray = function (arr) {
 Plottit.TreeMap.onClickOverlay = function(clickEvent, treeMap) {
 
     var node = treeMap.getNodeByXY(clickEvent.layerX, clickEvent.layerY, treeMap.previousSelectedNodeId);
+    if (!node) 
+        return;
+    
     treeMap.selectNode(node);
         
     // Trigger event to so that XUL code can handle it
