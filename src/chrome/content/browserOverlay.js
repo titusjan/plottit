@@ -31,6 +31,8 @@ Plottit.onLoad = function(event) {
             document.getElementById('plottit-treemap-color-menulist').value) // treeMapColorVariable
         );
 
+    Plottit.globalTimeOutId = null; // initialize. TODO: in state?
+    
     // Sets button tooltip text
     Plottit.setPlottitActive(Application.prefs.get("extensions.plottit.plottitEnabled").value);
         
@@ -771,8 +773,7 @@ Plottit.setPlottitVisible = function (visible) {
 }
 
 Plottit.onRenderTreeMapTimeOut = function() {
-
-    Plottit.logger.trace("Plottit.drawTreeMapCushionedAfterTimeOut: " + Plottit.globalTimeOutId);
+    Plottit.logger.trace("Plottit.onRenderTreeMapTimeOut: " + Plottit.globalTimeOutId);
     
     var sliderH0   = document.getElementById("plottit-treemap-scale-h0").value / 1000;
     var sliderF    = document.getElementById("plottit-treemap-scale-f").value / 1000;
@@ -780,14 +781,23 @@ Plottit.onRenderTreeMapTimeOut = function() {
     //var sliderH0   = 1.2;
     //var sliderF    = 2.5;
     //var sliderIamb = 0.12;
-    Plottit.logger.debug("Plottit.drawTreeMapCushionedAfterTimeOut, H0: " + 
+    Plottit.logger.debug("Plottit.onRenderTreeMapTimeOut, H0: " + 
         sliderH0 + ', F: ' + sliderF + ', Iamb: ' + sliderIamb);
     
     Plottit.treeMap.renderCushioned(sliderH0, sliderF, sliderIamb);
     Plottit.globalTimeOutId = null;
 }
 
+Plottit.toggleCushions = function() {
+    var checkbox = document.getElementById('plottit-treemap-cushions-checkbox');
+    if (!Plottit.getCheckboxValue(checkbox)) {
+        checkbox.setAttribute('checked', 'false'); // set to false for persistence
+    }
+    Plottit.renderTreeMap(0);
+}
+
 Plottit.renderTreeMap = function(cushionDelay) {
+    Plottit.logger.trace("Plottit.renderTreeMap: " + Plottit.globalTimeOutId);
 
     var isCushioned = Plottit.getCheckboxValue(document.getElementById('plottit-treemap-cushions-checkbox'));
     if (cushionDelay == null)  cushionDelay = 250;
@@ -1097,12 +1107,9 @@ window.addEventListener('load', Plottit.onLoad, true);
 
 Plottit.myDebugRoutine = function () {
 
-    
     let stringBundle = document.getElementById('plottit-string-bundle');
     let message = stringBundle.getString('plottit.greeting');
-    
-    //bla = 5;
-    
+        
     try {
         Plottit.logger.error('Plottit.error');
         Plottit.logger.warn('Plottit.warning');

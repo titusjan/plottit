@@ -592,7 +592,7 @@
                   <!-- Cushions checkbox -->
                   <checkbox 
                     id="plottit-treemap-cushions-checkbox"
-                    oncommand="Plottit.renderTreeMap(0);"
+                    oncommand="Plottit.toggleCushions();"
                     label="&plottit.treemap.cushions;"
                     crop="end"
                     flex="1"

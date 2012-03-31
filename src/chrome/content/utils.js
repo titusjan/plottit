@@ -29,7 +29,7 @@ Plottit.getProp = function(obj, propName, defaultValue) {
     }
 }
 
-// Returns false if the 'checked' attribute is false or no present
+// Returns false if the 'checked' attribute is false or not present
 // the 'checked' attribute must be set to false if persistence is requered,
 // if it is just unchecked XUL won't remember this :-(
 Plottit.getCheckboxValue = function(checkbox) {
