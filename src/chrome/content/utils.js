@@ -149,6 +149,11 @@ Plottit.log10 = function (x) {
     return Math.LOG10E * Math.log(x);
 }
 
+Plottit.log100 = function (x) {
+    // 0.21714724095162594 = 1 / Math.log(100)
+    return Math.log(x) * 0.21714724095162594;
+}
+
 
 // Makes a histogram of an array of numbers. It returns an array of tuples where 
 // each tuple is [binStart, binCount]. Only bins having a binCount are returned.

@@ -948,16 +948,16 @@ Plottit.getHslConversionFunction = function (varId) {
             return [HUE_LINEAR, mapFn(comment.numReplies), 1];
         };
         case 'age': return function(comment) { 
-            // Map age in hours logarithmically over 3 decades. 
-            // 1 hour = 10^0, half year = 10^3.64
-            var mapFn = getMapV(0, 3.64, 1+HUE_BLUE, 1+HUE_BLUE - 8/12); 
-            return [mapFn(Plottit.log10(comment.age / 3600000)) % 1, SAT_RAINBOW, 1];     
+            // Map age in days logarithmically over 4 decades. 
+            // 1/100 day = 10^-2, 100 days = 10^2
+            var mapFn = getMapV(-2, 2, 1+HUE_BLUE, 1+HUE_BLUE - 8/12); 
+            return [mapFn(Plottit.log10(comment.age / (24 * 3600000))) % 1, SAT_RAINBOW, 1];      
         };
         case 'postedAfter': return function(comment) { 
-            // Map age in hours logarithmically over 3 decades. 
-            // 1 hour = 10^0, half year = 10^3.64
-            var mapFn = getMapV(0, 3.64, 1+HUE_BLUE, 1+HUE_BLUE - 8/12); 
-            return [mapFn(Plottit.log10(comment.postedAfter / 3600000)) % 1, SAT_RAINBOW, 1];      
+            // Map postedAfter in days logarithmically over 4 decades. 
+            // 1/100 day = 10^-2, 100 days = 10^2
+            var mapFn = getMapV(-2, 2, 1+HUE_BLUE, 1+HUE_BLUE - 8/12); 
+            return [mapFn(Plottit.log10(comment.postedAfter / (24 * 3600000))) % 1, SAT_RAINBOW, 1];      
         };
         default:
             Plottit.assert(false, "Invalid varId: " + varId);
