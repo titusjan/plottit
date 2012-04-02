@@ -1,14 +1,11 @@
 --- Bugs ----
 
-When table is invissible because plottit is disabled, clicking on the 
-reddit page gives an error.
-
-Browseroverlay.dtd: author missing
 
 --- Version 1.1 ---
 
 Tree map color per author
 Better tick marks posted-after/ integers / when autoscale is off.
+Legend in treemap?
 
 Load more comments.
 Main page. User page.

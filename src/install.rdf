@@ -4,11 +4,11 @@
   xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-    <em:id>plottit@titusjan.com</em:id>
+    <em:id>plottit@titusjan.nl</em:id>
     <em:unpack>true</em:unpack>
     <em:name>Plottit</em:name>
     <em:description>
-      Displays a Reddit discussion in a table and allows it to be sorted as a list. Also can make scatter plots, histograms and treemaps of a discussion. 
+      Makes plots and treemaps of a Reddit discussion.
     </em:description>
     <em:version>0.8.0</em:version>
     <em:creator>Titusjan</em:creator>

@@ -99,7 +99,7 @@
             <section id="col-age">
                 <h3>Age Column</h3>
                 
-                The age of the comment. This is the difference between time the comment was posted and when the page was loaded. It therefore changes each time you reload the page.
+                The age of the comment. This is the difference between the time the comment was posted and when the page was loaded. It therefore changes each time you reload the page.
             </section>
             
             <section id="col-posted-after">
@@ -157,6 +157,13 @@
                 <p>
                 <strong>Note: </strong>this number is <a href="fuzzing">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.
             </section>
+            
+            <section id="col-best">
+                <h3>Best Column</h3>
+                TBW
+                <p>
+                <strong>Note: </strong>this number is <a href="fuzzing">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.
+            </section>            
 
             <section id="col-controversial">
                 <h3>Controversial Column</h3>
@@ -164,7 +171,7 @@
                <figure>
                     <img class="formula" src="formula_controversy.png" alt="controversy formula">
                </figure>
-               If the absolute difference between the number of up-votes and downvotes is small, the denominator will become small and therefore the controversy will become large. The maximum with 1 is taken to prevent division by zero in case the number of upvotes and down-votes are equal.               
+               If the difference between the number of up-votes and downvotes is close to zero, the denominator will become small and therefore the controversy will become large. The maximum with 1 is taken to prevent division by zero in case the number of upvotes and down-votes are equal.               
                <p>
                The <i>up + down</i> in the numerator causes that the contoversy increases when the total number of votes increases. For example, a comment with 5 upvotes and 4 downvotes is more controversial than a comment with 4 upvotes and 3 downvotes.
                <p>
@@ -185,9 +192,9 @@
                 Let's first examine what happens if the score is positive (the score is the up-votes minus the down-votes as usual). You can see that the hotness is the sum of two terms, the first of which depends on the <i>score</i> and the second on the time (<i>t</i>) that the comment was posted. The <i>log<sub>10</sub>(score)</i> makes that the hotness increases with the score but with a diminishing return; if a comments score would be multiplied by 10 its hotness would increase by 1.
                 
                 <p>
-                The second term first calculates the number of seconds that have elapsed between a certain start date (<i>t<sub>start</sub></i>) and the date that the comment was posted (<i>t</i>). The start date that reddit uses is 2005-12-08 at 07:46:43 but it could be any date as long as it's older than the oldest comment. The  number of elapsed seconds is subsequently divided by 45000 seconds. 45000 seconds is equal to 12.5 hours so if comment A is posted 12.5 hours later than comment B, comment A will be 1 point hotter than comment B, provided that they have the same score. Comment B would need to have ten times the score of comment A to catch up with A in hotness.
+                The second term first calculates the number of seconds that have elapsed between a certain start date (<i>t<sub>start</sub></i>) and the date that the comment was posted (<i>t</i>). The start date that reddit uses is 2005-12-08 at 07:46:43 but it could be any date as long as it's earlier than the oldest comment. The  number of elapsed seconds is subsequently divided by 45000 seconds. 45000 seconds is equal to 12.5 hours so if comment A is posted 12.5 hours later than comment B, comment A will be 1 point hotter than comment B, provided that they have the same score. Comment B would need to have ten times the score of comment A to catch up with A in hotness.
                 <p>
-                You can calculate that, for yesterdays comment to be just as hot as todays, it needs to have about 83 times the score as yesterdays comment. If a comment is exactly two days old, it needs to have a score of at least 6919 for to be hotter than a comment that is posted right now and has a score of 1. 
+                You can calculate that, for yesterdays comment to be just as hot as todays, it needs to have about 83 times the score as todays comment. If a comment is exactly two days old, it needs to have a score of at least 6919 for to be hotter than a comment that is posted right now and has a score of 1. 
                 <p>
                 Comments that have a score of 0 always have a hotness of 0 as well. Comments having a negative score will have a negative hotness because the elapsed time divided by 45000 will be subtracted from the first term (which is smaller). Strangely enough, the first term is positive which means that a comment with a score of -2 is hotter than a comment with score -1 that is posted at the same time.
                 <p>
