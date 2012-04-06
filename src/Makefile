@@ -2,7 +2,7 @@
 extension_name := plottit
 
 # The UUID of the extension.
-extension_uuid := plottit@titusjan.com
+extension_uuid := plottit@titusjan.nl
 
 # The name of the profile dir where the extension can be installed.
 //profile_dir := xulschool-dev
