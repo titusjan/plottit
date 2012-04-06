@@ -14,54 +14,12 @@
     
     <script>
 
-       
-    // Intializing on page load
-    $( function () {
-        
-        // Setup loggers from stand alone html page (will be overridden in Plottit.onLoad)
-        Plottit.initializeLoggers(false, 'Debug'); 
-        
-        window.flotWrapper = new Plottit.FlotWrapper('scatter-plot-div');
-        
-        $("#scatter-plot-div")
-            //.bind("plotselected", function (event, ranges) {
-            //    window.flotWrapper.onPlotSelect(event, ranges);
-            //})
-            .bind("plotzoom", function (event) {
-                window.flotWrapper.drawHighlight();
-            })
-            .bind("plothover", function (event, pos, item) {
-                var plt = window.flotWrapper.plot;
-                if (plt) {
-                    if (item) {
-                        plt.getPlaceholder().css('cursor', 'pointer');
-                    } else {
-                        plt.getPlaceholder().css('cursor', 'default');
-                    }
-                }
-            })
-            .bind("plotclick", function (event, pos, item) {
-                if (item) {
-                    window.flotWrapper.onPlotClicked(item);
-                }
-            });
-        
-        onResize();
-        $("body").resize(onResize);
-        
-        // Not necessary here? Put in overlay.onDragend
-        //$("body").bind("dragend", function (e) { 
-        //        window.flotWrapper._updateFlotAxisPanOptions('x'); 
-        //        window.flotWrapper._updateFlotAxisPanOptions('y'); 
-        //    });
 
-        //doTest();
-    });
-
-    
     // Resizes the scatter plot div element.
     // Needed to vertically expand the scatter-plot-div
     // Couldn't get it to work with just height:100%; this gave undesired scrollbars
+    // Needs to have reference to the contentWindows jQuery from a eventhandler,
+    // so is best defined here.
     function onResize() {
     
         var plotDiv = $('#scatter-plot-div').filter(":visible");
@@ -83,41 +41,16 @@
     
         window.flotWrapper.drawHighlight();
     }
-    
-    
-    function doTest (button) { // Debugging function
-        window.Plottit.fbLog('plotFrame.doTest --', 'narf');
 
-        // Fill plot with debug data
-        function getData(x1, x2) {
-            var d = [];
-            for (var i = 0; i <= 100; ++i) {
-                var x = x1 + i * (x2 - x1) / 100;
-                d.push([x, Math.sin(x * Math.sin(x))]);
-            }
-            return d;
-
-        }
-        var plotSeries = [ {
-            data   : getData(0, 3 * Math.PI),
-            points : { show: true },
-            color  : 'rgb(255, 69, 0)', // orangered (must be rgb triplet for highlighting to work)
-        } ];
+    // Init page
+    $(  function () { 
+        /* window.flotWrapper is created in Plottit.onLoad because validation */
         
-        var plotOptions = {
-            zoom: { interactive: true, amount: Math.sqrt(2.0) },
-            pan: { interactive: true },
-            xaxis: { zoomRange: null, panRange: null },
-            yaxis: { zoomRange: null, panRange: null },
-            grid: { hoverable: false, clickable: true },
-        };
-        
-        flotWrapper.createPlot(plotOptions);
-        flotWrapper.setData(plotSeries);
-        flotWrapper.drawPlot(true);
         onResize();
-    }
-    
+        $("body").resize(window.onResize);
+    });
+
+
     
     </script>
     

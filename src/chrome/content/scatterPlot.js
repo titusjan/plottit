@@ -131,6 +131,37 @@ Plottit.ScatterPlot.prototype._initPlot = function () {
             flotWrapper._updateFlotAxisPanOptions('x'); 
             flotWrapper._updateFlotAxisPanOptions('y');             
         });
+        
+    var placeHolder = plot.getPlaceholder(); 
+    placeHolder
+        .bind("plotzoom", function (event) {
+            flotWrapper.drawHighlight();
+        })
+        .bind("plothover", function (event, pos, item) {
+            if (item) {
+                placeHolder.css('cursor', 'pointer');
+            } else {
+                placeHolder.css('cursor', 'default');
+            }
+        
+            /*
+            var plt = flotWrapper.plot;
+            if (plt) {
+                if (item) {
+                    plt.getPlaceholder().css('cursor', 'pointer');
+                } else {
+                    plt.getPlaceholder().css('cursor', 'default');
+                }
+            }*/
+        })
+        //.bind("plotselected", function (event, ranges) {
+            //    this.onPlotSelect(event, ranges);
+            //})
+        .bind("plotclick", function (event, pos, item) {
+            if (item) {
+                flotWrapper.onPlotClicked(item, placeHolder.get(0));
+            }
+        });        
 }
 
 
@@ -144,7 +175,7 @@ Plottit.ScatterPlot.prototype.display = function (bDisplay) {
         plotFrameDoc.getElementById('graphs-div').style.display   = 'block';
         plotFrameDoc.getElementById('messages-div').style.display = 'none';
         
-        // Force resize, otherwise it won't resize if previous tab doesn't contain discussion
+        // Force resize, otherwise it won't resize if the previous tab doesn't contain discussion
         this.plotFrame.contentWindow.wrappedJSObject.onResize();
         
     } else {

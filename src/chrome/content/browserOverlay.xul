@@ -20,6 +20,7 @@
   <script type="application/x-javascript" src="chrome://plottit/content/treeView.js" />
   <script type="application/x-javascript" src="chrome://plottit/content/timePeriod.js" />
   <script type="application/x-javascript" src="chrome://plottit/content/utils.js" />
+  <script type="application/x-javascript" src="chrome://plottit/content/flotWrapper.js" />
     
   <stringbundleset id="stringbundleset">
     <stringbundle id="plottit-string-bundle"

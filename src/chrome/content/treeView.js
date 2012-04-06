@@ -47,7 +47,7 @@ Plottit.TreeView.prototype.getComments = function() {
 }
 
 Plottit.TreeView.prototype.setDiscussionSorted = function(columnID, sortDirection, structure, discussion) {
-    Plottit.logger.trace("setDiscussionSorted, structure: " + structure);
+    Plottit.logger.trace("Plottit.TreeView.setDiscussionSorted, structure: " + structure);
     
         this.setStructure(structure);
     var comparisonFunction = this.getComparisonFunction(columnID, sortDirection);

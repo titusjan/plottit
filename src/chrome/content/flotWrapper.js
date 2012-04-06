@@ -7,8 +7,9 @@
 
 // Constructor
 
-Plottit.FlotWrapper = function (placeHolderDivId) 
+Plottit.FlotWrapper = function (placeHolderDivId, jQuery) 
 {
+    this.jQuery = jQuery; // reference to the jQuery library
     this.plot = null; // Don't call jQuery.plot yet, the placeholder may not be visible
     this.placeHolderDivId = placeHolderDivId;
     
@@ -32,7 +33,10 @@ Plottit.FlotWrapper = function (placeHolderDivId)
         zoomRange : null,
         panRange : null
     }
+     
+
 }
+
 
 
 Plottit.FlotWrapper.prototype.toString = function () {
@@ -53,6 +57,8 @@ Plottit.FlotWrapper.prototype.getAxisByName = function (axisStr) {
 
 // Make sure to call this only when the place holder is visible!
 Plottit.FlotWrapper.prototype.createPlot = function (plotOptions) {
+    var $ = this.jQuery;
+    
     this.plot = $.plot($('#'+this.placeHolderDivId), [], plotOptions);
 
     // Pass on the plot options set so far
@@ -103,7 +109,7 @@ Plottit.FlotWrapper.prototype.drawHighlight = function ()
     }
 }
 
-Plottit.FlotWrapper.prototype.onPlotClicked = function (item) {
+Plottit.FlotWrapper.prototype.onPlotClicked = function (item, placeHolderDiv) {
     Plottit.logger.trace('Plottit.FlotWrapper.dispatchPlottitPlotClicked');
     
     if (!item) return;
@@ -114,13 +120,12 @@ Plottit.FlotWrapper.prototype.onPlotClicked = function (item) {
     // Trigger event to so that XUL code can handle it
     var event = document.createEvent("Events");  
     event.initEvent("PlottitPlotClickedEvent", true, false);  
-    var placeHolder = document.getElementById(this.placeHolderDivId);
-    placeHolder.dispatchEvent(event);  
+    placeHolderDiv.dispatchEvent(event);  
 }
 
 
 Plottit.FlotWrapper.prototype.setPlotTitle = function (title) {
-    $('#header-div').text(title);
+    this.jQuery('#header-div').text(title);
 }
 
 Plottit.FlotWrapper.prototype.drawPlot = function (rescale) {
@@ -158,7 +163,7 @@ Plottit.FlotWrapper.prototype._updateFlotAxisZoomOptions = function (axisStr) {
 // Merges sourceOptions into the targetOptions dictionary
 Plottit.FlotWrapper.prototype._mergeOptions = function (sourceOptions, targetOptions) {
     
-    targetOptions = $.extend(true, {}, targetOptions, sourceOptions);   
+    targetOptions = this.jQuery.extend(true, {}, targetOptions, sourceOptions);   
     return targetOptions;
 }
 
@@ -279,7 +284,8 @@ Plottit.FlotWrapper.prototype.addAxisDivs = function () {
             right = left + axis.box.width, bottom = top + axis.box.height;
         return { left: left, top: top, width: right - left, height: bottom - top };
     }    
-
+    
+    var $ = this.jQuery;
     $(".axisTarget").remove();  // Remove old divs
     
     $.each(plot.getAxes(), function (i, axis) {

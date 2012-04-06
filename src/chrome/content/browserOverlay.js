@@ -11,8 +11,6 @@ Plottit.onLoad = function(event) {
     Plottit.logger.info(' ---------------- Plottit loaded ----------------');
     Plottit.logger.trace('Plottit.onLoad -- begin');
 
-    document.getElementById('plottit-scatter-plot-iframe').contentWindow.Plottit.logger = Plottit.logger;
-    document.getElementById('plottit-scatter-plot-iframe').contentWindow.Plottit.fbLog  = Plottit.fbLog;
 
     // Test if the extension is executed for the first time.
     if (Application.extensions)  
@@ -44,6 +42,15 @@ Plottit.onLoad = function(event) {
         Plottit.state.setCurrentBrowser(browser); // we need to have a current browser
     }
 
+    function initPlotIFrame (divId) {
+        var div = document.getElementById(divId);
+        var cw = div.contentWindow;
+        //cw.Plottit.logger = Plottit.logger;
+        //cw.Plottit.fbLog  = Plottit.fbLog;
+        cw.flotWrapper = new Plottit.FlotWrapper('scatter-plot-div', cw.jQuery);
+    }
+    
+    initPlotIFrame('plottit-scatter-plot-iframe');
     Plottit.scatterPlot = new Plottit.ScatterPlot('plottit-scatter-plot-iframe', 
         Plottit.getCheckboxValue(document.getElementById('plottit-scatter-axes-autoscale')), 
         document.getElementById('plottit-scatter-x-axis-menulist').getAttribute('value'), 
@@ -51,6 +58,7 @@ Plottit.onLoad = function(event) {
         parseFloat(document.getElementById('plottit-bin-width-menulist').value),
         0);
 
+    initPlotIFrame('plottit-histogram-iframe');
     Plottit.histogram = new Plottit.ScatterPlot('plottit-histogram-iframe', 
         Plottit.getCheckboxValue(document.getElementById('plottit-histogram-axes-autoscale')), 
         document.getElementById('plottit-histogram-x-axis-menulist').getAttribute('value'), 
@@ -94,7 +102,7 @@ Plottit.onLoad = function(event) {
 
 
 Plottit.onFirstRun = function (extensions) {
-    let extension = extensions.get('plottit@titusjan.com');  
+    let extension = extensions.get('plottit@titusjan.nl');  
     if (extension.firstRun) {  
         Plottit.logger.info("Plottit runs for the first time");
         Plottit.installToolbarButtonAtEnd('nav-bar', 'plottit-toggle-active-button');
@@ -681,6 +689,8 @@ Plottit.updateAllViews = function(state, eventBrowserID) {
     }
 
     var curState = Plottit.state.getCurrentBrowserState();
+    Plottit.logger.debug("Plottit.updateAllViews status: " + curState.pageStatus + ", browserID: " + eventBrowserID + ")");
+    
     switch (curState.pageStatus) {
         case Plottit.PAGE_NOT_PLOTTIT:
             if (true) {
