@@ -697,16 +697,12 @@ Plottit.updateAllViews = function(state, eventBrowserID) {
                 Plottit.setPlottitVisible(false);
             } else { // Debugging
                 Plottit.showDescription('The current page is not a reddit discussion');
-                Plottit.scatterPlot.display(false);
-                Plottit.histogram.display(false);
                 curState.removeDiscussion();
             }
             break;
         case Plottit.PAGE_POSTPONED:
             Plottit.setPlottitVisible(true);
             Plottit.showDescription('(Postponed) comments loading...');
-            Plottit.scatterPlot.display(false);
-            Plottit.histogram.display(false);
             curState.removeDiscussion();
             Plottit.setPlottitVisible(true);
             
@@ -720,26 +716,24 @@ Plottit.updateAllViews = function(state, eventBrowserID) {
         case Plottit.PAGE_LOADING:
             Plottit.setPlottitVisible(true);
             Plottit.showDescription('Loading comments...');
-            Plottit.scatterPlot.display(false);
-            Plottit.histogram.display(false);
             curState.removeDiscussion();
             break;
         case Plottit.PAGE_READY:
             Plottit.setPlottitVisible(true);
             Plottit.hideDescription();
             var discussion = Plottit.state.getBrowserDiscussion(eventBrowserID);
-            Plottit.scatterPlot.display(true);
-            Plottit.histogram.display(true);
             
             // Sort and set comments in comment tree
             var commentTree = document.getElementById('plottit-comment-tree');
+            commentTree.view = Plottit.state.getCurrentTreeView();
+            
             var sortResource = commentTree.getAttribute('sortResource');
             var sortDirection = commentTree.getAttribute('sortDirection');
             var structure = document.getElementById('plottit-comment-tree-column-body').getAttribute('structure');
             
             var column = document.getElementById(sortResource);
             column.setAttribute('sortDirection', sortDirection);
-            
+
             curState.treeView.setDiscussionSorted(column.id, sortDirection, structure, discussion);
             Plottit.ensureCurrentRowVisible();
             
@@ -754,9 +748,13 @@ Plottit.updateAllViews = function(state, eventBrowserID) {
                     Plottit.setDetailsFrameHtml(selectedComment ? selectedComment.bodyHtml : '');
                     break;
                 case 'plottit-plot-tab': 
+                    // Force resize, otherwise it won't resize if the previous tab doesn't contain discussion
+                    Plottit.scatterPlot.plotFrame.contentWindow.wrappedJSObject.onResize();
                     Plottit.scatterPlot.setDiscussion(discussion);
                     break;
                 case 'plottit-histogram-tab': 
+                    // Force resize, otherwise it won't resize if the previous tab doesn't contain discussion
+                    Plottit.histogram.plotFrame.contentWindow.wrappedJSObject.onResize();                
                     Plottit.histogram.setDiscussion(discussion);
                     break;
                 case 'plottit-treemap-tab': 

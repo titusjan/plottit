@@ -49,7 +49,7 @@ Plottit.TreeView.prototype.getComments = function() {
 Plottit.TreeView.prototype.setDiscussionSorted = function(columnID, sortDirection, structure, discussion) {
     Plottit.logger.trace("Plottit.TreeView.setDiscussionSorted, structure: " + structure);
     
-        this.setStructure(structure);
+    this.setStructure(structure);
     var comparisonFunction = this.getComparisonFunction(columnID, sortDirection);
 
     if (discussion === undefined) { 
@@ -334,6 +334,7 @@ Plottit.TreeView.prototype.__defineGetter__("rowCount", function() {
     return this.visibleComments.length; 
 });
 
+// Will be called when tree.view is set.
 Plottit.TreeView.prototype.setTree = function(treeBox)  { 
     Plottit.logger.trace("Plottit.TreeView.setTree, treeBox: " + treeBox);
     this.treeBox = treeBox; 

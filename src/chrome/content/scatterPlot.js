@@ -165,8 +165,8 @@ Plottit.ScatterPlot.prototype._initPlot = function () {
 }
 
 
-
-// Shows or hides the graph-div and messages-div inside the plotFrame on the HTML page.
+/* No longer used
+// Shows or hides the graph-div and messages-div inside the plotFrame on the HTML page. 
 Plottit.ScatterPlot.prototype.display = function (bDisplay) {
     Plottit.logger.trace("Plottit.scatterPlot.display -- ");
     
@@ -176,14 +176,15 @@ Plottit.ScatterPlot.prototype.display = function (bDisplay) {
         plotFrameDoc.getElementById('messages-div').style.display = 'none';
         
         // Force resize, otherwise it won't resize if the previous tab doesn't contain discussion
-        this.plotFrame.contentWindow.wrappedJSObject.onResize();
+        //this.plotFrame.contentWindow.wrappedJSObject.onResize();
+        //Plottit.logger.trace("Plottit.scatterPlot.display after content window resize");
         
     } else {
         plotFrameDoc.getElementById('graphs-div').style.display   = 'none';
         plotFrameDoc.getElementById('messages-div').style.display = 'block';
     }
 }
-
+*/
 
 Plottit.ScatterPlot.prototype._getSeries = function(discussion) {
     Plottit.logger.trace("Plottit.ScatterPlot._getSeries");
