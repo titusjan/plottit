@@ -1,0 +1,47 @@
+\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+%\date{}                                           % Activate to display a given date or no date
+
+\begin{document}
+
+%\section{}
+%\subsection{}
+
+
+$$ 
+controversy = \frac{up + down} { \max( | up - down | , 1)}
+$$ 
+
+some space
+
+
+\begin{equation*} 
+hotness = 
+\begin{cases} 
+\log_{10}(score) + seconds_{start} / 45000   & \text{if $score > 0$}\\ 
+0                                                                             & \text{if $score = 0$}\\ 
+\log_{10}(-score) - seconds_{start} / 45000   & \text{if $score < 0$} 
+\end{cases} 
+\end{equation*} 
+
+more space 
+
+\begin{equation*} 
+hotness = 
+\begin{cases} 
+\log_{10}(score) + (t-t_{start}) / 45000   & \text{if $score > 0$}\\ 
+0                                                                             & \text{if $score = 0$}\\ 
+\log_{10}(-score) -  (t-t_{start})  / 45000   & \text{if $score < 0$} 
+\end{cases} 
+\end{equation*} 
+
+The end
+
+\end{document}  

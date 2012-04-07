@@ -221,19 +221,65 @@
         
         
         <section id="comment-text">
-            <h2>Comment Text</h2>
+            <h2>Comment HTML</h2>
+            The <em>Comment</em> tab shows the currently selected comment as HTML. Any link you click on will be opened in a new browser window.
+            
+            <figure>
+                <img class="screenshot" src="commentPane.png" title="Comment HTML pane" alt="Comment HTML pande screen shot">
+                <figcaption>Comment HTML pane example</figcaption>
+            </figure>
         </section>
         
         <section id="scatter-plot">
             <h2>Scatter Plot</h2>
+            
+            The second tab, named <em>Plot</em>, displays a <a href="http://en.wikipedia.org/wiki/Scatter_plot">scatter plot</a> when selected. It shows the discussion as a collection of orangered dots where every dot represents one comment. 
+            The position of each dot along the X and Y axes depends on the value of two properties of the comment, which can be choosen by means of the drop-down labeled <em>X</em> and <em>Y</em>.
+            <p>
+            A scatter plot is often used to examine the correlation between two variables. If there is a high correlation, such as between the number of words and the number of characters of a comment, the dots will form a straight line; if there is little or no correlation, such as between the number of characters of a comment and the time that it was posted, the dots will be scattered all over the figure.
+            <p>
+            The figure gives an example that lies inbetween these cases: how the number of votes depends on the time the comment was posted relative to the start of the discussion. It is common practice to put the independent variable (in this example <em>posted after</em>) on the X-axis and the variable that depends on it (i.e. the <em>votes</em>) on the Y-axis. You can see a clear negative correlation between them, the number of votes decreases as the time increases.
+            <p>
+
+            <figure>
+                <img class="screenshot" src="scatterplot.png" title="Scatter plot" alt="Scatter plot screen shot">
+                <figcaption>Scatter plot example</figcaption>
+            </figure>
+            
+            You can zoom in and out by pointing the mouse cursor at your point of interest and scrolling up or down with the mouse wheel. If you double-click on the scattter plot the zoom level will be reset. You can pan by dragging and dropping the plot.
+            <p>
+            When you hover your mouse cursor above the X or Y axis, the axis will be highlighted in light blue. When this is the case, panning and zooming will only work on that axis, the other axis is temporarily locked.
+            <p>
+            When the <em>Autoscale</em> box is checked, the zoom level will be reset each time you open a new discussion or switch to another browser tab. When it is unchecked the scale will be preserved between discussions.
+            <p>
+            The comment that is selected in the table whill be hightlighted in the scatter plot by a bigger circle. Conversely, when you click on a dot in the scatterplot, the corresponding comment will be highlighted in the comment table.
         </section>
         
         <section id="histogram">
             <h2>Histogram</h2>
+            
+            This tab contains a <a href="http://en.wikipedia.org/wiki/Histogram">histogram</a> when selected. A histogram will group values in bins and will draw a bar for every bin, the height of which depends on the number of times a variable occurs in that bin. In the example below, the UTC date/time the comments were posted have been counted in groups of one hour. There were 3 comments posted between 5:00 and 6:00, 8 comments between 6:00 and 7:00, etc.
+            <p>
+            You can selected which comment property to count by means of the drop-down box labeled <em>X</em>. The box next to it will determine the size of the bins. Not every combination of variable and bin size makes sense, some combinations will result in very small or large bins.
+            
+            <figure>
+                <img class="screenshot" src="histogram.png" title="Histogram" alt="Histogram screen shot">
+                <figcaption>Histogram example</figcaption>
+            </figure>
+
+            You can zoom in and out by pointing the mouse cursor at your point of interest and scrolling up or down with the mouse wheel. If you double-click on the histogram the zoom level will be reset. You can pan by dragging and dropping the histogram.
+            <p>
+            When you hover your mouse cursor above the X or Y axis, the axis will be highlighted in light blue. When this is the case, panning and zooming will only work on that axis, the other axis is temporarily locked.
+            <p>
+            When the <em>Autoscale</em> box is checked, the zoom level will be reset each time you open a new discussion or switch to another browser tab. When it is unchecked the scale will be preserved between discussions.
+            <p>
+            
         </section>
         
         <section id="treemap">
             <h2>Treemap</h2>
+            
+            The last tab contains a <a href="http://en.wikipedia.org/wiki/treemap">treemap</a> 
         </section>
     </section>
     
