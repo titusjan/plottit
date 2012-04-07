@@ -37,23 +37,21 @@
   
   <commandset> <!-- For some reason setting an id to the command set results in no reactions -->
     <command id="plottit-command-debug" oncommand="Plottit.myDebugRoutine();"/>
+    <command id="plottit-command-show-help" oncommand="Plottit.showHelp();"/>
     <command id="plottit-command-toggle-plottit-active" oncommand="Plottit.togglePlottitActive();"/>
     <!--<command id="plottit-command-set-date-format" oncommand="Plottit.setTreeColumnDateFormat(event);"/>-->
   </commandset>
 
-<!-- 
-    Whois: Friday 2005-04-29 (made up 22:04:53 myself)
-    First reddit post: Thursday 2005-06-23 11:43:53 (UTC)
-    First reddit comment: Monday 2005-12-12 05:46:44 (UTC)
--->
+
   <menupopup id="menu_ToolsPopup">
-    <menu id="plottit-tools-menu" label="Plottit" hidden="true"
-        accesskey="&plottit.plottitMenu.accesskey;"
+    <menu id="plottit-tools-menu" label="Plottit" 
         insertafter="devToolsSeparator">
       <menupopup>
-        <menuitem id="plottit-tools-debug-menu-item"
+        <menuitem id="plottit-tools-help-menu-item"
+          label="&plottit.help.label;"
+          command="plottit-command-show-help"/>
+        <menuitem id="plottit-tools-debug-menu-item" hidden="true"
           label="&plottit.debug.label;"
-          accesskey="&plottit.debugMenuItem.accesskey;"
           command="plottit-command-debug"/>
       </menupopup>
     </menu>
@@ -62,6 +60,11 @@
   <popupset>
     <menupopup id="plottit-date-format-menu" onpopupshowing="Plottit.onDateFormatPopupShowing(this);">
     
+      <!-- 
+        Whois: Friday 2005-04-29 (made up 22:04:53 myself)
+        First reddit post: Thursday 2005-06-23 11:43:53 (UTC)
+        First reddit comment: Monday 2005-12-12 05:46:44 (UTC)
+      -->
       <menuitem label="2005-04-29 22:04:53" 
         value="yyyy-mm-dd HH:MM:ss"
         autocheck="true"

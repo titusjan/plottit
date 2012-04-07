@@ -1093,6 +1093,67 @@ Plottit.expandOrCollapseRedditComment = function(comment, expand) {
     }
 }
 
+Plottit.openAndReuseOneTabPerURL = function (url) {  
+
+    // From: https://developer.mozilla.org/en/Code_snippets/Tabbed_browser
+    // except that we in the URL comparison I convert the url to an URI object.
+    // This makes a real URI equivalence comparison instead of simply a string compare
+    // that may e.g. fail on a trailing slash.
+
+    function makeURI(aURL, aOriginCharset, aBaseURI) {  
+        var ioService = Components.classes["@mozilla.org/network/io-service;1"]  
+                          .getService(Components.interfaces.nsIIOService);  
+        return ioService.newURI(aURL, aOriginCharset, aBaseURI);  
+    }
+    
+    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]  
+                     .getService(Components.interfaces.nsIWindowMediator);  
+    var browserEnumerator = wm.getEnumerator("navigator:browser");  
+    
+    // Check each browser instance for our URL  
+    var found = false;  
+    while (!found && browserEnumerator.hasMoreElements()) {  
+        var browserWin = browserEnumerator.getNext();  
+        var tabbrowser = browserWin.gBrowser;  
+        
+        // Check each tab of this browser instance  
+        var numTabs = tabbrowser.browsers.length;  
+        for (var index = 0; index < numTabs; index++) {  
+            var currentBrowser = tabbrowser.getBrowserAtIndex(index);  
+            if (currentBrowser.currentURI.equals(makeURI(url))) { 
+
+                // The URL is already opened. Select this tab.  
+                tabbrowser.selectedTab = tabbrowser.tabContainer.childNodes[index];  
+                
+                // Focus *this* browser-window  
+                browserWin.focus();  
+                
+                found = true;  
+                break;  
+            }  
+        }  
+    }  
+    
+    // Our URL isn't open. Open it now.  
+    if (!found) {  
+        var recentWindow = wm.getMostRecentWindow("navigator:browser");  
+        if (recentWindow) {  
+            // Use an existing browser window  
+            recentWindow.delayedOpenTab(url, null, null, null, null);  
+        }  
+        else {  
+            // No browser windows are open, so open a new one.  
+              window.open(url);  
+        }  
+    }  
+}  
+    
+
+Plottit.showHelp = function() {
+    Plottit.logger.trace("Plottit.showHelp -- ");
+    Plottit.openAndReuseOneTabPerURL("chrome://plottit/content/manual/userManual.html"); 
+}
+
 
 /*
 From: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow

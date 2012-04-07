@@ -337,7 +337,7 @@ Plottit.ScatterPlot.prototype._updatePlotTitle = function () {
         this.flotWrapper.setPlotTitle(
             getBundleString(bundle, 
                 'plottit.comment.id2label.' + this._removeHistPrefix(this.yAxisVariable)) +
-            ' versus ' +
+            ' depending on ' +
             getBundleString(bundle, 
                 'plottit.comment.id2label.' + this._removeHistPrefix(this.xAxisVariable)) );
     }
