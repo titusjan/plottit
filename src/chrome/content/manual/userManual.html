@@ -198,7 +198,7 @@
                 <p>
                 Comments that have a score of 0 always have a hotness of 0 as well. Comments having a negative score will have a negative hotness because the elapsed time divided by 45000 will be subtracted from the first term (which is smaller). Strangely enough, the first term is positive which means that a comment with a score of -2 is hotter than a comment with score -1 that is posted at the same time.
                 <p>
-                Because the time that a comment was posted doesn't change, a comments hotness can only change if its score changes. Reddit prohibits users to vote on comments that are older than six months so the hotness of these comments becomes fixed at that time. Calculting the score from the elapsed time since an arbitrary start date makes it easier for Reddit to archive and cache these pages than if the hotness were calculated directly from the age of the comment, which keeps on changing.
+                Because the time that a comment was posted doesn't change, a comments hotness can only change if its score changes. Reddit prohibits users to vote on comments that are older than six months so the hotness of these comments becomes fixed at that time. By calculting the score from the elapsed time since an arbitrary start date, Reddit can more easily archive and cache these pages than when it would calculate the hotness directly from the age of the comment, which keeps on changing.
                 <p>
                 <strong>Note: </strong>this number is not affected by Reddits <a href="fuzzing">vote fuzzing</a> because it is directly calculated from the <a href="col-score">score</a>, which is unaffected as well.
                                 
@@ -217,9 +217,6 @@
         </section>
         
         
-        
-        
-        
         <section id="comment-text">
             <h2>Comment HTML</h2>
             The <em>Comment</em> tab shows the currently selected comment as HTML. Any link you click on will be opened in a new browser window.
@@ -233,7 +230,7 @@
         <section id="scatter-plot">
             <h2>Scatter Plot</h2>
             
-            The second tab, named <em>Plot</em>, displays a <a href="http://en.wikipedia.org/wiki/Scatter_plot">scatter plot</a> when selected. It shows the discussion as a collection of orangered dots where every dot represents one comment. 
+            The second tab, named <em>Plot</em>, displays a <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/Scatter_plot">scatter plot</a> when selected. It shows the discussion as a collection of orangered dots where every dot represents one comment. 
             The position of each dot along the X and Y axes depends on the value of two properties of the comment, which can be choosen by means of the drop-down labeled <em>X</em> and <em>Y</em>.
             <p>
             A scatter plot is often used to examine the correlation between two variables. If there is a high correlation, such as between the number of words and the number of characters of a comment, the dots will form a straight line; if there is little or no correlation, such as between the number of characters of a comment and the time that it was posted, the dots will be scattered all over the figure.
@@ -258,7 +255,7 @@
         <section id="histogram">
             <h2>Histogram</h2>
             
-            This tab contains a <a href="http://en.wikipedia.org/wiki/Histogram">histogram</a> when selected. A histogram will group values in bins and will draw a bar for every bin, the height of which depends on the number of times a variable occurs in that bin. In the example below, the UTC date/time the comments were posted have been counted in groups of one hour. There were 3 comments posted between 5:00 and 6:00, 8 comments between 6:00 and 7:00, etc.
+            This tab contains a <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/Histogram">histogram</a> when selected. A histogram will group values in bins and will draw a bar for every bin, the height of which depends on the number of times a variable occurs in that bin. In the example below, the UTC date/time the comments were posted have been counted in groups of one hour. There were 3 comments posted between 5:00 and 6:00, 8 comments between 6:00 and 7:00, etc.
             <p>
             You can selected which comment property to count by means of the drop-down box labeled <em>X</em>. The box next to it will determine the size of the bins. Not every combination of variable and bin size makes sense, some combinations will result in very small or large bins.
             
@@ -279,19 +276,28 @@
         <section id="treemap">
             <h2>Treemap</h2>
             
-            The last tab contains a <a href="http://en.wikipedia.org/wiki/treemap">treemap</a> 
+            The last tab contains a <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/treemap">treemap</a>. This is a visualisation of a tree where every node of the tree is drawn as a rectangle, the size of which depends on a certain property of the node. The layout of the rectangles is such that it preserves the hierarchy of the tree; child nodes are laid on top their parents. The hierarchy can be emphasized by rendering every rectangle as a cushion. A Reddit discussion has the form of a tree where comments are the tree nodes that together form a hierarchy. 
+            <p>
+            In the treemap example below, the size of each rectangle is determined by the number of <a href="#col-votes">votes</a> that the comment received. This can be selected by the <em>Size</em> drop down box. With the <em>Color</em> drop down box you can select the comment property that is used to color the rectangles, in this case the <a href="#col-depth">depth</a> (top-level comments are drawn in blue, comments with level 10 are in red).
+            
+            <figure>
+                <img class="screenshot" src="treemapCushions.png" title="Treemap screen shot" alt="Treemap with cushions screen shot">
+                <figcaption>Treemap with cushions</figcaption>
+            </figure>
+            
+            When you select a comment in the <a href="#comments-table">comments table</a> it will be outlined in the treemap by a white rectangle. If the comment is collapsed in the table, the white rectangle will surround the comment and all its children. This is shown in the example above. 
+            <p>
+            When you click on a rectangle in the treemap, the corresponding comment will be highlighted in the <a href="#comments-table">comments table</a>. When you click the same rectangle twice, its parent comment will be selected and collapsed (provided that the comments table is in tree-mode). This can be repeated until the top-level comment is selected and collapsed.
+            <p>
+            When the <em>Cushions</em> check box is checked, the rectangles are drawn as cushions which may be slow on old PCs, especially when you enlarge the treemap. When you uncheck the <em>Cushions</em> check box, the rectangles are rendered in a single color with a black outline. This makes it harder to see the hierarchy but makes the individual rectangles stand out more.
+            <p>
+            If you want to know the details on how the cushions are rendered you can read the following <a href="http://www.win.tue.nl/~vanwijk/ctm.pdf">article (PDF)</a>. The treemaps in Plottit are squarified treemaps, refering to the <a href="http://www.win.tue.nl/~vanwijk/stm.pdf">squarify algorithm  (PDF)</a> that is used to lay out the rectangles.
+            <p>
+            The treemaps in Plottit were inspired by programs that can create a treemap of the files on your disk, which is very useful if it's almost full and you want to make some space. There are implementations available for <a title="Disk Inventory X" href="http://www.derlien.com/">OS-X</a>,  <a title="KDirStat" href="http://kdirstat.sourceforge.net/">Linux</a> and <a title="WinDirStat" href="http://windirstat.info/">Windows</a>.
+            <p>
         </section>
     </section>
-    
-    <section id="examples">
-        <h1>Example useage</h1>
-        
-        <section id="fuzzing">
-            <h2>Examining how votes are fuzzed by Reddit.</h2>
-        </section>
-        
-    </section>
-    
+
     
 </article>
 </body>
