@@ -5,7 +5,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>plottit@titusjan.nl</em:id>
-    <em:unpack>true</em:unpack>
+    <em:unpack>false</em:unpack>
     <em:name>Plottit</em:name>
     <em:description>
       Makes plots and treemaps of a Reddit discussion.

@@ -1,6 +1,6 @@
-content   plottit              jar:chrome/plottit.jar!/content/
-skin      plottit  classic/1.0 jar:chrome/plottit.jar!/skin/
-locale    plottit  en-US       jar:chrome/plottit.jar!/locale/en-US/
+content   plottit              chrome/content/
+skin      plottit  classic/1.0 chrome/skin/
+locale    plottit  en-US       chrome/locale/en-US/
 
 overlay chrome://browser/content/browser.xul  chrome://plottit/content/browserOverlay.xul
 resource plottit modules/

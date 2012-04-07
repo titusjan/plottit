@@ -1,6 +1,6 @@
-<!ENTITY plottit.debug.label                "Debug">
-<!ENTITY plottit.plottitMenu.accesskey       "l">
-<!ENTITY plottit.debugMenuItem.accesskey    "D">
+<!ENTITY plottit.debug.label            "Debug">
+<!ENTITY plottit.help.label             "Help">
+
 
 
 <!ENTITY plottit.comment.id            "ID">
