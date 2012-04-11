@@ -92,7 +92,7 @@
                 
             </section>
             
-            <section id="utc-date">
+            <section id="col-utc-date">
                 <h3>UTC Date Column</h3>
                 The UTC date and time when the comment was posted. <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/Coordinated_Universal_Time"> UTC (Coordinated Universal Time)</a>  is a time stamp that is independent of your local time zone. UTC is practically the same as GMT, which was its predecessor.
                 <p>
@@ -130,35 +130,35 @@
                 <h3>Up Column</h3>
                 The number of up-votes the comment has received.
                 <p>
-                <strong>Note: </strong>this number is <a href="fuzzing">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.
+                <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
             </section>
             
             <section id="col-downs">
                 <h3>Down Column</h3>
                 The number of down-votes the comment has received.
                 <p>
-                <strong>Note: </strong>this number is <a href="fuzzing">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.
+                <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
             </section>
             
             <section id="col-votes">
                 <h3>Votes Column</h3>
                 The total number of votes the comment has received. In other words: the number of up-votes plus the number of down-votes.
                 <p>
-                <strong>Note: </strong>this number is <a href="fuzzing">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.
+                <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
             </section>
             
             <section id="col-score">
                 <h3>Score Column</h3>
                 The comments score. That is: the number of up-votes minus the number of down-votes.
                 <p>
-                <strong>Note: </strong>this number is not affected by Reddits <a href="fuzzing">vote fuzzing</a>.
+                <em>Note: this column is not affected by Reddits <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">vote fuzzing</a>.</em>
             </section>
             
             <section id="col-likes">
                 <h3>Likes Column</h3>
                 The percentage of voters that likes the comment. This is defined as: <i>100 * up / (up + down)</i>. In other words, it is the percentage of votes that are up-votes.
                 <p>
-                <strong>Note: </strong>this number is <a href="fuzzing">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.
+                <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
             </section>
             
             <section id="col-best">
@@ -176,8 +176,7 @@
                 <p>
                 Reddit only uses the lower bound of this interval (calculated with the - sign). So a <em>best</em> value of 65% means that you can say, with 90% confidence, that at least 65% of the votes are up votes.
                 <p>
-                
-                <strong>Note: </strong>this number is <a href="fuzzing">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.
+                <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
             </section>            
 
             <section id="col-controversial">
@@ -190,7 +189,7 @@
                <p>
                The <i>up + down</i> in the numerator causes that the contoversy increases when the total number of votes increases. For example, a comment with 5 upvotes and 4 downvotes is more controversial than a comment with 4 upvotes and 3 downvotes.
                <p>
-               <strong>Note: </strong>this number is <a href="fuzzing">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.
+               <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
             </section>
             
             <section id="col-hot">
@@ -215,8 +214,7 @@
                 <p>
                 Because the time that a comment was posted doesn't change, a comments hotness can only change if its score changes. Reddit prohibits users to vote on comments that are older than six months so the hotness of these comments becomes fixed at that time. By calculting the score from the elapsed time since an arbitrary start date, Reddit can more easily archive and cache these pages than when it would calculate the hotness directly from the age of the comment, which keeps on changing.
                 <p>
-                <strong>Note: </strong>this number is not affected by Reddits <a href="fuzzing">vote fuzzing</a> because it is directly calculated from the <a href="col-score">score</a>, which is unaffected as well.
-                                
+                <em>Note: this column is not affected by Reddits <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">vote fuzzing</a> because it is directly calculated from the <a href="#col-score">score</a>, which is unaffected as well.</em>
             </section>
             
         </section>
@@ -260,9 +258,9 @@
         <section id="histogram">
             <h2>Histogram</h2>
             
-            This tab contains a <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/Histogram">histogram</a> when selected. A histogram will group values in bins and will draw a bar for every bin, the height of which depends on the number of times a variable occurs in that bin. In the example below, the UTC date/time the comments were posted have been counted in groups of one hour. There were 3 comments posted between 5:00 and 6:00, 8 comments between 6:00 and 7:00, etc.
+            This tab contains a <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/Histogram">histogram</a> when selected. A histogram will group values in bins and will draw a bar for every bin, the height of which depends on the number of times a variable occurs in that bin. In the example below, the <a href="#col-utc-date">UTC date/time</a> the comments were posted have been counted in groups of one hour. There were 3 comments posted between 5:00 and 6:00, 8 comments between 6:00 and 7:00, etc.
             <p>
-            You can select which comment property to count by means of the drop-down box labeled <em>X</em>. The box next to it will determine the size of the bins. Not every combination of property and bin size makes sense, some combinations will result in very small or large bins.
+            You can select which comment property to count by means of the drop-down box labeled <em>X</em>. The box next to it will determine the size of the bins. Not every combination of property and bin size makes sense, some combinations will result in very narrow or wide bins.
             
             <figure>
                 <img class="screenshot" src="histogram.png" title="Histogram" alt="Histogram screen shot">
