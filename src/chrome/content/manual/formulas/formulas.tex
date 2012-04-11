@@ -6,7 +6,7 @@
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{epstopdf}
-\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename#1 .tif`.png}
 %\date{}                                           % Activate to display a given date or no date
 
 \begin{document}
@@ -22,16 +22,7 @@ $$
 some space
 
 
-\begin{equation*} 
-hotness = 
-\begin{cases} 
-\log_{10}(score) + seconds_{start} / 45000   & \text{if $score > 0$}\\ 
-0                                                                             & \text{if $score = 0$}\\ 
-\log_{10}(-score) - seconds_{start} / 45000   & \text{if $score < 0$} 
-\end{cases} 
-\end{equation*} 
 
-more space 
 
 \begin{equation*} 
 hotness = 
@@ -44,4 +35,24 @@ hotness =
 
 The end
 
+
+\begin{align*} 
+best & = \frac { p +\frac{z^2}{2n} \pm z \sqrt {\frac{p(1-p)}{n} + \frac{z^2}{4n^2} }  }{1 + \frac{z^2}{n}} \\
+\text{where}\\
+z & = 1.281551565545\\
+n & = votes = up + down\\
+p & = likes = \frac{up}{up+down}\\
+\end{align*} 
+
+\begin{equation*} 
+best = \frac { p +\frac{z^2}{2n} \pm z \sqrt {\frac{p(1-p)}{n} + \frac{z^2}{4n^2} }  }{1 + \frac{z^2}{n}}
+\end{equation*} 
+
+or 
+
+\begin{equation*} 
+best = \frac { likes +\frac{z^2}{2 \cdot votes} \pm z \sqrt {\frac{likes(1-likes)}{votes} + \frac{z^2}{4 \cdot votes^2} }  }{1 + \frac{z^2}{votes}}
+\end{equation*} 
+
+more space 
 \end{document}  
