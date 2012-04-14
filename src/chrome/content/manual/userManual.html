@@ -47,7 +47,7 @@
             When the table has the keyboard focus, the up and down arrows select the next and previous comment and the left and right arrow collapse and expand a comment. This allows you to easily navigate the discussion using only the keyboard.
             <p>
             
-            Some of the columns, for example the <a href="#col-up">up</a> and <a href="#col-up">down</a> votes, are rendered in an <em>italic</em> font. This is to indicate that this value is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by the Reddit server to combat spam and therefore does not represent the actual value, it has been deliberately modified. The more votes a comment has received, the more this number is distorted. This is also true for the properties that are derived from the number of up and down votes such as the <a href="#col-likes">likes</a> and <a href="#col-best">best</a> percentages. Only the <a href="#col-score">score</a> and <a href="#col-hot">hot</a> values are not affected because Reddit fuzzes the votes in such a way that these numbers remain the same.
+            Some of the columns, for example the <a href="#col-up">up</a> and <a href="#col-up">down</a> votes, are rendered in an <em>italic</em> font. This is to indicate that this value is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by the Reddit server to combat spam and therefore does not represent the actual value, it has been deliberately modified. The more votes a comment has received, the more this number is distorted. This is also true for the properties that are derived from the number of up and downvotes such as the <a href="#col-likes">likes</a> and <a href="#col-best">best</a> percentages. Only the <a href="#col-score">score</a> and <a href="#col-hot">hot</a> values are not affected because Reddit fuzzes the votes in such a way that these numbers remain the same.
             <p>            
                         
             <span id="table-collumns">The rest of this section explains all the available columns.</span> The <a href="#comment-text">next section</a> will discuss the comment HTML pane and the visualizations.
@@ -128,53 +128,53 @@
             
             <section id="col-ups">
                 <h3>Up Column</h3>
-                The number of up-votes the comment has received.
+                The number of upvotes the comment has received.
                 <p>
                 <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
             </section>
             
             <section id="col-downs">
                 <h3>Down Column</h3>
-                The number of down-votes the comment has received.
+                The number of downvotes the comment has received.
                 <p>
                 <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
             </section>
             
             <section id="col-votes">
                 <h3>Votes Column</h3>
-                The total number of votes the comment has received. In other words: the number of up-votes plus the number of down-votes.
+                The total number of votes the comment has received. In other words: the number of upvotes plus the number of downvotes.
                 <p>
                 <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
             </section>
             
             <section id="col-score">
                 <h3>Score Column</h3>
-                The comments score. That is: the number of up-votes minus the number of down-votes.
+                The comments score. That is: the number of upvotes minus the number of downvotes.
                 <p>
                 <em>Note: this column is not affected by Reddits <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">vote fuzzing</a>.</em>
             </section>
             
             <section id="col-likes">
                 <h3>Likes Column</h3>
-                The percentage of voters that likes the comment. This is defined as: <i>100 * up / (up + down)</i>. In other words, it is the percentage of votes that are up-votes.
+                The percentage of voters that liked the comment. In other words, it is the percentage of votes that are upvotes. It is calculated from the number of up and downvotes as follows: <i>likes = 100 * up / (up + down)</i>.
                 <p>
                 <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
             </section>
             
             <section id="col-best">
                 <h3>Best Column</h3>
-                Consider a discussion of two comments, one with 50 up votes and 30 down votes, and the other with 10 upvotes and no down votes. When you sort the discussion by the <em>score</em> value, the first one, which has a score of 20, will appear above the second, which has a score of 10. Since only 62.5% of the voters likes the first post and all of them like the second, you can ask yourself if this is fair and if it wouldn't be better to sort the discussion by the percentage of upvotes instead. 
+                Consider a discussion of two comments, one with 50 upvotes and 30 downvotes, and the other with 10 upvotes and no downvotes. When you sort the discussion by the <em>score</em> value, the first one, which has a score of 20, will appear above the second, which has a score of 10. Since only 62.5% of the voters likes the first post and all of them like the second, you can ask yourself if this is fair and if it wouldn't be better to sort the discussion by the percentage of upvotes instead. 
                 <p>
-                The answer to this is question is no. That only works when the number of votes for every comment is large enough so that the <em>likes</em> percentage is an accurate representation of the real upvote percentage. However, for comments that only have a few votes, the <em>likes</em> value will usually be inaccurate. For intance, comments with only one vote will either have a 0% or 100% likes percantage. If you sort a discussion by the <em>likes</em> you can see for yourself that the top of the table is dominated by comments that have the initial score of 1 upvote and 0 downvotes.
+                The answer to this is question is no. That only works when the number of votes for every comment is large enough so that the <a href="#col-posted-likes">likes</a> percentage is an accurate representation of the real fraction of redditors that like the comment. However, for comments that only have a few votes, the <a href="#col-posted-likes">likes</a> value will usually be inaccurate. For intance, comments with only one vote can only have a 0% or 100% likes percantage. If you sort a discussion by the <a href="#col-posted-likes">likes</a> column you can see for yourself that the top of the table is dominated by comments that have the initial score of 1 upvote and 0 downvotes.
                 <p>
-                So what would be a fair ordering mechanism then? It would have to put more trust into comments with many votes and take the comments with only a few votes with a grain of salt. <a href="http://blog.reddit.com/2009/10/reddits-new-comment-sorting-system.html" title="Reddit blog">Instigated by Randall Munroe</a>, the <a href="http://www.xkcd.com/" title="the comic with the funny tooltip texts">XKCD</a> guy, Reddit aims to do this with the lower bound of the <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wilson_score_interval">Wilson score interval</a> and calls it the <em>best</em> value.
+                So what would be a fair ordering mechanism then? It would have to put more trust into comments with many votes and take the comments with only a few votes with a grain of salt. <a href="http://blog.reddit.com/2009/10/reddits-new-comment-sorting-system.html" title="Reddit blog">Instigated by Randall Munroe</a>, the <a href="http://www.xkcd.com/" title="The comic with the funny tooltip texts">XKCD</a> guy, Reddit aims to do this with the lower bound of the <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wilson_score_interval">Wilson score interval</a> and calls it the <em>best</em> value.
                 
                 <figure>
                     <img class="formula" src="formula_best.png" alt="best formula">
                 </figure>
                 By replacing the &plusmn; sign with either a <em>+</em> or a <em>-</em>, you get the upper or lower bound of an interval of which you can say, with 80% confidence, that the real <em>likes</em> percentage lies within that interval. This interval will become smaller when the number of votes increases.
                 <p>
-                Reddit only uses the lower bound of this interval (calculated with the - sign). So a <em>best</em> value of 65% means that you can say, with 90% confidence, that at least 65% of the votes are up votes.
+                Reddit only uses the lower bound of this interval (calculated with the - sign). So a <em>best</em> value of 65% means that you can say, with 90% confidence, that at least 65% of the votes are upvotes.
                 <p>
                 <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
             </section>            
@@ -185,7 +185,7 @@
                <figure>
                     <img class="formula" src="formula_controversy.png" alt="controversy formula">
                </figure>
-               If the difference between the number of up-votes and downvotes is close to zero, the denominator will become small and therefore the controversy will become large. The maximum with 1 is taken to prevent division by zero in case the number of upvotes and down-votes are equal.               
+               If the difference between the number of upvotes and downvotes is close to zero, the denominator will become small and therefore the controversy will become large. The maximum with 1 is taken to prevent division by zero in case the number of upvotes and downvotes are equal.               
                <p>
                The <i>up + down</i> in the numerator causes that the contoversy increases when the total number of votes increases. For example, a comment with 5 upvotes and 4 downvotes is more controversial than a comment with 4 upvotes and 3 downvotes.
                <p>
@@ -203,7 +203,7 @@
                     <img class="formula" src="formula_hotness.png" alt="hotness formula">
                 </figure>
                
-                Let's first examine what happens if the score is positive (the score is the up-votes minus the down-votes as usual). You can see that the hotness is the sum of two terms, the first of which depends on the <i>score</i> and the second on the time (<i>t</i>) that the comment was posted. The <i>log<sub>10</sub>(score)</i> makes that the hotness increases with the score but with a diminishing return; if a comments score would be multiplied by 10 its hotness would increase by 1.
+                Let's first examine what happens if the score is positive (the score is the upvotes minus the downvotes as usual). You can see that the hotness is the sum of two terms, the first of which depends on the <i>score</i> and the second on the time (<i>t</i>) that the comment was posted. The <i>log<sub>10</sub>(score)</i> makes that the hotness increases with the score but with a diminishing return; if a comments score would be multiplied by 10 its hotness would increase by 1.
                 
                 <p>
                 The second term calculates first the number of seconds that have elapsed between a certain start date (<i>t<sub>start</sub></i>) and the date that the comment was posted (<i>t</i>). The start date that reddit uses is 2005-12-08 at 07:46:43 but it could be any date as long as it's earlier than the oldest comment. The  number of elapsed seconds is subsequently divided by 45000 seconds. 45000 seconds is equal to 12.5 hours so if comment A is posted 12.5 hours later than comment B, comment A will be 1 point hotter than comment B, provided that they have the same score. Comment B would need to have ten times the score of comment A to catch up with A in hotness.
