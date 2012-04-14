@@ -20,7 +20,7 @@
         The Plottit pane will appear at the bottom of the window whenever you visit a Reddit discussion. It contains the <a href="#comments-table">comments table</a> on the left, and one of the following items on the right: a frame with the selected <a href="#comment-text">comment HTML</a>, a <a href="#scatter-plot">scatter plot</a>, a <a href="#histogram">histogram</a> or a <a href="#treemap">treemap</a>.
         <p>
         
-        When the Reddit discussion is loaded completely, Plottit requests the Reddit server for a machine-readable version of the discussion, this is then used to populate the table and draw the graphs. Note that because the Reddit page and the data in the Plottit pane are not loaded simultaniously, small differences may occur.
+        When the Reddit discussion is loaded completely, Plottit requests the Reddit server for a machine-readable version of the discussion, this is then used to populate the table and draw the graphs. Note that because the Reddit page and the data in the Plottit pane are not loaded simultaneously, small differences may occur.
         <p>
         
         Plottit can be hidden by toggling the <img src="enableButton.png"  title="shows/hides Plottit" alt="show/hide"> button in the Firefox navigation toolbar. When Plottit is disabled it will not send requests to the Reddit server.
@@ -66,7 +66,7 @@
                     <img class="screenshot" src="sortRedditPage.png" title="Sorting a Reddit Page" alt="Screen shoft Reddit page sort menu">
                     <figcaption>The sort menu on the Reddit page</figcaption>
                 </figure>
-                It is convenient to have the Reddit page order as a seperate column in the table because it may otherwise not be possible to sort the table in exactly the same order as the page, even if you click the correct column header. For instance, when sorting by score, Plottit cannot derive the original page order if two comments have the same score. 
+                It is convenient to have the Reddit page order as a separate column in the table because it may otherwise not be possible to sort the table in exactly the same order as the page, even if you click the correct column header. For instance, when sorting by score, Plottit cannot derive the original page order if two comments have the same score. 
             </section>
     
             <section id="col-author">
@@ -86,7 +86,7 @@
             
             <section id="col-date">
                 <h3>Date Column</h3>
-                The date and time when the comment was posted. This is the local date in the time zone specified in your computers conguration settings.
+                The date and time when the comment was posted. This is the local date in the time zone specified in your computers configuration settings.
                 <p>
                 You can select the format in which this date and/or time is displayed by right-clicking the column header.
                 
@@ -107,7 +107,7 @@
             
             <section id="col-posted-after">
                 <h3>Posted After Column</h3>
-                The time difference between the start of the disussion and the time that the comment was posted to this discussion.    
+                The time difference between the start of the discussion and the time that the comment was posted to this discussion.    
             </section>
             
             <section id="col-depth">
@@ -165,7 +165,7 @@
                 <h3>Best Column</h3>
                 Consider a discussion of two comments, one with 50 upvotes and 30 downvotes, and the other with 10 upvotes and no downvotes. When you sort the discussion by the <em>score</em> value, the first one, which has a score of 20, will appear above the second, which has a score of 10. Since only 62.5% of the voters likes the first post and all of them like the second, you can ask yourself if this is fair and if it wouldn't be better to sort the discussion by the percentage of upvotes instead. 
                 <p>
-                The answer to this is question is no. That only works when the number of votes for every comment is large enough so that the <a href="#col-posted-likes">likes</a> percentage is an accurate representation of the real fraction of redditors that like the comment. However, for comments that only have a few votes, the <a href="#col-posted-likes">likes</a> value will usually be inaccurate. For intance, comments with only one vote can only have a 0% or 100% likes percantage. If you sort a discussion by the <a href="#col-posted-likes">likes</a> column you can see for yourself that the top of the table is dominated by comments that have the initial score of 1 upvote and 0 downvotes.
+                The answer to this is question is no. That only works when the number of votes for every comment is large enough so that the <a href="#col-posted-likes">likes</a> percentage is an accurate representation of the real fraction of redditors that like the comment. However, for comments that only have a few votes, the <a href="#col-posted-likes">likes</a> value will usually be inaccurate. For instance, comments with only one vote can only have a 0% or 100% likes percentage. If you sort a discussion by the <a href="#col-posted-likes">likes</a> column you can see for yourself that the top of the table is dominated by comments that have the initial score of 1 upvote and 0 downvotes.
                 <p>
                 So what would be a fair ordering mechanism then? It would have to put more trust into comments with many votes and take the comments with only a few votes with a grain of salt. <a href="http://blog.reddit.com/2009/10/reddits-new-comment-sorting-system.html" title="Reddit blog">Instigated by Randall Munroe</a>, the <a href="http://www.xkcd.com/" title="The comic with the funny tooltip texts">XKCD</a> guy, Reddit aims to do this with the lower bound of the <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wilson_score_interval">Wilson score interval</a> and calls it the <em>best</em> value.
                 
@@ -181,13 +181,13 @@
 
             <section id="col-controversial">
                 <h3>Controversial Column</h3>
-                A measure of the controversy of the comment. This is calulated with the following formula:
+                A measure of the controversy of the comment. This is calculated with the following formula:
                <figure>
                     <img class="formula" src="formula_controversy.png" alt="controversy formula">
                </figure>
                If the difference between the number of upvotes and downvotes is close to zero, the denominator will become small and therefore the controversy will become large. The maximum with 1 is taken to prevent division by zero in case the number of upvotes and downvotes are equal.               
                <p>
-               The <i>up + down</i> in the numerator causes that the contoversy increases when the total number of votes increases. For example, a comment with 5 upvotes and 4 downvotes is more controversial than a comment with 4 upvotes and 3 downvotes.
+               The <i>up + down</i> in the numerator causes that the controversy increases when the total number of votes increases. For example, a comment with 5 upvotes and 4 downvotes is more controversial than a comment with 4 upvotes and 3 downvotes.
                <p>
                <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
             </section>
@@ -196,7 +196,7 @@
                 <h3>Hot Column</h3>
                 The hotness of the comment. This is a measure that tries to strike a balance between promoting the newest comments and the comments with the highest scores. 
                 <p>
-                The hotness is a relative measure; calculating the hotness of a single comment doesn't tell us much, it only becomes usefull when the hotness of one comment is compared to that of another.
+                The hotness is a relative measure; calculating the hotness of a single comment doesn't tell us much, it only becomes useful when the hotness of one comment is compared to that of another.
                 <p>
                 The hotness is calculated as follows:
                 <figure>
@@ -212,7 +212,7 @@
                 <p>
                 Comments that have a score of 0 always have a hotness of 0 as well. Comments with a negative score will have a negative hotness because the elapsed time divided by 45000 will be subtracted from the first term (which is smaller). Strangely enough, the first term is positive which means that a comment with a score of -2 is hotter than a comment with score -1 that is posted at the same time.
                 <p>
-                Because the time that a comment was posted doesn't change, a comments hotness can only change if its score changes. Reddit prohibits users to vote on comments that are older than six months so the hotness of these comments becomes fixed at that time. By calculting the score from the elapsed time since an arbitrary start date, Reddit can more easily archive and cache these pages than when it would calculate the hotness directly from the age of the comment, which keeps on changing.
+                Because the time that a comment was posted doesn't change, a comments hotness can only change if its score changes. Reddit prohibits users to vote on comments that are older than six months so the hotness of these comments becomes fixed at that time. By calculating the score from the elapsed time since an arbitrary start date, Reddit can more easily archive and cache these pages than when it would calculate the hotness directly from the age of the comment, which keeps on changing.
                 <p>
                 <em>Note: this column is not affected by Reddits <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">vote fuzzing</a> because it is directly calculated from the <a href="#col-score">score</a>, which is unaffected as well.</em>
             </section>
@@ -234,11 +234,11 @@
             <h2>Scatter Plot</h2>
             
             The second tab, named <em>Plot</em>, displays a <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/Scatter_plot">scatter plot</a> when selected. It shows the discussion as a collection of orangered dots where every dot represents one comment. 
-            The position of each dot along the X and Y axes depends on the values of two properties of the comment, which can be choosen by means of the drop-down labeled <em>X</em> and <em>Y</em>.
+            The position of each dot along the X and Y axes depends on the values of two properties of the comment, which can be chosen by means of the drop-down labeled <em>X</em> and <em>Y</em>.
             <p>
             A scatter plot is often used to examine the correlation between two variables. If there is a high correlation, such as between the number of words and the number of characters of a comment, the dots will form a straight line; if there is little or no correlation, such as between the number of characters of a comment and the time that it was posted, the dots will be scattered all over the figure.
             <p>
-            The figure below gives an example that lies inbetween these cases: how the number of votes depends on the time the comment was posted. It is common practice to put the independent variable (in this example <a href="#col-posted-after">posted after</a>) on the X-axis and the variable that depends on it (i.e. the <a href="#col-votes">votes</a>) on the Y-axis. You can see a clear negative correlation between them, the number of votes decreases as the time increases.
+            The figure below gives an example that lies in between these cases: how the number of votes depends on the time the comment was posted. It is common practice to put the independent variable (in this example <a href="#col-posted-after">posted after</a>) on the X-axis and the variable that depends on it (i.e. the <a href="#col-votes">votes</a>) on the Y-axis. You can see a clear negative correlation between them, the number of votes decreases as the time increases.
             <p>
 
             <figure>
@@ -246,13 +246,13 @@
                 <figcaption>Scatter plot example</figcaption>
             </figure>
             
-            You can zoom in and out by pointing the mouse cursor at your point of interest and scrolling up or down with the mouse wheel. If you double-click on the scattter plot the zoom level will be reset. You can pan by dragging and dropping the plot.
+            You can zoom in and out by pointing the mouse cursor at your point of interest and scrolling up or down with the mouse wheel. If you double-click on the scatter plot the zoom level will be reset. You can pan by dragging and dropping the plot.
             <p>
             When you hover your mouse cursor above the X or Y axis, the axis will be highlighted in light blue. When this is the case, panning and zooming will only work on that axis, the other axis is temporarily locked.
             <p>
             When the <em>Autoscale</em> box is checked, the zoom level will be reset each time you open a new discussion or switch to another browser tab. When it is unchecked the scale will be preserved between discussions.
             <p>
-            The comment that is selected in the table whill be hightlighted in the scatter plot by a bigger circle. Conversely, when you click on a dot in the scatterplot, the corresponding comment will be highlighted in the comment table.
+            The comment that is selected in the table will be highlighted in the scatter plot by a bigger circle. Conversely, when you click on a dot in the scatterplot, the corresponding comment will be highlighted in the comment table.
         </section>
         
         <section id="histogram">
@@ -279,7 +279,7 @@
         <section id="treemap">
             <h2>Treemap</h2>
             
-            The last tab contains a <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/treemap">treemap</a>. This is a visualisation of a tree where every node of the tree is drawn as a rectangle, the size of which depends on a certain property of the node. The layout of the rectangles is such that it preserves the hierarchy of the tree; child nodes are laid on top their parents. The hierarchy can be emphasized by rendering every rectangle as a cushion. A Reddit discussion has the form of a tree where comments are the tree nodes that together form a hierarchy. 
+            The last tab contains a <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/treemap">treemap</a>. This is a visualization of a tree where every node of the tree is drawn as a rectangle, the size of which depends on a certain property of the node. The layout of the rectangles is such that it preserves the hierarchy of the tree; child nodes are laid on top their parents. The hierarchy can be emphasized by rendering every rectangle as a cushion. A Reddit discussion has the form of a tree where comments are the tree nodes that together form a hierarchy. 
             <p>
             In the treemap example below, the size of each rectangle is determined by the number of <a href="#col-votes">votes</a> that the comment received. This can be selected by the <em>Size</em> drop down box. With the <em>Color</em> drop down box you can select the comment property that is used to color the rectangles, in this case the <a href="#col-depth">depth</a> (top-level comments are drawn in blue, comments with level 10 are in red).
             
@@ -294,9 +294,9 @@
             <p>
             When the <em>Cushions</em> check box is checked, the rectangles are drawn as cushions. This may be slow on old PCs, especially when you enlarge the treemap. When you uncheck the <em>Cushions</em> check box, the rectangles are rendered in a single color with a black outline. This makes it harder to see the hierarchy but makes the individual rectangles stand out more.
             <p>
-            If you want to know the details on how the cushions are rendered you can read the following <a href="http://www.win.tue.nl/~vanwijk/ctm.pdf">article (PDF)</a>. The treemaps in Plottit are squarified treemaps, refering to the <a href="http://www.win.tue.nl/~vanwijk/stm.pdf">squarify algorithm  (PDF)</a> that is used to lay out the rectangles.
+            If you want to know the details on how the cushions are rendered you can read the following <a href="http://www.win.tue.nl/~vanwijk/ctm.pdf">article (PDF)</a>. The treemaps in Plottit are squarified treemaps, referring to the <a href="http://www.win.tue.nl/~vanwijk/stm.pdf">squarify algorithm  (PDF)</a> that is used to lay out the rectangles.
             <p>
-            The treemaps in Plottit were inspired by programs that can create a treemap of the files on your disk, which is very useful if it's almost full and you want to examine which files and directories are the bigest. There are implementations available for this in <a title="Disk Inventory X" href="http://www.derlien.com/">OS-X</a>,  <a title="KDirStat" href="http://kdirstat.sourceforge.net/">Linux</a> and <a title="WinDirStat" href="http://windirstat.info/">Windows</a>.
+            The treemaps in Plottit were inspired by programs that can create a treemap of the files on your disk, which is very useful if it's almost full and you want to examine which files and directories are the biggest. There are implementations available for this in <a title="Disk Inventory X" href="http://www.derlien.com/">OS-X</a>,  <a title="KDirStat" href="http://kdirstat.sourceforge.net/">Linux</a> and <a title="WinDirStat" href="http://windirstat.info/">Windows</a>.
             <p>
         </section>
     </section>
