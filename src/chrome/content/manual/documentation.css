@@ -35,13 +35,23 @@ h3 {
     color: blue;
 }
 
-
 h1, h2, h3 { 
-    color:#369;
+    /* color: #48110C; */
+    color: #771E10;      /* pueblo red */
+    /*color: #336699;*/
+    /*color: #113B63;*/
+    /*color: maroon;*/
 }
 
 a { text-decoration:none; color: #369; }
-a:hover { text-decoration:underline }
+a:hover { 
+    text-decoration: none; 
+    border-bottom:1px solid; 
+}
+a.internal:hover { 
+    text-decoration: none; 
+    border-bottom:1px dashed; 
+}
 
 img.screenshot {
     border: 1px solid black;
@@ -49,4 +59,12 @@ img.screenshot {
 
 figcaption {
     font-style: italic;
+}
+
+footer {
+    font-size: smaller;
+    margin: 10px;
+    text-align: center;
+    font-style: italic;
+    color:#771E10;
 }

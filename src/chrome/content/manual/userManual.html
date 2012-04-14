@@ -13,11 +13,10 @@
 <body>
 <article>
 
-  
     <section id="user-interface">
-        <h1>Plottit User Interface</h1>
+        <h1>Plottit User Manual</h1>
         
-        The Plottit pane will appear at the bottom of the window whenever you visit a Reddit discussion. It contains the <a href="#comments-table">comments table</a> on the left, and one of the following items on the right: a frame with the selected <a href="#comment-text">comment HTML</a>, a <a href="#scatter-plot">scatter plot</a>, a <a href="#histogram">histogram</a> or a <a href="#treemap">treemap</a>.
+        The Plottit pane will appear at the bottom of the window whenever you visit a Reddit discussion. It contains the <a class="internal" href="#comments-table">comments table</a> on the left, and one of the following items on the right: a frame with the selected <a class="internal" href="#comment-text">comment HTML</a>, a <a class="internal" href="#scatter-plot">scatter plot</a>, a <a class="internal" href="#histogram">histogram</a> or a <a class="internal" href="#treemap">treemap</a>.
         <p>
         
         When the Reddit discussion is loaded completely, Plottit requests the Reddit server for a machine-readable version of the discussion, this is then used to populate the table and draw the graphs. Note that because the Reddit page and the data in the Plottit pane are not loaded simultaneously, small differences may occur.
@@ -30,7 +29,7 @@
         <section id="comments-table">
             <h2>Comments Table</h2>
         
-            The Comments table contains a row for each comment on the Reddit page. A comment has certain properties, such as the author and the score, which are listed in the tables columns. There are many of these properties, they are <a href="#table-collumns">explained in detail</a> later in this section. Most of them are hidden by default, you can configure which columns are visible by clicking the <img src="selectTableColumns.png" title="selects visible columns" alt="select table column" > button in the top right corner of the table. You can reorder the columns by dragging/dropping them and resize them using the table header separators. 
+            The Comments table contains a row for each comment on the Reddit page. A comment has certain properties, such as the author and the score, which are listed in the tables columns. There are many of these properties, they are <a class="internal" href="#table-collumns">explained in detail</a> later in this section. Most of them are hidden by default, you can configure which columns are visible by clicking the <img src="selectTableColumns.png" title="selects visible columns" alt="select table column" > button in the top right corner of the table. You can reorder the columns by dragging/dropping them and resize them using the table header separators. 
             <p>
             You can sort the table for every column by clicking its header; clicking the same header again reverses the order. The only exception is the <em>Comment</em> column, when you click on this header the comments column switches between a tree structure and a flat list. In tree-mode, a comment is only sorted by comparing it with its siblings so that the structure of the discussion remains intact (this is also how the Reddit page itself is sorted). In flat-mode however, the rows are sorted over the complete discussion.
             <!--<p>
@@ -47,10 +46,10 @@
             When the table has the keyboard focus, the up and down arrows select the next and previous comment and the left and right arrow collapse and expand a comment. This allows you to easily navigate the discussion using only the keyboard.
             <p>
             
-            Some of the columns, for example the <a href="#col-up">up</a> and <a href="#col-up">down</a> votes, are rendered in an <em>italic</em> font. This is to indicate that this value is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by the Reddit server to combat spam and therefore does not represent the actual value, it has been deliberately modified. The more votes a comment has received, the more this number is distorted. This is also true for the properties that are derived from the number of up and downvotes such as the <a href="#col-likes">likes</a> and <a href="#col-best">best</a> percentages. Only the <a href="#col-score">score</a> and <a href="#col-hot">hot</a> values are not affected because Reddit fuzzes the votes in such a way that these numbers remain the same.
+            Some of the columns, for example the <a class="internal" href="#col-up">up</a> and <a class="internal" href="#col-up">down</a> votes, are rendered in an <em>italic</em> font. This is to indicate that this value is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by the Reddit server to combat spam and therefore does not represent the actual value, it has been deliberately modified. The more votes a comment has received, the more this number is distorted. This is also true for the properties that are derived from the number of up and downvotes such as the <a class="internal" href="#col-likes">likes</a> and <a class="internal" href="#col-best">best</a> percentages. Only the <a class="internal" href="#col-score">score</a> and <a class="internal" href="#col-hot">hot</a> values are not affected because Reddit fuzzes the votes in such a way that these numbers remain the same.
             <p>            
                         
-            <span id="table-collumns">The rest of this section explains all the available columns.</span> The <a href="#comment-text">next section</a> will discuss the comment HTML pane and the visualizations.
+            <span id="table-collumns">The rest of this section explains all the available columns.</span> The <a class="internal" href="#comment-text">next section</a> will discuss the comment HTML pane and the visualizations.
                        
             <section id="col-id">
                 <h3>ID Column</h3>
@@ -165,7 +164,7 @@
                 <h3>Best Column</h3>
                 Consider a discussion of two comments, one with 50 upvotes and 30 downvotes, and the other with 10 upvotes and no downvotes. When you sort the discussion by the <em>score</em> value, the first one, which has a score of 20, will appear above the second, which has a score of 10. Since only 62.5% of the voters likes the first post and all of them like the second, you can ask yourself if this is fair and if it wouldn't be better to sort the discussion by the percentage of upvotes instead. 
                 <p>
-                The answer to this is question is no. That only works when the number of votes for every comment is large enough so that the <a href="#col-posted-likes">likes</a> percentage is an accurate representation of the real fraction of redditors that like the comment. However, for comments that only have a few votes, the <a href="#col-posted-likes">likes</a> value will usually be inaccurate. For instance, comments with only one vote can only have a 0% or 100% likes percentage. If you sort a discussion by the <a href="#col-posted-likes">likes</a> column you can see for yourself that the top of the table is dominated by comments that have the initial score of 1 upvote and 0 downvotes.
+                The answer to this is question is no. That only works when the number of votes for every comment is large enough so that the <a class="internal" href="#col-posted-likes">likes</a> percentage is an accurate representation of the real fraction of redditors that like the comment. However, for comments that only have a few votes, the <a class="internal" href="#col-posted-likes">likes</a> value will usually be inaccurate. For instance, comments with only one vote can only have a 0% or 100% likes percentage. If you sort a discussion by the <a class="internal" href="#col-posted-likes">likes</a> column you can see for yourself that the top of the table is dominated by comments that have the initial score of 1 upvote and 0 downvotes.
                 <p>
                 So what would be a fair ordering mechanism then? It would have to put more trust into comments with many votes and take the comments with only a few votes with a grain of salt. <a href="http://blog.reddit.com/2009/10/reddits-new-comment-sorting-system.html" title="Reddit blog">Instigated by Randall Munroe</a>, the <a href="http://www.xkcd.com/" title="The comic with the funny tooltip texts">XKCD</a> guy, Reddit aims to do this with the lower bound of the <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wilson_score_interval">Wilson score interval</a> and calls it the <em>best</em> value.
                 
@@ -214,7 +213,7 @@
                 <p>
                 Because the time that a comment was posted doesn't change, a comments hotness can only change if its score changes. Reddit prohibits users to vote on comments that are older than six months so the hotness of these comments becomes fixed at that time. By calculating the score from the elapsed time since an arbitrary start date, Reddit can more easily archive and cache these pages than when it would calculate the hotness directly from the age of the comment, which keeps on changing.
                 <p>
-                <em>Note: this column is not affected by Reddits <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">vote fuzzing</a> because it is directly calculated from the <a href="#col-score">score</a>, which is unaffected as well.</em>
+                <em>Note: this column is not affected by Reddits <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">vote fuzzing</a> because it is directly calculated from the <a class="internal" href="#col-score">score</a>, which is unaffected as well.</em>
             </section>
             
         </section>
@@ -238,7 +237,7 @@
             <p>
             A scatter plot is often used to examine the correlation between two variables. If there is a high correlation, such as between the number of words and the number of characters of a comment, the dots will form a straight line; if there is little or no correlation, such as between the number of characters of a comment and the time that it was posted, the dots will be scattered all over the figure.
             <p>
-            The figure below gives an example that lies in between these cases: how the number of votes depends on the time the comment was posted. It is common practice to put the independent variable (in this example <a href="#col-posted-after">posted after</a>) on the X-axis and the variable that depends on it (i.e. the <a href="#col-votes">votes</a>) on the Y-axis. You can see a clear negative correlation between them, the number of votes decreases as the time increases.
+            The figure below gives an example that lies in between these cases: how the number of votes depends on the time the comment was posted. It is common practice to put the independent variable (in this example <a class="internal" href="#col-posted-after">posted after</a>) on the X-axis and the variable that depends on it (i.e. the <a class="internal" href="#col-votes">votes</a>) on the Y-axis. You can see a clear negative correlation between them, the number of votes decreases as the time increases.
             <p>
 
             <figure>
@@ -258,7 +257,7 @@
         <section id="histogram">
             <h2>Histogram</h2>
             
-            This tab contains a <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/Histogram">histogram</a> when selected. A histogram will group values in bins and will draw a bar for every bin, the height of which depends on the number of times a variable occurs in that bin. In the example below, the <a href="#col-utc-date">UTC date/time</a> the comments were posted have been counted in groups of one hour. There were 3 comments posted between 5:00 and 6:00, 8 comments between 6:00 and 7:00, etc.
+            This tab contains a <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/Histogram">histogram</a> when selected. A histogram will group values in bins and will draw a bar for every bin, the height of which depends on the number of times a variable occurs in that bin. In the example below, the <a class="internal" href="#col-utc-date">UTC date/time</a> the comments were posted have been counted in groups of one hour. There were 3 comments posted between 5:00 and 6:00, 8 comments between 6:00 and 7:00, etc.
             <p>
             You can select which comment property to count by means of the drop-down box labeled <em>X</em>. The box next to it will determine the size of the bins. Not every combination of property and bin size makes sense, some combinations will result in very narrow or wide bins.
             
@@ -281,16 +280,16 @@
             
             The last tab contains a <a title="Wikipedia article" href="http://en.wikipedia.org/wiki/treemap">treemap</a>. This is a visualization of a tree where every node of the tree is drawn as a rectangle, the size of which depends on a certain property of the node. The layout of the rectangles is such that it preserves the hierarchy of the tree; child nodes are laid on top their parents. The hierarchy can be emphasized by rendering every rectangle as a cushion. A Reddit discussion has the form of a tree where comments are the tree nodes that together form a hierarchy. 
             <p>
-            In the treemap example below, the size of each rectangle is determined by the number of <a href="#col-votes">votes</a> that the comment received. This can be selected by the <em>Size</em> drop down box. With the <em>Color</em> drop down box you can select the comment property that is used to color the rectangles, in this case the <a href="#col-depth">depth</a> (top-level comments are drawn in blue, comments with level 10 are in red).
+            In the treemap example below, the size of each rectangle is determined by the number of <a class="internal" href="#col-votes">votes</a> that the comment received. This can be selected by the <em>Size</em> drop down box. With the <em>Color</em> drop down box you can select the comment property that is used to color the rectangles, in this case the <a class="internal" href="#col-depth">depth</a> (top-level comments are drawn in blue, comments with level 10 are in red).
             
             <figure>
                 <img class="screenshot" src="treemapCushions.png" title="Treemap screen shot" alt="Treemap with cushions screen shot">
                 <figcaption>Treemap with cushions</figcaption>
             </figure>
             
-            When you select a comment in the <a href="#comments-table">comments table</a> it will be outlined in the treemap by a white rectangle. If the comment is collapsed in the table, the white rectangle will surround the comment and all its children. This is shown in the example above. 
+            When you select a comment in the <a class="internal" href="#comments-table">comments table</a> it will be outlined in the treemap by a white rectangle. If the comment is collapsed in the table, the white rectangle will surround the comment and all its children. This is shown in the example above. 
             <p>
-            When you click on a rectangle in the treemap, the corresponding comment will be highlighted in the <a href="#comments-table">comments table</a>. When you click the same rectangle twice, its parent comment will be selected and collapsed (provided that the comments table is in tree-mode). This can be repeated until the top-level comment is selected and collapsed.
+            When you click on a rectangle in the treemap, the corresponding comment will be highlighted in the <a class="internal" href="#comments-table">comments table</a>. When you click the same rectangle twice, its parent comment will be selected and collapsed (provided that the comments table is in tree-mode). This can be repeated until the top-level comment is selected and collapsed.
             <p>
             When the <em>Cushions</em> check box is checked, the rectangles are drawn as cushions. This may be slow on old PCs, especially when you enlarge the treemap. When you uncheck the <em>Cushions</em> check box, the rectangles are rendered in a single color with a black outline. This makes it harder to see the hierarchy but makes the individual rectangles stand out more.
             <p>
@@ -305,7 +304,7 @@
 </article>
 
 <footer>
-    Last modified: 2012-04-11 by Titusjan.
+    Last modified: 2012-04-14 by Titusjan.
 </footer>
 </body>
 </html>
