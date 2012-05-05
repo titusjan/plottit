@@ -127,6 +127,7 @@ Plottit.Comment.prototype.__defineSetter__("numWords", function(v) { this._numWo
 
 /////
 // Derived data
+// See: https://github.com/reddit/reddit/blob/master/r2/r2/lib/db/_sorts.pyx
 
 Plottit.Comment.prototype.__defineGetter__("level", function() { 
     return this._depth - 1; // level is zero-based depth
@@ -167,7 +168,7 @@ Plottit.Comment.prototype.__defineGetter__("hot", function() {
 
 Plottit.Comment.prototype.__defineGetter__("best", function() { 
     
-    // Let b is best(up, down) then, given the number of up and down votes, and
+    // Let b is best (up, down) then, given the number of up and down votes, and
     // assuming the votes in reddit are distributred binomially, there is 90% confidence that
     // the least b% of the redditors voters likes the comment. 
     // We make an 80% confidence interval, so 20% is outside this interval: 10% lower and 10% higher.

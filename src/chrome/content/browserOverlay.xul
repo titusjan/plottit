@@ -48,6 +48,9 @@
         insertafter="devToolsSeparator">
       <menupopup>
         <menuitem id="plottit-tools-help-menu-item"
+          label="&plottit.hideplottit.label;"
+          command="plottit-command-toggle-plottit-active"/>
+        <menuitem id="plottit-tools-help-menu-item"
           label="&plottit.help.label;"
           command="plottit-command-show-help"/>
         <menuitem id="plottit-tools-debug-menu-item" hidden="true"

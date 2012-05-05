@@ -1,3 +1,5 @@
+<!ENTITY plottit.hideplottit.label      "Hide Plottit">
+<!ENTITY plottit.showplottit.label      "Show Plottit">
 <!ENTITY plottit.debug.label            "Debug">
 <!ENTITY plottit.help.label             "Help">
 

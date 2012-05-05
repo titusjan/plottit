@@ -14,14 +14,8 @@ Steal focus on page load? Only when configured to do so!
 
 Error handling on Ajax time out
 
-
-Make file
-    - No Jar files?
-
 Source cleanup:
     remove attributes from state that are present in user pages.
 
--------
 
-about:memory?verbose
  

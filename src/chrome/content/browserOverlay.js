@@ -1040,11 +1040,19 @@ Plottit.setPlottitActive = function (plottitEnabled) {
     Plottit.state.plottitEnabled = plottitEnabled;
     Application.prefs.get("extensions.plottit.plottitEnabled").value = Plottit.state.plottitEnabled; 
     
+    // TODO: observer
     var toolbarButton = document.getElementById('plottit-toggle-active-button');
     if (toolbarButton) {
         toolbarButton.setAttribute('tooltiptext', plottitEnabled ? 
-            document.getElementById('plottit-string-bundle').getString('plottit.disableProgram') :
-            document.getElementById('plottit-string-bundle').getString('plottit.enableProgram'));
+            document.getElementById('plottit-string-bundle').getString('plottit.hidePlottit') :
+            document.getElementById('plottit-string-bundle').getString('plottit.showPlottit'));
+    }
+    
+    var menuItem = document.getElementById('plottit-tools-help-menu-item');
+    if (menuItem) {
+        menuItem.setAttribute('label', plottitEnabled ? 
+            document.getElementById('plottit-string-bundle').getString('plottit.hidePlottit') :
+            document.getElementById('plottit-string-bundle').getString('plottit.showPlottit'));
     }
 }
 
