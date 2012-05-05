@@ -55,7 +55,7 @@
                        
             <section id="col-id">
                 <h3>ID Column</h3>
-                This is the comments identifier. Every Reddit comment contains a unique ID that is used, for example, in a URL that links to that specific comment. 
+                This is the comment's identifier. Every Reddit comment contains a unique ID that is used, for example, in a URL that links to that specific comment. 
             </section>
             
             <section id="col-page-order">
@@ -67,7 +67,9 @@
                     <img class="screenshot" src="sortRedditPage.png" title="Sorting a Reddit Page" alt="Screen shoft Reddit page sort menu">
                     <figcaption>The sort menu on the Reddit page</figcaption>
                 </figure>
-                It is convenient to have the Reddit page order as a separate column in the Plottit table to make it possible to sort both the Reddit page and the Plottit table in the same way. It may otherwise not be possible to sort the table in exactly the same order as the page, even if you click the correct column header. For instance, when sorting by score, Plottit cannot derive the original page order if two comments have the same score. 
+                It's convenient to have the Reddit page order included as a separate column in the Plottit table; this makes it possible to have the exact same comment  order in the Plottit Table as in the Reddit page.
+                <!--
+                For some columns it would otherwise not be possible to achieve the same order. For instance, when sorting by score, Plottit cannot derive the original page order if two comments have the same score. When sorting by <em>best</em>, the order in the Plottit table is affected by vote fuzzing whereas the Reddit page order is calculated before fuzzing takes place.-->
             </section>
     
             <section id="col-author">
@@ -145,21 +147,21 @@
                 <h3>Votes Column</h3>
                 The total number of votes the comment has received. In other words: the number of upvotes plus the number of downvotes.
                 <p>
-                <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
+                <em>Note: the up and downvotes are <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit. This column is therefore less accurate for comments having a lot of votes.</em>
             </section>
             
             <section id="col-score">
                 <h3>Score Column</h3>
                 The comments score. That is: the number of upvotes minus the number of downvotes.
                 <p>
-                <em>Note: this column is not affected by Reddits <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">vote fuzzing</a>.</em>
+                <em>Note: this column is not affected by Reddit's <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">vote fuzzing</a>.</em>
             </section>
             
             <section id="col-likes">
                 <h3>Likes Column</h3>
                 The percentage of voters that liked the comment. In other words, it is the percentage of votes that are upvotes. It is calculated from the number of up and downvotes as follows: <i>likes = 100 * up / (up + down)</i>.
                 <p>
-                <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
+                <em>Note: the up and downvotes are <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit. This column is therefore less accurate for comments having a lot of votes.</em>
             </section>
             
             <section id="col-best">
@@ -175,22 +177,22 @@
                 </figure>
                 By replacing the &plusmn; sign with either a <em>+</em> or a <em>-</em>, you get the upper or lower bound of an interval of which you can say, with 80% confidence, that the real <em>likes</em> percentage lies within that interval. This interval will become smaller when the number of votes increases.
                 <p>
-                Reddit only uses the lower bound of this interval (calculated with the - sign). So a <em>best</em> value of 65% means that you can say, with 90% confidence, that at least 65% of the votes are upvotes.
+                Reddit only uses the lower bound of this interval (calculated with the minus sign). So a <em>best</em> value of 65% means that you can say, with 90% confidence, that at least 65% of the votes are upvotes.
                 <p>
-                <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
+                <em>Note: the up and downvotes are <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit. This column is therefore less accurate for comments having a lot of votes.</em>
             </section>            
 
             <section id="col-controversial">
                 <h3>Controversial Column</h3>
                 A measure of the controversy of the comment. This is calculated with the following formula:
-               <figure>
+                <figure>
                     <img class="formula" src="formula_controversy.png" alt="controversy formula">
-               </figure>
-               If the difference between the number of upvotes and downvotes is close to zero, the denominator will become small and therefore the controversy will become large. The maximum with 1 is taken to prevent division by zero in case the number of upvotes and downvotes are equal.               
-               <p>
-               The <i>up + down</i> in the numerator causes that the controversy increases when the total number of votes increases. For example, a comment with 5 upvotes and 4 downvotes is more controversial than a comment with 4 upvotes and 3 downvotes.
-               <p>
-               <em>Note: this column is <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit and is therefore less accurate for comments having a lot of votes.</em>
+                </figure>
+                If the difference between the number of upvotes and downvotes is close to zero, the denominator will become small and therefore the controversy will become large. The maximum with 1 is taken to prevent division by zero in case the number of upvotes and downvotes are equal.               
+                <p>
+                The <i>up + down</i> in the numerator causes that the controversy increases when the total number of votes increases. For example, a comment with 5 upvotes and 4 downvotes is more controversial than a comment with 4 upvotes and 3 downvotes.
+                <p>
+                <em>Note: the up and downvotes are <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">fuzzed</a> by Reddit. This column is therefore less accurate for comments having a lot of votes.</em>
             </section>
             
             <section id="col-hot">
@@ -209,13 +211,13 @@
                 <p>
                 The second term calculates first the number of seconds that have elapsed between a certain start date (<i>t<sub>start</sub></i>) and the date that the comment was posted (<i>t</i>). The start date that reddit uses is 2005-12-08 at 07:46:43 but it could be any date as long as it's earlier than the oldest comment. The  number of elapsed seconds is subsequently divided by 45000 seconds. 45000 seconds is equal to 12.5 hours so if comment A is posted 12.5 hours later than comment B, comment A will be 1 point hotter than comment B, provided that they have the same score. Comment B would need to have ten times the score of comment A to catch up with A in hotness.
                 <p>
-                You can calculate that, for yesterday's comment to be just as hot as today's, it needs to have about 83 times the score as todays comment. If a comment is exactly two days old, it needs to have a score of at least 6919 for to be hotter than a comment that is posted right now and has a score of 1. 
+                You can calculate that, for yesterday's comment to be just as hot as today's, it needs to have about 83 times the score as today's comment. If a comment is exactly two days old, it needs to have a score of at least 6919 for to be hotter than a comment that is posted right now and has a score of 1. 
                 <p>
                 Comments that have a score of 0 always have a hotness of 0 as well. Comments with a negative score will have a negative hotness because the elapsed time divided by 45000 will be subtracted from the first term (which is smaller). Strangely enough, the first term is positive which means that a comment with a score of -2 is hotter than a comment with score -1 that is posted at the same time.
                 <p>
                 Because the time that a comment was posted doesn't change, a comment's hotness can only change if its score changes. Reddit prohibits users to vote on comments that are older than six months so the hotness of these comments becomes fixed at that time. By calculating the score from the elapsed time since an arbitrary start date, Reddit can more easily archive and cache these pages than when it would calculate the hotness directly from the age of the comment, which keeps on changing.
                 <p>
-                <em>Note: this column is not affected by Reddits <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">vote fuzzing</a> because it is directly calculated from the <a class="internal" href="#col-score">score</a>, which is unaffected as well.</em>
+                <em>Note: this column is not affected by Reddit's <a title="Reddit FAQ" href="http://www.reddit.com/help/faq#Howisasubmissionsscoredetermined">vote fuzzing</a> because it is directly calculated from the <a class="internal" href="#col-score">score</a>, which is unaffected as well.</em>
             </section>
             
         </section>
@@ -247,9 +249,9 @@
                 <figcaption>Scatter plot example</figcaption>
             </figure>
             
-            You can zoom in and out by pointing the mouse cursor at your point of interest and scrolling up or down with the mouse wheel. If you double-click on the scatter plot the zoom level will be reset. You can pan by dragging and dropping the plot.
+            You can zoom in and out by pointing the mouse cursor at your point of interest and scrolling up or down with the mouse wheel. If you double-click on the scatter plot the zoom level will be reset. You can pan by dragging the plot.
             <p>
-            When you hover your mouse cursor above the X or Y axis, the axis will be highlighted in light blue. When this is the case, panning and zooming will only work on that axis, the other axis is temporarily locked.
+            When you hover your mouse cursor above the X or Y axis, the axis will be highlighted in light blue. When this is the case, panning and zooming will only work on that axis, the other axis will be temporarily locked.
             <p>
             When the <em>Autoscale</em> box is checked, the zoom level will be reset each time you open a new discussion or switch to another browser tab. When it is unchecked the scale will be preserved between discussions.
             <p>
@@ -268,9 +270,9 @@
                 <figcaption>Histogram example</figcaption>
             </figure>
 
-            You can zoom in and out by pointing the mouse cursor at your point of interest and scrolling up or down with the mouse wheel. If you double-click on the histogram the zoom level will be reset. You can pan by dragging and dropping the histogram.
+            You can zoom in and out by pointing the mouse cursor at your point of interest and scrolling up or down with the mouse wheel. If you double-click on the histogram the zoom level will be reset. You can pan by dragging the histogram.
             <p>
-            When you hover your mouse cursor above the X or Y axis, the axis will be highlighted in light blue. When this is the case, panning and zooming will only work on that axis, the other axis is temporarily locked.
+            When you hover your mouse cursor above the X or Y axis, the axis will be highlighted in light blue. When this is the case, panning and zooming will only work on that axis, the other axis will be temporarily locked.
             <p>
             When the <em>Autoscale</em> box is checked, the zoom level will be reset each time you open a new discussion or switch to another browser tab. When it is unchecked the scale will be preserved between discussions.
             <p>
@@ -306,7 +308,7 @@
 </article>
 
 <footer>
-    Last modified: 2012-04-14 by Titusjan.
+    Last modified: 2012-05-05 by Titusjan.
 </footer>
 </body>
 </html>
