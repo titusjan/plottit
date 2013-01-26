@@ -1065,19 +1065,29 @@ Plottit.SELECTED_ROW_STYLE = "<style type='text/css'>"
     
 
 Plottit.selectCommentInRedditPage = function (selectedComment, prevSelectedComment, scrollToComment) {
-    var $ = content.wrappedJSObject.jQuery;
+    
+    // This doesn't seem to make any difference in the animation.
+    var jQueryObj = { jQuery: content.wrappedJSObject.jQuery, __exposedProps__ : { jQuery : "wr"} };
+    var $ = jQueryObj.jQuery;
+    
     if ($) { // e.g. no jQuery when page is only a .json file
+        
         var selectedCommentId = selectedComment ? selectedComment.id : null;
         if (prevSelectedComment !== null) {
             $('div.id-t1_' + prevSelectedComment.id + ' div.entry')
                 .filter(':first').removeClass('plottit-selected');
         }
+        
         var offset = $('div.id-t1_' + selectedCommentId)
                         .filter(':visible').find('div.entry:first')
                         .addClass('plottit-selected')
                         .offset();
+
         if (scrollToComment && offset) {
-            $('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
+            $('html').scrollTop(offset.top - 100);
+            // Unfortunately, animate doesn't work anymore since Firefox 16 or 17.
+            //$('html').stop().animate( { 'scrollTop' : (offset.top - 100)}, 'fast', 'linear');
+            
         }
     }
 }
