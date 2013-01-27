@@ -14,3 +14,4 @@ However, before using this you must copy the 'install.sh.template' to
 'install.sh' and edit the installation destinations in it.
 
 2013-01-27, Pepijn Kenter.
+
