@@ -2,13 +2,13 @@
 
 set -x
 set -e
+set -u  # give error for unbound variables
 
 # The name of the extension.
 extension_name="plottit"
 
 # The UUID of the extension.
 extension_uuid="plottit@titusjan.nl"
-
 
 # absolute base path extension_dir
 pushd ..
@@ -21,17 +21,14 @@ bin_dir="${base_dir}/bin"
 # The target XPI file.
 xpi_file="$bin_dir/$extension_name.xpi"
 
-installed_xpi_file="${profile_location}/${extension_uuid}.xpi"
-
 # The temporary location where the extension tree will be copied and built.
 build_dir="$bin_dir/build"
 
 
-# Start from scratch
+# Start building from scratch
 
 rm -rf "${build_dir}"
 rm -f "${xpi_file}"
-rm -rf "${installed_xpi_file}"
 
 # Start copying (use rsynch to exclude hidden (.svn) files)
 mkdir "${build_dir}"
@@ -44,21 +41,4 @@ pushd "${build_dir}"
 zip -r "${xpi_file}" *
 popd
 
-# Instal xpi
-
-# The name of the profile dir where the extension can be installed.
-profile_dir="py4p8246.Development"
-
-# The location of the extension profile.
-# Uncomment for os-darwin
-profile_location="${HOME}/Library/Application Support/Firefox/Profiles/$profile_dir/extensions"
-# Uncomment for linux-gnu
-# profile_location=~/.mozilla/firefox/$(profile_dir)/extensions/$(extension_uuid)
-# Uncomment in other cases
-#profile_location="$(subst \,\\,$(APPDATA))\\Mozilla\\Firefox\\Profiles\\$(profile_dir)\\extensions\\$(extension_uuid)"
-
-echo "${profile_location}"
-cp -f "${xpi_file}" "${installed_xpi_file}"
-
-
-
+echo "Created: ${xpi_file}"
