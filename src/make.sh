@@ -31,7 +31,7 @@ rm -rf "${build_dir}"
 rm -f "${xpi_file}"
 
 # Start copying (use rsynch to exclude hidden (.svn) files)
-mkdir "${build_dir}"
+mkdir -p "${build_dir}"
 #cp -r * "${build_dir}"
 rsync -rv --exclude='.*' * "${build_dir}"
 
