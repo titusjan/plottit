@@ -64,7 +64,7 @@ figcaption {
 footer {
     font-size: smaller;
     margin: 10px;
-    text-align: center;
+    text-align: left;
     font-style: italic;
     color:#771E10;
 }
