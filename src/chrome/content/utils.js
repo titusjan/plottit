@@ -339,7 +339,11 @@ Plottit.initializeLoggers = function (bXul, level, debugMode) {
             if ('undefined' == typeof(Firebug)) {
                 Plottit.fbLog = function(msg) { Plottit.logger.info('fbLog: ' + msg); } 
             } else {
-                Plottit.fbLog = function(msg) { Firebug.Console.log(msg) } ;
+                if ('undefined' == typeof(Firebug.Console)) {
+                    Plottit.fbLog = function(msg) { Plottit.logger.info('fbLog: ' + msg); } 
+                } else {
+                    Plottit.fbLog = function(msg) { Firebug.Console.log(msg) } ;
+                }
             }
         } else {
             Plottit.fbLog = function(msg) { } // Do nothing.
