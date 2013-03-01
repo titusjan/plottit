@@ -522,11 +522,6 @@ Plottit.onPageLoad = function(event) {
     if ( isRedditPage && !isJsonPage) {
         // A reddit html page, the json will be loaded with AJAX
         Plottit.logger.info("Plottit.onPageLoad (reddit discussion): URL: " + pageURL);
-
-        // Append plottit css style to reddit page (so we can highlight selected comment)
-        var $ = doc.defaultView.wrappedJSObject.jQuery;
-        var styleElem = $(Plottit.SELECTED_ROW_STYLE);
-        $('head').append(styleElem);
         
         // When the document is clicked we call ...
         var documentWindow = doc.defaultView.wrappedJSObject.window
@@ -1063,7 +1058,26 @@ Plottit.SELECTED_ROW_STYLE = "<style type='text/css'>"
     + "div.plottit-selected {background-color:#EFF7FF; outline:1px dashed #5F99CF}"
     + "</style>";
     
+Plottit.appendPlottitRowStyleToRedditPage = function() {
+     // Append plottit css style to reddit page (so we can highlight selected comment)
+     // This is not done in the on-page load because it sometimes failed. We therefore
+     // append it the first time when a comment is selected for this page.
 
+    var curState = Plottit.state.getCurrentBrowserState();
+    
+    if (!curState.plottit_row_style_appended) {
+        try {
+            var $ = content.document.defaultView.wrappedJSObject.jQuery;
+            var styleElem = $(Plottit.SELECTED_ROW_STYLE);
+            $('head').append(styleElem);
+            curState.plottit_row_style_appended = true; // only append once
+        } catch (ex) {
+            Plottit.logger.error('Exception in Plottit.appendPlottitRowStyleToRedditPage;');
+            Plottit.logException(ex);
+        }
+    }
+}        
+        
 Plottit.selectCommentInRedditPage = function (selectedComment, prevSelectedComment, scrollToComment) {
     
     // This doesn't seem to make any difference in the animation.
@@ -1071,7 +1085,7 @@ Plottit.selectCommentInRedditPage = function (selectedComment, prevSelectedComme
     var $ = jQueryObj.jQuery;
     
     if ($) { // e.g. no jQuery when page is only a .json file
-        
+        Plottit.appendPlottitRowStyleToRedditPage();
         var selectedCommentId = selectedComment ? selectedComment.id : null;
         if (prevSelectedComment !== null) {
             $('div.id-t1_' + prevSelectedComment.id + ' div.entry')

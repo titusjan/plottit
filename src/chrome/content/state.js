@@ -18,6 +18,7 @@ Plottit.BrowserState = function (browser, localDateFormat, utcDateFormat) { // C
     this.treeView =  new Plottit.TreeView(localDateFormat, utcDateFormat);
     this._selectedComment = null; // The comment that is selected in the table
     this._previousSelectedComment = null;
+    this.style_added = false;
 }
 
 Plottit.BrowserState.prototype.__defineGetter__("selectedComment", function() { return this._selectedComment} );
