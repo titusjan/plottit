@@ -2,3 +2,4 @@ bin
 install.sh
 *.
 *.
+.DS_Store
