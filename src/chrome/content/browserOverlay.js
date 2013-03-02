@@ -1063,17 +1063,21 @@ Plottit.appendPlottitRowStyleToRedditPage = function() {
      // This is not done in the on-page load because it sometimes failed. We therefore
      // append it the first time when a comment is selected for this page.
 
+    Plottit.logger.trace("Plottit.appendPlottitRowStyleToRedditPage -- ");
     var curState = Plottit.state.getCurrentBrowserState();
     
     if (!curState.plottit_row_style_appended) {
-        try {
-            var $ = content.document.defaultView.wrappedJSObject.jQuery;
-            var styleElem = $(Plottit.SELECTED_ROW_STYLE);
-            $('head').append(styleElem);
+        var $ = content.document.defaultView.wrappedJSObject.jQuery;
+        var jq_len_before = $('head').children().length;
+        var styleElem = $(Plottit.SELECTED_ROW_STYLE);
+        $('head').append(styleElem);
+        var jq_len_after = $('head').children().length;
+        
+        // Check if style was actually appended.
+        if (jq_len_after > jq_len_before) { 
             curState.plottit_row_style_appended = true; // only append once
-        } catch (ex) {
-            Plottit.logger.error('Exception in Plottit.appendPlottitRowStyleToRedditPage;');
-            Plottit.logException(ex);
+        } else {
+            Plottit.logger.warn("Plottit.appendPlottitRowStyleToRedditPage: failed appending Reddit style (will try again)");
         }
     }
 }        
